@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>plugin</artifactId>
+		<version>3.4</version>
+		<relativePath />
+	</parent>
+	<groupId>com.mathworks.ci</groupId>
+	<artifactId>matlab-plugin</artifactId>
+	<version>0.1.0-SNAPSHOT</version>
+	<packaging>hpi</packaging>
+
+	<!-- Site creation support for documentation -->
+	
+	<properties>
+		<jenkins.version>2.7.3</jenkins.version>
+		<java.level>8</java.level>
+		<url.basedir>http://inside-files.mathworks.com/dev/tools/maven_sites/${project.artifactId}</url.basedir>
+	</properties>
+
+
+
+	<name>MATLAB Plugin</name>
+	<description>Jenkins plugin for MATLAB</description>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://opensource.org/licenses/MIT</url>
+		</license>
+	</licenses>
+	<repositories>
+		<repository>
+			<id>repo.jenkins-ci.org</id>
+			<url>https://repo.jenkins-ci.org/public/</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repo.jenkins-ci.org</id>
+			<url>https://repo.jenkins-ci.org/public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- Adding Fast deploy,Fast package & platform-safe profiles for BaT Maven 
+		infrastructure -->
+
+	<profiles>
+		<profile>
+			<id>platform-safe-shade</id>
+			<activation>
+				<property>
+					<name>platform-safe</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-shade-plugin</artifactId>
+							<configuration>
+								<createDependencyReducedPom>false</createDependencyReducedPom>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>java_libraries_disable_for_fast_deploy</id>
+			<activation>
+				<property>
+					<name>fast-deploy</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-surefire-plugin</artifactId>
+							<configuration>
+								<skipTests>true</skipTests>
+							</configuration>
+						</plugin>
+						
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-failsafe-plugin</artifactId>
+							<configuration>
+								<skipTests>true</skipTests>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<profile>
+			<id>java_libraries_disable_for_fast_package</id>
+
+			<activation>
+				<property>
+					<name>fast-package</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-failsafe-plugin</artifactId>
+							<configuration>
+								<skipTests>true</skipTests>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+
+		<!-- Profile to deploy artifacts under mathworks internal repository -->
+		
+		<profile>
+			<id>mwrepo_deploy</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+				<property>
+					<name>Maven.project.name</name>
+				</property>
+			</activation>
+			<distributionManagement>
+
+				<repository>
+					<uniqueVersion>false</uniqueVersion>
+					<id>mw_inhouse</id>
+					<url>http://mw-maven-repository-manager/artifactory/inhouse</url>
+					<layout>default</layout>
+				</repository>
+				<snapshotRepository>
+					<uniqueVersion>true</uniqueVersion>
+					<id>mw_inhouse_snapshot</id>
+					<url>http://mw-maven-repository-manager/artifactory/inhouse_snapshot</url>
+					<layout>default</layout>
+				</snapshotRepository>
+				<site>
+					<id>doc_website</id>
+					<name>Maven Project Docs</name>
+					<url>file:/mathworks/inside/files/dev/tools/maven_sites/${project.artifactId}/versions/${project.version}/</url>
+				</site>
+			</distributionManagement>
+
+		</profile>
+
+		<!-- Profile to deploy artifacts under Jenkins internal repository -->
+
+		<profile>
+			<id>jenkinsrepo_deploy</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+				<property>
+					<name>jenkinsrepodeploy</name>
+					<value>jenkinsrepo</value>
+				</property>
+			</activation>
+			<distributionManagement>
+				<repository>
+					<id>maven.jenkins-ci.org</id>
+					<url>https://repo.jenkins-ci.org/releases/</url>
+				</repository>
+				<snapshotRepository>
+					<id>maven.jenkins-ci.org</id>
+					<url>https://repo.jenkins-ci.org/snapshots/</url>
+				</snapshotRepository>
+			</distributionManagement>
+		</profile>
+	</profiles>
+
+	<!-- Disabled Findbugs execution for all phases as BatUp infra runs it during 
+		site phase -->
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>findbugs</id>
+						<phase>none</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+						<configuration>
+							<xmlOutput>true</xmlOutput>
+							<findbugsXmlOutput>false</findbugsXmlOutput>
+							<effort>default</effort>
+							<threshold>Medium</threshold>
+							<failOnError>true</failOnError>
+						</configuration>
+					</execution>
+				</executions>
+				<configuration>
+					<failOnError>true</failOnError>
+				</configuration>
+			</plugin>
+		</plugins>
+
+		<!-- Plugin Management for Eclipse -->
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-javadoc-plugin
+										</artifactId>
+										<versionRange>
+											[2.10.4,)
+										</versionRange>
+										<goals>
+											<goal>javadoc</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+				<plugin>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.7.1</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>

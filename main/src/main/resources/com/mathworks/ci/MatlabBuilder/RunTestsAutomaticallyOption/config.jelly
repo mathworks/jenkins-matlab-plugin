@@ -1,0 +1,18 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    
+<f:section title="Generate Test Artifacts">
+	 <f:entry title="Generate TAP Result" field="tatapChkBx">
+    	<f:checkbox name="tatapChkBx" checked="${instance.tatapChkBx}"/>
+     </f:entry>
+     	
+  	  <f:entry title="Generate JUnit Style Result" field="taJunitChkBx">
+    	<f:checkbox name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
+  	  </f:entry>
+  	  
+  	  <f:entry title="Generate Cobertura Code Coverage" field="taCoberturaChkBx">
+    	<f:checkbox name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
+     </f:entry>   
+</f:section>
+
+</j:jelly>
