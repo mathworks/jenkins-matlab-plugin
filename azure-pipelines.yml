@@ -4,19 +4,16 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-- master
+  - master
 
 pool:
   vmImage: 'Ubuntu-16.04'
 
 steps:
-- task: Maven@3
-  inputs:
-    mavenPomFile: 'main/pom.xml'
-    mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
-    #javaHomeOption: 'JDKVersion'
-    #jdkVersionOption: '1.11'
-    #jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'package'
+  - task: Maven@3
+    inputs:
+      mavenPomFile: 'main/pom.xml'
+      mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
+      publishJUnitResults: true
+      testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      goals: 'package'
