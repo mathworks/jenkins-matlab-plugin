@@ -13,7 +13,7 @@ steps:
 - task: Maven@3
   inputs:
     mavenPomFile: 'main/pom.xml'
-    mavenOptions: '-Xmx3072m'
+    mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.11'
     jdkArchitectureOption: 'x64'
