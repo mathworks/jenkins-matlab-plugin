@@ -25,4 +25,5 @@ steps:
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       codeCoverageToolOption: 'jacoco'
       goals: 'package'
+    displayName: 'Build $(imageName)'
       
