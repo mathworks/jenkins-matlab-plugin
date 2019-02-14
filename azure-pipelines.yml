@@ -23,7 +23,7 @@ steps:
       mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      codeCoverageToolOption: 'jacoco'
+      codeCoverageToolOption: 'cobertura'
       goals: 'package'
     displayName: 'Build $(imageName)'
       
