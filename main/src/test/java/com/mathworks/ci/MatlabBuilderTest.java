@@ -282,6 +282,6 @@ public class MatlabBuilderTest {
     
     @Test
     public void testFailure() throws Exception {
-        Assert.assertTrue(false, "Deliberate failure.");
+        Assert.assertEquals("Deliberate failure.", 5,6);
     }
 }
