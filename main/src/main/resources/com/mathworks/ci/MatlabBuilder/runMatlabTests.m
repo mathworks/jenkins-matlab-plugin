@@ -20,13 +20,13 @@ resultsDir = fullfile(pwd, 'results');
 
 if produceJUnit
     mkdirIfNeeded(resultsDir)
-    xmlFile = fullfile(resultsDir, 'JUnittestresults.xml');
+    xmlFile = fullfile(resultsDir, 'junittestresults.xml');
     runner.addPlugin(XMLPlugin.producingJUnitFormat(xmlFile));
 end
 
 if produceTAP
     mkdirIfNeeded(resultsDir)
-    tapFile = fullfile(resultsDir, 'Taptestresults.tap');
+    tapFile = fullfile(resultsDir, 'taptestresults.tap');
     fclose(fopen(tapFile,'w'));
     runner.addPlugin(TAPPlugin.producingVersion13(ToFile(tapFile)));
 end
