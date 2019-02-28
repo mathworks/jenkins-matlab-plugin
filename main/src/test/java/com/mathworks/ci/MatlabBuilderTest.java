@@ -279,4 +279,10 @@ public class MatlabBuilderTest {
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("runtests", build);
     }
+    
+    @Test
+    public void testFailure() throws Exception {
+        Assert.assertEquals("deliberate", 5, 6);   
+    }
+    
 }
