@@ -1,11 +1,12 @@
 package com.mathworks.ci;
 
 /*
- * Copyright 2018 The MathWorks, Inc. This Class provides MATLAB release information in the form of
+ * Copyright 2019 The MathWorks, Inc. This Class provides MATLAB release information in the form of
  * Version numbers. Class constructor requires MATLAB root as input parameter
  */
 
 import java.io.File;
+import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
@@ -24,6 +25,13 @@ public class MatlabReleaseInfo {
     private static final String VERSION_TAG = "version";
     private static final String DESCRIPTION_TAG = "description";
     private static final String DATE_TAG = "date";
+    private static final String VERSION_16B = "9.1.0.888888";
+    private static final Map<String, String> VERSION_OLDER_THAN_17A = new HashMap<String, String>(){
+        {
+            put(VERSION_TAG,VERSION_16B);
+        }
+    };
+    
     private Map<String, String> versionInfoCache = new HashMap<String, String>();
 
     public MatlabReleaseInfo(String matlabRoot) {
@@ -63,29 +71,37 @@ public class MatlabReleaseInfo {
         if (MapUtils.isEmpty(versionInfoCache)) {
             try {
                 File versionFile = new File(this.matlabRoot + File.separator + VERSION_INFO_FILE);
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(versionFile);
+                if(versionFile.isFile()) {
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(versionFile);
 
-                doc.getDocumentElement().normalize();
-                NodeList nList = doc.getElementsByTagName(VERSION_INFO_ROOT_TAG);
+                    doc.getDocumentElement().normalize();
+                    NodeList nList = doc.getElementsByTagName(VERSION_INFO_ROOT_TAG);
 
-                for (int temp = 0; temp < nList.getLength(); temp++) {
-                    Node nNode = nList.item(temp);
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    for (int temp = 0; temp < nList.getLength(); temp++) {
+                        Node nNode = nList.item(temp);
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-                        Element eElement = (Element) nNode;
+                            Element eElement = (Element) nNode;
 
-                        versionInfoCache.put(RELEASE_TAG, eElement.getElementsByTagName(RELEASE_TAG)
-                                .item(0).getTextContent());
-                        versionInfoCache.put(VERSION_TAG, eElement.getElementsByTagName(VERSION_TAG)
-                                .item(0).getTextContent());
-                        versionInfoCache.put(DESCRIPTION_TAG, eElement
-                                .getElementsByTagName(DESCRIPTION_TAG).item(0).getTextContent());
-                        versionInfoCache.put(DATE_TAG,
-                                eElement.getElementsByTagName(DATE_TAG).item(0).getTextContent());
+                            versionInfoCache.put(RELEASE_TAG, eElement.getElementsByTagName(RELEASE_TAG)
+                                    .item(0).getTextContent());
+                            versionInfoCache.put(VERSION_TAG, eElement.getElementsByTagName(VERSION_TAG)
+                                    .item(0).getTextContent());
+                            versionInfoCache.put(DESCRIPTION_TAG, eElement
+                                    .getElementsByTagName(DESCRIPTION_TAG).item(0).getTextContent());
+                            versionInfoCache.put(DATE_TAG,
+                                    eElement.getElementsByTagName(DATE_TAG).item(0).getTextContent());
+                        }
                     }
                 }
+                else if(!new File(this.matlabRoot).exists()){
+                    throw new NotDirectoryException("Invalid matlabroot path");
+                }else {
+                    versionInfoCache.putAll(VERSION_OLDER_THAN_17A);
+                }
+                
             } catch (Exception e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);

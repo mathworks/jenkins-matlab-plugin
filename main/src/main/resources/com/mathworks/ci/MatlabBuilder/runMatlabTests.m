@@ -1,13 +1,15 @@
-%Copyright 2018 The MathWorks, Inc.
+%Copyright 2019 The MathWorks, Inc.
 
 function failed = runMatlabTests(produceJUnit, produceTAP, produceCobertura)
-import('matlab.unittest.TestRunner');
-import('matlab.unittest.plugins.XMLPlugin');
-import('matlab.unittest.plugins.TAPPlugin');
-import('matlab.unittest.plugins.ToFile');
-import('matlab.unittest.plugins.ToFile');
 
-workSpace = fullfile(pwd);
+BASE_VERSION_MATLABUNIT_SUPPORT = '8.1';
+
+if verLessThan('matlab',BASE_VERSION_MATLABUNIT_SUPPORT)
+    error('MATLAB:unitTest:testFrameWorkNotSupported','Running tests automatically is not supported in this relase.');
+end
+
+import('matlab.unittest.TestRunner');
+import('matlab.unittest.TestSuite');
 
 %Create test suite for tests folder
 suite = testsuite(pwd,'IncludeSubfolders',true);
@@ -18,31 +20,65 @@ runner = TestRunner.withTextOutput('Verbosity',3);
 % Add the requested plugins
 resultsDir = fullfile(pwd, 'results');
 
+% Produce JUnit report
 if produceJUnit
-    mkdirIfNeeded(resultsDir)
-    xmlFile = fullfile(resultsDir, 'junittestresults.xml');
-    runner.addPlugin(XMLPlugin.producingJUnitFormat(xmlFile));
+    BASE_VERSION_JUNIT_SUPPORT = '8.6';
+    if verLessThan('matlab',BASE_VERSION_JUNIT_SUPPORT)
+        warning('MATLAB:testArtifact:junitReportNotSupported', 'Producing JUnit xml results is not supported in this release.');
+    else
+        import('matlab.unittest.plugins.XMLPlugin');
+        mkdirIfNeeded(resultsDir)
+        xmlFile = fullfile(resultsDir, 'junittestresults.xml');
+        runner.addPlugin(XMLPlugin.producingJUnitFormat(xmlFile));
+    end
 end
 
+% Produce TAP report
 if produceTAP
-    mkdirIfNeeded(resultsDir)
-    tapFile = fullfile(resultsDir, 'taptestresults.tap');
-    fclose(fopen(tapFile,'w'));
-    runner.addPlugin(TAPPlugin.producingVersion13(ToFile(tapFile)));
+    BASE_VERSION_TAPORIGINALFORMAT_SUPPORT = '8.3';
+    BASE_VERSION_TAP13_SUPPORT = '9.1';
+    if verLessThan('matlab',BASE_VERSION_TAPORIGINALFORMAT_SUPPORT)
+        warning('MATLAB:testArtifact:tapReportNotSupported', 'Producing TAP results is not supported in this release.');
+        tapPlugin = matlab.unittest.plugins.TestRunnerPlugin.empty;
+    elseif verLessThan('matlab',BASE_VERSION_TAP13_SUPPORT)
+        tapFile = getTapResultFile(resultsDir);
+        import('matlab.unittest.plugins.TAPPlugin');
+        tapPlugin = TAPPlugin.producingOriginalFormat(tapFile);
+    else
+        tapFile = getTapResultFile(resultsDir);
+        import('matlab.unittest.plugins.TAPPlugin');
+        tapPlugin = TAPPlugin.producingVersion13(tapFile);
+    end
+    runner.addPlugin(tapPlugin);
 end
 
-BASE_VERSION_COBERTURA_SUPPORT = '9.3';
-if produceCobertura && ~verLessThan('matlab',BASE_VERSION_COBERTURA_SUPPORT)
-    import('matlab.unittest.plugins.CodeCoveragePlugin');
-    import('matlab.unittest.plugins.codecoverage.CoberturaFormat');
-    mkdirIfNeeded(resultsDir)
-    coverageFile = fullfile(resultsDir, 'cobertura.xml');
-    runner.addPlugin(CodeCoveragePlugin.forFolder(fullfile(workSpace),'IncludingSubfolders',true,...
+% Produce Cobertura report (Cobertura report generation is not supported
+% below R17a) 
+if produceCobertura 
+    BASE_VERSION_COBERTURA_SUPPORT = '9.3';
+    
+    if verLessThan('matlab',BASE_VERSION_COBERTURA_SUPPORT)
+         warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura results is not supported in this release.');
+    else 
+        import('matlab.unittest.plugins.CodeCoveragePlugin');
+        import('matlab.unittest.plugins.codecoverage.CoberturaFormat');
+        mkdirIfNeeded(resultsDir)
+        coverageFile = fullfile(resultsDir, 'cobertura.xml');
+        workSpace = fullfile(pwd);
+        runner.addPlugin(CodeCoveragePlugin.forFolder(workSpace,'IncludingSubfolders',true,...
         'Producing', CoberturaFormat(coverageFile)));
+    end
 end
 
 results = runner.run(suite);
 failed = any([results.Failed]);
+
+function tapToFile = getTapResultFile(resultsDir)
+import('matlab.unittest.plugins.ToFile');
+mkdirIfNeeded(resultsDir)
+tapFile = fullfile(resultsDir, 'taptestresults.tap');
+fclose(fopen(tapFile,'w'));
+tapToFile = matlab.unittest.plugins.ToFile(tapFile);
 
 
 function mkdirIfNeeded(dir)

@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /*
- * Copyright 2018 The MathWorks, Inc.
+ * Copyright 2019 The MathWorks, Inc.
  * 
  * This is Matlab Builder class which describes the build step and its components. Builder displays
  * Build step As "Run MATLAB Tests" under Build steps. Author : Nikhil Bhoski email :
@@ -370,35 +370,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
-        final String matlabroot;
-        final String fileSep = File.separator;
         final EnvVars env = build.getEnvironment(listener);
         final boolean isLinuxLauncher = launcher.isUnix();
-
-        // Load runMatlabTests.m from resource bunddle to current workspace.
-
-        ClassLoader classLoader = getClass().getClassLoader();
-        InputStream in = classLoader.getResourceAsStream(MATLAB_RUNNER_RESOURCE);
-        Path target = new File(workspace.getRemote(), Message.getValue(MATLAB_RUNNER_TARGET_FILE))
-                .toPath();
-
-        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
-
-        if (this.localMatlab.contains("$")) {
-
-            String[] ar = this.localMatlab.split("\\$");
-            String u_axes = ar[ar.length - 1].toString();
-
-            matlabroot = ar[0] + env.get(u_axes) + fileSep + "bin" + fileSep + "matlab";
-            listener.getLogger().println("MATLAB root is set to , " + matlabroot);
-
-        } else {
-
-            matlabroot = this.localMatlab + fileSep + "bin" + fileSep + "matlab";
-            listener.getLogger().println("MATLAB root is set to , " + matlabroot);
-        }
-
-
+        
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
@@ -412,6 +386,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private int execMatlabCommand(Run<?, ?> build, FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars env, boolean isLinuxLauncher)
             throws IOException, InterruptedException {
+        //Copy MATLAB scratch file into the workspace
+        copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
+                workspace, getClass().getClassLoader());
         try {
             MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
@@ -500,4 +477,15 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         final String[] runnerSwitch = {"-r", runCommand};
         return runnerSwitch;
     }
+    
+    private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
+            String matlabRunnerTarget, FilePath workspace, ClassLoader classLoader)
+            throws IOException, InterruptedException {
+        InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
+        Path target =
+                new File(workspace.getRemote(), Message.getValue(matlabRunnerTarget)).toPath();
+
+        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    }
+    
 }
