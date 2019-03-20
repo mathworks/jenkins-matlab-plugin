@@ -19,7 +19,7 @@ pool:
 steps:
   - task: Maven@3
     inputs:
-      mavenPomFile: 'main/pom.xml'
+      mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
