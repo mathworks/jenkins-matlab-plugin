@@ -1,4 +1,4 @@
-package com.mathworks.ci;
+package com.mathworks.ci.jenkins;
 
 /*
  * Copyright 2019 The MathWorks, Inc.
@@ -56,7 +56,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final String MATLAB_RUNNER_TARGET_FILE =
             "Builder.matlab.runner.target.file.name";
     private static final String MATLAB_RUNNER_RESOURCE =
-            "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
+            "com/mathworks/ci/jenkins/MatlabBuilder/runMatlabTests.m";
 
 
     @DataBoundConstructor
