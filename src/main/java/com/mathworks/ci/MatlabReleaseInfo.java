@@ -1,4 +1,4 @@
-package com.mathworks.ci.jenkins;
+package com.mathworks.ci;
 
 /*
  * Copyright 2019 The MathWorks, Inc. This Class provides MATLAB release information in the form of

@@ -1,4 +1,4 @@
-package com.mathworks.ci.jenkins;
+package com.mathworks.ci;
 
 
 
@@ -19,12 +19,8 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-
-import com.mathworks.ci.jenkins.MatlabBuilder;
-import com.mathworks.ci.jenkins.MatlabReleaseInfo;
-import com.mathworks.ci.jenkins.Message;
-import com.mathworks.ci.jenkins.MatlabBuilder.RunTestsAutomaticallyOption;
-import com.mathworks.ci.jenkins.MatlabBuilder.RunTestsWithCustomCommandOption;
+import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
+import com.mathworks.ci.MatlabBuilder.RunTestsWithCustomCommandOption;
 
 
 /*
@@ -51,7 +47,7 @@ public class MatlabBuilderTest {
         ClassLoader classLoader = MatlabBuilderTest.class.getClassLoader();
         if (!System.getProperty("os.name").startsWith("Win")) {
             FileSeperator = "/";
-            url = classLoader.getResource("com/mathworks/ci/jenkins/linux/bin/matlab.sh");
+            url = classLoader.getResource("com/mathworks/ci/linux/bin/matlab.sh");
             try {
                 matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
 
@@ -67,7 +63,7 @@ public class MatlabBuilderTest {
             }
         } else {
             FileSeperator = "\\";
-            url = classLoader.getResource("com/mathworks/ci/jenkins/win/bin/matlab.bat");
+            url = classLoader.getResource("com/mathworks/ci/win/bin/matlab.bat");
             matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
         }
         messages = new TestMessage();

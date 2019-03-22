@@ -1,4 +1,4 @@
-package com.mathworks.ci.jenkins;
+package com.mathworks.ci;
 
 import java.util.ResourceBundle;
 

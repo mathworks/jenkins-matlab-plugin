@@ -1,4 +1,4 @@
-package com.mathworks.ci.jenkins;
+package com.mathworks.ci;
 
 /*
  * Copyright 2018 The MathWorks, Inc. This Exception class provides a business exception for all

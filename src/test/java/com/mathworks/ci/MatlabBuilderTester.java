@@ -1,4 +1,4 @@
-package com.mathworks.ci.jenkins;
+package com.mathworks.ci;
 
 /*
  * Copyright 2018 The MathWorks, Inc.
@@ -10,9 +10,6 @@ package com.mathworks.ci.jenkins;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.mathworks.ci.jenkins.MatlabBuilder;
-
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.model.AbstractProject;
