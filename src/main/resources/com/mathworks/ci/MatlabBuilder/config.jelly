@@ -1,12 +1,12 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     
- <f:section title="MATLAB Location">
-	  <f:entry title="MATLAB Root Folder " field="localMatlab">
+ <f:section>
+	  <f:entry title="MATLAB root " field="localMatlab">
 	        <f:textbox/>
 	  </f:entry> 
 </f:section>
 
-<f:dropdownDescriptorSelector title="Select Test Run Modes" field="testRunTypeList" descriptors="${descriptor.testRunTypeDescriptor}" selected="${instance.testRunTypeList}"/>
+<f:dropdownDescriptorSelector title="Run tests " field="testRunTypeList" descriptors="${descriptor.testRunTypeDescriptor}" selected="${instance.testRunTypeList}"/>
 
 </j:jelly>
