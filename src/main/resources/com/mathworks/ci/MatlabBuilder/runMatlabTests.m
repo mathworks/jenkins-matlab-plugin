@@ -18,7 +18,7 @@ suite = testsuite(pwd,'IncludeSubfolders',true);
 runner = TestRunner.withTextOutput('Verbosity',3);
 
 % Add the requested plugins
-resultsDir = fullfile(pwd, 'results');
+resultsDir = fullfile(pwd, 'matlabtestresults');
 
 % Produce JUnit report
 if produceJUnit
