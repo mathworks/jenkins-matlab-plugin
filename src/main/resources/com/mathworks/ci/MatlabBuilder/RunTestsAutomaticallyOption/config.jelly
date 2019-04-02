@@ -3,15 +3,15 @@
     
 <f:section title="Generate Test Artifacts">
 	 <f:entry field="tatapChkBx">
-    	<f:checkbox title=" TAP result" name="tatapChkBx" checked="${instance.tatapChkBx}"/>
+    	<f:checkbox title="TAP test results" name="tatapChkBx" checked="${instance.tatapChkBx}"/>
      </f:entry>
      	
   	  <f:entry field="taJunitChkBx">
-    	<f:checkbox title=" JUnit style result" name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
+    	<f:checkbox title="JUnit-style test results" name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
   	  </f:entry>
   	  
   	  <f:entry field="taCoberturaChkBx">
-    	<f:checkbox title=" Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
+    	<f:checkbox title="Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
      </f:entry>   
 </f:section>
 

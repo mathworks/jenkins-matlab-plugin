@@ -7,6 +7,6 @@
 	  </f:entry> 
 </f:section>
 
-<f:dropdownDescriptorSelector title="Run tests " field="testRunTypeList" descriptors="${descriptor.testRunTypeDescriptor}" selected="${instance.testRunTypeList}"/>
+<f:dropdownDescriptorSelector title="Test mode" field="testRunTypeList" descriptors="${descriptor.testRunTypeDescriptor}" selected="${instance.testRunTypeList}"/>
 
 </j:jelly>
