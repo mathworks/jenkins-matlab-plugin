@@ -1,4 +1,4 @@
-# jenkins-matlab-plugin
+# Jenkins MATLAB Plugin
 
 ## Description
 The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests and generate test artifacts in formats such as JUnit, TAP, and Cobertura code coverage reports. 
