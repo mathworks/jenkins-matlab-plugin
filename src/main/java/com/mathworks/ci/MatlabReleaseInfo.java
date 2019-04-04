@@ -96,13 +96,17 @@ public class MatlabReleaseInfo {
                         }
                     }
                 }
-                else if(!new File(this.matlabRoot).exists()){
-                    throw new NotDirectoryException("Invalid matlabroot path");
-                }else {
-                    versionInfoCache.putAll(VERSION_OLDER_THAN_17A);
-                }
-                
-            } catch (Exception e) {
+				else if (!new File(this.matlabRoot).exists()) {
+					throw new MatlabVersionNotFoundException(
+							Message.getValue("Releaseinfo.matlab.version.not.found.error"));
+				} else {
+					versionInfoCache.putAll(VERSION_OLDER_THAN_17A);
+				}
+
+			} catch (MatlabVersionNotFoundException e) {
+				throw e;
+			}
+            catch (Exception e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);
             }
