@@ -16,6 +16,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 public class MatlabReleaseInfo {
     private String matlabRoot;
@@ -66,7 +67,9 @@ public class MatlabReleaseInfo {
             return false;
         }
     }
-
+    
+    @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION",
+            justification = "Irrespective of exception type, intention is to handle it in same way. Also, there is no intention to propagate any runtime exception up in the hierarchy.")
     private Map<String, String> getVersionInfoFromFile() throws MatlabVersionNotFoundException {
         if (MapUtils.isEmpty(versionInfoCache)) {
             try {
