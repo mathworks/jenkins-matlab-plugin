@@ -10,7 +10,4 @@ public class MatlabVersionNotFoundException extends Exception {
     MatlabVersionNotFoundException(String errorMessage, Throwable err) {
         super(errorMessage, err);
     }
-    MatlabVersionNotFoundException(String errorMessage) {
-        super(errorMessage);
-    }
 }
