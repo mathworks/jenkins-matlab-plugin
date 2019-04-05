@@ -5,49 +5,58 @@ The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests a
 ## Build Step Configuration
 To invoke this plugin, select "Run MATLAB Tests" from the Add build step list.
 
-  ![image](https://user-images.githubusercontent.com/47204011/54334421-019c7380-464c-11e9-91de-6d1c90043b08.png)
+  ![new_add_build_step](https://user-images.githubusercontent.com/47204011/55624172-be54a100-57c2-11e9-9596-52d3a60ee467.png)
   
-  ![plugin_default_ui](https://user-images.githubusercontent.com/47204011/55470538-73e9ed80-5625-11e9-942a-69d0bab44319.JPG)
+  ![new_default_plugin_page](https://user-images.githubusercontent.com/47204011/55624213-dcba9c80-57c2-11e9-85e6-abb6ae03534e.png)
 
 Use the plugin as part of the Jenkins build step to run MATLAB tests in two distinct modes:
 * Automatic
 * Custom
+
+Enter the value returned by “matlabroot” in the field named “MATLAB root”.
+
+  ![new_enter_matlabroot](https://user-images.githubusercontent.com/47204011/55624374-45097e00-57c3-11e9-96e1-5fa0fc966767.png)
+  
 #### Configuring “Automatic” Option
-This option finds tests written using the MATLAB unit testing framework and/or Simulink test and runs them. If the code is organized using projects, it will locate all test files in the project that have been classified as "Test". If the code does not leverage projects or uses a MATLAB version prior to R2019a, the plugin will discover all tests in the current Jenkins workspace including subfolders. The automatic test running feature enables you to generate different types of test artifacts. They could be used with other Jenkins plugins as part of a post-build action to publish the test results. To configure the Jenkins build for running MATLAB tests automatically, follow these steps.
-* Enter the value returned by “matlabroot” in the field named “MATLAB root”.
+This option finds tests written using the MATLAB unit testing framework and/or Simulink Test and runs them. If the code is organized using projects, it will locate all test files in the project that have been classified as "Test". If the code does not leverage projects or uses a MATLAB version prior to R2019a, the plugin will discover all tests in the current Jenkins workspace including subfolders. 
 
-  ![Automatic_01](https://user-images.githubusercontent.com/47204011/55470446-456c1280-5625-11e9-8ee6-c8db51c79524.JPG)
+The automatic test running feature enables you to generate different types of test artifacts. They could be used with other Jenkins plugins as part of a post-build action to publish the test results. To configure the Jenkins build for running MATLAB tests automatically, follow these steps.
 
-* Select the Test mode to run tests (Automatic is the default mode).
-* Select the desired test artifacts. You can also choose not to generate any test artifact.
+1) Select the Test mode as Automatic to run tests (Automatic is the default mode).
+  
+  ![new_select_automatic_option](https://user-images.githubusercontent.com/47204011/55624469-a0d40700-57c3-11e9-8811-32892ccbe673.png)
+  
+2) Select the desired test artifacts. You can also choose not to generate any test artifacts.
 
-  ![Automatic_02](https://user-images.githubusercontent.com/47204011/55470458-49983000-5625-11e9-80ab-54d21b97f39c.JPG)
+  ![new_select_all_test_artifacts](https://user-images.githubusercontent.com/47204011/55624765-7f274f80-57c4-11e9-8a15-ebdef19ebd3d.png)
 
   The selected test artifact(s) will be stored in the “matlabTestArtifacts” folder of the Jenkins workspace.
 
   ![Workspace01](https://user-images.githubusercontent.com/47204011/55470859-1e621080-5626-11e9-98f2-044144272643.JPG)
   
   ![Test_artifacts](https://user-images.githubusercontent.com/47204011/55470863-21f59780-5626-11e9-9765-4d79a6fd4061.JPG)
+  
+  This folder will not be created under workspace and test artifacts will not be generated, if user does not select any test artifact generation checkboxes. However this does not affect the test execution. 
 
-* The Automatic test run mode generates a MATLAB script file named “runMatlabTests.m” in the Jenkins workspace. The plugin uses this file to run tests and generate test artifacts. You are encouraged to review the MATLAB script to understand the test workflow.
+  The Automatic test run mode generates a MATLAB script file named “runMatlabTests.m” in the Jenkins workspace. The plugin uses this file to run tests and generate test artifacts. You may review the MATLAB script to understand the test workflow.
 
   ![Workspace01](https://user-images.githubusercontent.com/47204011/55470859-1e621080-5626-11e9-98f2-044144272643.JPG)
 
 
 #### Configuring “Custom” Option
 This option enables you to develop your custom MATLAB commands for running tests.
-* Enter the value returned by “matlabroot”.
-* From the "Test mode" dropdown list, select “Custom command” option.
 
-  ![Custom_01](https://user-images.githubusercontent.com/47204011/55471036-7dc02080-5626-11e9-97ea-eb28ba389dc6.JPG)
+1) From the "Test mode" dropdown list, select “Custom” option.
 
-* In "MATLAB command” text box, enter your MATLAB command(s). Separate multiple commands by commas or semicolons.
+  ![new_select_custom](https://user-images.githubusercontent.com/47204011/55624858-d0cfda00-57c4-11e9-8366-45edbc9ba83f.png)
 
-  ![Custom_02](https://user-images.githubusercontent.com/47204011/55471100-9fb9a300-5626-11e9-8fef-fb86072e4784.JPG)
+2) In "MATLAB command” text box, enter your MATLAB command. Separate multiple commands by commas or semicolons.
 
-  Note: If you require several MATLAB commands to execute your test session, consider writing a MATLAB script or function as part of your repository and executing the script or function instead. Test artifacts are not auto generated if you choose to run tests using your custom MATLAB commands. You can generate these and other artifacts by configuring a test runner in the script or function invoked by the command. The build will fail if the execution of any MATLAB command causes an error.
+  ![new_custom_runtest_command](https://user-images.githubusercontent.com/47204011/55624949-096fb380-57c5-11e9-8711-98baf91816c0.png)
 
-  ![Custom_03](https://user-images.githubusercontent.com/47204011/55471106-a1836680-5626-11e9-90a1-1c383f27d908.JPG)
+  Note: If you require several MATLAB commands to execute your test session, consider writing a MATLAB script or function as part of your repository and executing the script or function instead. Test artifacts are not autogenerated if you choose to run tests using your custom MATLAB commands. You can generate these and other artifacts by configuring a test runner in the script or function invoked by the command. The build will fail if the execution of any MATLAB command causes an error.
+
+  ![new_custom_script_example](https://user-images.githubusercontent.com/47204011/55625021-32904400-57c5-11e9-86b7-478b930796c0.png)
 
 
 ## Contact Us
