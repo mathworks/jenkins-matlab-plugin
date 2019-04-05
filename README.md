@@ -36,7 +36,7 @@ The automatic test running feature enables you to generate different types of te
   
   ![Test_artifacts](https://user-images.githubusercontent.com/47204011/55470863-21f59780-5626-11e9-9765-4d79a6fd4061.JPG)
   
-  This folder will not be created under workspace and test artifacts will not be generated, if user does not select any test artifact generation checkboxes. However this does not affect the test execution. 
+  If the user does not select any test artifact generation checkboxes, this folder will not be created under the workspace and no test artifacts will be generated. However, test execution still occurs and test failures will fail the build. 
 
   The Automatic test run mode generates a MATLAB script file named “runMatlabTests.m” in the Jenkins workspace. The plugin uses this file to run tests and generate test artifacts. You may review the MATLAB script to understand the test workflow.
 
