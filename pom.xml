@@ -27,6 +27,7 @@
 	
 	<name>MATLAB Plugin</name>
 	<description>Jenkins plugin for MATLAB</description>
+	<url>https://wiki.jenkins.io/display/JENKINS/MATLAB+Plugin</url>
 	<licenses>
 		<license>
 			<name>MIT License</name>
@@ -45,6 +46,12 @@
 			<url>https://repo.jenkins-ci.org/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
+
+	<scm>
+		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com:jenkinsci/matlab-plugin.git</developerConnection>
+		<url>http://github.com/jenkinsci/matlab-plugin</url>
+	</scm>
 	
 	<build>
 		<pluginManagement>
