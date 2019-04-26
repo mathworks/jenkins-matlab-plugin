@@ -394,10 +394,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 return launcher.launch().pwd(workspace)
+                        .envs(env)
                         .cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream)
                         .join();
             } else {
-                return launcher.launch().pwd(workspace).cmds(constructMatlabCommandWithBatch())
+                return launcher.launch().pwd(workspace).envs(env).cmds(constructMatlabCommandWithBatch())
                         .stdout(listener).join();
             }
         } catch (MatlabVersionNotFoundException e) {
