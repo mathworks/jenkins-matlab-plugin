@@ -391,6 +391,7 @@ public class MatlabBuilderTest {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
         coberturaChkBx.setChecked(true);
+        Thread.sleep(2000);
         WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.cobertura.support.warning"));
     }
     
@@ -406,6 +407,7 @@ public class MatlabBuilderTest {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
         coberturaChkBx.setChecked(true);
+        Thread.sleep(2000);
         String pageText = page.asText();
         String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
         Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
