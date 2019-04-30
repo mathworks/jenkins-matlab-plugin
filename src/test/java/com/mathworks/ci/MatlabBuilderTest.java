@@ -19,6 +19,9 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+import com.gargoylesoftware.htmlunit.WebAssert;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
 import com.mathworks.ci.MatlabBuilder.RunTestsWithCustomCommandOption;
 
@@ -278,5 +281,133 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("runtests", build);
+    }
+    
+    /*
+     * Test to verify if Automatic option passes appropriate test atrtifact values.
+     */
+
+    @Test
+    public void verifyRunTestAutomaticallyIsDefault() throws Exception {
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();
+        runOption.setTaCoberturaChkBx(true);
+        runOption.setTaJunitChkBx(true);
+        runOption.setTatapChkBx(true);
+        this.matlabBuilder.setTestRunTypeList(runOption);
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("-batch", build);
+        jenkins.assertLogContains("true,true,true", build);
+    }
+    
+    /*
+     * Test to verify default value of getStringByName() when Automatic test mode. 
+     */
+
+    @Test
+    public void verifyDefaultValueOfgetStringByName() throws Exception {
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();    
+        Assert.assertNull(runOption.getStringByName("fakeChkBox"));
+    }
+    
+    /*
+     * Test to verify default value of getBooleanByName() when Custom test mode. 
+     */
+
+    @Test
+    public void verifyDefaultValueOfgetBooleanByName() throws Exception {
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        RunTestsWithCustomCommandOption runOption = new RunTestsWithCustomCommandOption();    
+        Assert.assertFalse(runOption.getBooleanByName("fakeCommand"));
+    }
+    
+    /*
+     * Test to verify when MATLAB version is older the R2017a
+     */
+
+    @Test
+    public void verifyMatlabVersionOlderThanR17a() throws Exception {
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();
+        runOption.setTaCoberturaChkBx(true);
+        runOption.setTaJunitChkBx(true);
+        runOption.setTatapChkBx(true);
+        this.matlabBuilder.setTestRunTypeList(runOption);
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("-batch", build);
+        jenkins.assertLogContains("true,true,true", build);
+    }
+    
+    /*
+     * Test To verify if UI  throws an error when MATLAB root is empty.
+     * 
+     */
+
+    @Test
+    public void verifyEmptyMatlabRootError() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.root.empty.error"));
+    }
+    
+    /*
+     * Test To verify UI does not throw any error when valid MATLAB root entered
+     * 
+     */
+
+    @Test
+    public void verifyInvalidValidMatlabRoot() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setLocalMatlab("/fake/matlab/path");
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
+    }
+    
+    /*
+     * Test To verify UI does not throw any error when valid MATLAB root entered
+     * 
+     */
+
+    @Test
+    public void verifyValidMatlabRoot() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
+    }
+    
+    /*
+     * Test To verify UI displays Cobertura Warning message when unsupported MATLAB version used.
+     * 
+     */
+
+    @Test
+    public void verifyCoberturaWarning() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2017a"));
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
+        coberturaChkBx.setChecked(true);
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.cobertura.support.warning"));
+    }
+    
+    /*
+     * Test To verify UI displays Cobertura Error message when invalid MATLAB root entered.
+     * 
+     */
+
+    @Test
+    public void verifyCoberturaError() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setLocalMatlab("/fake/matlab/path");
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
+        coberturaChkBx.setChecked(true);
+        String pageText = page.asText();
+        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
+        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
     }
 }

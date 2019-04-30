@@ -25,7 +25,7 @@ public class TestMessage {
         return rb.getString(VERIFY_BUILD_IGNORES_TEST_FAILURE);
     }
 
-    public String getValue(String key) {
+    public static String getValue(String key) {
 
         return rb.getString(key);
     }
