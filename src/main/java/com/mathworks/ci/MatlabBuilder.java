@@ -31,6 +31,7 @@ import hudson.Extension;
 import hudson.ExtensionPoint;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Launcher.ProcStarter;
 import hudson.model.AbstractProject;
 import hudson.model.Describable;
 import hudson.model.Descriptor;
@@ -389,21 +390,21 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         //Copy MATLAB scratch file into the workspace
         copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
                 workspace, getClass().getClassLoader());
+        ProcStarter matlabLauncher;
         try {
             MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
+            matlabLauncher = launcher.launch().pwd(workspace).envs(env);
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                return launcher.launch().pwd(workspace)
-                        .cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream)
-                        .join();
+                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream);
             } else {
-                return launcher.launch().pwd(workspace).cmds(constructMatlabCommandWithBatch())
-                        .stdout(listener).join();
+                matlabLauncher = matlabLauncher.cmds(constructMatlabCommandWithBatch()).stdout(listener);
             }
         } catch (MatlabVersionNotFoundException e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         }
+        return matlabLauncher.join();
     }
 
     public List<String> constructMatlabCommandWithBatch() {
