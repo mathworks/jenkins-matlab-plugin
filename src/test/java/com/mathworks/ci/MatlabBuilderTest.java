@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -87,9 +88,17 @@ public class MatlabBuilderTest {
 
     private String getMatlabroot(String version) throws URISyntaxException {
         ClassLoader classLoader = MatlabBuilderTest.class.getClassLoader();
-        String matlabRoot = new File(
-                classLoader.getResource("versioninfo/" + version + "/VersionInfo.xml").toURI())
-                        .getAbsolutePath().replace(FileSeperator + "VersionInfo.xml", "");
+        String matlabRoot;
+        if (classLoader.getResource("versioninfo/" + version + "/VersionInfo.xml") != null) {
+            matlabRoot = new File(
+                    classLoader.getResource("versioninfo/" + version + "/VersionInfo.xml").toURI())
+                            .getAbsolutePath().replace(FileSeperator + "VersionInfo.xml", "");
+        } else {
+            matlabRoot = new File(
+                    classLoader.getResource("versioninfo/" + "R2017a" + "/VersionInfo.xml").toURI())
+                            .getAbsolutePath().replace(FileSeperator + "VersionInfo.xml", "")
+                            .replace("R2017a", version);
+        }
         return matlabRoot;
     }
 
@@ -290,13 +299,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyRunTestAutomaticallyIsDefault() throws Exception {
         this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
-        RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();
-        runOption.setTaCoberturaChkBx(true);
-        runOption.setTaJunitChkBx(true);
-        runOption.setTatapChkBx(true);
-        this.matlabBuilder.setTestRunTypeList(runOption);
-        project.getBuildersList().add(this.matlabBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("true,true,true", build);
     }
@@ -329,16 +332,10 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyMatlabVersionOlderThanR17a() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
-        RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();
-        runOption.setTaCoberturaChkBx(true);
-        runOption.setTaJunitChkBx(true);
-        runOption.setTatapChkBx(true);
-        this.matlabBuilder.setTestRunTypeList(runOption);
-        project.getBuildersList().add(this.matlabBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-batch", build);
-        jenkins.assertLogContains("true,true,true", build);
+        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2016b"));
+        FreeStyleBuild build = getBuildforRunTestAutomatically();
+        jenkins.assertLogContains("-r", build);
+        jenkins.assertLogContains("try,exit(", build);
     }
     
     /*
@@ -354,12 +351,12 @@ public class MatlabBuilderTest {
     }
     
     /*
-     * Test To verify UI does not throw any error when valid MATLAB root entered
+     * Test To verify UI does throw error when in valid MATLAB root entered
      * 
      */
 
     @Test
-    public void verifyInvalidValidMatlabRoot() throws Exception {
+    public void verifyInvalidMatlabRootDisplaysError() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
         this.matlabBuilder.setLocalMatlab("/fake/matlab/path");
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -372,7 +369,7 @@ public class MatlabBuilderTest {
      */
 
     @Test
-    public void verifyValidMatlabRoot() throws Exception {
+    public void verifyValidMatlabRootDoesntDisplayError() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
         this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -411,5 +408,20 @@ public class MatlabBuilderTest {
         String pageText = page.asText();
         String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
         Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
+    }
+    
+    /*
+     * Private helper methods for tests
+     */
+    
+    private FreeStyleBuild getBuildforRunTestAutomatically() throws InterruptedException, ExecutionException {
+        RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();
+        runOption.setTaCoberturaChkBx(true);
+        runOption.setTaJunitChkBx(true);
+        runOption.setTatapChkBx(true);
+        this.matlabBuilder.setTestRunTypeList(runOption);
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        return build;
     }
 }
