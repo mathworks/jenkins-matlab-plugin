@@ -18,7 +18,7 @@ Enter the value returned by “matlabroot” in the field named “MATLAB root�
   ![new_enter_matlabroot](https://user-images.githubusercontent.com/47204011/55624374-45097e00-57c3-11e9-96e1-5fa0fc966767.png)
   
 #### Configuring “Automatic” Option
-This option finds tests written using the MATLAB unit testing framework and/or Simulink Test and runs them. If the code is organized using projects, it will locate all test files in the project that have been classified as "Test". If the code does not leverage projects or uses a MATLAB version prior to R2019a, the plugin will discover all tests in the current Jenkins workspace including subfolders. 
+This option finds tests written using the MATLAB unit testing framework and/or Simulink Test and runs them. If the code is organized using projects, it will locate all test files in the project that have been classified as "Test". If the code does not leverage projects or uses a MATLAB version prior to R2019a, the plugin will discover all tests in the current Jenkins workspace including subfolders. When using "Automatic" option, It is mandatory for user to make sure that, appropriate SCM configuration is done before build step execution, which pulls the latest code from SCM into the Jenkins workspace. If SCM is not used to maintain the code then, user should make sure to add appropriate script, as part of build step before MATLAB plugin to copy the code in Jenkins workspace.
 
 The automatic test running feature enables you to generate different types of test artifacts. They could be used with other Jenkins plugins as part of a post-build action to publish the test results. To configure the Jenkins build for running MATLAB tests automatically, follow these steps.
 
