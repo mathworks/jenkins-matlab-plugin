@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Assert;
@@ -42,6 +43,7 @@ public class MatlabBuilderTest {
     private MatlabBuilder matlabBuilder;
     private static URL url;
     private static String FileSeperator;
+    private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -87,20 +89,13 @@ public class MatlabBuilderTest {
     }
 
     private String getMatlabroot(String version) throws URISyntaxException {
-        ClassLoader classLoader = MatlabBuilderTest.class.getClassLoader();
-        String matlabRoot;
-        if (classLoader.getResource("versioninfo/" + version + "/VersionInfo.xml") != null) {
-            matlabRoot = new File(
-                    classLoader.getResource("versioninfo/" + version + "/VersionInfo.xml").toURI())
-                            .getAbsolutePath().replace(FileSeperator + "VersionInfo.xml", "");
-        } else {
-            matlabRoot = new File(
-                    classLoader.getResource("versioninfo/" + "R2017a" + "/VersionInfo.xml").toURI())
-                            .getAbsolutePath().replace(FileSeperator + "VersionInfo.xml", "")
-                            .replace("R2017a", version);
-        }
-        return matlabRoot;
+        String defaultVersionInfo = "versioninfo/R2017a/" + VERSION_INFO_XML_FILE;
+        String userVersionInfo = "versioninfo/"+version+"/" + VERSION_INFO_XML_FILE;
+        URL matlabRootURL = Optional.ofNullable(getResource(userVersionInfo)).orElseGet(() -> getResource(defaultVersionInfo));
+        File matlabRoot = new File(matlabRootURL.toURI());
+        return matlabRoot.getAbsolutePath().replace(FileSeperator + VERSION_INFO_XML_FILE,"").replace("R2017a",version);
     }
+    
 
     /*
      * Test Case to verify if Build step contains "Run MATLAB Tests" option.
@@ -423,5 +418,9 @@ public class MatlabBuilderTest {
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         return build;
+    }
+    
+    private URL getResource(String resource) {
+        return MatlabBuilderTest.class.getClassLoader().getResource(resource); 
     }
 }
