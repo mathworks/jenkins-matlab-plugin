@@ -1,5 +1,5 @@
-<!-- Copyright 2018 The MathWorks, Inc. --> 
+<!-- Copyright 2019 The MathWorks, Inc. --> 
 <?jelly escape-by-default='true'?>
 <div>
-    Jenkins plugin to run MATLAB tests.
+    This plugin integrates MATLAB (R) with Jenkins and provides Jenkins interface to run MATLAB and Simulink (R) tests.
 </div>
