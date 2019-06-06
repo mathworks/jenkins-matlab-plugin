@@ -267,7 +267,7 @@ public class MatlabBuilderTest {
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-r", build);
-        jenkins.assertLogContains("try,runtests", build);
+        jenkins.assertLogContains("try,eval", build);
     }
 
     /*
