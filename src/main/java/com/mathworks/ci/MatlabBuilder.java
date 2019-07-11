@@ -471,8 +471,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     + getTestRunTypeList().getBooleanByName("taCoberturaChkBx")
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
         } else {
-            runCommand = "try," + this.getTestRunTypeList().getStringByName("customMatlabCommand")
-                    + ",catch e,disp(getReport(e,'extended')),exit(1),end,exit";
+            runCommand = "try,eval(\"" + this.getTestRunTypeList().getStringByName("customMatlabCommand").replaceAll("\"","\"\"")
+                    + "\"),catch e,disp(getReport(e,'extended')),exit(1),end,exit";
         }
 
         final String[] runnerSwitch = {"-r", runCommand};
