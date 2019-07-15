@@ -3,6 +3,7 @@
 function failed = runMatlabTests(produceJUnit, produceTAP, produceCobertura)
 
 BASE_VERSION_MATLABUNIT_SUPPORT = '8.1';
+BASE_VERSION_TESTSUITE_SUPPORT = '9.0';
 
 if verLessThan('matlab',BASE_VERSION_MATLABUNIT_SUPPORT)
     error('MATLAB:unitTest:testFrameWorkNotSupported','Running tests automatically is not supported in this relase.');
@@ -12,10 +13,14 @@ import('matlab.unittest.TestRunner');
 import('matlab.unittest.TestSuite');
 
 %Create test suite for tests folder
-suite = testsuite(pwd,'IncludeSubfolders',true);
+if verLessThan('matlab',BASE_VERSION_TESTSUITE_SUPPORT)
+    suite = matlab.unittest.TestSuite.fromFolder(pwd,'IncludingSubfolders',true);
+else
+    suite = testsuite(pwd,'IncludeSubfolders',true);
+end
 
 % Create and configure the runner
-runner = TestRunner.withTextOutput('Verbosity',3);
+runner = TestRunner.withTextOutput;
 
 % Add the requested plugins
 resultsDir = fullfile(pwd, 'matlabTestArtifacts');
