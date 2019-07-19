@@ -8,14 +8,12 @@ if verLessThan('matlab',BASE_VERSION_MATLABUNIT_SUPPORT)
     error('MATLAB:unitTest:testFrameWorkNotSupported','Running tests automatically is not supported in this relase.');
 end
 
-import('matlab.unittest.TestRunner');
-import('matlab.unittest.TestSuite');
-
 %Create test suite for tests folder
-suite = testsuite(pwd,'IncludeSubfolders',true);
+suite = getTestSuite();
 
 % Create and configure the runner
-runner = TestRunner.withTextOutput('Verbosity',3);
+import('matlab.unittest.TestRunner');
+runner = TestRunner.withTextOutput;
 
 % Add the requested plugins
 resultsDir = fullfile(pwd, 'matlabTestArtifacts');
@@ -79,6 +77,15 @@ mkdirIfNeeded(resultsDir)
 tapFile = fullfile(resultsDir, 'taptestresults.tap');
 fclose(fopen(tapFile,'w'));
 tapToFile = matlab.unittest.plugins.ToFile(tapFile);
+
+function suite = getTestSuite()
+import('matlab.unittest.TestSuite');
+BASE_VERSION_TESTSUITE_SUPPORT = '9.0';
+if verLessThan('matlab',BASE_VERSION_TESTSUITE_SUPPORT)
+    suite = matlab.unittest.TestSuite.fromFolder(pwd,'IncludingSubfolders',true);
+else
+    suite = testsuite(pwd,'IncludeSubfolders',true);
+end
 
 
 function mkdirIfNeeded(dir)
