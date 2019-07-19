@@ -392,13 +392,13 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                 workspace, getClass().getClassLoader());
         ProcStarter matlabLauncher;
         try {
-            MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
+            MatlabReleaseInfo rel = new MatlabReleaseInfo(env.expand(getLocalMatlab()));
             matlabLauncher = launcher.launch().pwd(workspace).envs(env);
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream);
+                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher,env)).stderr(outStream);
             } else {
-                matlabLauncher = matlabLauncher.cmds(constructMatlabCommandWithBatch()).stdout(listener);
+                matlabLauncher = matlabLauncher.cmds(constructMatlabCommandWithBatch(env)).stdout(listener);
             }
         } catch (MatlabVersionNotFoundException e) {
             listener.getLogger().println(e.getMessage());
@@ -407,7 +407,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         return matlabLauncher.join();
     }
 
-    public List<String> constructMatlabCommandWithBatch() {
+    public List<String> constructMatlabCommandWithBatch(EnvVars env) {
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
         final String runCommand;
         final List<String> matlabDefaultArgs;
@@ -421,23 +421,23 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     + getTestRunTypeList().getBooleanByName("taCoberturaChkBx") + "))";
         } else {
 
-            runCommand = this.getTestRunTypeList().getStringByName("customMatlabCommand");
+            runCommand = env.expand(this.getTestRunTypeList().getStringByName("customMatlabCommand"));
         }
 
         matlabDefaultArgs =
-                Arrays.asList(this.localMatlab + File.separator + "bin" + File.separator + "matlab",
+                Arrays.asList(env.expand(this.localMatlab) + File.separator + "bin" + File.separator + "matlab",
                         "-batch", runCommand);
 
         return matlabDefaultArgs;
     }
 
-    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher) {
+    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher, EnvVars env) {
         final List<String> matlabDefaultArgs = new ArrayList<String>();
-        Collections.addAll(matlabDefaultArgs, getPreRunnerSwitches());
+        Collections.addAll(matlabDefaultArgs, getPreRunnerSwitches(env));
         if (!isLinuxLauncher) {
             matlabDefaultArgs.add("-noDisplayDesktop");
         }
-        Collections.addAll(matlabDefaultArgs, getRunnerSwitch());
+        Collections.addAll(matlabDefaultArgs, getRunnerSwitch(env));
         if (!isLinuxLauncher) {
             matlabDefaultArgs.add("-wait");
         }
@@ -446,9 +446,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
 
 
-    private String[] getPreRunnerSwitches() {
+    private String[] getPreRunnerSwitches(EnvVars env) {
         String[] preRunnerSwitches =
-                {this.localMatlab + File.separator + "bin" + File.separator + "matlab", "-nosplash",
+                {env.expand(this.localMatlab) + File.separator + "bin" + File.separator + "matlab", "-nosplash",
                         "-nodesktop", "-noAppIcon"};
         return preRunnerSwitches;
     }
@@ -458,7 +458,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         return postRunnerSwitch;
     }
 
-    private String[] getRunnerSwitch() {
+    private String[] getRunnerSwitch(EnvVars env) {
         final String runCommand;
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
         if (!testRunMode.equalsIgnoreCase(
@@ -471,7 +471,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     + getTestRunTypeList().getBooleanByName("taCoberturaChkBx")
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
         } else {
-            runCommand = "try,eval(\"" + this.getTestRunTypeList().getStringByName("customMatlabCommand").replaceAll("\"","\"\"")
+            runCommand = "try,eval(\"" + env.expand(this.getTestRunTypeList().getStringByName("customMatlabCommand").replaceAll("\"","\"\""))
                     + "\"),catch e,disp(getReport(e,'extended')),exit(1),end,exit";
         }
 

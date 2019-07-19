@@ -3,8 +3,10 @@ package com.mathworks.ci;
 
 
 import static org.junit.Assert.assertFalse;
+import hudson.EnvVars;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.Builder;
 import java.io.File;
@@ -129,7 +131,7 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("exit(runMatlabTests", build);
-        Assert.assertEquals(3, matlabBuilder.constructMatlabCommandWithBatch().size());
+        Assert.assertEquals(3, matlabBuilder.constructMatlabCommandWithBatch(new EnvVars()).size());
     }
 
     /*
@@ -145,7 +147,7 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-r", build);
         jenkins.assertLogContains("try,exit(runMatlabTests", build);
-        Assert.assertEquals(9, matlabBuilder.constructDefaultMatlabCommand(false).size());
+        Assert.assertEquals(9, matlabBuilder.constructDefaultMatlabCommand(false,new EnvVars()).size());
     }
 
     /*
@@ -161,7 +163,7 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-r", build);
         jenkins.assertLogContains("try,exit(runMatlabTests", build);
-        Assert.assertEquals(7, matlabBuilder.constructDefaultMatlabCommand(true).size());
+        Assert.assertEquals(7, matlabBuilder.constructDefaultMatlabCommand(true,new EnvVars()).size());
     }
 
     /*
@@ -403,6 +405,48 @@ public class MatlabBuilderTest {
         String pageText = page.asText();
         String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
         Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
+    }
+    
+    /*
+     * Test to verify if MatlabRoot field supports Jenkins environment variables.
+     * 
+     */
+    
+    @Test
+    public void verifyEnvVarSupportForMatlabRoot() throws Exception {
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars var = prop.getEnvVars();
+        var.put("MATLAB", "R2017a");
+        jenkins.jenkins.getGlobalNodeProperties().add(prop);
+        String mroot = getMatlabroot("R2017a");
+        this.matlabBuilder.setLocalMatlab(mroot.replace("R2017a", "$MATLAB"));
+        this.matlabBuilder.setTestRunTypeList(new RunTestsAutomaticallyOption());
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains(mroot, build);
+        
+    }
+    
+    /*
+     * Test to verify if Custom command field supports Jenkins environment variables.
+     * 
+     */
+    
+    @Test
+    public void verifyEnvVarSupportForCustomCommandField() throws Exception {
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars var = prop.getEnvVars();
+        var.put("TAG", "R2017a");
+        jenkins.jenkins.getGlobalNodeProperties().add(prop);
+        String mroot = getMatlabroot("R2017a");
+        this.matlabBuilder.setLocalMatlab(mroot);
+        RunTestsWithCustomCommandOption runOption = new RunTestsWithCustomCommandOption();
+        this.matlabBuilder.setTestRunTypeList(runOption);
+        runOption.setCustomMatlabCommand("disp($TAG)");
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("R2017a", build);
+        
     }
     
     /*
