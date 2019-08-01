@@ -24,18 +24,18 @@ public class MatlabBuilderTester extends MatlabBuilder {
     public MatlabBuilderTester(String localMatlab, String matlabExecutorPath,
             String customTestPointArgument) {
         super();
-        setLocalMatlab(localMatlab);
+        setMatlabRoot(localMatlab);
         this.commandParameter = customTestPointArgument;
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
     @Override
-    public List<String> constructMatlabCommandWithBatch(EnvVars env) {
+    public List<String> constructMatlabCommandWithBatch() {
         return testMatlabCommand();
     }
 
     @Override
-    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher,EnvVars env) {
+    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher) {
         return testMatlabCommand();
     }
 
