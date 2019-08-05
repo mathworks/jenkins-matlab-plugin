@@ -99,7 +99,7 @@ Jenkins plugin for MATLAB can be configured to run "Multi-configuration" (matrix
 
 5) Select "Custom" option from "Test mode" drop-down and replace user defined axis variable for custom command appropriately.
 
-![image](https://user-images.githubusercontent.com/47204011/62460012-6e9cdb00-b79e-11e9-92a4-609c6201dc67.png)
+![image](https://user-images.githubusercontent.com/47204011/62460979-29c67380-b7a1-11e9-9001-407a83b0a238.png)
 
 4) Save and run the build.
 
