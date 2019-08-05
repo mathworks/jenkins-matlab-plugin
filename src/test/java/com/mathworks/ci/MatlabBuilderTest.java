@@ -3,8 +3,10 @@ package com.mathworks.ci;
 
 
 import static org.junit.Assert.assertFalse;
+import hudson.EnvVars;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.Builder;
 import java.io.File;
@@ -103,7 +105,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyBuildStepWithMATLABBuilder() throws Exception {
         boolean found = false;
-        this.matlabBuilder.setLocalMatlab("");
+        this.matlabBuilder.setMatlabRoot("");
         project.getBuildersList().add(this.matlabBuilder);
         List<Builder> bl = project.getBuildersList();
         for (Builder b : bl) {
@@ -123,7 +125,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedWithDefaultArgumentsBatch() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         this.matlabBuilder.setTestRunTypeList(new RunTestsAutomaticallyOption());
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -139,7 +141,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedWithDefaultArgumentsRWindows() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2017a"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
         this.matlabBuilder.setTestRunTypeList(new RunTestsAutomaticallyOption());
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -155,7 +157,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedWithDefaultArgumentsRLinux() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2017a"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
         this.matlabBuilder.setTestRunTypeList(new RunTestsAutomaticallyOption());
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -170,7 +172,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        this.matlabBuilder.setLocalMatlab("/fake/matlabroot/that/does/not/exist");
+        this.matlabBuilder.setMatlabRoot("/fake/matlabroot/that/does/not/exist");
         project.getBuildersList().add(this.matlabBuilder);
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -260,7 +262,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyCustomCommandInvoked() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2017a"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
         RunTestsWithCustomCommandOption runOption = new RunTestsWithCustomCommandOption();
         runOption.setCustomMatlabCommand("runtests");
         this.matlabBuilder.setTestRunTypeList(runOption);
@@ -277,7 +279,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyCustomCommandInvokedForBatchMode() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         RunTestsWithCustomCommandOption runOption = new RunTestsWithCustomCommandOption();
         runOption.setCustomMatlabCommand("runtests");
         this.matlabBuilder.setTestRunTypeList(runOption);
@@ -293,7 +295,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyRunTestAutomaticallyIsDefault() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("true,true,true", build);
@@ -305,7 +307,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyDefaultValueOfgetStringByName() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         RunTestsAutomaticallyOption runOption = new RunTestsAutomaticallyOption();    
         Assert.assertNull(runOption.getStringByName("fakeChkBox"));
     }
@@ -316,7 +318,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyDefaultValueOfgetBooleanByName() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         RunTestsWithCustomCommandOption runOption = new RunTestsWithCustomCommandOption();    
         Assert.assertFalse(runOption.getBooleanByName("fakeCommand"));
     }
@@ -327,7 +329,7 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyMatlabVersionOlderThanR17a() throws Exception {
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2016b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2016b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-r", build);
         jenkins.assertLogContains("try,exit(", build);
@@ -353,7 +355,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyInvalidMatlabRootDisplaysError() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
-        this.matlabBuilder.setLocalMatlab("/fake/matlab/path");
+        this.matlabBuilder.setMatlabRoot("/fake/matlab/path");
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
     }
@@ -366,7 +368,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyValidMatlabRootDoesntDisplayError() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2018b"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
     }
@@ -379,7 +381,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyCoberturaWarning() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
-        this.matlabBuilder.setLocalMatlab(getMatlabroot("R2017a"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
         coberturaChkBx.setChecked(true);
@@ -395,7 +397,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyCoberturaError() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
-        this.matlabBuilder.setLocalMatlab("/fake/matlab/path");
+        this.matlabBuilder.setMatlabRoot("/fake/matlab/path");
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
         coberturaChkBx.setChecked(true);
@@ -403,6 +405,48 @@ public class MatlabBuilderTest {
         String pageText = page.asText();
         String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
         Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
+    }
+    
+    /*
+     * Test to verify if MatlabRoot field supports Jenkins environment variables.
+     * 
+     */
+    
+    @Test
+    public void verifyEnvVarSupportForMatlabRoot() throws Exception {
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars var = prop.getEnvVars();
+        var.put("MATLAB", "R2017a");
+        jenkins.jenkins.getGlobalNodeProperties().add(prop);
+        String mroot = getMatlabroot("R2017a");
+        this.matlabBuilder.setMatlabRoot(mroot.replace("R2017a", "$MATLAB"));
+        this.matlabBuilder.setTestRunTypeList(new RunTestsAutomaticallyOption());
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains(mroot, build);
+        
+    }
+    
+    /*
+     * Test to verify if Custom command field supports Jenkins environment variables.
+     * 
+     */
+    
+    @Test
+    public void verifyEnvVarSupportForCustomCommandField() throws Exception {
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars var = prop.getEnvVars();
+        var.put("TAG", "R2017a");
+        jenkins.jenkins.getGlobalNodeProperties().add(prop);
+        String mroot = getMatlabroot("R2017a");
+        this.matlabBuilder.setMatlabRoot(mroot);
+        RunTestsWithCustomCommandOption runOption = new RunTestsWithCustomCommandOption();
+        this.matlabBuilder.setTestRunTypeList(runOption);
+        runOption.setCustomMatlabCommand("disp($TAG)");
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("R2017a", build);
+        
     }
     
     /*

@@ -53,7 +53,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
     private int buildResult;
     private TestRunTypeList testRunTypeList;
-    private String localMatlab;
+    private String matlabRoot;
+    private EnvVars env;
     private static final String MATLAB_RUNNER_TARGET_FILE =
             "Builder.matlab.runner.target.file.name";
     private static final String MATLAB_RUNNER_RESOURCE =
@@ -70,8 +71,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     // Getter and Setters to access local members
 
     @DataBoundSetter
-    public void setLocalMatlab(String localMatlab) {
-        this.localMatlab = localMatlab;
+    public void setMatlabRoot(String matlabRoot) {
+        this.matlabRoot = matlabRoot;
     }
 
     @DataBoundSetter
@@ -79,26 +80,38 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         this.testRunTypeList = testRunTypeList;
     }
 
-    public String getLocalMatlab() {
+    public String getMatlabRoot() {
 
-        return this.localMatlab;
+        return this.matlabRoot;
     }
 
     public TestRunTypeList getTestRunTypeList() {
         return this.testRunTypeList;
     }
+    
+    private String getLocalMatlab() {
+        return this.env == null ? getLocalMatlab(): this.env.expand(getMatlabRoot());
+    }
+    
+    private String getCustomMatlabCommand() {
+        return this.env == null ? this.getTestRunTypeList().getStringByName("customMatlabCommand")
+                : this.env.expand(this.getTestRunTypeList().getStringByName("customMatlabCommand"));
+    }
+    private void setEnv(EnvVars env) {
+        this.env = env;
+    }
 
     @Extension
     public static class MatlabDescriptor extends BuildStepDescriptor<Builder> {
         MatlabReleaseInfo rel;
-        String localMatlab;
+        String matlabRoot;
 
-        public String getLocalMatlab() {
-            return localMatlab;
+        public String getMatlabRoot() {
+            return matlabRoot;
         }
 
-        public void setLocalMatlab(String localMatlab) {
-            this.localMatlab = localMatlab;
+        public void setMatlabRoot(String matlabRoot) {
+            this.matlabRoot = matlabRoot;
         }
 
         // Overridden Method used to show the text under build dropdown
@@ -141,22 +154,22 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
          */
 
 
-        public FormValidation doCheckLocalMatlab(@QueryParameter String localMatlab) {
-            setLocalMatlab(localMatlab);
+        public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot) {
+            setMatlabRoot(matlabRoot);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
             listOfCheckMethods.add(chkMatlabSupportsRunTests);
 
-            return getFirstErrorOrWarning(listOfCheckMethods, localMatlab);
+            return getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
 
         public FormValidation getFirstErrorOrWarning(
-                List<Function<String, FormValidation>> validations, String localMatalb) {
+                List<Function<String, FormValidation>> validations, String matlabRoot) {
             if (validations == null || validations.isEmpty())
                 return FormValidation.ok();
             for (Function<String, FormValidation> val : validations) {
-                FormValidation validationResult = val.apply(localMatalb);
+                FormValidation validationResult = val.apply(matlabRoot);
                 if (validationResult.kind.compareTo(Kind.ERROR) == 0
                         || validationResult.kind.compareTo(Kind.WARNING) == 0) {
                     return validationResult;
@@ -165,22 +178,26 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         }
 
-        Function<String, FormValidation> chkMatlabEmpty = (String localMatlab) -> {
-            if (localMatlab.isEmpty()) {
+        Function<String, FormValidation> chkMatlabEmpty = (String matlabRoot) -> {
+            if (matlabRoot.isEmpty()) {
                 return FormValidation.error(Message.getValue("Builder.matlab.root.empty.error"));
             }
             return FormValidation.ok();
         };
-
-        Function<String, FormValidation> chkMatlabSupportsRunTests = (String localMatlab) -> {
-            try {
-                rel = new MatlabReleaseInfo(localMatlab);
-                if (rel.verLessThan(BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
+        
+        Function<String, FormValidation> chkMatlabSupportsRunTests = (String matlabRoot) -> {
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+            if (!resolver.hasVariablePattern()) {
+                try {
+                    rel = new MatlabReleaseInfo(matlabRoot);
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
+                        return FormValidation
+                                .error(Message.getValue("Builder.matlab.test.support.error"));
+                    }
+                } catch (MatlabVersionNotFoundException e) {
                     return FormValidation
-                            .error(Message.getValue("Builder.matlab.test.support.error"));
+                            .error(Message.getValue("Builder.invalid.matlab.root.error"));
                 }
-            } catch (MatlabVersionNotFoundException e) {
-                return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
             }
             return FormValidation.ok();
         };
@@ -229,25 +246,29 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckTaCoberturaChkBx(@QueryParameter boolean taCoberturaChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            final String localMatlab = Jenkins.getInstance()
-                    .getDescriptorByType(MatlabDescriptor.class).getLocalMatlab();
+            final String matlabRoot = Jenkins.getInstance()
+                    .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
             if (taCoberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
             return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
-                    .getFirstErrorOrWarning(listOfCheckMethods, localMatlab);
+                    .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
 
-        Function<String, FormValidation> chkCoberturaSupport = (String localMatlab) -> {
-            rel = new MatlabReleaseInfo(localMatlab);
-            try {
-                if (rel.verLessThan(BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.matlab.cobertura.support.warning"));
+        Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
+            rel = new MatlabReleaseInfo(matlabRoot);
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+            if(!resolver.hasVariablePattern()) {
+                try {
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
+                        return FormValidation
+                                .warning(Message.getValue("Builder.matlab.cobertura.support.warning"));
+                    }
+                } catch (MatlabVersionNotFoundException e) {
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
                 }
-            } catch (MatlabVersionNotFoundException e) {
-                return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
             }
+            
 
             return FormValidation.ok();
         };
@@ -370,30 +391,30 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
-            throws InterruptedException, IOException {
-        final EnvVars env = build.getEnvironment(listener);
+            throws InterruptedException, IOException {        
         final boolean isLinuxLauncher = launcher.isUnix();
         
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-        buildResult = execMatlabCommand(build, workspace, launcher, listener, env, isLinuxLauncher);
+        buildResult = execMatlabCommand(build, workspace, launcher, listener, isLinuxLauncher);
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    private int execMatlabCommand(Run<?, ?> build, FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars env, boolean isLinuxLauncher)
+    private synchronized int execMatlabCommand(Run<?, ?> build, FilePath workspace, Launcher launcher,
+            TaskListener listener, boolean isLinuxLauncher)
             throws IOException, InterruptedException {
+        setEnv(build.getEnvironment(listener));
         //Copy MATLAB scratch file into the workspace
         copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
                 workspace, getClass().getClassLoader());
         ProcStarter matlabLauncher;
         try {
             MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
-            matlabLauncher = launcher.launch().pwd(workspace).envs(env);
+            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream);
@@ -421,13 +442,13 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     + getTestRunTypeList().getBooleanByName("taCoberturaChkBx") + "))";
         } else {
 
-            runCommand = this.getTestRunTypeList().getStringByName("customMatlabCommand");
+            runCommand = getCustomMatlabCommand();
         }
 
         matlabDefaultArgs =
-                Arrays.asList(this.localMatlab + File.separator + "bin" + File.separator + "matlab",
+                Arrays.asList(getLocalMatlab() + File.separator + "bin" + File.separator + "matlab",
                         "-batch", runCommand);
-
+        
         return matlabDefaultArgs;
     }
 
@@ -448,7 +469,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     private String[] getPreRunnerSwitches() {
         String[] preRunnerSwitches =
-                {this.localMatlab + File.separator + "bin" + File.separator + "matlab", "-nosplash",
+                {getLocalMatlab() + File.separator + "bin" + File.separator + "matlab", "-nosplash",
                         "-nodesktop", "-noAppIcon"};
         return preRunnerSwitches;
     }
@@ -471,7 +492,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     + getTestRunTypeList().getBooleanByName("taCoberturaChkBx")
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
         } else {
-            runCommand = "try,eval(\"" + this.getTestRunTypeList().getStringByName("customMatlabCommand").replaceAll("\"","\"\"")
+            runCommand = "try,eval(\"" + getCustomMatlabCommand().replaceAll("\"","\"\"")
                     + "\"),catch e,disp(getReport(e,'extended')),exit(1),end,exit";
         }
 
