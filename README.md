@@ -61,7 +61,7 @@ This option enables you to develop your custom MATLAB commands for running tests
   ![new_custom_script_example](https://user-images.githubusercontent.com/47204011/55625021-32904400-57c5-11e9-86b7-478b930796c0.png)
 
 ## Configuring "Multi-configuration"(matrix) project.
-Jenkins plugin for MATLAB can be configured to run "Multi-configuration" (matrix) projects. Which allows user to run the same build steps with different configurations, such as testing on multiple environments or multiple MATLAB versions installed on the system.
+The Jenkins plugin for MATLAB can be used inside of "Multi-configuration" (matrix) projects. Matrix projects allow jobs to be repeated with different configurations, such as testing on multiple platforms or testing against multiple MATLAB versions.
 
 #### Matrix build for "Automatic" option.
 
@@ -91,7 +91,7 @@ Jenkins plugin for MATLAB can be configured to run "Multi-configuration" (matrix
 
 3) Add another User-defined axis for custom commands as shown below.
 
-![image](https://user-images.githubusercontent.com/47204011/62459898-22519b00-b79e-11e9-8021-a27ab8d43001.png)
+![image](https://user-images.githubusercontent.com/47204011/62517774-b6c30880-b845-11e9-86a0-8344a281fb27.png)
 
 4) Replace the user defined axis variable in MATLAB root appropriately.
 
@@ -99,7 +99,7 @@ Jenkins plugin for MATLAB can be configured to run "Multi-configuration" (matrix
 
 5) Select "Custom" option from "Test mode" drop-down and replace user defined axis variable for custom command appropriately.
 
-![image](https://user-images.githubusercontent.com/47204011/62460979-29c67380-b7a1-11e9-9001-407a83b0a238.png)
+![image](https://user-images.githubusercontent.com/47204011/62518329-f3dbca80-b846-11e9-911f-82dfc3fcdd32.png)
 
 4) Save and run the build.
 
