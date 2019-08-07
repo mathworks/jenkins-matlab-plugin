@@ -71,9 +71,9 @@ The Jenkins plugin for MATLAB can be used inside of "Multi-configuration" (matri
 
 2) Add User-defined axis for different MATLAB versions as shown below.
 
-![image](https://user-images.githubusercontent.com/47204011/62459358-c6d2dd80-b79c-11e9-90dc-37891b8179ea.png)
+![image](https://user-images.githubusercontent.com/47204011/62603081-c2c8cc00-b912-11e9-83a4-c5462f58f607.png)
 
-3) Replace the user defined axis variable in MATLAB root appropriately.
+3) Replace the user-defined axis variable in MATLAB root appropriately.
 
 ![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
 
@@ -87,24 +87,24 @@ The Jenkins plugin for MATLAB can be used inside of "Multi-configuration" (matri
 
 2) Add User-defined axis for different MATLAB versions as shown below.
 
-![image](https://user-images.githubusercontent.com/47204011/62459358-c6d2dd80-b79c-11e9-90dc-37891b8179ea.png)
+![image](https://user-images.githubusercontent.com/47204011/62603081-c2c8cc00-b912-11e9-83a4-c5462f58f607.png)
 
-3) Add another User-defined axis for custom commands as shown below.
+3) Add another user-defined axis for custom commands as shown below.
 
 ![image](https://user-images.githubusercontent.com/47204011/62517774-b6c30880-b845-11e9-86a0-8344a281fb27.png)
 
-4) Replace the user defined axis variable in MATLAB root appropriately.
+4) Replace the user-defined axis variable in MATLAB root appropriately.
 
 ![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
 
-5) Select "Custom" option from "Test mode" drop-down and replace user defined axis variable for custom command appropriately.
+5) Select "Custom" option from "Test mode" drop-down and replace user-defined axis variable for custom command appropriately.
 
 ![image](https://user-images.githubusercontent.com/47204011/62518329-f3dbca80-b846-11e9-911f-82dfc3fcdd32.png)
 
 4) Save and run the build.
 
 
-Note: Axis variables can be replaced in either "$VAR" or "${VAR}" formats. Do not use complete MATLAB root path as axis values. Multi-configuration project creates separate workspace folder for each user defined axis values with same name, and file separators in complete path will cause Jenkins build to fail as folder creation fails.
+Note: Axis variables can be replaced in either "$VAR" or "${VAR}" formats. Do not use complete MATLAB root path as axis values. Multi-configuration project creates separate workspace folder for each user-defined axis values with same name, and file separators in complete path will cause Jenkins build to fail as folder creation fails.
 
 ## Contact Us
 If you have any questions or suggestions, please feel free to contact MathWorks.
