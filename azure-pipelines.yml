@@ -26,6 +26,6 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       codeCoverageToolOption: 'cobertura'
-      goals: 'package'
+      goals: 'verify'
     displayName: 'Build $(imageName)'
       

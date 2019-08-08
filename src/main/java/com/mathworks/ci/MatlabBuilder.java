@@ -90,7 +90,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
     
     private String getLocalMatlab() {
-        return this.env == null ? getLocalMatlab(): this.env.expand(getMatlabRoot());
+        return this.env == null ? getMatlabRoot(): this.env.expand(getMatlabRoot());
     }
     
     private String getCustomMatlabCommand() {
