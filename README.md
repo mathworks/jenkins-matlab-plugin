@@ -99,9 +99,9 @@ The Jenkins plugin for MATLAB can be used inside of "Multi-configuration" (matri
 
 5) Select "Custom" option from "Test mode" drop-down and replace User-defined axis variable for custom command appropriately.
 
-![image](https://user-images.githubusercontent.com/47204011/62518329-f3dbca80-b846-11e9-911f-82dfc3fcdd32.png)
+![image](https://user-images.githubusercontent.com/47204011/62686681-cd529680-b9e2-11e9-82c1-c211f1740be4.png)
 
-4) Save and run the build.
+6) Save and run the build.
 
 
 Note: Axis variables can be replaced in either "$VAR" or "${VAR}" formats. Do not use complete MATLAB root path as axis values. Multi-configuration project creates separate workspace folder for each User-defined axis values with same name, and file separators in complete path will cause Jenkins build to fail as folder creation fails.
