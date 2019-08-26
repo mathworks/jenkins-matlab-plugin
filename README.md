@@ -1,23 +1,20 @@
 # Jenkins MATLAB Plugin
 
-The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests and generate test artifacts in formats such as JUnit, TAP, and Cobertura code coverage reports. 
+The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests and generate test artifacts in formats such as *JUnit*, *TAP*, and *Cobertura* code coverage reports. You can run tests in either *automatic* or *custom* mode.
+
 ## Configure Plugin for Freestyle Project
 To configure the plugin for a freestyle project, select **Run MATLAB Tests** from the **Add build step** list.
 
   ![new_add_build_step](https://user-images.githubusercontent.com/47204011/55624172-be54a100-57c2-11e9-9596-52d3a60ee467.png)
   
   ![new_default_plugin_page](https://user-images.githubusercontent.com/47204011/55624213-dcba9c80-57c2-11e9-85e6-abb6ae03534e.png)
-
-You can use the plugin as part of the Jenkins build step to run MATLAB tests in two distinct modes:
-* Automatic
-* Custom
-
+  
 To run your tests, enter the value returned by the **matlabroot** function in the **MATLAB root** field.
 
   ![new_enter_matlabroot](https://user-images.githubusercontent.com/47204011/55624374-45097e00-57c3-11e9-96e1-5fa0fc966767.png)
   
 ### Option 1: Freestyle Project with Automatic Test Mode
-This option runs the tests written using the MATLAB Unit Testing Framework and/or Simulink Test. If your files and folders are organized in a project, the plugin will locate all test files in the project that have been tagged as **Test**. If your code does not leverage a project or uses a MATLAB version prior to R2019a, the plugin will discover all tests in the current Jenkins workspace including the subfolders. 
+This option runs the tests written using the MATLAB Unit Testing Framework and/or Simulink&reg Test. If your files and folders are organized in a project, the plugin will locate all test files in the project that have been tagged as **Test**. If your code does not leverage a project or uses a MATLAB version prior to R2019a, the plugin will discover all tests in the current Jenkins workspace including the subfolders. 
 
 If you use a source code management (SCM) system such as Git, then your job must include the appropriate SCM configuration to check out the code before if can invoke the MATLAB plugin. If you do not use any SCM systems to manage your code, then an additional build step is required to ensure that the code is available in the Jenkins workspace before the build starts.
 
