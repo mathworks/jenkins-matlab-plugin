@@ -77,42 +77,38 @@ In this example, four MATLAB versions are specified, which will be used to run t
 
 2) In the **Run MATLAB Tests** section of the project, include the user-defined axis name in the **MATLAB root** field to specify the locations where MATLAB is installed. In this example, **$VERSION** will be replaced by one axis value per build step.
 
-
-3) Replace the User-defined axis variable in MATLAB root appropriately.
-
 ![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
 
-4) Save and run the build.
+As in a freestyle project, you can select test artifact check boxes when tests run automatically. Once you have made your selections, save your settings and run the build.
 
-#### Matrix build for "Custom" option.
+### Option 2: Multi-Configuration Project with Automatic Test Mode
 
-1) Create a "Multi-configuration" project.
+To configure the matrix build where you can customize the MATLAB test execution, create a multi-configuration project and follow these steps.
 
-![image](https://user-images.githubusercontent.com/47204011/62458632-0e586a00-b79b-11e9-8611-3671adb8c289.png)
-
-2) Add User-defined axis for different MATLAB versions as shown below.
+1) Add a user-defined axis in the **Configuration Matrix** to represent the MATLAB releases in the build. 
 
 ![image](https://user-images.githubusercontent.com/47204011/62603081-c2c8cc00-b912-11e9-83a4-c5462f58f607.png)
 
-3) Add another User-defined axis for custom commands as shown below.
+2) Add another user-defined axis with the **Add axis** button. In this example, the **TEST_TAG** axis specifies the possible test tags for a group of test elements.
 
 ![image](https://user-images.githubusercontent.com/47204011/62517774-b6c30880-b845-11e9-86a0-8344a281fb27.png)
 
-4) Replace the User-defined axis variable in MATLAB root appropriately.
+4) In the **Run MATLAB Tests** section of the project, use the **VERSION** axis to specify the locations where MATLAB is installed.
 
 ![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
 
-5) Select "Custom" option from "Test mode" drop-down and replace User-defined axis variable for custom command appropriately.
+5) From the **Test mode** drop-down list, select the **Custom** option. Use the second user-defined axis to create your commands and enter them in the **MATLAB command** field. Then, save your settings and run the build. 
 
 ![image](https://user-images.githubusercontent.com/47204011/62686681-cd529680-b9e2-11e9-82c1-c211f1740be4.png)
 
-6) Save and run the build.
+**Notes:**
+1) For a user-defined axis named **VAR**,  **$VAR** and **${VAR}** are both valid formats for accessing the values.
 
+2) A multi-configuration project creates a separate workspace for each user-defined axis value. If you specify the full paths to where MATLAB is installed as axis values, Jenkins fails to create separate workspaces and fails the build.
 
-Note: Axis variables can be replaced in either "$VAR" or "${VAR}" formats. Do not use complete MATLAB root path as axis values. Multi-configuration project creates separate workspace folder for each User-defined axis values with same name, and file separators in complete path will cause Jenkins build to fail as folder creation fails.
 
 ## Contact Us
-If you have any questions or suggestions, please feel free to contact MathWorks.
+If you have any questions or suggestions, please contact MathWorks.
 
 support@mathworks.com
 
