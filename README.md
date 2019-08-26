@@ -93,11 +93,11 @@ To configure the matrix build where you can customize the MATLAB test execution,
 
 ![image](https://user-images.githubusercontent.com/47204011/62517774-b6c30880-b845-11e9-86a0-8344a281fb27.png)
 
-4) In the **Run MATLAB Tests** section of the project, use the **VERSION** axis to specify the locations where MATLAB is installed.
+3) In the **Run MATLAB Tests** section of the project, use the **VERSION** axis to specify the locations where MATLAB is installed.
 
 ![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
 
-5) From the **Test mode** drop-down list, select the **Custom** option. Use the second user-defined axis to create your commands and enter them in the **MATLAB command** field. Then, save your settings and run the build. 
+4) From the **Test mode** drop-down list, select the **Custom** option. Use the second user-defined axis to create your commands and enter them in the **MATLAB command** field. Then, save your settings and run the build. 
 
 ![image](https://user-images.githubusercontent.com/47204011/62686681-cd529680-b9e2-11e9-82c1-c211f1740be4.png)
 
