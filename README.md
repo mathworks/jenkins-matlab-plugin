@@ -1,6 +1,6 @@
 # Jenkins MATLAB Plugin
 
-The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests and generate test artifacts in formats such as *JUnit*, *TAP*, and *Cobertura* code coverage reports. You can choose to run your tests in either *automatic* or *custom* mode. This guide shows you examples of how to configure the plugin for different objectives, considering a Microsoft&reg; Windows&reg; platform.
+The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests and generate test artifacts in formats such as *JUnit*, *TAP*, and *Cobertura* code coverage reports. This guide shows you examples of how to configure the plugin for different objectives, considering a Microsoft&reg; Windows&reg; platform.
 
 ## Configure Plugin for Freestyle Project
 To configure the plugin for a freestyle project, select **Run MATLAB Tests** from the **Add build step** list. Then, enter the value returned by the **matlabroot** function in the **MATLAB root** field.
