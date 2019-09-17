@@ -4,7 +4,7 @@ classdef TestRand < matlab.unittest.TestCase
     end
     
     properties (MethodSetupParameter)
-        seed = {0, 123};
+        seed = {0, 123, 4294967295};
     end
     
     properties (TestParameter)
