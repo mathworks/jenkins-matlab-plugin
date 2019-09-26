@@ -1,6 +1,23 @@
 %Copyright 2019 The MathWorks, Inc.
 
-function failed = runMatlabTests(produceJUnit, produceTAP, produceCobertura)
+function failed = runMatlabTests(varargin)
+
+p = inputParser;
+p.addParameter('TapResults', false, @islogical);
+p.addParameter('JunitResults', false, @islogical);
+p.addParameter('CoberturaCodeCoverage', false, @islogical);
+p.addParameter('CoberturaModelCoverage', false, @islogical);
+p.addParameter('ExportTestResults', false, @islogical);
+p.addParameter('IntegratedTestResults', false, @islogical);
+
+p.parse(varargin{:});
+
+produceTAP               = p.Results.TapResults;
+produceJUnit             = p.Results.JunitResults;
+produceCodeCoverage      = p.Results.CoberturaCodeCoverage;
+produceModelCoverage     = p.Results.CoberturaModelCoverage;
+exportTestResults        = p.Results.ExportTestResults;
+produceIntegratedResults = p.Results.IntegratedTestResults;
 
 BASE_VERSION_MATLABUNIT_SUPPORT = '8.1';
 
@@ -50,21 +67,59 @@ if produceTAP
     runner.addPlugin(tapPlugin);
 end
 
-% Produce Cobertura report (Cobertura report generation is not supported
+% Produce Cobertura code coverage report (Cobertura report generation is not supported
 % below R17a) 
-if produceCobertura 
-    BASE_VERSION_COBERTURA_SUPPORT = '9.3';
-    
-    if verLessThan('matlab',BASE_VERSION_COBERTURA_SUPPORT)
-         warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura results is not supported in this release.');
-    else 
+if produceCodeCoverage 
+    if isCoberturaNotSupported
+        warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura results is not supported in this release.');
+    else
         import('matlab.unittest.plugins.CodeCoveragePlugin');
         import('matlab.unittest.plugins.codecoverage.CoberturaFormat');
         mkdirIfNeeded(resultsDir)
-        coverageFile = fullfile(resultsDir, 'cobertura.xml');
+        coverageFile = fullfile(resultsDir, 'codecoverage.xml');
         workSpace = fullfile(pwd);
         runner.addPlugin(CodeCoveragePlugin.forFolder(workSpace,'IncludingSubfolders',true,...
-        'Producing', CoberturaFormat(coverageFile)));
+            'Producing', CoberturaFormat(coverageFile)));
+    end
+end
+
+% Produce Cobertura model coverage report (Cobertura report generation is not supported
+% below R17a) 
+if produceModelCoverage
+    if isCoberturaNotSupported
+        warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura results is not supported in this release.');
+    else
+        import sltest.plugins.ModelCoveragePlugin;
+        import matlab.unittest.plugins.codecoverage.CoberturaFormat;
+        
+        mkdirIfNeeded(resultsDir);
+        coverageFile = fullfile(resultsDir, 'modelcoverage.xml');
+        runner.addPlugin(ModelCoveragePlugin('Producing',CoberturaFormat(coverageFile)));
+    end
+end
+
+% Produce unified MATLAB Unit/Simulink Test Manager test report or/and save
+% Simulink Test results in MLDATX format (Not supported below R2018b)
+if produceIntegratedResults || exportTestResults
+    if isTestManagerResultsPluginNotPresent
+        warning('MATLAB:testArtifact:unifiedReportGenerationNotSupported', 'Producing unified report is not supported in this release.');
+    else 
+        import sltest.plugins.TestManagerResultsPlugin;
+        import matlab.unittest.plugins.TestReportPlugin;
+        
+        mkdirIfNeeded(resultsDir);
+        pdfFile = fullfile(resultsDir, 'integratedresults.pdf');
+        mldatxFile = fullfile(resultsDir, 'simulinktestresults.mldatx');
+            
+        if produceIntegratedResults && exportTestResults
+            runner.addPlugin(TestReportPlugin.producingPDF(pdfFile, 'IncludingPassingDiagnostics', true));
+            runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));
+        elseif exportTestResults
+            runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));
+        else
+            runner.addPlugin(TestReportPlugin.producingPDF(pdfFile, 'IncludingPassingDiagnostics', true));
+            runner.addPlugin(TestManagerResultsPlugin);
+        end
     end
 end
 
@@ -87,10 +142,17 @@ else
     suite = testsuite(pwd,'IncludeSubfolders',true);
 end
 
-
 function mkdirIfNeeded(dir)
 if exist(dir,'dir') ~= 7
     mkdir(dir);
 end
 
+function tf = isCoberturaNotSupported()
+BASE_VERSION_COBERTURA_SUPPORT = '9.3';
 
+tf = verLessThan('matlab',BASE_VERSION_COBERTURA_SUPPORT);
+
+function tf = isTestManagerResultsPluginNotPresent()
+BASE_VERSION_TESTMANAGERRESULTSPLUGIN_SUPPORT = '9.5'; 
+
+tf = verLessThan('matlab',BASE_VERSION_TESTMANAGERRESULTSPLUGIN_SUPPORT);
