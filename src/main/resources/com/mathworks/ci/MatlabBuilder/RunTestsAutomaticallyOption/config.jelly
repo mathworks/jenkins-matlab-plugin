@@ -9,20 +9,20 @@
   	  <f:entry field="taJunitChkBx">
     	<f:checkbox title="JUnit-style test results" name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
   	  </f:entry>
-
-  	  <f:entry field="taCoberturaChkBx">
+        
+  	 <f:entry field="taCoberturaChkBx">
     	<f:checkbox title="Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
      </f:entry>   
 
-  	  <f:entry field="taCoberturaModelChkBx">
+  	 <f:entry field="taCoberturaModelChkBx">
     	<f:checkbox title="Cobertura model coverage" name="taCoberturaModelChkBx" checked="${instance.taCoberturaModelChkBx}"/>
      </f:entry> 
 
-  	  <f:entry field="taExportResultsChkBx">
+  	 <f:entry field="taExportResultsChkBx">
     	<f:checkbox title="Export Simulink Test results" name="taExportResultsChkBx" checked="${instance.taExportResultsChkBx}"/>
      </f:entry>
 
-  	  <f:entry field="taIntegratedRptChkBx">
+  	 <f:entry field="taIntegratedRptChkBx">
     	<f:checkbox title="Integrated test results" name="taIntegratedRptChkBx" checked="${instance.taIntegratedRptChkBx}"/>
      </f:entry>        
 </f:section>

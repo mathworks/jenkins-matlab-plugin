@@ -102,7 +102,7 @@ end
 % Simulink Test results in MLDATX format (Not supported below R2018b)
 if produceIntegratedResults || exportTestResults
     if isTestManagerResultsPluginNotPresent
-        warning('MATLAB:testArtifact:unifiedReportGenerationNotSupported', 'Producing unified report is not supported in this release.');
+        warning('MATLAB:testArtifact:artifactNotSupported', 'The concerned artifact generation is not supported in this release.');
     else 
         import sltest.plugins.TestManagerResultsPlugin;
         import matlab.unittest.plugins.TestReportPlugin;
