@@ -102,20 +102,22 @@ end
 % Simulink Test results in MLDATX format (Not supported below R2018b)
 if produceIntegratedResults || exportTestResults
     if isTestManagerResultsPluginNotPresent
-        warning('MATLAB:testArtifact:artifactNotSupported', 'The concerned artifact generation is not supported in this release.');
+        warning('MATLAB:testArtifact:artifactNotSupported', ...
+            'Generating unified test report and saving simulink test results is not supported in this release.');
     else 
         import sltest.plugins.TestManagerResultsPlugin;
         import matlab.unittest.plugins.TestReportPlugin;
         
         mkdirIfNeeded(resultsDir);
-        htmlFolder = fullfile(resultsDir, 'integratedResults');
+        htmlFolder = fullfile(resultsDir, 'htmlTestResults');
+        htmlFile = 'report.html';
         mldatxFile = fullfile(resultsDir, 'simulinktestresults.mldatx');
             
         if produceIntegratedResults && exportTestResults
-            runner.addPlugin(TestReportPlugin.producingHTML(htmlFolder, 'IncludingPassingDiagnostics', true));
+            runner.addPlugin(TestReportPlugin.producingHTML(htmlFolder, 'MainFile', htmlFile));
             runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));
         elseif produceIntegratedResults
-            runner.addPlugin(TestReportPlugin.producingHTML(htmlFolder, 'IncludingPassingDiagnostics', true));
+            runner.addPlugin(TestReportPlugin.producingHTML(htmlFolder, 'MainFile', htmlFile));
             runner.addPlugin(TestManagerResultsPlugin);
         else
             runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));

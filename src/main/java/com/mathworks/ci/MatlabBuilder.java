@@ -59,7 +59,13 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             "Builder.matlab.runner.target.file.name";
     private static final String MATLAB_RUNNER_RESOURCE =
             "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
-
+    
+    private static final String tapResultsStr        = "'TapResults'";
+    private static final String junitResultsStr      = "'JunitResults'";
+    private static final String codeCoverageStr      = "'CoberturaCodeCoverage'";
+    private static final String modelCoverageStr     = "'CoberturaModelCoverage'";
+    private static final String exportResultsStr     = "'ExportTestResults'";
+    private static final String integratedResultsStr = "'IntegratedTestResults'";
 
     @DataBoundConstructor
     public MatlabBuilder() {
@@ -545,15 +551,15 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     
     private String getInputArguments() {
         
-        String tapResults = "'TapResults'" + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
-        String junitResults = "'JunitResults'" + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
-        String coberturaCodeCoverage = "'CoberturaCodeCoverage'" + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
-        String coberturaModelCoverage = "'CoberturaModelCoverage'" + "," + getTestRunTypeList().getBooleanByName("taCoberturaModelChkBx");
-        String exportResults = "'ExportTestResults'" + "," + getTestRunTypeList().getBooleanByName("taExportResultsChkBx");
-        String integratedReport = "'IntegratedTestResults'" + "," + getTestRunTypeList().getBooleanByName("taIntegratedRptChkBx");
+        String tapResults             = tapResultsStr + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
+        String junitResults           = junitResultsStr + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
+        String coberturaCodeCoverage  = codeCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
+        String coberturaModelCoverage = modelCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaModelChkBx");
+        String exportResults          = exportResultsStr + "," + getTestRunTypeList().getBooleanByName("taExportResultsChkBx");
+        String integratedReport       = integratedResultsStr + "," + getTestRunTypeList().getBooleanByName("taIntegratedRptChkBx");
         
-        String inputArgsToMatlabFcn = tapResults + "," + junitResults + "," + coberturaCodeCoverage + "," 
-                                      + coberturaModelCoverage + "," + exportResults + "," + integratedReport;
+        String inputArgsToMatlabFcn   = tapResults + "," + junitResults + "," + coberturaCodeCoverage + "," 
+                                        + coberturaModelCoverage + "," + exportResults + "," + integratedReport;
         
         return inputArgsToMatlabFcn;
     }
