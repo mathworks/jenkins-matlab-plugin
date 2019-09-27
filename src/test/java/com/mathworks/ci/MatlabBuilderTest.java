@@ -31,7 +31,7 @@ import com.mathworks.ci.MatlabBuilder.RunTestsWithCustomCommandOption;
 
 
 /*
- * Copyright 2018 The MathWorks, Inc.
+ * Copyright 2018-2019 The MathWorks, Inc.
  * 
  * Test class for MatlabBuilder
  * 
@@ -384,7 +384,9 @@ public class MatlabBuilderTest {
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
+        HtmlCheckBoxInput coberturaModelChkBx = page.getElementByName("taCoberturaModelChkBx");
         coberturaChkBx.setChecked(true);
+        coberturaModelChkBx.setChecked(true);
         Thread.sleep(2000);
         WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.cobertura.support.warning"));
     }
@@ -458,6 +460,9 @@ public class MatlabBuilderTest {
         runOption.setTaCoberturaChkBx(true);
         runOption.setTaJunitChkBx(true);
         runOption.setTatapChkBx(true);
+        runOption.setTaCoberturaModelChkBx(true);
+        runOption.setTaExportResultsChkBx(true);
+        runOption.setTaIntegratedRptChkBx(true);
         this.matlabBuilder.setTestRunTypeList(runOption);
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
