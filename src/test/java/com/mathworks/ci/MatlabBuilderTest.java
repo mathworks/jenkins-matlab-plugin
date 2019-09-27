@@ -298,8 +298,8 @@ public class MatlabBuilderTest {
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
-        jenkins.assertLogContains("'TapResults',true,'JunitResults',true, + " +
-                                  "'CoberturaCodeCoverage',true,'CoberturaModelCoverage',true, +" +
+        jenkins.assertLogContains("'TapResults',true,'JunitResults',true," +
+                                  "'CoberturaCodeCoverage',true,'CoberturaModelCoverage',true," +
                                   "'ExportTestResults',true,'IntegratedTestResults',true", build);
     }
     
