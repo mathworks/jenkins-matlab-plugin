@@ -548,7 +548,6 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         String tapResults = "'TapResults'" + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
         String junitResults = "'JunitResults'" + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
         String coberturaCodeCoverage = "'CoberturaCodeCoverage'" + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
-        
         String coberturaModelCoverage = "'CoberturaModelCoverage'" + "," + getTestRunTypeList().getBooleanByName("taCoberturaModelChkBx");
         String exportResults = "'ExportTestResults'" + "," + getTestRunTypeList().getBooleanByName("taExportResultsChkBx");
         String integratedReport = "'IntegratedTestResults'" + "," + getTestRunTypeList().getBooleanByName("taIntegratedRptChkBx");

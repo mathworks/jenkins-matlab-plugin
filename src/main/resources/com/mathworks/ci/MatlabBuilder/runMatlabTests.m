@@ -98,7 +98,7 @@ if produceModelCoverage
     end
 end
 
-% Produce unified MATLAB Unit/Simulink Test Manager test report or/and save
+% Produce unified MATLAB/Simulink Test report or/and save
 % Simulink Test results in MLDATX format (Not supported below R2018b)
 if produceIntegratedResults || exportTestResults
     if isTestManagerResultsPluginNotPresent
@@ -108,17 +108,17 @@ if produceIntegratedResults || exportTestResults
         import matlab.unittest.plugins.TestReportPlugin;
         
         mkdirIfNeeded(resultsDir);
-        pdfFile = fullfile(resultsDir, 'integratedresults.pdf');
+        htmlFolder = fullfile(resultsDir, 'integratedResults');
         mldatxFile = fullfile(resultsDir, 'simulinktestresults.mldatx');
             
         if produceIntegratedResults && exportTestResults
-            runner.addPlugin(TestReportPlugin.producingPDF(pdfFile, 'IncludingPassingDiagnostics', true));
+            runner.addPlugin(TestReportPlugin.producingHTML(htmlFolder, 'IncludingPassingDiagnostics', true));
             runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));
-        elseif exportTestResults
-            runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));
-        else
-            runner.addPlugin(TestReportPlugin.producingPDF(pdfFile, 'IncludingPassingDiagnostics', true));
+        elseif produceIntegratedResults
+            runner.addPlugin(TestReportPlugin.producingHTML(htmlFolder, 'IncludingPassingDiagnostics', true));
             runner.addPlugin(TestManagerResultsPlugin);
+        else
+            runner.addPlugin(TestManagerResultsPlugin('ExportToFile', mldatxFile));
         end
     end
 end
