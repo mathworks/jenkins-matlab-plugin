@@ -332,7 +332,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public boolean getTaJunitChkBx() {
             return taJunitChkBx;
         }
-     
+
         public boolean getTaCoberturaChkBx() {
             return taCoberturaChkBx;
         }
