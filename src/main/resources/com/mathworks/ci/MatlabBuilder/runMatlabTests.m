@@ -98,7 +98,7 @@ if produceModelCoverage
     end
 end
 
-% Produce unified MATLAB/Simulink Test report or/and save
+% Produce unified MATLAB/Simulink Test report and save
 % Simulink Test results in MLDATX format (Not supported below R2018b)
 if produceIntegratedResults || exportTestResults
     if isTestManagerResultsPluginNotPresent
