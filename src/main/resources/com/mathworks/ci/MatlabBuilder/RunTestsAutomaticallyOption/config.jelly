@@ -9,8 +9,8 @@
   	  <f:entry field="taJunitChkBx">
     	<f:checkbox title="JUnit-style test results" name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
   	  </f:entry>
-        
-  	 <f:entry field="taCoberturaChkBx">
+  	  
+  	  <f:entry field="taCoberturaChkBx">
     	<f:checkbox title="Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
      </f:entry>   
 
