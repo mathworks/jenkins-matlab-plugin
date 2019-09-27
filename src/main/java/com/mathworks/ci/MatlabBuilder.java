@@ -521,7 +521,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                 Message.getValue("builder.matlab.customcommandoption.display.name"))) {
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
-            runCommand = "try,exit(" + matlabFunctionName + "(" 
+            runCommand = "try,exit(" + matlabFunctionName + "("
                     + getInputArguments() + ","
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
         } else {
