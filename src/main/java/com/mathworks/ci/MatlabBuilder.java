@@ -55,6 +55,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
     private EnvVars env;
+    private FilePath workspace;
     private static final String MATLAB_RUNNER_TARGET_FILE =
             "Builder.matlab.runner.target.file.name";
     private static final String MATLAB_RUNNER_RESOURCE =
@@ -99,6 +100,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
     private void setEnv(EnvVars env) {
         this.env = env;
+    }
+    private void setWorkspace(FilePath workspace) {
+        this.workspace = workspace;
     }
 
     @Extension
@@ -408,9 +412,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             TaskListener listener, boolean isLinuxLauncher)
             throws IOException, InterruptedException {
         setEnv(build.getEnvironment(listener));
-        //Copy MATLAB scratch file into the workspace
-        copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
-                workspace, getClass().getClassLoader());
+        setWorkspace(workspace);
         ProcStarter matlabLauncher;
         try {
             MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
@@ -428,12 +430,16 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         return matlabLauncher.join();
     }
 
-    public List<String> constructMatlabCommandWithBatch() {
+    public List<String> constructMatlabCommandWithBatch() throws IOException, InterruptedException {
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
         final String runCommand;
         final List<String> matlabDefaultArgs;
         if (!testRunMode.equalsIgnoreCase(
                 Message.getValue("builder.matlab.customcommandoption.display.name"))) {
+            
+            //Copy MATLAB scratch file into the workspace only if Automatic option is selected.
+            copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
+                    this.workspace, getClass().getClassLoader());
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
             runCommand = "exit(" + matlabFunctionName + "("
@@ -452,7 +458,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         return matlabDefaultArgs;
     }
 
-    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher) {
+    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher) throws IOException, InterruptedException {
         final List<String> matlabDefaultArgs = new ArrayList<String>();
         Collections.addAll(matlabDefaultArgs, getPreRunnerSwitches());
         if (!isLinuxLauncher) {
@@ -479,11 +485,15 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         return postRunnerSwitch;
     }
 
-    private String[] getRunnerSwitch() {
+    private String[] getRunnerSwitch() throws IOException, InterruptedException {
         final String runCommand;
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
         if (!testRunMode.equalsIgnoreCase(
                 Message.getValue("builder.matlab.customcommandoption.display.name"))) {
+            
+            //Copy MATLAB scratch file into the workspace only if Automatic option is selected.
+            copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
+                    this.workspace, getClass().getClassLoader());
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
             runCommand = "try,exit(" + matlabFunctionName + "("
