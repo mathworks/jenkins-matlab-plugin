@@ -187,9 +187,8 @@ public class MatlabBuilderTest {
     public void verifyBuildFailureWhenMatlabException() throws Exception {
         MatlabBuilderTester tester = new MatlabBuilderTester(getMatlabroot("R2018b"),
                 matlabExecutorAbsolutePath, "-positiveFail");
-        // tester.setFailBuildIfTestFailureCheckBox(false);
+        tester.setTestRunTypeList(new RunTestsAutomaticallyOption());
         project.getBuildersList().add(tester);
-
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
@@ -202,6 +201,7 @@ public class MatlabBuilderTest {
     public void verifyMatlabInvokedWithValidExecutable() throws Exception {
         MatlabBuilderTester tester = new MatlabBuilderTester(getMatlabroot("R2018b"),
                 matlabExecutorAbsolutePath, "-positive");
+        tester.setTestRunTypeList(new RunTestsAutomaticallyOption());
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
@@ -218,7 +218,7 @@ public class MatlabBuilderTest {
         MatlabBuilderTester tester = new MatlabBuilderTester(getMatlabroot("R2018b"),
                 matlabExecutorAbsolutePath, "-positive");
         project.getBuildersList().add(tester);
-
+        tester.setTestRunTypeList(new RunTestsAutomaticallyOption());
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains(matlabExecutorAbsolutePath, build);
@@ -299,6 +299,32 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("true,true,true", build);
+    }
+    
+    /*
+     * Test to verify if MATALB scratch file is generated in workspace for Automatic option.
+     */
+    @Test
+    public void verifyMATLABscratchFileGeneratedForAutomaticOption() throws Exception {
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
+        this.matlabBuilder.setTestRunTypeList(new RunTestsAutomaticallyOption());
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        Assert.assertTrue(matlabRunner.exists());
+    }
+    
+    /*
+     * Test to verify if MATALB scratch file is not generated in workspace for Custom option.
+     */
+    @Test
+    public void verifyMATLABscratchFileGeneratedForCustomOption() throws Exception {
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
+        this.matlabBuilder.setTestRunTypeList(new RunTestsWithCustomCommandOption());
+        project.getBuildersList().add(this.matlabBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        Assert.assertFalse(matlabRunner.exists());
     }
     
     /*
