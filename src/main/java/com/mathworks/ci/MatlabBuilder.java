@@ -59,6 +59,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             "Builder.matlab.runner.target.file.name";
     private static final String MATLAB_RUNNER_RESOURCE =
             "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
+    private static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
 
 
     @DataBoundConstructor
@@ -408,11 +409,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             TaskListener listener, boolean isLinuxLauncher)
             throws IOException, InterruptedException {
         setEnv(build.getEnvironment(listener));
-        final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
+        final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
         
         // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
-        if (!testRunMode.equalsIgnoreCase(
-                Message.getValue("builder.matlab.customcommandoption.display.name"))) {
+        if (testRunMode.contains(AUTOMATIC_OPTION)) {
             copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
                     workspace, getClass().getClassLoader());
         }
@@ -434,11 +434,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
 
     public List<String> constructMatlabCommandWithBatch() {
-        final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
+        final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
         final String runCommand;
         final List<String> matlabDefaultArgs;
-        if (!testRunMode.equalsIgnoreCase(
-                Message.getValue("builder.matlab.customcommandoption.display.name"))) {
+        if (testRunMode.contains(AUTOMATIC_OPTION)) {
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
             runCommand = "exit(" + matlabFunctionName + "("
@@ -486,9 +485,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     private String[] getRunnerSwitch() {
         final String runCommand;
-        final String testRunMode = this.getTestRunTypeList().getDescriptor().getDisplayName();
-        if (!testRunMode.equalsIgnoreCase(
-                Message.getValue("builder.matlab.customcommandoption.display.name"))) {
+        final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
+        if (testRunMode.contains(AUTOMATIC_OPTION)) {
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
             runCommand = "try,exit(" + matlabFunctionName + "("
