@@ -64,7 +64,6 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final String junitResultsStr  = "'JunitResults'";
     private static final String testReportStr    = "'MATLABTestReport'";
     private static final String stmResultsStr    = "'SimulinkTestResults'";
-    
     private static final String codeCoverageStr  = "'CoberturaCodeCoverage'";
     private static final String modelCoverageStr = "'CoberturaModelCoverage'";
 
@@ -556,7 +555,6 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         String junitResults           = junitResultsStr + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
         String testReport             = testReportStr + "," + getTestRunTypeList().getBooleanByName("taTestReportChkBx");
         String stmResults             = stmResultsStr + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
-        
         String coberturaCodeCoverage  = codeCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
         String coberturaModelCoverage = modelCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaModelChkBx");
         
