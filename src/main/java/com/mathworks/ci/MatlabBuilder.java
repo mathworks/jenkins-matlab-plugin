@@ -60,12 +60,13 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final String MATLAB_RUNNER_RESOURCE =
             "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
     
-    private static final String tapResultsStr        = "'TapResults'";
-    private static final String junitResultsStr      = "'JunitResults'";
-    private static final String codeCoverageStr      = "'CoberturaCodeCoverage'";
-    private static final String modelCoverageStr     = "'CoberturaModelCoverage'";
-    private static final String exportResultsStr     = "'ExportTestResults'";
-    private static final String integratedResultsStr = "'IntegratedTestResults'";
+    private static final String tapResultsStr    = "'TapResults'";
+    private static final String junitResultsStr  = "'JunitResults'";
+    private static final String testReportStr    = "'MATLABTestReport'";
+    private static final String stmResultsStr    = "'SimulinkTestResults'";
+    
+    private static final String codeCoverageStr  = "'CoberturaCodeCoverage'";
+    private static final String modelCoverageStr = "'CoberturaModelCoverage'";
 
     @DataBoundConstructor
     public MatlabBuilder() {
@@ -293,8 +294,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         private boolean taCoberturaChkBx;
         
         private boolean taCoberturaModelChkBx;
-        private boolean taExportResultsChkBx;
-        private boolean taIntegratedRptChkBx;
+        private boolean taSTMResultsChkBx;
+        private boolean taTestReportChkBx;
         
         @DataBoundConstructor
         public RunTestsAutomaticallyOption() {
@@ -322,13 +323,13 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
         
         @DataBoundSetter
-        public void setTaExportResultsChkBx(boolean taExportResultsChkBx) {
-            this.taExportResultsChkBx = taExportResultsChkBx;
+        public void setTaSTMResultsChkBx(boolean taSTMResultsChkBx) {
+            this.taSTMResultsChkBx = taSTMResultsChkBx;
         }
         
         @DataBoundSetter
-        public void setTaIntegratedRptChkBx(boolean taIntegratedRptChkBx) {
-            this.taIntegratedRptChkBx = taIntegratedRptChkBx;
+        public void setTaTestReportChkBx(boolean taTestReportChkBx) {
+            this.taTestReportChkBx = taTestReportChkBx;
         }
         
         public boolean getTatapChkBx() {
@@ -347,12 +348,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return taCoberturaModelChkBx;
         }
         
-        public boolean getTaExportResultsChkBx() {
-            return taExportResultsChkBx;
+        public boolean getTaSTMResultsChkBx() {
+            return taSTMResultsChkBx;
         }
         
-        public boolean getTaIntegratedRptChkBx() {
-            return taIntegratedRptChkBx;
+        public boolean getTaTestReportChkBx() {
+            return taTestReportChkBx;
         }
         
         @Extension
@@ -374,10 +375,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return this.getTaCoberturaChkBx();
                 case "taCoberturaModelChkBx":
                     return this.getTaCoberturaModelChkBx();
-                case "taExportResultsChkBx":
-                    return this.getTaExportResultsChkBx();
-                case "taIntegratedRptChkBx":
-                    return this.getTaIntegratedRptChkBx();
+                case "taSTMResultsChkBx":
+                    return this.getTaSTMResultsChkBx();
+                case "taTestReportChkBx":
+                    return this.getTaTestReportChkBx();
                 default:
                     return false;
             }
@@ -553,13 +554,14 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         
         String tapResults             = tapResultsStr + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
         String junitResults           = junitResultsStr + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
+        String testReport             = testReportStr + "," + getTestRunTypeList().getBooleanByName("taTestReportChkBx");
+        String stmResults             = stmResultsStr + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
+        
         String coberturaCodeCoverage  = codeCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
         String coberturaModelCoverage = modelCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaModelChkBx");
-        String exportResults          = exportResultsStr + "," + getTestRunTypeList().getBooleanByName("taExportResultsChkBx");
-        String integratedReport       = integratedResultsStr + "," + getTestRunTypeList().getBooleanByName("taIntegratedRptChkBx");
         
-        String inputArgsToMatlabFcn   = tapResults + "," + junitResults + "," + coberturaCodeCoverage + "," 
-                                        + coberturaModelCoverage + "," + exportResults + "," + integratedReport;
+        String inputArgsToMatlabFcn   = tapResults + "," + junitResults + "," + testReport + "," 
+                                        + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
         
         return inputArgsToMatlabFcn;
     }

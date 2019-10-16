@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     
-<f:section title="Generate Test Artifacts">
+<f:section title="Generate Test Results Artifacts">
 	 <f:entry field="tatapChkBx">
     	<f:checkbox title="TAP test results" name="tatapChkBx" checked="${instance.tatapChkBx}"/>
      </f:entry>
@@ -10,21 +10,22 @@
     	<f:checkbox title="JUnit-style test results" name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
   	  </f:entry>
   	  
-  	  <f:entry field="taCoberturaChkBx">
-    	<f:checkbox title="Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
+  	 <f:entry field="taTestReportChkBx">
+    	<f:checkbox title="MATLAB test report " name="taTestReportChkBx" checked="${instance.taTestReportChkBx}"/>
+     </f:entry>       
+
+  	 <f:entry field="taSTMResultsChkBx">
+    	<f:checkbox title="Simulink Test&#8482; Manager results" name="taSTMResultsChkBx" checked="${instance.taSTMResultsChkBx}"/>
      </f:entry>   
-
-  	 <f:entry field="taCoberturaModelChkBx">
-    	<f:checkbox title="Cobertura model coverage" name="taCoberturaModelChkBx" checked="${instance.taCoberturaModelChkBx}"/>
-     </f:entry> 
-
-  	 <f:entry field="taExportResultsChkBx">
-    	<f:checkbox title="Export Simulink Test results" name="taExportResultsChkBx" checked="${instance.taExportResultsChkBx}"/>
-     </f:entry>
-
-  	 <f:entry field="taIntegratedRptChkBx">
-    	<f:checkbox title="Integrated test results" name="taIntegratedRptChkBx" checked="${instance.taIntegratedRptChkBx}"/>
-     </f:entry>        
 </f:section>
 
+<f:section title="Generate Coverage Artifacts">
+	 <f:entry field="taCoberturaChkBx">
+    	<f:checkbox title="Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
+     </f:entry>
+     	
+  	  <f:entry field="taCoberturaModelChkBx">
+    	<f:checkbox title="Cobertura model coverage" name="taCoberturaModelChkBx" checked="${instance.taCoberturaModelChkBx}"/>
+  	  </f:entry>  
+</f:section>
 </j:jelly>
