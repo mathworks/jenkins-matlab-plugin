@@ -51,6 +51,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
     private static final double BASE_MATLAB_VERSION_BATCH_SUPPORT = 9.5;
     private static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
+    private static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.4;
+    private static final double BASE_MATLAB_VERSION_SAVINGSTMRESULTS_SUPPORT = 9.6;
     private int buildResult;
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
@@ -62,7 +64,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     
     private static final String tapResultsStr    = "'TapResults'";
     private static final String junitResultsStr  = "'JunitResults'";
-    private static final String testReportStr    = "'MATLABTestReport'";
+    private static final String testReportStr    = "'TestReport'";
     private static final String stmResultsStr    = "'SimulinkTestResults'";
     private static final String codeCoverageStr  = "'CoberturaCodeCoverage'";
     private static final String modelCoverageStr = "'CoberturaModelCoverage'";
@@ -278,6 +280,66 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
             return FormValidation.ok();
         };
+        
+        public FormValidation doCheckTaCoberturaModelChkBx(@QueryParameter boolean taCoberturaModelChkBx) {
+            List<Function<String, FormValidation>> listOfCheckMethods =
+            new ArrayList<Function<String, FormValidation>>();
+            final String matlabRoot = Jenkins.getInstance()
+            .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            if (taCoberturaModelChkBx) {
+                listOfCheckMethods.add(chkModelCoverageSupport);
+            }
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+            .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+        }
+        
+        Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
+            rel = new MatlabReleaseInfo(matlabRoot);
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+            if(!resolver.hasVariablePattern()) {
+                try {
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
+                        return FormValidation
+                        .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
+                    }
+                } catch (MatlabVersionNotFoundException e) {
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                }
+            }
+            
+            
+            return FormValidation.ok();
+        };
+        
+        public FormValidation doCheckTaSTMResultsChkBx(@QueryParameter boolean taSTMResultsChkBx) {
+            List<Function<String, FormValidation>> listOfCheckMethods =
+            new ArrayList<Function<String, FormValidation>>();
+            final String matlabRoot = Jenkins.getInstance()
+            .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            if (taSTMResultsChkBx) {
+                listOfCheckMethods.add(chkSavingSTMResultsSupport);
+            }
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+            .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+        }
+        
+        Function<String, FormValidation> chkSavingSTMResultsSupport = (String matlabRoot) -> {
+            rel = new MatlabReleaseInfo(matlabRoot);
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+            if(!resolver.hasVariablePattern()) {
+                try {
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_SAVINGSTMRESULTS_SUPPORT)) {
+                        return FormValidation
+                        .warning(Message.getValue("Builder.matlab.savingstmresults.support.warning"));
+                    }
+                } catch (MatlabVersionNotFoundException e) {
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                }
+            }
+            
+            
+            return FormValidation.ok();
+        };
 
     }
 
@@ -291,7 +353,6 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         private boolean tatapChkBx;
         private boolean taJunitChkBx;
         private boolean taCoberturaChkBx;
-        
         private boolean taCoberturaModelChkBx;
         private boolean taSTMResultsChkBx;
         private boolean taTestReportChkBx;

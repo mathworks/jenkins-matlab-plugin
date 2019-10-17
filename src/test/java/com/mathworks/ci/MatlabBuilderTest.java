@@ -299,8 +299,8 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("'TapResults',true,'JunitResults',true," +
-                                  "'CoberturaCodeCoverage',true,'CoberturaModelCoverage',true," +
-                                  "'ExportTestResults',true,'IntegratedTestResults',true", build);
+                                  "'MATLABTestReport',true,'SimulinkTestResults',true" +
+                                  "'CoberturaCodeCoverage',true,'CoberturaModelCoverage',true,", build);
     }
     
     /*
@@ -463,8 +463,8 @@ public class MatlabBuilderTest {
         runOption.setTaJunitChkBx(true);
         runOption.setTatapChkBx(true);
         runOption.setTaCoberturaModelChkBx(true);
-        runOption.setTaExportResultsChkBx(true);
-        runOption.setTaIntegratedRptChkBx(true);
+        runOption.setTaSTMResultsChkBx(true);
+        runOption.setTaTestReportChkBx(true);
         this.matlabBuilder.setTestRunTypeList(runOption);
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();

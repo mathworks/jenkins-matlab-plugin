@@ -11,7 +11,7 @@
   	  </f:entry>
   	  
   	 <f:entry field="taTestReportChkBx">
-    	<f:checkbox title="MATLAB test report " name="taTestReportChkBx" checked="${instance.taTestReportChkBx}"/>
+    	<f:checkbox title="Test report " name="taTestReportChkBx" checked="${instance.taTestReportChkBx}"/>
      </f:entry>       
 
   	 <f:entry field="taSTMResultsChkBx">
