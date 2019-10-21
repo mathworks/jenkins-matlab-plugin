@@ -299,7 +299,7 @@ public class MatlabBuilderTest {
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("'TapResults',true,'JunitResults',true," +
-                                  "'MATLABTestReport',true,'SimulinkTestResults',true" +
+                                  "'TestReport',true,'SimulinkTestResults',true" +
                                   "'CoberturaCodeCoverage',true,'CoberturaModelCoverage',true,", build);
     }
     

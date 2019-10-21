@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     
-<f:section title="Generate Test Results Artifacts">
+<f:section title="Generate Test Artifacts">
 	 <f:entry field="tatapChkBx">
     	<f:checkbox title="TAP test results" name="tatapChkBx" checked="${instance.tatapChkBx}"/>
      </f:entry>
@@ -15,7 +15,7 @@
      </f:entry>       
 
   	 <f:entry field="taSTMResultsChkBx">
-    	<f:checkbox title="Simulink Test&#8482; Manager results" name="taSTMResultsChkBx" checked="${instance.taSTMResultsChkBx}"/>
+    	<f:checkbox title="Simulink Test Manager results" name="taSTMResultsChkBx" checked="${instance.taSTMResultsChkBx}"/>
      </f:entry>   
 </f:section>
 
