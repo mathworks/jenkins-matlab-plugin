@@ -104,7 +104,7 @@ end
 if producePDFTestReport && ~saveSimulinkTestResults
     if testReportPluginNotPresent
         warning('MATLAB:testArtifact:testReportNotSupported', ...
-            'Producing MATLAB test report is not supported in this release.');
+            'Producing pdf style test report is not supported in this release.');
     else
         import matlab.unittest.plugins.TestReportPlugin;
         mkdirIfNeeded(resultsDir);
@@ -141,7 +141,7 @@ if producePDFTestReport && saveSimulinkTestResults
         
         if testReportPluginNotPresent
             warning('MATLAB:testArtifact:testReportNotSupported', ...
-                'Producing MATLAB test report is not supported in this release.');
+                'Producing pdf style test report is not supported in this release.');
         else
             if exist('sltest.plugins.TestManagerResultsPlugin', 'class')
                 runner.addPlugin(TestManagerResultsPlugin);
