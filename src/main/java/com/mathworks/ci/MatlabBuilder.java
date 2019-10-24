@@ -51,6 +51,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
     private static final double BASE_MATLAB_VERSION_BATCH_SUPPORT = 9.5;
     private static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
+    private static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.4;
+    private static final double BASE_MATLAB_VERSION_SAVESTMRESULTS_SUPPORT = 9.6;
     private int buildResult;
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
@@ -61,6 +63,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
     private static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
 
+    private static final String pdfReportStr     = "'PDFReport'";
+    private static final String tapResultsStr    = "'TapResults'";
+    private static final String junitResultsStr  = "'JunitResults'";
+    private static final String stmResultsStr    = "'SimulinkTestResults'";
+    private static final String codeCoverageStr  = "'CoberturaCodeCoverage'";
+    private static final String modelCoverageStr = "'CoberturaModelCoverage'";
 
     @DataBoundConstructor
     public MatlabBuilder() {
@@ -273,6 +281,66 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
             return FormValidation.ok();
         };
+        
+        public FormValidation doCheckTaModelCoverageChkBx(@QueryParameter boolean taModelCoverageChkBx) {
+            List<Function<String, FormValidation>> listOfCheckMethods =
+            new ArrayList<Function<String, FormValidation>>();
+            final String matlabRoot = Jenkins.getInstance()
+            .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            if (taModelCoverageChkBx) {
+                listOfCheckMethods.add(chkModelCoverageSupport);
+            }
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+            .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+        }
+        
+        Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
+            rel = new MatlabReleaseInfo(matlabRoot);
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+            if(!resolver.hasVariablePattern()) {
+                try {
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
+                        return FormValidation
+                        .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
+                    }
+                } catch (MatlabVersionNotFoundException e) {
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                }
+            }
+            
+            
+            return FormValidation.ok();
+        };
+        
+        public FormValidation doCheckTaSTMResultsChkBx(@QueryParameter boolean taSTMResultsChkBx) {
+            List<Function<String, FormValidation>> listOfCheckMethods =
+            new ArrayList<Function<String, FormValidation>>();
+            final String matlabRoot = Jenkins.getInstance()
+            .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            if (taSTMResultsChkBx) {
+                listOfCheckMethods.add(chkSTMResultsSupport);
+            }
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+            .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+        }
+        
+        Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
+            rel = new MatlabReleaseInfo(matlabRoot);
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+            if(!resolver.hasVariablePattern()) {
+                try {
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_SAVESTMRESULTS_SUPPORT)) {
+                        return FormValidation
+                        .warning(Message.getValue("Builder.matlab.savingstmresults.support.warning"));
+                    }
+                } catch (MatlabVersionNotFoundException e) {
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                }
+            }
+            
+            
+            return FormValidation.ok();
+        };
 
     }
 
@@ -286,6 +354,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         private boolean tatapChkBx;
         private boolean taJunitChkBx;
         private boolean taCoberturaChkBx;
+        private boolean taModelCoverageChkBx;
+        private boolean taSTMResultsChkBx;
+        private boolean taPDFReportChkBx;
 
         @DataBoundConstructor
         public RunTestsAutomaticallyOption() {
@@ -307,6 +378,21 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             this.taCoberturaChkBx = taCoberturaChkBx;
         }
 
+        @DataBoundSetter
+        public void setTaModelCoverageChkBx(boolean taModelCoverageChkBx) {
+            this.taModelCoverageChkBx = taModelCoverageChkBx;
+        }
+        
+        @DataBoundSetter
+        public void setTaSTMResultsChkBx(boolean taSTMResultsChkBx) {
+            this.taSTMResultsChkBx = taSTMResultsChkBx;
+        }
+        
+        @DataBoundSetter
+        public void setTaPDFReportChkBx(boolean taPDFReportChkBx) {
+            this.taPDFReportChkBx = taPDFReportChkBx;
+        }
+        
         public boolean getTatapChkBx() {
             return tatapChkBx;
         }
@@ -319,6 +405,18 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return taCoberturaChkBx;
         }
 
+        public boolean getTaModelCoverageChkBx() {
+            return taModelCoverageChkBx;
+        }
+        
+        public boolean getTaSTMResultsChkBx() {
+            return taSTMResultsChkBx;
+        }
+        
+        public boolean getTaPDFReportChkBx() {
+            return taPDFReportChkBx;
+        }
+        
         @Extension
         public static final class DescriptorImpl extends TestRunTypeDescriptor {
             @Override
@@ -336,6 +434,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return this.getTaJunitChkBx();
                 case "taCoberturaChkBx":
                     return this.getTaCoberturaChkBx();
+                case "taModelCoverageChkBx":
+                    return this.getTaModelCoverageChkBx();
+                case "taSTMResultsChkBx":
+                    return this.getTaSTMResultsChkBx();
+                case "taPDFReportChkBx":
+                    return this.getTaPDFReportChkBx();
                 default:
                     return false;
             }
@@ -441,9 +545,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
             runCommand = "exit(" + matlabFunctionName + "("
-                    + getTestRunTypeList().getBooleanByName("taJunitChkBx") + ","
-                    + getTestRunTypeList().getBooleanByName("tatapChkBx") + ","
-                    + getTestRunTypeList().getBooleanByName("taCoberturaChkBx") + "))";
+                    + getInputArguments() + "))";
         } else {
 
             runCommand = getCustomMatlabCommand();
@@ -490,9 +592,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
             runCommand = "try,exit(" + matlabFunctionName + "("
-                    + getTestRunTypeList().getBooleanByName("taJunitChkBx") + ","
-                    + getTestRunTypeList().getBooleanByName("tatapChkBx") + ","
-                    + getTestRunTypeList().getBooleanByName("taCoberturaChkBx")
+                    + getInputArguments() + ","
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
         } else {
             runCommand = "try,eval(\"" + getCustomMatlabCommand().replaceAll("\"","\"\"")
@@ -511,6 +611,21 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                 new File(workspace.getRemote(), Message.getValue(matlabRunnerTarget)).toPath();
 
         Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+    }
+    
+    private String getInputArguments() {
+        
+        String tapResults             = tapResultsStr + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
+        String junitResults           = junitResultsStr + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
+        String pdfReport              = pdfReportStr + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
+        String stmResults             = stmResultsStr + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
+        String coberturaCodeCoverage  = codeCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
+        String coberturaModelCoverage = modelCoverageStr + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
+        
+        String inputArgsToMatlabFcn   = pdfReport + "," + tapResults + "," + junitResults + ","
+        + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
+        
+        return inputArgsToMatlabFcn;
     }
     
 }

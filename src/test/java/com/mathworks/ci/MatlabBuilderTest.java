@@ -31,7 +31,7 @@ import com.mathworks.ci.MatlabBuilder.RunTestsWithCustomCommandOption;
 
 
 /*
- * Copyright 2018 The MathWorks, Inc.
+ * Copyright 2018-2019 The MathWorks, Inc.
  * 
  * Test class for MatlabBuilder
  * 
@@ -298,7 +298,9 @@ public class MatlabBuilderTest {
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
-        jenkins.assertLogContains("true,true,true", build);
+        jenkins.assertLogContains("\'PDFTestReport\',true,\'TapResults\',true," +
+                                  "\'JunitResults\',true,\'SimulinkTestResults\',true," +
+                                  "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
     }
     
     /*
@@ -416,6 +418,38 @@ public class MatlabBuilderTest {
     }
     
     /*
+     * Test to verify that UI displays model coverage warning message when unsupported MATLAB version is used.
+     *
+     */
+
+    @Test
+    public void verifyModelCoverageWarning() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("taModelCoverageChkBx");
+        modelCoverageChkBx.setChecked(true);
+        Thread.sleep(2000);
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.modelcoverage.support.warning"));
+    }
+    
+    /*
+     * Test to verify that UI displays STM results warning message when unsupported MATLAB version is used.
+     *
+     */
+
+    @Test
+    public void verifySTMResultsWarning() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("taSTMResultsChkBx");
+        stmResultsChkBx.setChecked(true);
+        Thread.sleep(2000);
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.savingstmresults.support.warning"));
+    }
+    
+    /*
      * Test To verify UI displays Cobertura Error message when invalid MATLAB root entered.
      * 
      */
@@ -484,6 +518,9 @@ public class MatlabBuilderTest {
         runOption.setTaCoberturaChkBx(true);
         runOption.setTaJunitChkBx(true);
         runOption.setTatapChkBx(true);
+        runOption.setTaModelCoverageChkBx(true);
+        runOption.setTaPDFReportChkBx(true);
+        runOption.setTaSTMResultsChkBx(true);
         this.matlabBuilder.setTestRunTypeList(runOption);
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
