@@ -298,7 +298,7 @@ public class MatlabBuilderTest {
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
-        jenkins.assertLogContains("\'PDFTestReport\',true,\'TapResults\',true," +
+        jenkins.assertLogContains("\'PDFReport\',true,\'TapResults\',true," +
                                   "\'JunitResults\',true,\'SimulinkTestResults\',true," +
                                   "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
     }
@@ -446,7 +446,7 @@ public class MatlabBuilderTest {
         HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("taSTMResultsChkBx");
         stmResultsChkBx.setChecked(true);
         Thread.sleep(2000);
-        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.savingstmresults.support.warning"));
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.matlab.exportstmresults.support.warning"));
     }
     
     /*

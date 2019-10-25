@@ -52,7 +52,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final double BASE_MATLAB_VERSION_BATCH_SUPPORT = 9.5;
     private static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
     private static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.4;
-    private static final double BASE_MATLAB_VERSION_SAVESTMRESULTS_SUPPORT = 9.6;
+    private static final double BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT = 9.6;
     private int buildResult;
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
@@ -329,9 +329,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(BASE_MATLAB_VERSION_SAVESTMRESULTS_SUPPORT)) {
+                    if (rel.verLessThan(BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
                         return FormValidation
-                        .warning(Message.getValue("Builder.matlab.savingstmresults.support.warning"));
+                        .warning(Message.getValue("Builder.matlab.exportstmresults.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
                     return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
@@ -354,9 +354,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         private boolean tatapChkBx;
         private boolean taJunitChkBx;
         private boolean taCoberturaChkBx;
-        private boolean taModelCoverageChkBx;
-        private boolean taSTMResultsChkBx;
         private boolean taPDFReportChkBx;
+        private boolean taSTMResultsChkBx;
+        private boolean taModelCoverageChkBx;
 
         @DataBoundConstructor
         public RunTestsAutomaticallyOption() {
@@ -377,10 +377,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public void setTaCoberturaChkBx(boolean taCoberturaChkBx) {
             this.taCoberturaChkBx = taCoberturaChkBx;
         }
-
+        
         @DataBoundSetter
-        public void setTaModelCoverageChkBx(boolean taModelCoverageChkBx) {
-            this.taModelCoverageChkBx = taModelCoverageChkBx;
+        public void setTaPDFReportChkBx(boolean taPDFReportChkBx) {
+            this.taPDFReportChkBx = taPDFReportChkBx;
         }
         
         @DataBoundSetter
@@ -389,8 +389,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
         
         @DataBoundSetter
-        public void setTaPDFReportChkBx(boolean taPDFReportChkBx) {
-            this.taPDFReportChkBx = taPDFReportChkBx;
+        public void setTaModelCoverageChkBx(boolean taModelCoverageChkBx) {
+            this.taModelCoverageChkBx = taModelCoverageChkBx;
         }
         
         public boolean getTatapChkBx() {
@@ -404,17 +404,17 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public boolean getTaCoberturaChkBx() {
             return taCoberturaChkBx;
         }
-
-        public boolean getTaModelCoverageChkBx() {
-            return taModelCoverageChkBx;
+                
+        public boolean getTaPDFReportChkBx() {
+            return taPDFReportChkBx;
         }
-        
+
         public boolean getTaSTMResultsChkBx() {
             return taSTMResultsChkBx;
         }
-        
-        public boolean getTaPDFReportChkBx() {
-            return taPDFReportChkBx;
+                
+        public boolean getTaModelCoverageChkBx() {
+            return taModelCoverageChkBx;
         }
         
         @Extension
@@ -434,12 +434,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return this.getTaJunitChkBx();
                 case "taCoberturaChkBx":
                     return this.getTaCoberturaChkBx();
-                case "taModelCoverageChkBx":
-                    return this.getTaModelCoverageChkBx();
-                case "taSTMResultsChkBx":
-                    return this.getTaSTMResultsChkBx();
                 case "taPDFReportChkBx":
                     return this.getTaPDFReportChkBx();
+                case "taSTMResultsChkBx":
+                    return this.getTaSTMResultsChkBx();
+                case "taModelCoverageChkBx":
+                    return this.getTaModelCoverageChkBx();
                 default:
                     return false;
             }
@@ -615,9 +615,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     
     private String getInputArguments() {
         
+        String pdfReport              = pdfReportStr + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
         String tapResults             = tapResultsStr + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
         String junitResults           = junitResultsStr + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
-        String pdfReport              = pdfReportStr + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
         String stmResults             = stmResultsStr + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
         String coberturaCodeCoverage  = codeCoverageStr + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
         String coberturaModelCoverage = modelCoverageStr + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
