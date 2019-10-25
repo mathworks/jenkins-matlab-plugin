@@ -15,7 +15,7 @@ p.parse(varargin{:});
 producePDFReport         = p.Results.PDFReport;
 produceTAP               = p.Results.TapResults;
 produceJUnit             = p.Results.JunitResults;
-exportSTMResults           = p.Results.SimulinkTestResults;
+exportSTMResults         = p.Results.SimulinkTestResults;
 produceCobertura         = p.Results.CoberturaCodeCoverage;
 produceModelCoverage     = p.Results.CoberturaModelCoverage;
 
@@ -127,9 +127,9 @@ end
 
 % Note: We can remove the following piece of code once c4668443 gets ported to 19a branch.
 %
-% This check is to tackle the situation when user wants both pdf report and simulink test results.  
-% Basically, TestManagerResultsPlugin throws an error if we use two different instances of 
-% TestManagerResultsPlugin (g1898027). The changes are already submitted but is yet to be ported in 19a.
+% This check is to tackle the situation wherein user wants both pdf report and simulink test results.  
+% Basically, TestManagerResultsPlugin throws an error if we use two different instances of the
+% same plugin (g1898027). The geck is fixed but the changes are yet to be ported to 19a.
 if producePDFReport && exportSTMResults
     try
         import matlab.unittest.plugins.TestReportPlugin;
@@ -206,9 +206,9 @@ function tf = stmResultsPluginPresent()
 tf = logical(exist('sltest.plugins.TestManagerResultsPlugin', 'class'));
 
 function tf = exportSTMResultsSupported()
-BASE_VERSION_SAVESTMRESULTS_SUPPORT = '9.6'; % R2019a
+BASE_VERSION_EXPORTSTMRESULTS_SUPPORT = '9.6'; % R2019a
 
-tf = ~verLessThan('matlab',BASE_VERSION_SAVESTMRESULTS_SUPPORT);
+tf = ~verLessThan('matlab',BASE_VERSION_EXPORTSTMRESULTS_SUPPORT);
 
 function issuePDFReportUnsupportedWarning()
 warning('MATLAB:testArtifact:pdfReportNotSupported', ...
