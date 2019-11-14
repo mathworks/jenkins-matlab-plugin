@@ -383,7 +383,7 @@ public class MatlabBuilderTest {
         project.getBuildersList().add(this.matlabBuilder);
         this.matlabBuilder.setMatlabRoot("/fake/matlab/path");
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
     
     /*
@@ -396,7 +396,7 @@ public class MatlabBuilderTest {
         project.getBuildersList().add(this.matlabBuilder);
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
+        WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
     
     /*
@@ -429,8 +429,8 @@ public class MatlabBuilderTest {
         coberturaChkBx.setChecked(true);
         Thread.sleep(2000);
         String pageText = page.asText();
-        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
-        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
+        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
     }
     
     /*

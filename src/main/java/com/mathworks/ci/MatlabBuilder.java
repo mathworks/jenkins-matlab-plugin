@@ -60,6 +60,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final String MATLAB_RUNNER_RESOURCE =
             "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
     private static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
+    private String fileSeparator;
 
 
     @DataBoundConstructor
@@ -100,6 +101,14 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
     private void setEnv(EnvVars env) {
         this.env = env;
+    }
+    
+    private void setFileSeparator(String fileSeparator) {
+        this.fileSeparator = fileSeparator;
+    }
+    
+    private String getFileSeparator() {
+        return this.fileSeparator;
     }
 
     @Extension
@@ -197,7 +206,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     }
                 } catch (MatlabVersionNotFoundException e) {
                     return FormValidation
-                            .error(Message.getValue("Builder.invalid.matlab.root.error"));
+                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             return FormValidation.ok();
@@ -266,7 +275,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                                 .warning(Message.getValue("Builder.matlab.cobertura.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             
@@ -394,6 +403,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {        
         final boolean isLinuxLauncher = launcher.isUnix();
+        String fileSeparator = getNodeSpecificFileSeperator(launcher);
+        this.setFileSeparator(fileSeparator);
         
         // Invoke MATLAB command and transfer output to standard
         // Output Console
@@ -414,11 +425,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
         if (testRunMode.contains(AUTOMATIC_OPTION)) {
             copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
-                    workspace, getClass().getClassLoader());
+                    workspace, getClass().getClassLoader(), launcher);
         }
         ProcStarter matlabLauncher;
         try {
-            MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
+            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
+            MatlabReleaseInfo rel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
@@ -450,7 +462,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
 
         matlabDefaultArgs =
-                Arrays.asList(getLocalMatlab() + File.separator + "bin" + File.separator + "matlab",
+                Arrays.asList(getLocalMatlab() + this.getFileSeparator() + "bin" + this.getFileSeparator() + "matlab",
                         "-batch", runCommand);
         
         return matlabDefaultArgs;
@@ -473,7 +485,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     private String[] getPreRunnerSwitches() {
         String[] preRunnerSwitches =
-                {getLocalMatlab() + File.separator + "bin" + File.separator + "matlab", "-nosplash",
+                {getLocalMatlab() + this.getFileSeparator() + "bin" + this.getFileSeparator() + "matlab", "-nosplash",
                         "-nodesktop", "-noAppIcon"};
         return preRunnerSwitches;
     }
@@ -504,13 +516,22 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
     
     private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
-            String matlabRunnerTarget, FilePath workspace, ClassLoader classLoader)
+            String matlabRunnerTarget, FilePath workspace, ClassLoader classLoader, Launcher launcher)
             throws IOException, InterruptedException {
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+        FilePath targetFile =
+                new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
         InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
-        Path target =
-                new File(workspace.getRemote(), Message.getValue(matlabRunnerTarget)).toPath();
 
-        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+        targetFile.copyFrom(in);
+    }
+    
+    private String getNodeSpecificFileSeperator(Launcher launcher) {
+        if (launcher.isUnix()) {
+            return "/";
+        } else {
+            return "\\";
+        }
     }
     
 }
