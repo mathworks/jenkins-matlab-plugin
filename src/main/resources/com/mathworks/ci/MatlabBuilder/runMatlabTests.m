@@ -100,67 +100,32 @@ if produceModelCoverage
     end
 end
 
-% Produce PDF test report (Not supported below R2016b)
-if producePDFReport && ~exportSTMResults
-    if ~testReportPluginPresent
-        issuePDFReportUnsupportedWarning();
-    else
-        import matlab.unittest.plugins.TestReportPlugin;
-        mkdirIfNeeded(resultsDir);
-        
-        if stmResultsPluginPresent
-            runner.addPlugin(TestManagerResultsPlugin);
-        end
-        runner.addPlugin(TestReportPlugin.producingPDF(getPDFFilePath(resultsDir)));
-    end
-end
+stmResultsPluginAddedToRunner = false;
 
 % Save Simulink Test Manager results in MLDATX format (Not supported below R2019a)
-if exportSTMResults && ~producePDFReport
+if exportSTMResults
     if ~stmResultsPluginPresent || ~exportSTMResultsSupported
         issueExportSTMResultsUnsupportedWarning();
     else
         mkdirIfNeeded(resultsDir);
         runner.addPlugin(TestManagerResultsPlugin('ExportToFile', getMLDATXFilePath(resultsDir)));
+        stmResultsPluginAddedToRunner = true;
     end
 end
 
-% Note: We can remove the following piece of code once c4668443 gets ported to 19a branch.
-%
-% This check is to tackle the situation wherein user wants both pdf report and simulink test results.  
-% Basically, TestManagerResultsPlugin throws an error if we use two different instances of the
-% same plugin (g1898027). The geck is fixed but the changes are yet to be ported to 19a.
-if producePDFReport && exportSTMResults
-    try
-        import matlab.unittest.plugins.TestReportPlugin;
+% Produce PDF test report (Not supported below R2016b)
+if producePDFReport
+    if ~testReportPluginPresent
+        issuePDFReportUnsupportedWarning();
+    else
         mkdirIfNeeded(resultsDir);
-
-        testReportPlugin = TestReportPlugin.producingPDF(getPDFFilePath(resultsDir));
-        stmResultsPlugin = TestManagerResultsPlugin('ExportToFile', getMLDATXFilePath(resultsDir));
-    catch exception
-        testReportPlugin = matlab.unittest.plugins.TestRunnerPlugin.empty;
-        stmResultsPlugin = matlab.unittest.plugins.TestRunnerPlugin.empty;
+        import matlab.unittest.plugins.TestReportPlugin;
+        runner.addPlugin(TestReportPlugin.producingPDF(getPDFFilePath(resultsDir)));
         
-        if testReportPluginPresent && stmResultsPluginPresent && ...
-                exportSTMResultsSupported
-            throw(exception);
-        end
-        
-        if ~testReportPluginPresent
-            issuePDFReportUnsupportedWarning();
-        else
-            if stmResultsPluginPresent
-                stmResultsPlugin = TestManagerResultsPlugin;
-            end
-            testReportPlugin = TestReportPlugin.producingPDF(getPDFFilePath(resultsDir));
-        end
-            
-        if ~stmResultsPluginPresent || ~exportSTMResultsSupported
-            issueExportSTMResultsUnsupportedWarning();
+        if ~stmResultsPluginAddedToRunner && stmResultsPluginPresent
+            runner.addPlugin(TestManagerResultsPlugin);
         end
     end
-    runner.addPlugin(testReportPlugin);
-    runner.addPlugin(stmResultsPlugin);
 end
 
 results = runner.run(suite);
@@ -215,6 +180,6 @@ warning('MATLAB:testArtifact:pdfReportNotSupported', ...
     'Producing a test report in PDF format is not supported in the current MATLAB release.');
 
 function issueExportSTMResultsUnsupportedWarning()
-warning('MATLAB:testArtifact:cannotSaveSimulinkTestManagerResults', ...
+warning('MATLAB:testArtifact:cannotExportSimulinkTestManagerResults', ...
     ['Unable to export Simulink Test Manager results. This feature ', ...
     'requires a Simulink Test license and is supported only in MATLAB R2019a or a newer release.']);
