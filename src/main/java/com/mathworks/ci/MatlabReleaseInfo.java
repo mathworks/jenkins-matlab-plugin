@@ -112,7 +112,7 @@ public class MatlabReleaseInfo {
 
         @Override
         public void checkRoles(RoleChecker checker) throws SecurityException {
-
+            // No checks to perform 
         }
         
         @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION",

@@ -60,7 +60,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private static final String MATLAB_RUNNER_RESOURCE =
             "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
     private static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
-    private String fileSeparator;
+    private String nodeSpecificfileSeparator;
 
 
     @DataBoundConstructor
@@ -103,13 +103,6 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         this.env = env;
     }
     
-    private void setFileSeparator(String fileSeparator) {
-        this.fileSeparator = fileSeparator;
-    }
-    
-    private String getFileSeparator() {
-        return this.fileSeparator;
-    }
 
     @Extension
     public static class MatlabDescriptor extends BuildStepDescriptor<Builder> {
@@ -403,8 +396,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {        
         final boolean isLinuxLauncher = launcher.isUnix();
-        String fileSeparator = getNodeSpecificFileSeperator(launcher);
-        this.setFileSeparator(fileSeparator);
+        nodeSpecificfileSeparator = getNodeSpecificFileSeperator(launcher);
         
         // Invoke MATLAB command and transfer output to standard
         // Output Console
@@ -421,11 +413,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             throws IOException, InterruptedException {
         setEnv(build.getEnvironment(listener));
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
         
         // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
         if (testRunMode.contains(AUTOMATIC_OPTION)) {
-            copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
-                    workspace, getClass().getClassLoader(), launcher);
+            copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
         }
         ProcStarter matlabLauncher;
         try {
@@ -462,7 +454,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
 
         matlabDefaultArgs =
-                Arrays.asList(getLocalMatlab() + this.getFileSeparator() + "bin" + this.getFileSeparator() + "matlab",
+                Arrays.asList(getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab",
                         "-batch", runCommand);
         
         return matlabDefaultArgs;
@@ -485,7 +477,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     private String[] getPreRunnerSwitches() {
         String[] preRunnerSwitches =
-                {getLocalMatlab() + this.getFileSeparator() + "bin" + this.getFileSeparator() + "matlab", "-nosplash",
+                {getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab", "-nosplash",
                         "-nodesktop", "-noAppIcon"};
         return preRunnerSwitches;
     }
@@ -516,9 +508,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
     
     private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
-            String matlabRunnerTarget, FilePath workspace, ClassLoader classLoader, Launcher launcher)
+            String matlabRunnerTarget, FilePath targetWorkspace)
             throws IOException, InterruptedException {
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+        final ClassLoader classLoader = getClass().getClassLoader();
         FilePath targetFile =
                 new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
         InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
