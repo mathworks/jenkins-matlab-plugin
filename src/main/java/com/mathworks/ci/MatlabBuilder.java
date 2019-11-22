@@ -248,7 +248,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     public static abstract class TestRunTypeDescriptor extends Descriptor<TestRunTypeList> {
         MatlabReleaseInfo rel;
-
+        MatlabDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class);
+        
         /*
          * Validation for Test artifact generator checkBoxes
          */
@@ -256,13 +257,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public FormValidation doCheckTaCoberturaChkBx(@QueryParameter boolean taCoberturaChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            final String matlabRoot = Jenkins.getInstance()
-                    .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
             if (taCoberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
-            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
-                    .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+            final String matlabRoot = descriptor.getMatlabRoot();
+            return descriptor.getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
@@ -285,14 +284,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         
         public FormValidation doCheckTaModelCoverageChkBx(@QueryParameter boolean taModelCoverageChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
-            new ArrayList<Function<String, FormValidation>>();
-            final String matlabRoot = Jenkins.getInstance()
-            .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+                    new ArrayList<Function<String, FormValidation>>();
             if (taModelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
-            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
-            .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+            final String matlabRoot = descriptor.getMatlabRoot();
+            return descriptor.getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
         
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
@@ -315,14 +312,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         
         public FormValidation doCheckTaSTMResultsChkBx(@QueryParameter boolean taSTMResultsChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
-            new ArrayList<Function<String, FormValidation>>();
-            final String matlabRoot = Jenkins.getInstance()
-            .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+                    new ArrayList<Function<String, FormValidation>>();
             if (taSTMResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
-            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
-            .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+            final String matlabRoot = descriptor.getMatlabRoot();
+            return descriptor.getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
         
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
