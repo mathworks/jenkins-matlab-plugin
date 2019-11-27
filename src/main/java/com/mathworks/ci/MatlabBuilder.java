@@ -192,7 +192,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if (!resolver.hasVariablePattern()) {
                 try {
-                    rel = new MatlabReleaseInfo(matlabRoot);
+                    FilePath matlabRootPath = new FilePath(new File(matlabRoot));
+                    rel = new MatlabReleaseInfo(matlabRootPath);
                     if (rel.verLessThan(BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
                         return FormValidation
                                 .error(Message.getValue("Builder.matlab.test.support.error"));
@@ -259,7 +260,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
-            rel = new MatlabReleaseInfo(matlabRoot);
+            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
+            rel = new MatlabReleaseInfo(matlabRootPath);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
@@ -395,30 +397,23 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {        
-        final boolean isLinuxLauncher = launcher.isUnix();
+        //Set the environment variable specific to the this build
+        setEnv(build.getEnvironment(listener));
         nodeSpecificfileSeparator = getNodeSpecificFileSeperator(launcher);
         
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-        buildResult = execMatlabCommand(build, workspace, launcher, listener, isLinuxLauncher);
+        buildResult = execMatlabCommand(workspace, launcher, listener);
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    private synchronized int execMatlabCommand(Run<?, ?> build, FilePath workspace, Launcher launcher,
-            TaskListener listener, boolean isLinuxLauncher)
+    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+            TaskListener listener)
             throws IOException, InterruptedException {
-        setEnv(build.getEnvironment(listener));
-        final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-        
-        // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
-        if (testRunMode.contains(AUTOMATIC_OPTION)) {
-            copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
-        }
         ProcStarter matlabLauncher;
         try {
             FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
@@ -426,11 +421,20 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream);
+                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(launcher.isUnix())).stderr(outStream);
             } else {
                 matlabLauncher = matlabLauncher.cmds(constructMatlabCommandWithBatch()).stdout(listener);
             }
-        } catch (MatlabVersionNotFoundException e) {
+            
+            //Check the test run mode option selected by user and identify the target workspace to copy the scratch file.
+            final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
+            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+            
+            // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
+            if (testRunMode.contains(AUTOMATIC_OPTION)) {
+                copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            }
+        } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         }

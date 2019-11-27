@@ -39,10 +39,6 @@ public class MatlabReleaseInfo {
     };
     
     private Map<String, String> versionInfoCache = new HashMap<String, String>();
-
-    public MatlabReleaseInfo(String matlabRoot) {
-        this.matlabRoot = new FilePath(new File(matlabRoot));
-    }
     
     public MatlabReleaseInfo(FilePath matlabRoot) {
         this.matlabRoot = matlabRoot;
@@ -84,7 +80,29 @@ public class MatlabReleaseInfo {
             try {
                 FilePath versionFile = new FilePath(this.matlabRoot, VERSION_INFO_FILE);
                 if(versionFile.exists()) {
-                    versionInfoCache.putAll(versionFile.act(new RemoteFileOperation()));
+                    DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+                    Document doc = dBuilder.parse(versionFile.read());
+                    
+                    doc.getDocumentElement().normalize();
+                    NodeList nList = doc.getElementsByTagName(VERSION_INFO_ROOT_TAG);
+
+                    for (int temp = 0; temp < nList.getLength(); temp++) {
+                        Node nNode = nList.item(temp);
+                        if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+
+                            Element eElement = (Element) nNode;
+
+                            versionInfoCache.put(RELEASE_TAG, eElement.getElementsByTagName(RELEASE_TAG)
+                                    .item(0).getTextContent());
+                            versionInfoCache.put(VERSION_TAG, eElement.getElementsByTagName(VERSION_TAG)
+                                    .item(0).getTextContent());
+                            versionInfoCache.put(DESCRIPTION_TAG, eElement
+                                    .getElementsByTagName(DESCRIPTION_TAG).item(0).getTextContent());
+                            versionInfoCache.put(DATE_TAG,
+                                    eElement.getElementsByTagName(DATE_TAG).item(0).getTextContent());
+                        }
+                    }
                 }
                 else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
@@ -99,56 +117,4 @@ public class MatlabReleaseInfo {
         }
         return versionInfoCache;
     }
-    
-    /*
-     * Static File Callable to perform File operations on specific remote nodes.
-     */
-        
-    private static final class RemoteFileOperation implements FileCallable<Map<String, String>> {
-
-        private static final long serialVersionUID = 1L;
-
-        private Map<String, String> versionInfoCache = new HashMap<String, String>();
-
-        @Override
-        public void checkRoles(RoleChecker checker) throws SecurityException {
-            // No checks to perform 
-        }
-        
-        @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION",
-                justification = "Irrespective of exception type, intention is to handle it in same way. Also, there is no intention to propagate any runtime exception up in the hierarchy.")
-        @Override
-        public Map<String, String> invoke(File versionFile, VirtualChannel channel)
-                throws IOException, InterruptedException {
-
-            try {
-
-                DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                Document doc = dBuilder.parse(versionFile);
-                doc.getDocumentElement().normalize();
-                NodeList nList = doc.getElementsByTagName(VERSION_INFO_ROOT_TAG);
-
-                for (int temp = 0; temp < nList.getLength(); temp++) {
-                    Node nNode = nList.item(temp);
-                    if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-
-                        Element eElement = (Element) nNode;
-
-                        versionInfoCache.put(RELEASE_TAG, eElement.getElementsByTagName(RELEASE_TAG)
-                                .item(0).getTextContent());
-                        versionInfoCache.put(VERSION_TAG, eElement.getElementsByTagName(VERSION_TAG)
-                                .item(0).getTextContent());
-                        versionInfoCache.put(DESCRIPTION_TAG, eElement
-                                .getElementsByTagName(DESCRIPTION_TAG).item(0).getTextContent());
-                        versionInfoCache.put(DATE_TAG,
-                                eElement.getElementsByTagName(DATE_TAG).item(0).getTextContent());
-                    }
-                }
-            } catch (Exception e) {
-                throw new IOException("Error in reading MATLAB VersionInfo file",e);
-            }
-            return versionInfoCache;
-        }
-    }
-}
+ }

@@ -4,6 +4,7 @@ package com.mathworks.ci;
 
 import static org.junit.Assert.assertFalse;
 import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
@@ -245,7 +246,8 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyVerlessThan() throws Exception {
-        MatlabReleaseInfo rel = new MatlabReleaseInfo(getMatlabroot("R2017a"));
+        FilePath matlabRoot = new FilePath(new File(getMatlabroot("R2017a")));
+        MatlabReleaseInfo rel = new MatlabReleaseInfo(matlabRoot);
 
         // verLessthan() will check all the versions against 9.2 which is version of R2017a
         assertFalse(rel.verLessThan(9.1));
