@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.HashMap;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.FilenameUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -48,28 +49,10 @@ import net.sf.json.JSONObject;
 
 public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
-    private static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
-    private static final double BASE_MATLAB_VERSION_BATCH_SUPPORT = 9.5;
-    private static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
-    private static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.4;
-    private static final double BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT = 9.6;
     private int buildResult;
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
     private EnvVars env;
-    private static final String MATLAB_RUNNER_TARGET_FILE =
-            "Builder.matlab.runner.target.file.name";
-    private static final String MATLAB_RUNNER_RESOURCE =
-            "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
-    private static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
-
-    // Input parameter names (Passed to runMatlabTests.m as name-value pair arguments)
-    private static final String pdfReportParamName     = "'PDFReport'";
-    private static final String tapResultsParamName    = "'TapResults'";
-    private static final String junitResultsParamName  = "'JunitResults'";
-    private static final String stmResultsParamName    = "'SimulinkTestResults'";
-    private static final String codeCoverageParamName  = "'CoberturaCodeCoverage'";
-    private static final String modelCoverageParamName = "'CoberturaModelCoverage'";
 
     @DataBoundConstructor
     public MatlabBuilder() {
@@ -200,7 +183,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             if (!resolver.hasVariablePattern()) {
                 try {
                     rel = new MatlabReleaseInfo(matlabRoot);
-                    if (rel.verLessThan(BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
+                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
                         return FormValidation
                                 .error(Message.getValue("Builder.matlab.test.support.error"));
                     }
@@ -248,7 +231,6 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     public static abstract class TestRunTypeDescriptor extends Descriptor<TestRunTypeList> {
         MatlabReleaseInfo rel;
-        MatlabDescriptor descriptor = Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class);
         
         /*
          * Validation for Test artifact generator checkBoxes
@@ -260,8 +242,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             if (taCoberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
-            final String matlabRoot = descriptor.getMatlabRoot();
-            return descriptor.getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+            final String matlabRoot = Jenkins.getInstance()
+                    .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+                    .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
@@ -269,7 +253,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
+                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
                         return FormValidation
                                 .warning(Message.getValue("Builder.matlab.cobertura.support.warning"));
                     }
@@ -288,8 +272,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             if (taModelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
-            final String matlabRoot = descriptor.getMatlabRoot();
-            return descriptor.getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+            final String matlabRoot = Jenkins.getInstance()
+                    .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+                    .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
         
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
@@ -297,7 +283,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
+                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
                         return FormValidation
                         .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
                     }
@@ -316,8 +302,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             if (taSTMResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
-            final String matlabRoot = descriptor.getMatlabRoot();
-            return descriptor.getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
+            final String matlabRoot = Jenkins.getInstance()
+                    .getDescriptorByType(MatlabDescriptor.class).getMatlabRoot();
+            return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
+                    .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
         
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
@@ -325,7 +313,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
+                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
                         return FormValidation
                         .warning(Message.getValue("Builder.matlab.exportstmresults.support.warning"));
                     }
@@ -512,15 +500,15 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
         
         // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
-        if (testRunMode.contains(AUTOMATIC_OPTION)) {
-            copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE,
+        if (testRunMode.contains(MatlabBuilderConstants.AUTOMATIC_OPTION)) {
+            copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE, MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE,
                     workspace, getClass().getClassLoader());
         }
         ProcStarter matlabLauncher;
         try {
             MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
-            if (rel.verLessThan(BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
+            if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream);
             } else {
@@ -537,9 +525,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
         final String runCommand;
         final List<String> matlabDefaultArgs;
-        if (testRunMode.contains(AUTOMATIC_OPTION)) {
+        if (testRunMode.contains(MatlabBuilderConstants.AUTOMATIC_OPTION)) {
             String matlabFunctionName =
-                    FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
+                    FilenameUtils.removeExtension(Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
             runCommand = "exit(" + matlabFunctionName + "("
                     + getInputArguments() + "))";
         } else {
@@ -584,9 +572,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private String[] getRunnerSwitch() {
         final String runCommand;
         final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
-        if (testRunMode.contains(AUTOMATIC_OPTION)) {
+        if (testRunMode.contains(MatlabBuilderConstants.AUTOMATIC_OPTION)) {
             String matlabFunctionName =
-                    FilenameUtils.removeExtension(Message.getValue(MATLAB_RUNNER_TARGET_FILE));
+                    FilenameUtils.removeExtension(Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
             runCommand = "try,exit(" + matlabFunctionName + "("
                     + getInputArguments() + ","
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
@@ -611,16 +599,17 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     
     // Concatenate the input arguments
     private String getInputArguments() {
+        MatlabBuilderConstants constants = new MatlabBuilderConstants();
         
-        String pdfReport              = pdfReportParamName + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
-        String tapResults             = tapResultsParamName + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
-        String junitResults           = junitResultsParamName + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
-        String stmResults             = stmResultsParamName + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
-        String coberturaCodeCoverage  = codeCoverageParamName + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
-        String coberturaModelCoverage = modelCoverageParamName + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
+    	String pdfReport = constants.PDF_REPORT + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
+    	String tapResults = constants.TAP_RESULTS + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
+    	String junitResults = constants.JUNIT_RESULTS + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
+    	String stmResults = constants.STM_RESULTS + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
+    	String coberturaCodeCoverage = constants.COBERTURA_CODE_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
+    	String coberturaModelCoverage = constants.COBERTURA_MODEL_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
         
-        String inputArgsToMatlabFcn   = pdfReport + "," + tapResults + "," + junitResults + ","
-        + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
+    	String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
+    			+ stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
         
         return inputArgsToMatlabFcn;
     }
