@@ -4,6 +4,7 @@ package com.mathworks.ci;
 
 import static org.junit.Assert.assertFalse;
 import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.Result;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
@@ -245,7 +246,8 @@ public class MatlabBuilderTest {
 
     @Test
     public void verifyVerlessThan() throws Exception {
-        MatlabReleaseInfo rel = new MatlabReleaseInfo(getMatlabroot("R2017a"));
+        FilePath matlabRoot = new FilePath(new File(getMatlabroot("R2017a")));
+        MatlabReleaseInfo rel = new MatlabReleaseInfo(matlabRoot);
 
         // verLessthan() will check all the versions against 9.2 which is version of R2017a
         assertFalse(rel.verLessThan(9.1));
@@ -383,7 +385,7 @@ public class MatlabBuilderTest {
         project.getBuildersList().add(this.matlabBuilder);
         this.matlabBuilder.setMatlabRoot("/fake/matlab/path");
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
+        WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
     
     /*
@@ -396,7 +398,7 @@ public class MatlabBuilderTest {
         project.getBuildersList().add(this.matlabBuilder);
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.error"));
+        WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
     
     /*
@@ -429,8 +431,8 @@ public class MatlabBuilderTest {
         coberturaChkBx.setChecked(true);
         Thread.sleep(2000);
         String pageText = page.asText();
-        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.error"), "");
-        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.error")));
+        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
     }
     
     /*

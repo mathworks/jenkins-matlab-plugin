@@ -6,20 +6,25 @@ package com.mathworks.ci;
  */
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.collections.MapUtils;
+import org.jenkinsci.remoting.RoleChecker;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import hudson.FilePath;
+import hudson.FilePath.FileCallable;
+import hudson.remoting.VirtualChannel;
 
 public class MatlabReleaseInfo {
-    private String matlabRoot;
+    private FilePath matlabRoot;
     private static final String VERSION_INFO_FILE = "VersionInfo.xml";
     private static final String VERSION_INFO_ROOT_TAG = "MathWorks_version_info";
     private static final String RELEASE_TAG = "release";
@@ -34,8 +39,8 @@ public class MatlabReleaseInfo {
     };
     
     private Map<String, String> versionInfoCache = new HashMap<String, String>();
-
-    public MatlabReleaseInfo(String matlabRoot) {
+    
+    public MatlabReleaseInfo(FilePath matlabRoot) {
         this.matlabRoot = matlabRoot;
     }
 
@@ -73,12 +78,12 @@ public class MatlabReleaseInfo {
     private Map<String, String> getVersionInfoFromFile() throws MatlabVersionNotFoundException {
         if (MapUtils.isEmpty(versionInfoCache)) {
             try {
-                File versionFile = new File(this.matlabRoot + File.separator + VERSION_INFO_FILE);
-                if(versionFile.isFile()) {
+                FilePath versionFile = new FilePath(this.matlabRoot, VERSION_INFO_FILE);
+                if(versionFile.exists()) {
                     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                    Document doc = dBuilder.parse(versionFile);
-
+                    Document doc = dBuilder.parse(versionFile.read());
+                    
                     doc.getDocumentElement().normalize();
                     NodeList nList = doc.getElementsByTagName(VERSION_INFO_ROOT_TAG);
 
@@ -99,7 +104,7 @@ public class MatlabReleaseInfo {
                         }
                     }
                 }
-                else if(!new File(this.matlabRoot).exists()){
+                else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
                 }else {
                     versionInfoCache.putAll(VERSION_OLDER_THAN_17A);
@@ -112,4 +117,4 @@ public class MatlabReleaseInfo {
         }
         return versionInfoCache;
     }
-}
+ }
