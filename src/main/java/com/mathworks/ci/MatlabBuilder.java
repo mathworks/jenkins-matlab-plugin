@@ -428,10 +428,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             
             //Check the test run mode option selected by user and identify the target workspace to copy the scratch file.
             final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             
             // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
             if (testRunMode.contains(AUTOMATIC_OPTION)) {
+                FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
                 copyMatlabScratchFileInWorkspace(MATLAB_RUNNER_RESOURCE, MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
             }
         } catch (Exception e) {
