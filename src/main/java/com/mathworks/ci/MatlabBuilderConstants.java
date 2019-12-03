@@ -16,8 +16,8 @@ public class MatlabBuilderConstants {
     
     // Input parameter names (Passed to runMatlabTests.m as name-value pair arguments)
     static final String PDF_REPORT = "'PDFReport'";
-    static final String TAP_RESULTS = "'TapResults'";
-    static final String JUNIT_RESULTS = "'JunitResults'";
+    static final String TAP_RESULTS = "'TAPResults'";
+    static final String JUNIT_RESULTS = "'JUnitResults'";
     static final String STM_RESULTS = "'SimulinkTestResults'";
     static final String COBERTURA_CODE_COVERAGE = "'CoberturaCodeCoverage'";
     static final String COBERTURA_MODEL_COVERAGE = "'CoberturaModelCoverage'";
