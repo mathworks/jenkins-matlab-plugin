@@ -292,7 +292,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                         .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             
@@ -323,7 +323,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                         .warning(Message.getValue("Builder.matlab.exportstmresults.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             
