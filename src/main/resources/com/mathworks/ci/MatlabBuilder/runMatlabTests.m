@@ -4,8 +4,8 @@ function failed = runMatlabTests(varargin)
 
 p = inputParser;
 p.addParameter('PDFReport', false, @islogical);
-p.addParameter('TapResults', false, @islogical);
-p.addParameter('JunitResults', false, @islogical);
+p.addParameter('TAPResults', false, @islogical);
+p.addParameter('JUnitResults', false, @islogical);
 p.addParameter('SimulinkTestResults', false, @islogical);
 p.addParameter('CoberturaCodeCoverage', false, @islogical);
 p.addParameter('CoberturaModelCoverage', false, @islogical);
@@ -13,8 +13,8 @@ p.addParameter('CoberturaModelCoverage', false, @islogical);
 p.parse(varargin{:});
 
 producePDFReport         = p.Results.PDFReport;
-produceTAP               = p.Results.TapResults;
-produceJUnit             = p.Results.JunitResults;
+produceTAP               = p.Results.TAPResults;
+produceJUnit             = p.Results.JUnitResults;
 exportSTMResults         = p.Results.SimulinkTestResults;
 produceCobertura         = p.Results.CoberturaCodeCoverage;
 produceModelCoverage     = p.Results.CoberturaModelCoverage;
