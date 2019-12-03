@@ -282,7 +282,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
         
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
-            rel = new MatlabReleaseInfo(matlabRoot);
+            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
+            rel = new MatlabReleaseInfo(matlabRootPath);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
@@ -312,6 +313,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
         
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
+            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
             rel = new MatlabReleaseInfo(matlabRoot);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
