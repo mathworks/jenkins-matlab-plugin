@@ -52,6 +52,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
     private EnvVars env;
+    private String nodeSpecificfileSeparator;
 
     @DataBoundConstructor
     public MatlabBuilder() {
@@ -92,6 +93,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private void setEnv(EnvVars env) {
         this.env = env;
     }
+    
 
     @Extension
     public static class MatlabDescriptor extends BuildStepDescriptor<Builder> {
@@ -181,14 +183,15 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if (!resolver.hasVariablePattern()) {
                 try {
-                    rel = new MatlabReleaseInfo(matlabRoot);
+                    FilePath matlabRootPath = new FilePath(new File(matlabRoot));
+                    rel = new MatlabReleaseInfo(matlabRootPath);
                     if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
                         return FormValidation
                                 .error(Message.getValue("Builder.matlab.test.support.error"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
                     return FormValidation
-                            .error(Message.getValue("Builder.invalid.matlab.root.error"));
+                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             return FormValidation.ok();
@@ -248,7 +251,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
-            rel = new MatlabReleaseInfo(matlabRoot);
+            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
+            rel = new MatlabReleaseInfo(matlabRootPath);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if(!resolver.hasVariablePattern()) {
                 try {
@@ -257,7 +261,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                                 .warning(Message.getValue("Builder.matlab.cobertura.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.error"));
+                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             
@@ -480,40 +484,44 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {        
-        final boolean isLinuxLauncher = launcher.isUnix();
+        //Set the environment variable specific to the this build
+        setEnv(build.getEnvironment(listener));
+        nodeSpecificfileSeparator = getNodeSpecificFileSeperator(launcher);
         
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-        buildResult = execMatlabCommand(build, workspace, launcher, listener, isLinuxLauncher);
+        buildResult = execMatlabCommand(workspace, launcher, listener);
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    private synchronized int execMatlabCommand(Run<?, ?> build, FilePath workspace, Launcher launcher,
-            TaskListener listener, boolean isLinuxLauncher)
+    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+            TaskListener listener)
             throws IOException, InterruptedException {
-        setEnv(build.getEnvironment(listener));
-        final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
-        
-        // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
-        if (testRunMode.contains(MatlabBuilderConstants.AUTOMATIC_OPTION)) {
-            copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE, MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE,
-                    workspace, getClass().getClassLoader());
-        }
         ProcStarter matlabLauncher;
         try {
-            MatlabReleaseInfo rel = new MatlabReleaseInfo(getLocalMatlab());
+            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
+            MatlabReleaseInfo rel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(isLinuxLauncher)).stderr(outStream);
+                matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(launcher.isUnix())).stderr(outStream);
             } else {
                 matlabLauncher = matlabLauncher.cmds(constructMatlabCommandWithBatch()).stdout(listener);
             }
-        } catch (MatlabVersionNotFoundException e) {
+            
+            //Check the test run mode option selected by user and identify the target workspace to copy the scratch file.
+            final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
+            
+            // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
+            if (testRunMode.contains(MatlabBuilderConstants.AUTOMATIC_OPTION)) {
+                FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+                copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE, MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            }
+        } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         }
@@ -535,7 +543,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         }
 
         matlabDefaultArgs =
-                Arrays.asList(getLocalMatlab() + File.separator + "bin" + File.separator + "matlab",
+                Arrays.asList(getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab",
                         "-batch", runCommand);
         
         return matlabDefaultArgs;
@@ -558,7 +566,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
     private String[] getPreRunnerSwitches() {
         String[] preRunnerSwitches =
-                {getLocalMatlab() + File.separator + "bin" + File.separator + "matlab", "-nosplash",
+                {getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab", "-nosplash",
                         "-nodesktop", "-noAppIcon"};
         return preRunnerSwitches;
     }
@@ -587,13 +595,22 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
     
     private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
-            String matlabRunnerTarget, FilePath workspace, ClassLoader classLoader)
+            String matlabRunnerTarget, FilePath targetWorkspace)
             throws IOException, InterruptedException {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        FilePath targetFile =
+                new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
         InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
-        Path target =
-                new File(workspace.getRemote(), Message.getValue(matlabRunnerTarget)).toPath();
 
-        Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+        targetFile.copyFrom(in);
+    }
+    
+    private String getNodeSpecificFileSeperator(Launcher launcher) {
+        if (launcher.isUnix()) {
+            return "/";
+        } else {
+            return "\\";
+        }
     }
     
     // Concatenate the input arguments
