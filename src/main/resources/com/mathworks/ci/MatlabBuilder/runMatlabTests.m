@@ -1,6 +1,23 @@
 %Copyright 2019 The MathWorks, Inc.
 
-function failed = runMatlabTests(produceJUnit, produceTAP, produceCobertura)
+function failed = runMatlabTests(varargin)
+
+p = inputParser;
+p.addParameter('PDFReport', false, @islogical);
+p.addParameter('TAPResults', false, @islogical);
+p.addParameter('JUnitResults', false, @islogical);
+p.addParameter('SimulinkTestResults', false, @islogical);
+p.addParameter('CoberturaCodeCoverage', false, @islogical);
+p.addParameter('CoberturaModelCoverage', false, @islogical);
+
+p.parse(varargin{:});
+
+producePDFReport         = p.Results.PDFReport;
+produceTAP               = p.Results.TAPResults;
+produceJUnit             = p.Results.JUnitResults;
+exportSTMResults         = p.Results.SimulinkTestResults;
+produceCobertura         = p.Results.CoberturaCodeCoverage;
+produceModelCoverage     = p.Results.CoberturaModelCoverage;
 
 BASE_VERSION_MATLABUNIT_SUPPORT = '8.1';
 
@@ -59,12 +76,53 @@ if produceCobertura
          warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura results is not supported in this release.');
     else 
         import('matlab.unittest.plugins.CodeCoveragePlugin');
-        import('matlab.unittest.plugins.codecoverage.CoberturaFormat');
         mkdirIfNeeded(resultsDir)
         coverageFile = fullfile(resultsDir, 'cobertura.xml');
         workSpace = fullfile(pwd);
         runner.addPlugin(CodeCoveragePlugin.forFolder(workSpace,'IncludingSubfolders',true,...
         'Producing', CoberturaFormat(coverageFile)));
+    end
+end
+
+% Produce Cobertura model coverage report (Not supported below R2018a) 
+if produceModelCoverage
+    if ~exist('sltest.plugins.ModelCoveragePlugin', 'class')
+        warning('MATLAB:testArtifact:cannotGenerateModelCoverageReport', ...
+                'Unable to generate Cobertura model coverage report. To generate the report, use a Simulink Coverage license with MATLAB R2018a or a newer release.');
+    else 
+        import sltest.plugins.ModelCoveragePlugin;
+        
+        mkdirIfNeeded(resultsDir);
+        coverageFile = fullfile(resultsDir, 'coberturamodelcoverage.xml');
+        runner.addPlugin(ModelCoveragePlugin('Producing',CoberturaFormat(coverageFile)));
+    end
+end
+
+stmResultsPluginAddedToRunner = false;
+
+% Save Simulink Test Manager results in MLDATX format (Not supported below R2019a)
+if exportSTMResults
+    if ~stmResultsPluginPresent || ~exportSTMResultsSupported
+        issueExportSTMResultsUnsupportedWarning;
+    else
+        mkdirIfNeeded(resultsDir);
+        runner.addPlugin(TestManagerResultsPlugin('ExportToFile', getMLDATXFilePath(resultsDir)));
+        stmResultsPluginAddedToRunner = true;
+    end
+end
+
+% Produce PDF test report (Not supported below R2016b)
+if producePDFReport
+    if ~testReportPluginPresent
+        issuePDFReportUnsupportedWarning;
+    else
+        mkdirIfNeeded(resultsDir);
+        import matlab.unittest.plugins.TestReportPlugin;
+        runner.addPlugin(TestReportPlugin.producingPDF(getPDFFilePath(resultsDir)));
+        
+        if ~stmResultsPluginAddedToRunner && stmResultsPluginPresent
+            runner.addPlugin(TestManagerResultsPlugin);
+        end
     end
 end
 
@@ -93,4 +151,36 @@ if exist(dir,'dir') ~= 7
     mkdir(dir);
 end
 
+function plugin = CoberturaFormat(varargin)
+plugin = matlab.unittest.plugins.codecoverage.CoberturaFormat(varargin{:});
 
+function plugin = TestManagerResultsPlugin(varargin)
+plugin = sltest.plugins.TestManagerResultsPlugin(varargin{:});
+
+function filePath = getPDFFilePath(resultsDir)
+filePath = fullfile(resultsDir, 'testreport.pdf');
+
+function filePath = getMLDATXFilePath(resultsDir)
+filePath = fullfile(resultsDir, 'simulinktestresults.mldatx');
+
+function tf = testReportPluginPresent
+BASE_VERSION_REPORTPLUGIN_SUPPORT = '9.1'; % R2016b
+
+tf = ~verLessThan('matlab',BASE_VERSION_REPORTPLUGIN_SUPPORT);
+
+function tf = stmResultsPluginPresent
+tf = logical(exist('sltest.plugins.TestManagerResultsPlugin', 'class'));
+
+function tf = exportSTMResultsSupported
+BASE_VERSION_EXPORTSTMRESULTS_SUPPORT = '9.6'; % R2019a
+
+tf = ~verLessThan('matlab',BASE_VERSION_EXPORTSTMRESULTS_SUPPORT);
+
+function issuePDFReportUnsupportedWarning
+warning('MATLAB:testArtifact:pdfReportNotSupported', ...
+    'Producing a test report in PDF format is not supported in the current MATLAB release.');
+
+function issueExportSTMResultsUnsupportedWarning
+warning('MATLAB:testArtifact:cannotExportSimulinkTestManagerResults', ...
+    ['Unable to export Simulink Test Manager results. This feature ', ...
+    'requires a Simulink Test license and is supported only in MATLAB R2019a or a newer release.']);

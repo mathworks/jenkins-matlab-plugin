@@ -1,16 +1,16 @@
 # Jenkins MATLAB Plugin
 
-The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB tests and generate test artifacts in formats such as *JUnit*, *TAP*, and *Cobertura* code coverage reports. This guide shows you examples of how to configure the plugin for different objectives, considering a Microsoft&reg; Windows&reg; platform.
+The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB and Simulink&reg; tests and generate artifacts such as *PDF* test report, *JUnit* and *TAP* test results, and *Cobertura* code or model coverage reports. You can also export your Simulink Test&#8482; Manager results. This guide shows you examples of how to configure the plugin for different objectives, considering a Microsoft&reg; Windows&reg; platform.
 
 ## Configure Plugin for Freestyle Project
 To configure the plugin for a freestyle project, select **Run MATLAB Tests** from the **Add build step** list. Then, enter the value returned by the **matlabroot** function in the **MATLAB root** field.
 
   ![new_add_build_step](https://user-images.githubusercontent.com/47204011/55624172-be54a100-57c2-11e9-9596-52d3a60ee467.png)
   
-  ![new_enter_matlabroot](https://user-images.githubusercontent.com/47204011/55624374-45097e00-57c3-11e9-96e1-5fa0fc966767.png)
+  ![new_enter_matlabroot](https://user-images.githubusercontent.com/51316279/67834674-085df500-fb0e-11e9-927b-c4da6bff0ed6.png)
   
 ### Option 1: Freestyle Project with Automatic Test Mode
-With the Jenkins plugin for MATLAB, you have the option to run your tests in either *automatic* or *custom* mode. The automatic test mode employs a default setting to run tests written using the MATLAB Unit Testing Framework and/or Simulink&reg; Test. If your source code is organized as files and folders within a project, the plugin will consider any test files in the project that have been tagged as **Test**. If your code does not leverage a project or uses a MATLAB version prior to R2019a, the plugin will consider all tests in the current Jenkins workspace including the subfolders. 
+With the Jenkins plugin for MATLAB, you have the option to run your tests in either *automatic* or *custom* mode. The automatic test mode employs a default setting to run tests written using the MATLAB Unit Testing Framework and/or Simulink Test. If your source code is organized as files and folders within a project, the plugin will consider any test files in the project that have been tagged as **Test**. If your code does not leverage a project or uses a MATLAB version prior to R2019a, the plugin will consider all tests in the current Jenkins workspace including the subfolders. 
 
 If you use a source code management (SCM) system such as Git, then your job must include the appropriate SCM configuration to check out the code before it can invoke the MATLAB plugin. If you do not use any SCM systems to manage your code, then an additional build step is required to ensure that the code is available in the Jenkins workspace before the build starts.
 
@@ -18,17 +18,17 @@ The automatic test execution feature of the plugin enables you to generate diffe
 
 1) From the **Test mode** drop-down list, select the **Automatic** option (**Automatic** is the default testing mode).
   
-  ![new_select_automatic_option](https://user-images.githubusercontent.com/47204011/55624469-a0d40700-57c3-11e9-8811-32892ccbe673.png)
+  ![new_select_automatic_option](https://user-images.githubusercontent.com/51316279/67842305-e7060480-fb1f-11e9-8f20-d2299636be02.png)
   
 2) Select your desired test artifacts.
 
-  ![new_select_all_test_artifacts](https://user-images.githubusercontent.com/47204011/55624765-7f274f80-57c4-11e9-8a15-ebdef19ebd3d.png)
+  ![new_select_all_test_artifacts](https://user-images.githubusercontent.com/51316279/67841415-056b0080-fb1e-11e9-928f-8285b7f2fc71.png)
 
   The selected artifacts will be saved in the **matlabTestArtifacts** folder of the Jenkins workspace.
 
   ![Workspace01](https://user-images.githubusercontent.com/47204011/55470859-1e621080-5626-11e9-98f2-044144272643.JPG)
   
-  ![Test_artifacts](https://user-images.githubusercontent.com/47204011/55470863-21f59780-5626-11e9-9765-4d79a6fd4061.JPG)
+  ![Test_artifacts](https://user-images.githubusercontent.com/51316279/67843000-33057900-fb21-11e9-9ce2-870ecf5ffdd0.png)
   
   If you do not select any of the test artifact check boxes, the **matlabTestArtifacts** folder will not be created in the workspace. However, tests will still run and potential test failures will fail the build. 
 
@@ -41,7 +41,7 @@ This option enables you to develop your custom MATLAB commands for running tests
 
 1) From the **Test mode** drop-down list, select the **Custom** option.
 
-  ![new_select_custom](https://user-images.githubusercontent.com/47204011/55624858-d0cfda00-57c4-11e9-8366-45edbc9ba83f.png)
+  ![new_select_custom](https://user-images.githubusercontent.com/51316279/67842071-79f26f00-fb1f-11e9-8d46-274ffa941cfd.png)
 
 2) Enter your commands in the **MATLAB command** field. If you specify more than one MATLAB command, use a comma or semicolon to separate the commands. The build will fail if the execution of any command results in an error.
 
@@ -68,7 +68,7 @@ To configure the plugin for a matrix build where tests run automatically in mult
 
 2) In the **Run MATLAB Tests** section of the project, include the user-defined axis name in the **MATLAB root** field to specify the locations where MATLAB is installed. In this example, **$VERSION** will be replaced by one axis value per build step.
 
-![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
+![image](https://user-images.githubusercontent.com/51316279/67841685-a659bb80-fb1e-11e9-802a-3b357933f9c7.png)
 
 You can select the test artifact check boxes when tests run automatically. Once you have made your selections, save your settings and run the build.
 
@@ -86,7 +86,7 @@ To configure the matrix build where you can customize the MATLAB test execution,
 
 3) In the **Run MATLAB Tests** section of the project, use the **VERSION** axis to specify the locations where MATLAB is installed.
 
-![image](https://user-images.githubusercontent.com/47204011/62459137-3c8a7980-b79c-11e9-9bee-305b4cabfd42.png)
+![image](https://user-images.githubusercontent.com/51316279/67841685-a659bb80-fb1e-11e9-802a-3b357933f9c7.png)
 
 4) From the **Test mode** drop-down list, select the **Custom** option. Use the second user-defined axis to create your commands and enter them in the **MATLAB command** field. Then, save your settings and run the build. 
 
