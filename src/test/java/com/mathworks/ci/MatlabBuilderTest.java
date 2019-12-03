@@ -452,7 +452,7 @@ public class MatlabBuilderTest {
     }
     
     /*
-     * Test To verify UI displays Cobertura Error message when invalid MATLAB root entered.
+     * Test To verify UI displays Cobertura warning message when invalid MATLAB root entered.
      * 
      */
 
@@ -463,6 +463,32 @@ public class MatlabBuilderTest {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("taCoberturaChkBx");
         coberturaChkBx.setChecked(true);
+        Thread.sleep(2000);
+        String pageText = page.asText();
+        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
+    }
+    
+    @Test
+    public void verifyInvalidMatlabWarningForModelCoverage() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setMatlabRoot("/fake/matlab/path");
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("taModelCoverageChkBx");
+        modelCoverageChkBx.setChecked(true);
+        Thread.sleep(2000);
+        String pageText = page.asText();
+        String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText.contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
+    }
+    
+    @Test
+    public void verifyInvalidMatlabWarningForSTMResults() throws Exception {
+        project.getBuildersList().add(this.matlabBuilder);
+        this.matlabBuilder.setMatlabRoot("/fake/matlab/path");
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("taSTMResultsChkBx");
+        stmResultsChkBx.setChecked(true);
         Thread.sleep(2000);
         String pageText = page.asText();
         String filteredPageText = pageText.replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");

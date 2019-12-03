@@ -289,10 +289,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                 try {
                     if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
                         return FormValidation
-                        .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
+                                .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.warning"));
+                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             
@@ -320,10 +320,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                 try {
                     if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
                         return FormValidation
-                        .warning(Message.getValue("Builder.matlab.exportstmresults.support.warning"));
+                                .warning(Message.getValue("Builder.matlab.exportstmresults.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.error(Message.getValue("Builder.invalid.matlab.root.warning"));
+                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             
