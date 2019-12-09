@@ -90,7 +90,7 @@ if produceModelCoverage
         warning('MATLAB:testArtifact:cannotGenerateModelCoverageReport', ...
                 'Unable to generate Cobertura model coverage report. To generate the report, use a Simulink Coverage license with MATLAB R2018a or a newer release.');
     else 
-        import sltest.plugins.ModelCoveragePlugin;
+        import('sltest.plugins.ModelCoveragePlugin');
         
         mkdirIfNeeded(resultsDir);
         coverageFile = fullfile(resultsDir, 'coberturamodelcoverage.xml');
@@ -117,7 +117,7 @@ if producePDFReport
         issuePDFReportUnsupportedWarning;
     else
         mkdirIfNeeded(resultsDir);
-        import matlab.unittest.plugins.TestReportPlugin;
+        import('matlab.unittest.plugins.TestReportPlugin');
         runner.addPlugin(TestReportPlugin.producingPDF(getPDFFilePath(resultsDir)));
         
         if ~stmResultsPluginAddedToRunner && stmResultsPluginPresent
