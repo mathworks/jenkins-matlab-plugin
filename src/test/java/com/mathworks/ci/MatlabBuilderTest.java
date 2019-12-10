@@ -427,7 +427,7 @@ public class MatlabBuilderTest {
     @Test
     public void verifyModelCoverageWarning() throws Exception {
         project.getBuildersList().add(this.matlabBuilder);
-        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2017a"));
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018a"));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("taModelCoverageChkBx");
         modelCoverageChkBx.setChecked(true);

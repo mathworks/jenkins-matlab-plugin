@@ -7,7 +7,7 @@ public class MatlabBuilderConstants {
     static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
     static final double BASE_MATLAB_VERSION_BATCH_SUPPORT = 9.5;
     static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
-    static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.4;
+    static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.5;
     static final double BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT = 9.6;
     
     static final String MATLAB_RUNNER_TARGET_FILE = "Builder.matlab.runner.target.file.name";
