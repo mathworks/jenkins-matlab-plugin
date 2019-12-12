@@ -588,8 +588,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     + getInputArguments()
                     + ")),catch e,disp(getReport(e,'extended')),exit(1),end";
         } else {
-            runCommand = "try,eval(\"" + getCustomMatlabCommand().replaceAll("\"","\"\"")
-                    + "\"),catch e,disp(getReport(e,'extended')),exit(1),end,exit";
+            runCommand = "try,eval('" + getCustomMatlabCommand().replaceAll("'","''")
+                    + "'),catch e,disp(getReport(e,'extended')),exit(1),end,exit";
         }
 
         final String[] runnerSwitch = {"-r", runCommand};
