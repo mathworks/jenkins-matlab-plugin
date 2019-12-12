@@ -84,13 +84,13 @@ if produceCobertura
     end
 end
 
-% Produce Cobertura model coverage report (Not supported below R2018a) 
+% Produce Cobertura model coverage report (Not supported below R2018b) 
 if produceModelCoverage
-    if ~exist('sltest.plugins.ModelCoveragePlugin', 'class')
+    if ~exist('sltest.plugins.ModelCoveragePlugin', 'class') || ~coberturaModelCoverageSupported
         warning('MATLAB:testArtifact:cannotGenerateModelCoverageReport', ...
-                'Unable to generate Cobertura model coverage report. To generate the report, use a Simulink Coverage license with MATLAB R2018a or a newer release.');
+                'Unable to generate Cobertura model coverage report. To generate the report, use a Simulink Coverage license with MATLAB R2018b or a newer release.');
     else 
-        import sltest.plugins.ModelCoveragePlugin;
+        import('sltest.plugins.ModelCoveragePlugin');
         
         mkdirIfNeeded(resultsDir);
         coverageFile = fullfile(resultsDir, 'coberturamodelcoverage.xml');
@@ -117,7 +117,7 @@ if producePDFReport
         issuePDFReportUnsupportedWarning;
     else
         mkdirIfNeeded(resultsDir);
-        import matlab.unittest.plugins.TestReportPlugin;
+        import('matlab.unittest.plugins.TestReportPlugin');
         runner.addPlugin(TestReportPlugin.producingPDF(getPDFFilePath(resultsDir)));
         
         if ~stmResultsPluginAddedToRunner && stmResultsPluginPresent
@@ -170,6 +170,11 @@ tf = ~verLessThan('matlab',BASE_VERSION_REPORTPLUGIN_SUPPORT);
 
 function tf = stmResultsPluginPresent
 tf = logical(exist('sltest.plugins.TestManagerResultsPlugin', 'class'));
+
+function tf = coberturaModelCoverageSupported
+BASE_VERSION_MODELCOVERAGE_SUPPORT = '9.5'; % R2018b
+
+tf = ~verLessThan('matlab',BASE_VERSION_MODELCOVERAGE_SUPPORT);
 
 function tf = exportSTMResultsSupported
 BASE_VERSION_EXPORTSTMRESULTS_SUPPORT = '9.6'; % R2019a
