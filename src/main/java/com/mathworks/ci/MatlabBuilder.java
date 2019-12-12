@@ -617,14 +617,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     
     // Concatenate the input arguments
     private String getInputArguments() {
-        MatlabBuilderConstants constants = new MatlabBuilderConstants();
-        
-    	String pdfReport = constants.PDF_REPORT + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
-    	String tapResults = constants.TAP_RESULTS + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
-    	String junitResults = constants.JUNIT_RESULTS + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
-    	String stmResults = constants.STM_RESULTS + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
-    	String coberturaCodeCoverage = constants.COBERTURA_CODE_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
-    	String coberturaModelCoverage = constants.COBERTURA_MODEL_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
+    	String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
+    	String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
+    	String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
+    	String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
+    	String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
+    	String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
         
     	String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
     			+ stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
