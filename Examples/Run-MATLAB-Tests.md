@@ -29,6 +29,7 @@ To build your Jenkins project and run the tests specified in this GitHub reposit
 
 Navigate to the project workspace by clicking the **Workspace** icon in the project interface. You can view the generated test artifacts in the **matlabTestArtifacts** folder of the workspace.
 
+![jenkins_build_history](https://user-images.githubusercontent.com/48831250/70753886-db535380-1d03-11ea-871b-be27202b64ad.png)
 
 ## See Also
 [MathWorks Blogs: Developer Zone](https://blogs.mathworks.com/developer/category/continuous-integration/)<br/>
