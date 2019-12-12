@@ -300,7 +300,7 @@ public class MatlabBuilderTest {
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
-        jenkins.assertLogContains("\'PDFReport\',true,\'TAPResults\',true," +
+        jenkins.assertLogContains("\'TAPResults\',true," +
                                   "\'JUnitResults\',true,\'SimulinkTestResults\',true," +
                                   "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
     }
@@ -547,7 +547,6 @@ public class MatlabBuilderTest {
         runOption.setTaJunitChkBx(true);
         runOption.setTatapChkBx(true);
         runOption.setTaModelCoverageChkBx(true);
-        runOption.setTaPDFReportChkBx(true);
         runOption.setTaSTMResultsChkBx(true);
         this.matlabBuilder.setTestRunTypeList(runOption);
         project.getBuildersList().add(this.matlabBuilder);
