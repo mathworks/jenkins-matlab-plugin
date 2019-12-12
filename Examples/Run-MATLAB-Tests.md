@@ -25,6 +25,8 @@ To configure the Jenkins build for running MATLAB tests, follow these steps:
 ## Run Tests in Freestyle Project
 To build your Jenkins project and run the tests specified in this GitHub repository, click **Build now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests defined by the *TestRand* class pass.
 
+![jenkins_workspace](https://user-images.githubusercontent.com/48831250/70753800-9e875c80-1d03-11ea-9b4d-41c9bd0c005e.png)
+
 Navigate to the project workspace by clicking the **Workspace** icon in the project interface. You can view the generated test artifacts in the **matlabTestArtifacts** folder of the workspace.
 
 
