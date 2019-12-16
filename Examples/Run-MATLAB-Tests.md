@@ -12,7 +12,7 @@ The project will run the tests specified by a test class file named *TestRand.m*
 
 To run MATLAB tests, you must install the Jenkins plugin for MATLAB. For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
 
-To configure the Jenkins build for running MATLAB tests, follow these steps:
+Configure the Jenkins build by following these steps:
 1. In your Jenkins interface, select **New Item** on the left. A new page opens where you can choose the type of your project. Enter a project name, then click **Freestyle project**. To confirm your choices, click **OK**.
 2. In the configuration window of your Jenkins project, navigate to the **Source Code Management** section and click **Git**. This option enables Jenkins to interface with a remote GitHub repository.
 3. Navigate to the main page of this repository in your system browser. Click **Clone or download** and copy the web URL to your clipboard.
