@@ -26,7 +26,7 @@ Configure the Jenkins build by following these steps:
 6. Click **Save** to save the project configuration settings. You can access and modify your settings at a later stage by selecting **Configure** in the project interface.
 
 ## Run Tests in Freestyle Project
-To build your Jenkins project and run the tests specified in the repository, click **Build now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests defined by the *TestRand* class pass.
+To build your Jenkins project and run the tests specified in the repository, click **Build now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests specified in the *Times Table App* project pass.
 
 ![jenkins_build_history](https://user-images.githubusercontent.com/48831250/70753886-db535380-1d03-11ea-871b-be27202b64ad.png)
 
