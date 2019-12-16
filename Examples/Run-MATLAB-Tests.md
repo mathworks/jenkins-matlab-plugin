@@ -6,11 +6,16 @@ This example shows you how to run a suite of MATLAB&reg; unit tests with Jenkins
 * Interface Jenkins with a remote repository that contains the tests.
 * Build the freestyle project and examine the test outcomes.
 
-The project will run the tests specified by a test class file named *TestRand.m*, which is stored in the *Examples* folder of this repository. The class tests various aspects of random number generation as described in [Create Advanced Parameterized Test](https://www.mathworks.com/help/matlab/matlab_prog/create-advanced-parameterized-test.html).
+The project will run the tests in the *Times Table App* MATLAB project. You can create a working copy of the example project files and open the project in MATLAB by running the following statement in the Command Window. 
 
+```
+matlab.project.example.timesTable
+```
+
+For more information about the *Times Table App* example project, see [Explore an Example Project](https://www.mathworks.com/help/matlab/matlab_prog/explore-an-example-project.html).
 ## Configure Jenkins to Run MATLAB Tests
 
-To run MATLAB tests, you must install the Jenkins plugin for MATLAB. For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
+To run MATLAB tests and generate test artifacts, you must install the Jenkins plugin for MATLAB.  For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
 
 Configure the Jenkins build by following these steps:
 1. In your Jenkins interface, select **New Item** on the left. A new page opens where you can choose the type of your project. Enter a project name, then click **Freestyle project**. To confirm your choices, click **OK**.
