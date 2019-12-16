@@ -32,4 +32,5 @@ Navigate to the project workspace by clicking the **Workspace** icon in the proj
 ## See Also
 [MathWorks Blogs: Developer Zone](https://blogs.mathworks.com/developer/category/continuous-integration/)<br/>
 [matlab.unittest.plugins Package](https://www.mathworks.com/help/matlab/ref/matlab.unittest.plugins-package.html)<br/>
+[Explore an Example Project](https://www.mathworks.com/help/matlab/matlab_prog/explore-an-example-project.html)<br/>
 [Source Control Integration](https://www.mathworks.com/help/matlab/source-control.html)
