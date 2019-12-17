@@ -19,7 +19,7 @@ Running the tests in this example requires you to interface Jenkins with MATLAB 
 
 * To run MATLAB tests and generate test artifacts, you must install the Jenkins plugin for MATLAB. For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
 * Jenkins runs the tests in a branch of the remote repository that is specified by a URL. To follow the build configuration steps, you must upload the *Times Table App* example project to a remote GitHub repository.
-* 
+* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the Cobertura Plugin integrates Cobertura coverage reports to Jenkins, and JUnit plugin allows JUnit-format test reslts to be published. 
 
 ## Configure Jenkins to Run MATLAB Tests
 Configure the Jenkins build by following these steps:
@@ -28,7 +28,7 @@ Configure the Jenkins build by following these steps:
 3. Navigate to the main page of the GitHub repository that hosts your tests. Click **Clone or download** and copy the web URL to your clipboard.
 4. In the Jenkins interface, paste the URL into the **Repository URL** field of the **Source Code Management** section. (You also can specify the branch to build in the **Branch Specifier** field.)
 5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the MATLAB Jenkins plugin. Paste the full path to the **MATLAB root** folder into the MATLAB root field; choose the default Automatic test mode from the **Test mode** drop-down list; and select your desired test artifacts to be generated in the project wrokspace. (The build in this example is configured to generate JUnit test result and Cobertura code coverage reports.) For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
-6. In the **Post-build Actions** section, add two post-build actions to publish the JUnit test result and Cobertura code coverage reports that the build produces (requires the necessary plugins to be installed). For each report, provide the path to the report file. 
+6. In the **Post-build Actions** section, add two post-build actions to publish the JUnit test result and Cobertura code coverage reports that the build generates. For each report, provide the path to the report file. 
 ![cobertura](https://user-images.githubusercontent.com/48831250/71041635-8c3c6280-20f7-11ea-9f01-90b6a2c1abeb.png)
 
 7. Click **Save** to save the project configuration settings. You can access and modify your settings at a later stage by selecting **Configure** in the project interface.
