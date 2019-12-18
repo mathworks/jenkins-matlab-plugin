@@ -18,8 +18,8 @@ For more information about the *Times Table App* example project, see [Explore a
 Running the tests in this example requires you to interface Jenkins with MATLAB as well as a remote repository.
 
 * To run MATLAB tests and generate test artifacts, you must install the Jenkins plugin for MATLAB. For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
-* Jenkins runs the tests in a branch of the remote repository that is specified by a URL. To follow the build configuration steps, you must upload the *Times Table App* example project to a remote GitHub repository.
-* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the Cobertura Plugin integrates Cobertura coverage reports to Jenkins, and JUnit plugin allows JUnit-format test reslts to be published. 
+* Jenkins runs the tests in a branch of the remote repository that is specified by a URL. To follow the build configuration steps, you must upload the *Times Table App* example project to a remote GitHub&reg; repository.
+* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the *Cobertura Plugin* integrates Cobertura coverage reports to Jenkins, and *JUnit plugin* enables JUnit-format test results to be published. 
 
 ## Configure Jenkins to Run MATLAB Tests
 Configure the Jenkins build by following these steps:
@@ -27,8 +27,8 @@ Configure the Jenkins build by following these steps:
 2. In the configuration window of your Jenkins project, navigate to the **Source Code Management** section and click **Git**. This option enables Jenkins to interface with a remote repository.
 3. Navigate to the main page of the GitHub repository that hosts your tests. Click **Clone or download** and copy the web URL to your clipboard.
 4. In the Jenkins interface, paste the URL into the **Repository URL** field of the **Source Code Management** section. (You also can specify the branch to build in the **Branch Specifier** field.)
-5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the MATLAB Jenkins plugin. Paste the full path to the **MATLAB root** folder into the MATLAB root field; choose the default Automatic test mode from the **Test mode** drop-down list; and select your desired test artifacts to be generated in the project wrokspace. (The build in this example is configured to generate JUnit test result and Cobertura code coverage reports.) For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
-6. In the **Post-build Actions** section, add two post-build actions to publish the JUnit test result and Cobertura code coverage reports that the build generates. For each report, provide the path to the report file. 
+5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the Jenkins plugin for MATLAB. Paste the full path to the MATLAB root folder into the **MATLAB root** field; choose the default Automatic test mode from the **Test mode** drop-down list; and select your desired test artifacts to be generated in the project wrokspace. (The build in this example is configured to generate Cobertura code coverage and JUnit test result reports.) For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
+6. In the **Post-build Actions** section of Jenkins, add two post-build actions to publish the Cobertura code coverage and JUnit test result reports that the build generates. For each report, provide the path to the report file. Jenkins stores the artifacts in the *matlabTestArtifacts* folder of the workspace. 
 
 ![post-build](https://user-images.githubusercontent.com/48831250/71104139-534cce00-2189-11ea-9f59-1f4d9eee99f8.png)
 
@@ -37,15 +37,15 @@ Configure the Jenkins build by following these steps:
 ## Run Tests in Freestyle Project
 To build your Jenkins project and run the tests specified in the repository, click **Build now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests specified in the *Times Table App* project pass.
 
-
-
-Navigate to the project workspace by clicking the **Workspace** icon in the project interface. You can view the generated test artifacts in the **matlabTestArtifacts** folder of the workspace.
-
-
-
-
 ![build_1](https://user-images.githubusercontent.com/48831250/71103438-221fce00-2188-11ea-8d17-3793b3964d04.png)
+
+Navigate to the project workspace by clicking the **Workspace** icon in the project interface. You can view the generated test artifacts in the *matlabTestArtifacts* folder of the workspace.
+
 ![workspace](https://user-images.githubusercontent.com/48831250/71103834-ce61b480-2188-11ea-84a8-b2bfbea9b106.png)
+
+
+
+
 ![cobertura_report](https://user-images.githubusercontent.com/48831250/71103566-598e7a80-2188-11ea-9bc5-857420ca1fce.png)
 ![junit_report](https://user-images.githubusercontent.com/48831250/71103594-63b07900-2188-11ea-9fa4-253cba446de7.png)
 
