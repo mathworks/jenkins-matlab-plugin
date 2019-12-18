@@ -34,7 +34,7 @@ Configure the Jenkins build by following these steps:
 
 7. Click **Save** to save the project configuration settings. You can access and modify your settings at a later stage by selecting **Configure** in the project interface.
 
-## Run Tests in Freestyle Project
+## Run Tests and Inspect Test Artifacts
 To build your Jenkins project and run the tests specified in the repository, click **Build now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests specified in the *Times Table App* project pass.
 
 ![build_1](https://user-images.githubusercontent.com/48831250/71103438-221fce00-2188-11ea-8d17-3793b3964d04.png)
@@ -47,7 +47,7 @@ Access the published Cobertura code coverage report by opening the *Coverage Rep
 
 ![cobertura_report](https://user-images.githubusercontent.com/48831250/71103566-598e7a80-2188-11ea-9bc5-857420ca1fce.png)
 
-To view the published JUnit test results, open the *Latest Test Result* link in the project interface. In the new page, open 
+To view the published JUnit test results, open the *Latest Test Result* link in the project interface. In the new page, open the link the the *All Tests* table. The table lists information for each of the test classes within the *Times Table App* project.  
 
 ![junit_report](https://user-images.githubusercontent.com/48831250/71103594-63b07900-2188-11ea-9fa4-253cba446de7.png)
 
