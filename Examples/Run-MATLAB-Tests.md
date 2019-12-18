@@ -47,7 +47,7 @@ Access the published Cobertura code coverage report by opening the *Coverage Rep
 
 ![cobertura_report](https://user-images.githubusercontent.com/48831250/71103566-598e7a80-2188-11ea-9bc5-857420ca1fce.png)
 
-To view the published JUnit test results, open the *Latest Test Result* link in the project interface. In the new page, open the link the the *All Tests* table. The table lists information for each of the test classes within the *Times Table App* project.  
+To view the published JUnit test results, open the *Latest Test Result* link in the project interface. In the new page, open the link the the *All Tests* table. The table expands and lists information for each of the test classes within the *Times Table App* project.  
 
 ![junit_report](https://user-images.githubusercontent.com/48831250/71103594-63b07900-2188-11ea-9fa4-253cba446de7.png)
 
