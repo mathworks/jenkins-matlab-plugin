@@ -29,18 +29,29 @@ Configure the Jenkins build by following these steps:
 4. In the Jenkins interface, paste the URL into the **Repository URL** field of the **Source Code Management** section. (You also can specify the branch to build in the **Branch Specifier** field.)
 5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the MATLAB Jenkins plugin. Paste the full path to the **MATLAB root** folder into the MATLAB root field; choose the default Automatic test mode from the **Test mode** drop-down list; and select your desired test artifacts to be generated in the project wrokspace. (The build in this example is configured to generate JUnit test result and Cobertura code coverage reports.) For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
 6. In the **Post-build Actions** section, add two post-build actions to publish the JUnit test result and Cobertura code coverage reports that the build generates. For each report, provide the path to the report file. 
-![cobertura](https://user-images.githubusercontent.com/48831250/71041635-8c3c6280-20f7-11ea-9f01-90b6a2c1abeb.png)
+
+![post-build](https://user-images.githubusercontent.com/48831250/71104139-534cce00-2189-11ea-9f59-1f4d9eee99f8.png)
 
 7. Click **Save** to save the project configuration settings. You can access and modify your settings at a later stage by selecting **Configure** in the project interface.
 
 ## Run Tests in Freestyle Project
 To build your Jenkins project and run the tests specified in the repository, click **Build now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests specified in the *Times Table App* project pass.
 
-![jenkins_build_history](https://user-images.githubusercontent.com/48831250/70753886-db535380-1d03-11ea-871b-be27202b64ad.png)
+
 
 Navigate to the project workspace by clicking the **Workspace** icon in the project interface. You can view the generated test artifacts in the **matlabTestArtifacts** folder of the workspace.
 
-![jenkins_workspace](https://user-images.githubusercontent.com/48831250/70753800-9e875c80-1d03-11ea-9b4d-41c9bd0c005e.png)
+
+
+
+![build_1](https://user-images.githubusercontent.com/48831250/71103438-221fce00-2188-11ea-8d17-3793b3964d04.png)
+![workspace](https://user-images.githubusercontent.com/48831250/71103834-ce61b480-2188-11ea-84a8-b2bfbea9b106.png)
+![cobertura_report](https://user-images.githubusercontent.com/48831250/71103566-598e7a80-2188-11ea-9bc5-857420ca1fce.png)
+![junit_report](https://user-images.githubusercontent.com/48831250/71103594-63b07900-2188-11ea-9fa4-253cba446de7.png)
+
+
+
+
 
 ## See Also
 [MathWorks Blogs: Developer Zone](https://blogs.mathworks.com/developer/category/continuous-integration/)<br/>
