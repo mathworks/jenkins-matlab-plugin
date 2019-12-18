@@ -43,10 +43,12 @@ Navigate to the project workspace by clicking the **Workspace** icon in the proj
 
 ![workspace](https://user-images.githubusercontent.com/48831250/71103834-ce61b480-2188-11ea-84a8-b2bfbea9b106.png)
 
-
-
+Access the published Cobertura code coverage report by opening the *Coverage Report* link in the project interface.
 
 ![cobertura_report](https://user-images.githubusercontent.com/48831250/71103566-598e7a80-2188-11ea-9bc5-857420ca1fce.png)
+
+To view the published JUnit test results, open the *Latest Test Result* link in the project interface. In the new page, open 
+
 ![junit_report](https://user-images.githubusercontent.com/48831250/71103594-63b07900-2188-11ea-9fa4-253cba446de7.png)
 
 
