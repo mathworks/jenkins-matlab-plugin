@@ -15,6 +15,7 @@ public class MatlabBuilderConstants {
     static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
     
     // Input parameter names (Passed to runMatlabTests.m as name-value pair arguments)
+    static final String PDF_REPORT = "'PDFReport'";
     static final String TAP_RESULTS = "'TAPResults'";
     static final String JUNIT_RESULTS = "'JUnitResults'";
     static final String STM_RESULTS = "'SimulinkTestResults'";
