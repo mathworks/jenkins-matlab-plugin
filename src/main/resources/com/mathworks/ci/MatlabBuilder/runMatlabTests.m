@@ -111,7 +111,7 @@ if exportSTMResults
     end
 end
 
-% Produce PDF test report (Not supported on MAC platform and below R2017a)
+% Produce PDF test report (Not supported on Mac OS platform and below R2017a)
 if producePDFReport
     if ismac
         warning('MATLAB:testArtifact:unSupportedPlatform', ...
