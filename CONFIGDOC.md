@@ -1,3 +1,12 @@
+## Contents
+
+-  [Configure Plugin for Freestyle Project](#configure-plugin-for-freestyle-project)
+	- [Freestyle Project with Automatic Test Mode](#option-1-freestyle-project-with-automatic-test-mode)
+	- [Freestyle Project with Custom Test Mode](#option-2-freestyle-project-with-custom-test-mode)
+-  [Configure Plugin for Multi-Configuration Project](#configure-plugin-for-multi-configuration-project)
+	- [Multi-Configuration Project with Automatic Test Mode](#option-1-multi-configuration-project-with-automatic-test-mode)
+	- [Multi-Configuration Project with Custom Test Mode](#option-2-multi-configuration-project-with-custom-test-mode)
+	
 ## Configure Plugin for Freestyle Project
 To configure the plugin for a freestyle project, select **Run MATLAB Tests** from the **Add build step** list. Then, enter the value returned by the **matlabroot** function in the **MATLAB root** field.
 
