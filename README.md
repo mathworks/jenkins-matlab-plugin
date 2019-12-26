@@ -5,11 +5,11 @@ The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB and Sim
 ## Documentation 
 
 #### Configuration Steps 
-* See step by step [configuration guide](https://github.com/mathworks/jenkins-matlab-plugin/blob/c1409d198b6cce63011300c4e3e43d1c4dbcc2b4/CONFIGDOC.md) of MATLAB plugin. 
+* To learn how to configure the Jenkins Plugin for MATLAB, see step by step [configuration guide](https://github.com/mathworks/jenkins-matlab-plugin/blob/8b77953b23d8a0b0edd40dd2751219f7c3f813b8/CONFIGDOC.md) of MATLAB plugin. 
 
 #### Change Log
 
-* To learn how to configure the Jenkins Plugin for MATLAB, see version history and [change logs](https://github.com/mathworks/jenkins-matlab-plugin/blob/4ea5c5ec30cbec4fe53508b240cce853ed5ba350/CHANGELOG.md). 
+* For a detailed list of releases, see version history and [change logs](https://github.com/mathworks/jenkins-matlab-plugin/blob/8b77953b23d8a0b0edd40dd2751219f7c3f813b8/CHANGELOG.md). 
 
 ## Contact Us
 If you have any questions or suggestions, please contact MathWorks.
