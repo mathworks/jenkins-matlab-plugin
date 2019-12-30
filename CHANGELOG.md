@@ -3,7 +3,7 @@ Change log
 
 ### Newer Versions 
 
-For newer versions. See [GitHub releases](https://github.com/jenkinsci/matlab-plugin/releases)
+For newer versions of the plugin, see [GitHub releases](https://github.com/jenkinsci/matlab-plugin/releases)
 
 ### 1.0.3
 
@@ -18,20 +18,20 @@ Release date: _Nov 05, 2019_
 Release date: _Aug 21, 2019_
 
 * MATRIX build support. 
-* Plugin support for older versions of MATLAB till R2013a.
+* Plugin support for older versions of MATLAB until R2013a.
 
 ### 1.0.1
 
 Release date: _May 10, 2019_
 
 * Jenkins run-time environment variables support in MATLAB script.
-* Enhancement of README with with SCM configuration step for "Automatic" Test mode.
+* Enhancement of README with SCM configuration step for "Automatic" Test mode.
 
 ### 1.0.0
 
 Release date: _Apr 08, 2019_
 
-* Initial release 
+* Initial release.
 
 
 
