@@ -26,7 +26,7 @@
 	
 	<name>MATLAB Plugin</name>
 	<description>Jenkins plugin for MATLAB</description>
-	<url>https://wiki.jenkins.io/display/JENKINS/MATLAB+Plugin</url>
+	<url>https://github.com/jenkinsci/matlab-plugin</url>
 	<licenses>
 		<license>
 			<name>MIT License</name>
