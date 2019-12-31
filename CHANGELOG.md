@@ -3,7 +3,7 @@ Change log
 
 ### Newer Versions 
 
-For newer versions of the plugin, see [GitHub releases](https://github.com/jenkinsci/matlab-plugin/releases)
+For newer versions of the plugin, see [GitHub releases.](https://github.com/jenkinsci/matlab-plugin/releases)
 
 ### 1.0.3
 
