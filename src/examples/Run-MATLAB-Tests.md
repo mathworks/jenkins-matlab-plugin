@@ -19,7 +19,7 @@ Running the tests in this example requires you to interface Jenkins with MATLAB 
 
 * To run MATLAB tests and generate test artifacts, you must install the Jenkins plugin for MATLAB. For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
 * Jenkins runs the tests in a branch of the remote repository that is specified by a URL. To follow the build steps in this example, the *Times Table App* project must be under Git&trade; source control. For example, you can create a new repository for the project using your GitHub&reg; account. For more information, see [Use Source Control with Projects](https://www.mathworks.com/help/matlab/matlab_prog/use-source-control-with-projects.html).
-* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the *[Cobertura plugin](https://plugins.jenkins.io/cobertura)* integrates Cobertura coverage reports to Jenkins, and *[JUnit plugin](https://plugins.jenkins.io/junit)* enables JUnit-format test results to be published. 
+* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the [Cobertura plugin](https://plugins.jenkins.io/cobertura) integrates Cobertura coverage reports to Jenkins, and [JUnit plugin](https://plugins.jenkins.io/junit) enables JUnit-format test results to be published. 
 
 ## Configure Jenkins Project to Run MATLAB Tests
 Create a new project and configure it by following these steps:
@@ -39,11 +39,11 @@ Create a new project and configure it by following these steps:
 
 ![source_control](https://user-images.githubusercontent.com/48831250/71735877-965fa000-2e1d-11ea-95c4-8b9259308e75.png)
 
-5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the Jenkins plugin for MATLAB. Paste the full path to the MATLAB root folder into the **MATLAB root** field; choose the default Automatic test mode from the **Test mode** drop-down list; and select your desired test artifacts to be generated in the project workspace. (The build in this example is configured to generate Cobertura code coverage and JUnit test result reports.) For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
+5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the Jenkins plugin for MATLAB. Paste the full path to the MATLAB root folder into the **MATLAB root** field; choose the default Automatic test mode from the **Test mode** drop-down list; and select your desired test artifacts to be generated in the project workspace. (The plugin in this example is configured to generate Cobertura code coverage and JUnit test result reports.) For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
 
 ![configure_plugin](https://user-images.githubusercontent.com/48831250/71737486-c741d400-2e21-11ea-9e1c-f7acb4fb822f.png)
 
-6. In the **Post-build Actions** section of Jenkins, add two post-build actions to publish the Cobertura code coverage and JUnit test result reports that the build generates. For each report, provide the path to the report file. Jenkins stores the artifacts in the *matlabTestArtifacts* folder of the workspace. 
+6. In the **Post-build Actions** section of Jenkins, add two post-build actions to publish the Cobertura code coverage and JUnit test result reports that are generated. For each report, provide the path to the report file. Jenkins stores the artifacts in the *matlabTestArtifacts* folder of the workspace. 
 
 ![post-build](https://user-images.githubusercontent.com/48831250/71736813-0c650680-2e20-11ea-8fa5-dee1bb6ddda0.png)
 
@@ -74,4 +74,4 @@ To view the published JUnit test results, open the *Latest Test Result* link in 
 [MathWorks Blogs: Developer Zone – Continuous Integration](https://blogs.mathworks.com/developer/category/continuous-integration/)<br/>
 [matlab.unittest.plugins Package](https://www.mathworks.com/help/matlab/ref/matlab.unittest.plugins-package.html)<br/>
 [Explore an Example Project (MATLAB)](https://www.mathworks.com/help/matlab/matlab_prog/explore-an-example-project.html)<br/>
-[Source Control Integration (MATLAB)](https://www.mathworks.com/help/matlab/source-control.html)
+[Use Source Control with Projects](https://www.mathworks.com/help/matlab/matlab_prog/use-source-control-with-projects.html)
