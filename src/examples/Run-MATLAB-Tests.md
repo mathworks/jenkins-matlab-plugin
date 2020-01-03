@@ -74,4 +74,4 @@ To view the published JUnit test results, open the *Latest Test Result* link in 
 [MathWorks Blogs: Developer Zone – Continuous Integration](https://blogs.mathworks.com/developer/category/continuous-integration/)<br/>
 [matlab.unittest.plugins Package](https://www.mathworks.com/help/matlab/ref/matlab.unittest.plugins-package.html)<br/>
 [Explore an Example Project (MATLAB)](https://www.mathworks.com/help/matlab/matlab_prog/explore-an-example-project.html)<br/>
-[Use Source Control with Projects](https://www.mathworks.com/help/matlab/matlab_prog/use-source-control-with-projects.html)
+[Use Source Control with Projects (MATLAB)](https://www.mathworks.com/help/matlab/matlab_prog/use-source-control-with-projects.html)
