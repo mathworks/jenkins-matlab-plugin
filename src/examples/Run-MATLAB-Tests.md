@@ -19,7 +19,7 @@ Running the tests in this example requires you to interface Jenkins with MATLAB 
 
 * To run MATLAB tests and generate test artifacts, you must install the Jenkins plugin for MATLAB. For information on how to install a plugin in Jenkins, see [Managing Plugins](https://jenkins.io/doc/book/managing/plugins/).
 * Jenkins runs the tests in a branch of the remote repository that is specified by a URL. To follow the build configuration steps, you must upload the *Times Table App* example project to a remote GitHub&reg; repository.
-* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the *Cobertura Plugin* integrates Cobertura coverage reports to Jenkins, and *JUnit plugin* enables JUnit-format test results to be published. 
+* To publish the test artifacts using post-build actions, relevant plugins must be installed on Jenkins. For example, the *[Cobertura Plugin](https://plugins.jenkins.io/cobertura)* integrates Cobertura coverage reports to Jenkins, and *[JUnit plugin](https://plugins.jenkins.io/junit)* enables JUnit-format test results to be published. 
 
 ## Configure Jenkins Project to Run MATLAB Tests
 Create a new project and configure it by following these steps:
