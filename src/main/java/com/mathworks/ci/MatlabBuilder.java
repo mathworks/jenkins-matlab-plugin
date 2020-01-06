@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -52,6 +53,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
     private EnvVars env;
+    private FilePath nodeSpecificMatlabRoot;
     private String nodeSpecificfileSeparator;
 
     @DataBoundConstructor
@@ -476,6 +478,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             throws InterruptedException, IOException {        
         //Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
+        nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
         nodeSpecificfileSeparator = getNodeSpecificFileSeperator(launcher);
         
         // Invoke MATLAB command and transfer output to standard
@@ -493,8 +496,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
-            MatlabReleaseInfo rel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
+            MatlabReleaseInfo rel = new MatlabReleaseInfo(this.nodeSpecificMatlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
@@ -539,7 +541,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         return matlabDefaultArgs;
     }
 
-    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher) {
+    public List<String> constructDefaultMatlabCommand(boolean isLinuxLauncher) throws MatlabVersionNotFoundException {
         final List<String> matlabDefaultArgs = new ArrayList<String>();
         Collections.addAll(matlabDefaultArgs, getPreRunnerSwitches());
         if (!isLinuxLauncher) {
@@ -554,10 +556,14 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     }
 
 
-    private String[] getPreRunnerSwitches() {
+    private String[] getPreRunnerSwitches() throws MatlabVersionNotFoundException {
         String[] preRunnerSwitches =
                 {getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab", "-nosplash",
-                        "-nodesktop", "-noAppIcon"};
+                        "-nodesktop"};
+        MatlabReleaseInfo rel = new MatlabReleaseInfo(this.nodeSpecificMatlabRoot);
+        if(!rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_NO_APP_ICON_SUPPORT)) {
+        	preRunnerSwitches =  (String[]) ArrayUtils.add(preRunnerSwitches, "-noAppIcon");
+        } 
         return preRunnerSwitches;
     }
 
