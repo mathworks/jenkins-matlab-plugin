@@ -53,7 +53,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private TestRunTypeList testRunTypeList;
     private String matlabRoot;
     private EnvVars env;
-    private FilePath nodeSpecificMatlabRoot;
+    private MatlabReleaseInfo matlabRel;
     private String nodeSpecificfileSeparator;
 
     @DataBoundConstructor
@@ -478,7 +478,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             throws InterruptedException, IOException {        
         //Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
-        nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
+        
+        // Get node specific matlabroot to get MATLAB version information 
+        FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
+        matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
         nodeSpecificfileSeparator = getNodeSpecificFileSeperator(launcher);
         
         // Invoke MATLAB command and transfer output to standard
@@ -496,9 +499,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            MatlabReleaseInfo rel = new MatlabReleaseInfo(this.nodeSpecificMatlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
-            if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
+            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 matlabLauncher = matlabLauncher.cmds(constructDefaultMatlabCommand(launcher.isUnix())).stderr(outStream);
             } else {
@@ -560,8 +562,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         String[] preRunnerSwitches =
                 {getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab", "-nosplash",
                         "-nodesktop"};
-        MatlabReleaseInfo rel = new MatlabReleaseInfo(this.nodeSpecificMatlabRoot);
-        if(!rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_NO_APP_ICON_SUPPORT)) {
+        if(!matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_NO_APP_ICON_SUPPORT)) {
         	preRunnerSwitches =  (String[]) ArrayUtils.add(preRunnerSwitches, "-noAppIcon");
         } 
         return preRunnerSwitches;
