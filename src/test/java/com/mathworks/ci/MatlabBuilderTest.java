@@ -538,6 +538,30 @@ public class MatlabBuilderTest {
     }
     
     /*
+     * Test to verify -noAppIcon is not displayed for MATLAB version R2015a
+     */
+
+    @Test
+    public void verifyNoAppIconForR2015a() throws Exception {
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2015a"));
+        FreeStyleBuild build = getBuildforRunTestAutomatically();
+        jenkins.assertLogContains("-r", build);
+        jenkins.assertLogNotContains("-noAppIcon", build);
+    }
+    
+    /*
+     * Test to verify -noAppIcon is displayed for MATLAB version R2015b
+     */
+
+    @Test
+    public void verifyNoAppIconForR2015b() throws Exception {
+        this.matlabBuilder.setMatlabRoot(getMatlabroot("R2015b"));
+        FreeStyleBuild build = getBuildforRunTestAutomatically();
+        jenkins.assertLogContains("-r", build);
+        jenkins.assertLogContains("-noAppIcon", build);
+    }
+    
+    /*
      * Private helper methods for tests
      */
     
