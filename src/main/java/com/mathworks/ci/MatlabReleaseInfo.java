@@ -1,5 +1,7 @@
 package com.mathworks.ci;
 
+import java.io.BufferedReader;
+
 /*
  * Copyright 2019 The MathWorks, Inc. This Class provides MATLAB release information in the form of
  * Version numbers. Class constructor requires MATLAB root as input parameter
@@ -7,6 +9,8 @@ package com.mathworks.ci;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
 import java.nio.file.Paths;
@@ -110,10 +114,14 @@ public class MatlabReleaseInfo {
                 else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
                 }else {
-                	// Get the version information from Contents.m file
-                	String versionLine = this.matlabRoot.act(new ContentsVersion());
+                	FilePath contentFile = new FilePath(this.matlabRoot,"toolbox/matlab/general/Contents.m");
+                	InputStream in = contentFile.read();
+                	BufferedReader br = new BufferedReader(new InputStreamReader(in));
                 	
-                	// Setting actual version to default R2016b 
+                	//Skip first line and capture the second line.
+                	br.readLine();
+                	String versionLine = br.readLine();
+                	
                 	String actualVersion = VERSION_16B;
                 	Pattern p = Pattern.compile(VERSION_PATTERN);
                 	Matcher m = p.matcher(versionLine);
@@ -132,22 +140,3 @@ public class MatlabReleaseInfo {
         return versionInfoCache;
     }
  }
-
-//Below piece of code will be executed on the specific node in case of job is running on remote agent.
-final class ContentsVersion implements FileCallable<String> {
-  private static final long serialVersionUID = 1;
-  
-  // File path of Contents.m on specific node
-  private static String CONTENTS_FILE = "toolbox" + File.separator + "matlab" + File.separator + "general" + File.separator + "Contents.m";
-  @Override 
-  public String invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
-  	List<String> line = Files.readAllLines(Paths.get(f.getPath() + File.separator + CONTENTS_FILE));
-  	// Get second line from Contents.m file
-      return line.get(1);
-  }
-	@Override
-	public void checkRoles(RoleChecker checker) throws SecurityException {
-		// No Roles to check 
-		
-	}
-} 
