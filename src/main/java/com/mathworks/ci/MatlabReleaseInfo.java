@@ -7,9 +7,15 @@ package com.mathworks.ci;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.NotDirectoryException;
+import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.collections.MapUtils;
@@ -26,17 +32,14 @@ import hudson.remoting.VirtualChannel;
 public class MatlabReleaseInfo {
     private FilePath matlabRoot;
     private static final String VERSION_INFO_FILE = "VersionInfo.xml";
+    private static final String CONTENTS_FILE = "Contents.m";
+    private static final String VERSION_PATTERN = "(\\d+)\\.(\\d+)";
     private static final String VERSION_INFO_ROOT_TAG = "MathWorks_version_info";
     private static final String RELEASE_TAG = "release";
     private static final String VERSION_TAG = "version";
     private static final String DESCRIPTION_TAG = "description";
     private static final String DATE_TAG = "date";
     private static final String VERSION_16B = "9.1.0.888888";
-    private static final Map<String, String> VERSION_OLDER_THAN_17A = new HashMap<String, String>(){
-        {
-            put(VERSION_TAG,VERSION_16B);
-        }
-    };
     
     private Map<String, String> versionInfoCache = new HashMap<String, String>();
     
@@ -107,7 +110,18 @@ public class MatlabReleaseInfo {
                 else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
                 }else {
-                    versionInfoCache.putAll(VERSION_OLDER_THAN_17A);
+                	// Get the version information from Contents.m file
+                	String versionLine = this.matlabRoot.act(new ContentsVersion());
+                	
+                	// Setting actual version to default R2016b 
+                	String actualVersion = VERSION_16B;
+                	Pattern p = Pattern.compile(VERSION_PATTERN);
+                	Matcher m = p.matcher(versionLine);
+                	if(m.find()) {
+                		actualVersion = m.group();
+                	}
+                	// Update the versionInfoCache with actual version extracted from Contents.m file
+                	versionInfoCache.put(VERSION_TAG, actualVersion);
                 }
                 
             } catch (Exception e) {
@@ -118,3 +132,22 @@ public class MatlabReleaseInfo {
         return versionInfoCache;
     }
  }
+
+//Below piece of code will be executed on the specific node in case of job is running on remote agent.
+final class ContentsVersion implements FileCallable<String> {
+  private static final long serialVersionUID = 1;
+  
+  // File path of Contents.m on specific node
+  private static String CONTENTS_FILE = "toolbox" + File.separator + "matlab" + File.separator + "general" + File.separator + "Contents.m";
+  @Override 
+  public String invoke(File f, VirtualChannel channel) throws IOException, InterruptedException {
+  	List<String> line = Files.readAllLines(Paths.get(f.getPath() + File.separator + CONTENTS_FILE));
+  	// Get second line from Contents.m file
+      return line.get(1);
+  }
+	@Override
+	public void checkRoles(RoleChecker checker) throws SecurityException {
+		// No Roles to check 
+		
+	}
+} 
