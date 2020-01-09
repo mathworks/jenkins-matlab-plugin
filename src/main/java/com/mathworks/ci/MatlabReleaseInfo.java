@@ -106,7 +106,8 @@ public class MatlabReleaseInfo {
                 else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
                 }else {
-					// Get the version information from Contents.m file when VersionInfo.xml is not present.
+					// Get the version information from Contents.m file when VersionInfo.xml is not
+					// present.
 					FilePath contentFile = new FilePath(this.matlabRoot, CONTENTS_FILE);
 					String actualVersion = null;
 					try (InputStream in = contentFile.read();
@@ -115,12 +116,12 @@ public class MatlabReleaseInfo {
 						// Skip first line and capture the second line.
 						br.readLine();
 						String versionLine = br.readLine();
-						
+
 						Pattern p = Pattern.compile(VERSION_PATTERN);
 						Matcher m = p.matcher(versionLine);
 						if (m.find()) {
 							actualVersion = m.group();
-						}	
+						}
 					}
 					// Update the versionInfoCache with actual version extracted from Contents.m
 					versionInfoCache.put(VERSION_TAG, actualVersion);
