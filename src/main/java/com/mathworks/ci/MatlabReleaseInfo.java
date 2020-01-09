@@ -1,42 +1,41 @@
 package com.mathworks.ci;
 
+import java.io.BufferedReader;
+
 /*
  * Copyright 2019 The MathWorks, Inc. This Class provides MATLAB release information in the form of
  * Version numbers. Class constructor requires MATLAB root as input parameter
  */
 
-import java.io.File;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.apache.commons.collections.MapUtils;
-import org.jenkinsci.remoting.RoleChecker;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
-import hudson.FilePath.FileCallable;
-import hudson.remoting.VirtualChannel;
 
 public class MatlabReleaseInfo {
     private FilePath matlabRoot;
     private static final String VERSION_INFO_FILE = "VersionInfo.xml";
+    private static final String CONTENTS_FILE = "toolbox/matlab/general/Contents.m";
+    private static final String VERSION_PATTERN = "(\\d+)\\.(\\d+)";
     private static final String VERSION_INFO_ROOT_TAG = "MathWorks_version_info";
     private static final String RELEASE_TAG = "release";
     private static final String VERSION_TAG = "version";
     private static final String DESCRIPTION_TAG = "description";
     private static final String DATE_TAG = "date";
-    private static final String VERSION_16B = "9.1.0.888888";
-    private static final Map<String, String> VERSION_OLDER_THAN_17A = new HashMap<String, String>(){
-        {
-            put(VERSION_TAG,VERSION_16B);
-        }
-    };
     
     private Map<String, String> versionInfoCache = new HashMap<String, String>();
     
@@ -107,13 +106,30 @@ public class MatlabReleaseInfo {
                 else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
                 }else {
-                    versionInfoCache.putAll(VERSION_OLDER_THAN_17A);
-                }
-                
+					// Get the version information from Contents.m file when VersionInfo.xml is not
+					// present.
+					FilePath contentFile = new FilePath(this.matlabRoot, CONTENTS_FILE);
+					String actualVersion = null;
+					try (InputStream in = contentFile.read();
+							BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+
+						// Skip first line and capture the second line.
+						br.readLine();
+						String versionLine = br.readLine();
+
+						Pattern p = Pattern.compile(VERSION_PATTERN);
+						Matcher m = p.matcher(versionLine);
+						if (m.find()) {
+							actualVersion = m.group();
+						}
+					}
+					// Update the versionInfoCache with actual version extracted from Contents.m
+					versionInfoCache.put(VERSION_TAG, actualVersion);
+				}
             } catch (Exception e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);
-            }
+            } 
         }
         return versionInfoCache;
     }
