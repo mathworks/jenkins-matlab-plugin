@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,29 +106,29 @@ public class MatlabReleaseInfo {
                 else if(!this.matlabRoot.exists()){
                     throw new NotDirectoryException("Invalid matlabroot path");
                 }else {
-                	// Get the version information from Contents.m file when VersionInfo.xml is not present.
-                	FilePath contentFile = new FilePath(this.matlabRoot,CONTENTS_FILE);
-                	InputStream in = contentFile.read();
-                	BufferedReader br = new BufferedReader(new InputStreamReader(in));
-                	
-                	//Skip first line and capture the second line.
-                	br.readLine();
-                	String versionLine = br.readLine();
-                	
-                	String actualVersion = null;
-                	Pattern p = Pattern.compile(VERSION_PATTERN);
-                	Matcher m = p.matcher(versionLine);
-                	if(m.find()) {
-                		actualVersion = m.group();
-                	}
-                	// Update the versionInfoCache with actual version extracted from Contents.m file
-                	versionInfoCache.put(VERSION_TAG, actualVersion);
-                }
-                
+					// Get the version information from Contents.m file when VersionInfo.xml is not present.
+					FilePath contentFile = new FilePath(this.matlabRoot, CONTENTS_FILE);
+					String actualVersion = null;
+					try (InputStream in = contentFile.read();
+							BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+
+						// Skip first line and capture the second line.
+						br.readLine();
+						String versionLine = br.readLine();
+						
+						Pattern p = Pattern.compile(VERSION_PATTERN);
+						Matcher m = p.matcher(versionLine);
+						if (m.find()) {
+							actualVersion = m.group();
+						}	
+					}
+					// Update the versionInfoCache with actual version extracted from Contents.m
+					versionInfoCache.put(VERSION_TAG, actualVersion);
+				}
             } catch (Exception e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);
-            }
+            } 
         }
         return versionInfoCache;
     }
