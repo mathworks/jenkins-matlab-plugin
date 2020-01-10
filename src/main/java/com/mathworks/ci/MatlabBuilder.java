@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /*
- * Copyright 2019 The MathWorks, Inc.
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
  * This is Matlab Builder class which describes the build step and its components. Builder displays
  * Build step As "Run MATLAB Tests" under Build steps. Author : Nikhil Bhoski email :

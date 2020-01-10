@@ -1,4 +1,4 @@
-%Copyright 2019 The MathWorks, Inc.
+%Copyright 2019-2020 The MathWorks, Inc.
 
 function failed = runMatlabTests(varargin)
 
@@ -111,11 +111,11 @@ if exportSTMResults
     end
 end
 
-% Produce PDF test report (Not supported on Mac OS platform and below R2017a)
+% Produce PDF test report (Not supported on MacOS platforms and below R2017a)
 if producePDFReport
     if ismac
         warning('MATLAB:testArtifact:unSupportedPlatform', ...
-            'Producing a PDF test report is not supported on Mac OS platform.');
+            'Producing a PDF test report is not currently supported on MacOS platforms.');
     elseif ~testReportPluginPresent
         issuePDFReportUnsupportedWarning;
     else
