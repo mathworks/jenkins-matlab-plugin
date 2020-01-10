@@ -4,9 +4,9 @@ The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB and Sim
 
 *Note: Producing a PDF test report is not supported on Mac OS platform.*
 
-## Configure Plugin for Freestyle Project
-To configure the plugin for a freestyle project, select **Run MATLAB Tests** from the **Add build step** list. Then, enter the value returned by the **matlabroot** function in the **MATLAB root** field.
+## Documentation 
 
+<<<<<<< HEAD
   ![new_add_build_step](https://user-images.githubusercontent.com/47204011/55624172-be54a100-57c2-11e9-9596-52d3a60ee467.png)
   
   ![new_enter_matlabroot](https://user-images.githubusercontent.com/51316279/67834674-085df500-fb0e-11e9-927b-c4da6bff0ed6.png)
@@ -98,7 +98,14 @@ To configure the matrix build where you can customize the MATLAB test execution,
 1) For a user-defined axis named **VAR**,  **$VAR** and **${VAR}** are both valid formats for accessing the values.
 
 2) A multi-configuration project creates a separate workspace for each user-defined axis value. If you specify the full paths to where MATLAB is installed as axis values, Jenkins fails to create separate workspaces and fails the build.
+=======
+#### Configuration Steps 
+* To learn how to configure the Jenkins Plugin for MATLAB, see the [plugin configuration guide.](/CONFIGDOC.md)
 
+#### Change Log
+>>>>>>> master
+
+* For a detailed list of releases, see [Change logs](/CHANGELOG.md). 
 
 ## Contact Us
 If you have any questions or suggestions, please contact MathWorks.
