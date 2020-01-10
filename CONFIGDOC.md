@@ -41,6 +41,8 @@ The automatic test execution feature of the plugin enables you to generate diffe
 
   ![Workspace01](https://user-images.githubusercontent.com/47204011/55470859-1e621080-5626-11e9-98f2-044144272643.JPG)
 
+  **Note:** Producing a PDF test report is not currently supported on MacOS platforms.
+
 ### Option 2: Freestyle Project with Custom Test Mode
 This option enables you to develop your custom MATLAB commands for running tests. To configure the Jenkins build where you can customize the MATLAB test execution, follow these steps.
 
@@ -76,6 +78,8 @@ To configure the plugin for a matrix build where tests run automatically in mult
 ![image](https://user-images.githubusercontent.com/51316279/72131571-aee23400-33a2-11ea-8e76-4b36274b9d5b.png)
 
 You can select the test artifact check boxes when tests run automatically. Once you have made your selections, save your settings and run the build.
+
+**Note:** Producing a PDF test report is not currently supported on MacOS platforms.
 
 ### Option 2: Multi-Configuration Project with Custom Test Mode
 
