@@ -5,6 +5,7 @@ package com.mathworks.ci;
 
 public class MatlabBuilderConstants {
     static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
+    static final double BASE_MATLAB_VERSION_NO_APP_ICON_SUPPORT = 8.6;
     static final double BASE_MATLAB_VERSION_BATCH_SUPPORT = 9.5;
     static final double BASE_MATLAB_VERSION_COBERTURA_SUPPORT = 9.3;
     static final double BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT = 9.5;
