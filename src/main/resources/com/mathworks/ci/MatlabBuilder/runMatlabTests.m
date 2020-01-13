@@ -54,17 +54,18 @@ if produceTAP
     BASE_VERSION_TAP13_SUPPORT = '9.1';
     if verLessThan('matlab',BASE_VERSION_TAPORIGINALFORMAT_SUPPORT)
         warning('MATLAB:testArtifact:tapReportNotSupported', 'Producing TAP results is not supported in this release.');
-        tapPlugin = matlab.unittest.plugins.TestRunnerPlugin.empty;
     elseif verLessThan('matlab',BASE_VERSION_TAP13_SUPPORT)
         tapFile = getTapResultFile(resultsDir);
         import('matlab.unittest.plugins.TAPPlugin');
         tapPlugin = TAPPlugin.producingOriginalFormat(tapFile);
+        runner.addPlugin(tapPlugin);
     else
         tapFile = getTapResultFile(resultsDir);
         import('matlab.unittest.plugins.TAPPlugin');
         tapPlugin = TAPPlugin.producingVersion13(tapFile);
+        runner.addPlugin(tapPlugin);
     end
-    runner.addPlugin(tapPlugin);
+    
 end
 
 % Produce Cobertura report (Cobertura report generation is not supported
