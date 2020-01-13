@@ -1,6 +1,6 @@
 package com.mathworks.ci;
 /*
- * Copyright 2019 The MathWorks, Inc.
+ * Copyright 2019-2020 The MathWorks, Inc.
  */
 
 public class MatlabBuilderConstants {
@@ -16,6 +16,7 @@ public class MatlabBuilderConstants {
     static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
     
     // Input parameter names (Passed to runMatlabTests.m as name-value pair arguments)
+    static final String PDF_REPORT = "'PDFReport'";
     static final String TAP_RESULTS = "'TAPResults'";
     static final String JUNIT_RESULTS = "'JUnitResults'";
     static final String STM_RESULTS = "'SimulinkTestResults'";

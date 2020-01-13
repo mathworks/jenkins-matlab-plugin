@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /*
- * Copyright 2019 The MathWorks, Inc.
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
  * This is Matlab Builder class which describes the build step and its components. Builder displays
  * Build step As "Run MATLAB Tests" under Build steps. Author : Nikhil Bhoski email :
@@ -347,6 +347,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         private boolean taCoberturaChkBx;
         private boolean taSTMResultsChkBx;
         private boolean taModelCoverageChkBx;
+        private boolean taPDFReportChkBx;
 
         @DataBoundConstructor
         public RunTestsAutomaticallyOption() {
@@ -378,6 +379,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             this.taModelCoverageChkBx = taModelCoverageChkBx;
         }
         
+        @DataBoundSetter
+        public void setTaPDFReportChkBx(boolean taPDFReportChkBx) {
+            this.taPDFReportChkBx = taPDFReportChkBx;
+        }
+                
         public boolean getTatapChkBx() {
             return tatapChkBx;
         }
@@ -398,6 +404,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return taModelCoverageChkBx;
         }
         
+        public boolean getTaPDFReportChkBx() {
+            return taPDFReportChkBx;
+        }
+                
         @Extension
         public static final class DescriptorImpl extends TestRunTypeDescriptor {
             @Override
@@ -419,6 +429,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return this.getTaSTMResultsChkBx();
                 case "taModelCoverageChkBx":
                     return this.getTaModelCoverageChkBx();
+                case "taPDFReportChkBx":
+                    return this.getTaPDFReportChkBx();
                 default:
                     return false;
             }
@@ -611,13 +623,14 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     
     // Concatenate the input arguments
     private String getInputArguments() {
+        String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
     	String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + getTestRunTypeList().getBooleanByName("tatapChkBx");
     	String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + getTestRunTypeList().getBooleanByName("taJunitChkBx");
     	String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
     	String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
     	String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
         
-    	String inputArgsToMatlabFcn = tapResults + "," + junitResults + ","
+    	String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
     			+ stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
         
         return inputArgsToMatlabFcn;

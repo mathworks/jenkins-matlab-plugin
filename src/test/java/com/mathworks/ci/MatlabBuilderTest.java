@@ -32,7 +32,7 @@ import com.mathworks.ci.MatlabBuilder.RunTestsWithCustomCommandOption;
 
 
 /*
- * Copyright 2018-2019 The MathWorks, Inc.
+ * Copyright 2018-2020 The MathWorks, Inc.
  * 
  * Test class for MatlabBuilder
  * 
@@ -300,7 +300,7 @@ public class MatlabBuilderTest {
         this.matlabBuilder.setMatlabRoot(getMatlabroot("R2018b"));
         FreeStyleBuild build = getBuildforRunTestAutomatically();
         jenkins.assertLogContains("-batch", build);
-        jenkins.assertLogContains("\'TAPResults\',true," +
+        jenkins.assertLogContains("\'PDFReport\',true,\'TAPResults\',true," +
                                   "\'JUnitResults\',true,\'SimulinkTestResults\',true," +
                                   "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
     }
@@ -572,6 +572,7 @@ public class MatlabBuilderTest {
         runOption.setTatapChkBx(true);
         runOption.setTaModelCoverageChkBx(true);
         runOption.setTaSTMResultsChkBx(true);
+        runOption.setTaPDFReportChkBx(true);
         this.matlabBuilder.setTestRunTypeList(runOption);
         project.getBuildersList().add(this.matlabBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
