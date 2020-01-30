@@ -1,3 +1,5 @@
+This guide shows you examples of how to configure the Jenkins&trade; plugin for MATLAB&reg;, considering a Microsoft&reg; Windows&reg; platform.
+
 ## Contents
 
 -  [Configure Plugin for Freestyle Project](#configure-plugin-for-freestyle-project)
