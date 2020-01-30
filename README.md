@@ -10,7 +10,7 @@ To configure the Jenkins Plugin for MATLAB, see [Plugin Configuration Guide.](/C
 For a detailed list of releases, see [Change Logs](/CHANGELOG.md). 
 
 ## Examples
-
+For a detailed list of releases, see [Examples](/examples/). 
 
 ## Contact Us
 If you have any questions or suggestions, please contact MathWorks.
