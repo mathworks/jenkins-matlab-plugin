@@ -4,13 +4,13 @@ The Jenkins&trade; plugin for MATLAB&reg; enables you to easily run your MATLAB 
 
 
 ## Configuration Steps 
-To configure the Jenkins Plugin for MATLAB, see [Plugin Configuration Guide.](/CONFIGDOC.md)
+To configure the plugin, see [Plugin Configuration Guide.](/CONFIGDOC.md)
 
 ## Change Log
 For a detailed list of releases, see [Change Logs](/CHANGELOG.md). 
 
 ## Examples
-For a detailed list of releases, see [Examples](/examples/). 
+To learn how to use the plugin in testing workflows, see [Examples](/examples/). 
 
 ## Contact Us
 If you have any questions or suggestions, please contact MathWorks.
