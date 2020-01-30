@@ -1,15 +1,16 @@
 # Jenkins MATLAB Plugin
 
-The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB and Simulink&reg; tests and generate artifacts such as *PDF* test reports, *JUnit* and *TAP* test results, and *Cobertura* code or model coverage reports. You can also export your Simulink Test&#8482; Manager results. This guide shows you examples of how to configure the plugin for different objectives, considering a Microsoft&reg; Windows&reg; platform.
+The Jenkins plugin for MATLAB&reg; enables you to easily run your MATLAB and Simulink&reg; tests and generate artifacts such as *PDF* test reports, *JUnit* and *TAP* test results, and *Cobertura* code or model coverage reports. You can also export your Simulink Test&#8482; Manager results. 
 
-## Documentation 
 
-#### Configuration Steps 
-* To learn how to configure the Jenkins Plugin for MATLAB, see the [plugin configuration guide.](/CONFIGDOC.md)
+## Configuration Steps 
+To configure the Jenkins Plugin for MATLAB, see [Plugin Configuration Guide.](/CONFIGDOC.md)
 
-#### Change Log
+## Change Log
+For a detailed list of releases, see [Change Logs](/CHANGELOG.md). 
 
-* For a detailed list of releases, see [Change logs](/CHANGELOG.md). 
+## Examples
+
 
 ## Contact Us
 If you have any questions or suggestions, please contact MathWorks.
