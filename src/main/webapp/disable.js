@@ -1,7 +1,6 @@
 // Copyright 2019-2020 The MathWorks, Inc.
 // This script file is used to disable all web elements of depricated MATLAB build step.
 
-
 //Disable all previous UI elements.
 var testMode = getElementsByXpath("//td[contains(text(),'Test mode')]/../td[3]/select");
 disableAllElements(testMode);
@@ -24,25 +23,23 @@ disableAllElements(taCoberturaChkBx);
 var taModelCoverageChkBx = getElementsByXpath("//input[@name='taModelCoverageChkBx']");
 disableAllElements(taModelCoverageChkBx);
 
-
 //Function to disable all occurrences of given web element.
-function disableAllElements(nodeName){
-  var a =[];
-  a.push(nodeName.iterateNext());
-  while(a[a.length-1] !== null){
-      a.push(nodeName.iterateNext());
-  }
+function disableAllElements(nodeName) {
+	var a = [];
+	var node = nodeName.iterateNext();
+	while (node !== null) {
+		a.push(node);
+		node = nodeName.iterateNext();
+	}
 
-  var i=0;
-  while(a[i] !== null){
-      a[i].disable();
-      i=i+1;
-  }
+	for (var i = 0; i < a.length; i++) {
+		a[i].disable();
+	}
 }
 
 // Function to get list of elements by Xpath
 
-function getElementsByXpath(xPath){
-  var elm = document.evaluate(xPath, document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
-  return elm;
+function getElementsByXpath(xPath) {
+	var elm = document.evaluate(xPath, document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+	return elm;
 }
