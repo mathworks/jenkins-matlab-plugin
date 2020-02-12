@@ -1,0 +1,12 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+
+ <font color="red"> This build step is depricated. Consider moving to the new MATLAB build steps. Current build however, will work with restricted access.</font>   
+ <f:section>
+	  <f:entry title="MATLAB root " field="matlabRoot">
+	        <f:textbox disabled="disabled"/>
+	  </f:entry> 
+</f:section>
+<f:dropdownDescriptorSelector title="Test mode" field="testRunTypeList" descriptors="${descriptor.testRunTypeDescriptor}" selected="${instance.testRunTypeList}" disabled="true"/>
+ <script type="text/javascript" src="${resURL}/plugin/matlab/disable.js"/>
+</j:jelly>
