@@ -113,7 +113,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         // Overridden Method used to show the text under build dropdown
         @Override
         public String getDisplayName() {
-            return Message.getBuilderDisplayName();
+            // No name for this descriptor as its deprecated all the jobs will be 
+            // automatically delegated to the new TestRun or Script builders.
+            return "";
         }
 
         @Override
