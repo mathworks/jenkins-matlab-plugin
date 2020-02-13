@@ -32,16 +32,15 @@ import net.sf.json.JSONObject;
 public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
     
     private int buildResult;
-    private String matlabRoot;
     private EnvVars env;
     private MatlabReleaseInfo matlabRel;
-    private CommandConstructUtil utils;
-    private boolean tatapChkBx;
-    private boolean taJunitChkBx;
-    private boolean taCoberturaChkBx;
-    private boolean taSTMResultsChkBx;
-    private boolean taModelCoverageChkBx;
-    private boolean taPDFReportChkBx;
+    private CommandConstructUtil cmdUtils;
+    private boolean tapChkBx;
+    private boolean junitChkBx;
+    private boolean coberturaChkBx;
+    private boolean stmResultsChkBx;
+    private boolean modelCoverageChkBx;
+    private boolean pdfReportChkBx;
 
     @DataBoundConstructor
     public MatlabTestRunBuilder() {
@@ -52,67 +51,59 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
 
     // Getter and Setters to access local members
 
+
     @DataBoundSetter
-    public void setMatlabRoot(String matlabRoot) {
-        this.matlabRoot = matlabRoot;
+    public void setTapChkBx(boolean tapChkBx) {
+        this.tapChkBx = tapChkBx;
     }
 
     @DataBoundSetter
-    public void setTatapChkBx(boolean tatapChkBx) {
-        this.tatapChkBx = tatapChkBx;
+    public void setJunitChkBx(boolean junitChkBx) {
+        this.junitChkBx = junitChkBx;
     }
 
     @DataBoundSetter
-    public void setTaJunitChkBx(boolean taJunitChkBx) {
-        this.taJunitChkBx = taJunitChkBx;
-    }
-
-    @DataBoundSetter
-    public void setTaCoberturaChkBx(boolean taCoberturaChkBx) {
-        this.taCoberturaChkBx = taCoberturaChkBx;
+    public void setCoberturaChkBx(boolean coberturaChkBx) {
+        this.coberturaChkBx = coberturaChkBx;
     }
     
     @DataBoundSetter
-    public void setTaSTMResultsChkBx(boolean taSTMResultsChkBx) {
-        this.taSTMResultsChkBx = taSTMResultsChkBx;
+    public void setStmResultsChkBx(boolean stmResultsChkBx) {
+        this.stmResultsChkBx = stmResultsChkBx;
     }
     
     @DataBoundSetter
-    public void setTaModelCoverageChkBx(boolean taModelCoverageChkBx) {
-        this.taModelCoverageChkBx = taModelCoverageChkBx;
+    public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
+        this.modelCoverageChkBx = modelCoverageChkBx;
     }
     
     @DataBoundSetter
-    public void setTaPDFReportChkBx(boolean taPDFReportChkBx) {
-        this.taPDFReportChkBx = taPDFReportChkBx;
+    public void setPdfReportChkBx(boolean pdfReportChkBx) {
+        this.pdfReportChkBx = pdfReportChkBx;
     }
             
-    public boolean getTatapChkBx() {
-        return tatapChkBx;
+    public boolean getTapChkBx() {
+        return tapChkBx;
     }
 
-    public boolean getTaJunitChkBx() {
-        return taJunitChkBx;
+    public boolean getJunitChkBx() {
+        return junitChkBx;
     }
 
-    public boolean getTaCoberturaChkBx() {
-        return taCoberturaChkBx;
+    public boolean getCoberturaChkBx() {
+        return coberturaChkBx;
     }
 
-    public boolean getTaSTMResultsChkBx() {
-        return taSTMResultsChkBx;
+    public boolean getStmResultsChkBx() {
+        return stmResultsChkBx;
     }
             
-    public boolean getTaModelCoverageChkBx() {
-        return taModelCoverageChkBx;
+    public boolean getModelCoverageChkBx() {
+        return modelCoverageChkBx;
     }
     
-    public boolean getTaPDFReportChkBx() {
-        return taPDFReportChkBx;
-    }
-
-    public String getMatlabRoot() {
-        return this.matlabRoot;
+    public boolean getPdfReportChkBx() {
+        return pdfReportChkBx;
     }
     
     private void setEnv(EnvVars env) {
@@ -156,10 +147,10 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
          * Validation for Test artifact generator checkBoxes
          */
 
-        public FormValidation doCheckTaCoberturaChkBx(@QueryParameter boolean taCoberturaChkBx) {
+        public FormValidation doCheckCoberturaChkBx(@QueryParameter boolean coberturaChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            if (taCoberturaChkBx) {
+            if (coberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
             return getFirstErrorOrWarning(listOfCheckMethods);
@@ -184,10 +175,10 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         };
         
-        public FormValidation doCheckTaModelCoverageChkBx(@QueryParameter boolean taModelCoverageChkBx) {
+        public FormValidation doCheckModelCoverageChkBx(@QueryParameter boolean modelCoverageChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            if (taModelCoverageChkBx) {
+            if (modelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
             return getFirstErrorOrWarning(listOfCheckMethods);
@@ -212,10 +203,10 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
             return FormValidation.ok();
         };
         
-        public FormValidation doCheckTaSTMResultsChkBx(@QueryParameter boolean taSTMResultsChkBx) {
+        public FormValidation doCheckStmResultsChkBx(@QueryParameter boolean stmResultsChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            if (taSTMResultsChkBx) {
+            if (stmResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
             return getFirstErrorOrWarning(listOfCheckMethods);
@@ -246,7 +237,7 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.ok();
             try {
                 final String matlabRoot = Jenkins.getInstance()
-                        .getDescriptorByType(MatabBuildWrapperDescriptor.class).getMatlabRoot();
+                        .getDescriptorByType(MatabBuildWrapperDescriptor.class).getMatlabRootFolder();
                 for (Function<String, FormValidation> val : validations) {
                     FormValidation validationResult = val.apply(matlabRoot);
                     if (validationResult.kind.compareTo(Kind.ERROR) == 0
@@ -266,10 +257,12 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
-        String matlabRoot = this.env.get("matlabroot");
-        utils = new CommandConstructUtil(launcher, matlabRoot);
         //Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
+        
+        String matlabRoot = this.env.get("matlabroot");
+        cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
+        
         //Get node specific matlabroot to get matlab version information
         FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),matlabRoot);
         matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
@@ -292,9 +285,9 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(utils.constructDefaultCommandForTestRun(getInputArguments())).stderr(outStream);
+                matlabLauncher = matlabLauncher.cmds(cmdUtils.constructDefaultCommandForTestRun(getInputArguments())).stderr(outStream);
             } else {
-                matlabLauncher = matlabLauncher.cmds(utils.constructBatchCommandForTestRun(getInputArguments())).stdout(listener);
+                matlabLauncher = matlabLauncher.cmds(cmdUtils.constructBatchCommandForTestRun(getInputArguments())).stdout(listener);
             }
                         
             // Copy MATLAB scratch file into the workspace.
@@ -320,12 +313,12 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
     
     // Concatenate the input arguments
     private String getInputArguments() {
-        String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getTaPDFReportChkBx();
-        String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTatapChkBx();
-        String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getTaJunitChkBx();
-        String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + this.getTaSTMResultsChkBx();
-        String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getTaCoberturaChkBx();
-        String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getTaModelCoverageChkBx();
+        String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getPdfReportChkBx();
+        String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTapChkBx();
+        String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
+        String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
+        String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
+        String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getModelCoverageChkBx();
         
         String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
                 + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;

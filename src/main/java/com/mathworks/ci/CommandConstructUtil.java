@@ -43,22 +43,24 @@ public class CommandConstructUtil {
     
     public List<String> constructBatchCommandForTestRun(String inputArguments) {
         final String runCommand;
-        final List<String> matlabDefaultArgs;
             String matlabFunctionName =
                     FilenameUtils.removeExtension(Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
             runCommand = "exit(" + matlabFunctionName + "("
                     + inputArguments + "))";
-            matlabDefaultArgs =
-                    Arrays.asList(getMatlabRoot() + getNodeSpecificFileSeperator() + "bin" + getNodeSpecificFileSeperator() + "matlab",
-                            "-batch", runCommand);
-        return matlabDefaultArgs;
+        return getPlatformSpecificBatchCommand(runCommand);
     }
     
     public List<String> constructBatchCommandForScriptRun(String customCommand){
+        return getPlatformSpecificBatchCommand(customCommand);
+    }
+    
+    private List<String> getPlatformSpecificBatchCommand(String command){
         final List<String> matlabDefaultArgs;
-        matlabDefaultArgs =
-                Arrays.asList(getMatlabRoot() + getNodeSpecificFileSeperator() + "bin" + getNodeSpecificFileSeperator() + "matlab",
-                        "-batch", customCommand);
+        if(isUnix()) {
+            matlabDefaultArgs = Arrays.asList("/bin/bash","matlab -batch "+command);
+        }else {
+            matlabDefaultArgs = Arrays.asList("cmd.exe","/C", "matlab", "-batch",command);
+        }
         return matlabDefaultArgs;
     }
 
@@ -94,9 +96,16 @@ public class CommandConstructUtil {
     private String[] getPreRunnerSwitches() throws MatlabVersionNotFoundException {
         FilePath nodeSpecificMatlabRoot = new FilePath(getLauncher().getChannel(),getMatlabRoot());
         MatlabReleaseInfo matlabRel =new MatlabReleaseInfo(nodeSpecificMatlabRoot);
-        String[] preRunnerSwitches =
-                {getMatlabRoot() + getNodeSpecificFileSeperator() + "bin" + getNodeSpecificFileSeperator() + "matlab", "-nosplash",
-                        "-nodesktop"};
+        String[] defaultRunnerSwitches = {"matlab","-nosplash","-nodesktop"};
+        String[] preRunnerSwitches;
+        if(isUnix()){
+            String[] commandRunner = {"/bin/bash","-c"};
+            preRunnerSwitches =  (String[]) ArrayUtils.add(commandRunner, defaultRunnerSwitches);
+        }else {
+            String[] commandRunner = {"cmd.exe","/C"};
+            preRunnerSwitches =  (String[]) ArrayUtils.add(commandRunner, defaultRunnerSwitches);
+        }
+                
         if(!matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_NO_APP_ICON_SUPPORT)) {
             preRunnerSwitches =  (String[]) ArrayUtils.add(preRunnerSwitches, "-noAppIcon");
         } 
@@ -137,4 +146,8 @@ public class CommandConstructUtil {
             return "\\";
         }
     }
+    public boolean isUnix() {
+        return this.launcher.isUnix();
+    }
+
 }

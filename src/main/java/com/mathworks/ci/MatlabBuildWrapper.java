@@ -24,25 +24,24 @@ import jenkins.tasks.SimpleBuildWrapper;
 
 public class MatlabBuildWrapper extends SimpleBuildWrapper  {
     
-    private String matlabRoot;
+    private String matlabRootFolder;
     private EnvVars env;
     
     @DataBoundConstructor
      public MatlabBuildWrapper() {
-
-        }
+    }
     
-    public String getMatlabRoot() {
-        return matlabRoot;
+    public String getMatlabRootFolder() {
+        return this.matlabRootFolder;
     }
 
     @DataBoundSetter
-    public void setMatlabRoot(String matlabRoot) {
-        this.matlabRoot = matlabRoot;
+    public void setMatlabRootFolder(String matlabRootFolder) {
+        this.matlabRootFolder = matlabRootFolder;
     }
     
     private String getLocalMatlab() {
-        return this.env == null ? getMatlabRoot(): this.env.expand(getMatlabRoot());
+        return this.env == null ? getMatlabRootFolder(): this.env.expand(getMatlabRootFolder());
     }
     
     private void setEnv(EnvVars env) {
@@ -54,14 +53,14 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
     public static final class MatabBuildWrapperDescriptor extends BuildWrapperDescriptor {
         
         MatlabReleaseInfo rel;
-        String matlabRoot;
+        String matlabRootFolder;
 
-        public String getMatlabRoot() {
-            return matlabRoot;
+        public String getMatlabRootFolder() {
+            return matlabRootFolder;
         }
 
-        public void setMatlabRoot(String matlabRoot) {
-            this.matlabRoot = matlabRoot;
+        public void setMatlabRootFolder(String matlabRootFolder) {
+            this.matlabRootFolder = matlabRootFolder;
         }
 
         @Override
@@ -74,9 +73,6 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
             return "With MATLAB";
         }
         
-        public String getSelected() {
-            return this.matlabRoot;
-        }
         
          /*
          * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
@@ -85,22 +81,22 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
          */
 
 
-        public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot) {
-            setMatlabRoot(matlabRoot);
+        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
+            setMatlabRootFolder(matlabRootFolder);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
             listOfCheckMethods.add(chkMatlabSupportsRunTests);
 
-            return getFirstErrorOrWarning(listOfCheckMethods,matlabRoot);
+            return getFirstErrorOrWarning(listOfCheckMethods,matlabRootFolder);
         }
 
         public FormValidation getFirstErrorOrWarning(
-                List<Function<String, FormValidation>> validations, String matlabRoot) {
+                List<Function<String, FormValidation>> validations, String matlabRootFolder) {
             if (validations == null || validations.isEmpty())
                 return FormValidation.ok();
             for (Function<String, FormValidation> val : validations) {
-                FormValidation validationResult = val.apply(matlabRoot);
+                FormValidation validationResult = val.apply(matlabRootFolder);
                 if (validationResult.kind.compareTo(Kind.ERROR) == 0
                         || validationResult.kind.compareTo(Kind.WARNING) == 0) {
                     return validationResult;
@@ -109,18 +105,18 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
             return FormValidation.ok();
         }
 
-        Function<String, FormValidation> chkMatlabEmpty = (String matlabRoot) -> {
-            if (matlabRoot.isEmpty()) {
+        Function<String, FormValidation> chkMatlabEmpty = (String matlabRootFolder) -> {
+            if (matlabRootFolder.isEmpty()) {
                 return FormValidation.error(Message.getValue("Builder.matlab.root.empty.error"));
             }
             return FormValidation.ok();
         };
         
-        Function<String, FormValidation> chkMatlabSupportsRunTests = (String matlabRoot) -> {
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
+        Function<String, FormValidation> chkMatlabSupportsRunTests = (String matlabRootFolder) -> {
+            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRootFolder);
             if (!resolver.hasVariablePattern()) {
                 try {
-                    FilePath matlabRootPath = new FilePath(new File(matlabRoot));
+                    FilePath matlabRootPath = new FilePath(new File(matlabRootFolder));
                     rel = new MatlabReleaseInfo(matlabRootPath);
                     if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
                         return FormValidation
@@ -138,7 +134,7 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
     @Override
     public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener,
             EnvVars initialEnvironment) throws IOException, InterruptedException {
-        CommandConstructUtil utils = new CommandConstructUtil(launcher, getMatlabRoot());
+        CommandConstructUtil utils = new CommandConstructUtil(launcher, getLocalMatlab());
         //Set Environment variable
         
         setEnv(initialEnvironment);
