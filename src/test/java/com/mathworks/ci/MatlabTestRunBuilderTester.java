@@ -1,4 +1,10 @@
 package com.mathworks.ci;
+/*
+ * Copyright 2020-2021 The MathWorks, Inc.
+ * 
+ * Tester builder for MatlabTestRunBuilder.
+ * 
+ */
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -148,12 +154,8 @@ public class MatlabTestRunBuilderTester extends MatlabTestRunBuilder {
         setEnv(build.getEnvironment(listener));
 
         this.matlabroot = this.env.get("matlabroot");
-        // Get node specific matlabroot to get matlab version information
         FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabroot);
         matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
-
-        // Invoke MATLAB command and transfer output to standard
-        // Output Console
 
         buildResult = execCommand(workspace, launcher, listener);
         if (buildResult != 0) {
@@ -178,7 +180,6 @@ public class MatlabTestRunBuilderTester extends MatlabTestRunBuilder {
             return 1;
         }
         return matlabLauncher.join();
-
     }
 
     private List<String> testMatlabCommand() {

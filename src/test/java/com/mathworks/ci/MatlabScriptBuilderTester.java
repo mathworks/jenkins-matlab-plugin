@@ -1,16 +1,15 @@
 package com.mathworks.ci;
+
 /*
- * Copyright 2020-2021 The MathWorks, Inc.
- * 
- * Script builder used to run custom MATLAB commands or scripts. Author : Nikhil Bhoski email :
- * nbhoski@mathworks.com Date : 11/02/2020
+ * Copyright 2020-2021 The MathWorks, Inc. Build Tester is used for unit testing to mock the actual
+ * build.
  * 
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Nonnull;
-import org.jenkinsci.Symbol;
-import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
@@ -24,55 +23,39 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
-public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
+public class MatlabScriptBuilderTester extends MatlabScriptBuilder {
     private int buildResult;
     private EnvVars env;
     private MatlabReleaseInfo matlabRel;
-    private CommandConstructUtil cmdUtils;
     private String matlabCommand;
+    private String commandParameter;
+    private String matlabExecutorPath;
 
-    @DataBoundConstructor
-    public MatlabScriptBuilder() {
-
-
+    public MatlabScriptBuilderTester(String matlabExecutorPath, String customTestPointArgument) {
+        super();
+        this.commandParameter = customTestPointArgument;
+        this.matlabExecutorPath = matlabExecutorPath;
     }
 
 
     // Getter and Setters to access local members
 
-
-    @DataBoundSetter
     public void setMatlabCommand(String matlabCommand) {
         this.matlabCommand = matlabCommand;
-    }
-
-    public String getMatlabCommand() {
-        return this.matlabCommand;
-    }
-
-    private String getCommand() {
-        return this.env == null ? getMatlabCommand() : this.env.expand(getMatlabCommand());
     }
 
     private void setEnv(EnvVars env) {
         this.env = env;
     }
 
-    @Symbol("RunMatlabCommand")
+
     @Extension
-    public static class MatlabScriptDescriptor extends BuildStepDescriptor<Builder> {
-
-
-        MatlabReleaseInfo rel;
-
-
-        // Overridden Method used to show the text under build dropdown
+    public static class Desriptor extends BuildStepDescriptor<Builder> {
         @Override
         public String getDisplayName() {
-            return Message.getValue("Builder.script.builder.display.name");
+            return null;
         }
 
         @Override
@@ -81,13 +64,6 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
             return super.configure(req, formData);
         }
 
-        /*
-         * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
-         * 
-         * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
-         * 
-         * if it returns true then this build step will be applicable for all project type.
-         */
         @Override
         public boolean isApplicable(
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
@@ -102,10 +78,7 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
 
         // Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
-
-        // Create command util for command constrcution.
         String matlabRoot = this.env.get("matlabroot");
-        cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
 
         // Get node specific matlabroot to get matlab version information
         FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabRoot);
@@ -121,20 +94,16 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
             if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher
-                        .cmds(cmdUtils.constructDefaultCommandForScriptRun(getCommand()))
-                        .stderr(outStream);
+                matlabLauncher = matlabLauncher.cmds(testMatlabCommand()).stderr(outStream);
             } else {
-                matlabLauncher = matlabLauncher
-                        .cmds(cmdUtils.constructBatchCommandForScriptRun(getCommand()))
-                        .stdout(listener);
+                matlabLauncher = matlabLauncher.cmds(testMatlabCommand()).stdout(listener);
             }
 
         } catch (Exception e) {
@@ -143,4 +112,13 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
         }
         return matlabLauncher.join();
     }
+
+    // Private custom method to pass mock MATLAB with parameters.
+    private List<String> testMatlabCommand() {
+        List<String> matlabDefaultArgs = new ArrayList<String>();
+        matlabDefaultArgs.add(this.matlabExecutorPath);
+        matlabDefaultArgs.add(this.commandParameter);
+        return matlabDefaultArgs;
+    }
 }
+

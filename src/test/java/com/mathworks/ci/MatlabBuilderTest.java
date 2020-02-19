@@ -101,21 +101,13 @@ public class MatlabBuilderTest {
     
 
     /*
-     * Test Case to verify if Build step contains "Run MATLAB Tests" option.
+     * Test Case to verify if Build step contains "Run MATLAB Tests" option.This 
+     * Builder should not be displayed under buildstep.
      */
     @Test
     public void verifyBuildStepWithMATLABBuilder() throws Exception {
-        boolean found = false;
         this.matlabBuilder.setMatlabRoot("");
-        project.getBuildersList().add(this.matlabBuilder);
-        List<Builder> bl = project.getBuildersList();
-        for (Builder b : bl) {
-            if (b.getDescriptor().getDisplayName()
-                    .equalsIgnoreCase(Message.getBuilderDisplayName())) {
-                found = true;
-            }
-        }
-        Assert.assertTrue("Build step does not contain Run MATLAB Tests option", found);
+        Assert.assertTrue(this.matlabBuilder.getDescriptor().getDisplayName().equalsIgnoreCase(""));
     }
 
 

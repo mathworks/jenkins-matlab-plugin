@@ -1,5 +1,12 @@
 package com.mathworks.ci;
+/*
+ * Copyright 2020-2021 The MathWorks, Inc.
+ * 
+ * Test class for MatlabTestRunBuilder
+ * 
+ */
 
+import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -13,16 +20,20 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
+import com.gargoylesoftware.htmlunit.WebAssert;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import hudson.EnvVars;
+import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.Builder;
 
 public class MatlabTestRunBuilderTest {
-    
 
-    private static TestMessage messages;
+
     private static String matlabExecutorAbsolutePath;
     private FreeStyleProject project;
     private MatlabBuildWrapper buildWrapper;
@@ -58,7 +69,6 @@ public class MatlabTestRunBuilderTest {
             url = classLoader.getResource("com/mathworks/ci/win/bin/matlab.bat");
             matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
         }
-        messages = new TestMessage();
     }
 
     @Before
@@ -77,16 +87,18 @@ public class MatlabTestRunBuilderTest {
 
     private String getMatlabroot(String version) throws URISyntaxException {
         String defaultVersionInfo = "versioninfo/R2017a/" + VERSION_INFO_XML_FILE;
-        String userVersionInfo = "versioninfo/"+version+"/" + VERSION_INFO_XML_FILE;
-        URL matlabRootURL = Optional.ofNullable(getResource(userVersionInfo)).orElseGet(() -> getResource(defaultVersionInfo));
+        String userVersionInfo = "versioninfo/" + version + "/" + VERSION_INFO_XML_FILE;
+        URL matlabRootURL = Optional.ofNullable(getResource(userVersionInfo))
+                .orElseGet(() -> getResource(defaultVersionInfo));
         File matlabRoot = new File(matlabRootURL.toURI());
-        return matlabRoot.getAbsolutePath().replace(FileSeperator + VERSION_INFO_XML_FILE,"").replace("R2017a",version);
+        return matlabRoot.getAbsolutePath().replace(FileSeperator + VERSION_INFO_XML_FILE, "")
+                .replace("R2017a", version);
     }
-    
+
     private URL getResource(String resource) {
-        return MatlabTestRunBuilderTest.class.getClassLoader().getResource(resource); 
+        return MatlabTestRunBuilderTest.class.getClassLoader().getResource(resource);
     }
-    
+
     /*
      * Test Case to verify if Build step contains "Run MATLAB Tests" option.
      */
@@ -104,7 +116,7 @@ public class MatlabTestRunBuilderTest {
         }
         Assert.assertTrue("Build step does not contain Run MATLAB Tests option", found);
     }
-    
+
     /*
      * Test To verify MATLAB is launched with default arguments and with -batch when release
      * supports -batch
@@ -114,13 +126,13 @@ public class MatlabTestRunBuilderTest {
     public void verifyMATLABlaunchedWithDefaultArgumentsBatch() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        setAllTestArtifacts(false,this.testBuilder);
+        setAllTestArtifacts(false, this.testBuilder);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-batch", build);
         jenkins.assertLogContains("exit(runMatlabTests", build);
     }
-    
+
     /*
      * Test To verify MATLAB is launched with default arguments and with -r when release supports -r
      * on windows
@@ -130,13 +142,13 @@ public class MatlabTestRunBuilderTest {
     public void verifyMATLABlaunchedWithDefaultArgumentsRWindows() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        setAllTestArtifacts(false,this.testBuilder);
+        setAllTestArtifacts(false, this.testBuilder);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("-r", build);
         jenkins.assertLogContains("runMatlabTests", build);
     }
-    
+
     /*
      * Test to verify if job fails when invalid MATLAB path is provided and Exception is thrown
      */
@@ -145,13 +157,13 @@ public class MatlabTestRunBuilderTest {
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
         this.buildWrapper.setMatlabRootFolder("/fake/matlabroot/that/does/not/exist");
         project.getBuildWrappersList().add(this.buildWrapper);
-        setAllTestArtifacts(false,this.testBuilder);
+        setAllTestArtifacts(false, this.testBuilder);
         project.getBuildersList().add(this.testBuilder);
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
-    
+
     /*
      * Test to verify if Build FAILS when matlab test fails
      */
@@ -162,19 +174,226 @@ public class MatlabTestRunBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         MatlabTestRunBuilderTester tester =
                 new MatlabTestRunBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
-        setAllTestArtifacts(false,tester);
+        setAllTestArtifacts(false, tester);
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
-    
-    private void setAllTestArtifacts(boolean val,MatlabTestRunBuilder testBuilder) {
+
+    /*
+     * Test to verify if Build PASSES when matlab test PASSES
+     */
+
+    @Test
+    public void verifyBuildPassWhenTestPass() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        MatlabTestRunBuilderTester tester =
+                new MatlabTestRunBuilderTester(matlabExecutorAbsolutePath, "-positive");
+        setAllTestArtifacts(false, tester);
+        project.getBuildersList().add(tester);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+    }
+
+    /*
+     * Tests to verify if verLessThan() method compares values appropriately.
+     */
+
+    @Test
+    public void verifyVerlessThan() throws Exception {
+        FilePath matlabRoot = new FilePath(new File(getMatlabroot("R2017a")));
+        MatlabReleaseInfo rel = new MatlabReleaseInfo(matlabRoot);
+
+        // verLessthan() will check all the versions against 9.2 which is version of R2017a
+        assertFalse(rel.verLessThan(9.1));
+        assertFalse(rel.verLessThan(9.0));
+        assertFalse(rel.verLessThan(9.2));
+        Assert.assertTrue(rel.verLessThan(9.9));
+        Assert.assertTrue(rel.verLessThan(10.1));
+    }
+
+    /*
+     * Test to verify if Automatic option passes appropriate test atrtifact values.
+     */
+
+    @Test
+    public void verifyRunTestAutomaticallyIsDefault() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        setAllTestArtifacts(true, testBuilder);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("-batch", build);
+        jenkins.assertLogContains("\'PDFReport\',true,\'TAPResults\',true,"
+                + "\'JUnitResults\',true,\'SimulinkTestResults\',true,"
+                + "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
+    }
+
+    /*
+     * Test to verify if MATALB scratch file is generated in workspace.
+     */
+    @Test
+    public void verifyMATLABscratchFileGeneratedForAutomaticOption() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        setAllTestArtifacts(false, testBuilder);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        Assert.assertTrue(matlabRunner.exists());
+    }
+
+    /*
+     * Test To verify UI displays Cobertura Warning message when unsupported MATLAB version used.
+     * 
+     */
+
+    @Test
+    public void verifyCoberturaWarning() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaChkBx");
+        coberturaChkBx.setChecked(true);
+        Thread.sleep(2000);
+        WebAssert.assertTextPresent(page,
+                TestMessage.getValue("Builder.matlab.cobertura.support.warning"));
+    }
+
+    /*
+     * Test to verify that UI displays model coverage warning message when unsupported MATLAB
+     * version is used.
+     *
+     */
+
+    @Test
+    public void verifyModelCoverageWarning() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018a"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("modelCoverageChkBx");
+        modelCoverageChkBx.setChecked(true);
+        Thread.sleep(2000);
+        WebAssert.assertTextPresent(page,
+                TestMessage.getValue("Builder.matlab.modelcoverage.support.warning"));
+    }
+
+    /*
+     * Test to verify that UI displays STM results warning message when unsupported MATLAB version
+     * is used.
+     *
+     */
+
+    @Test
+    public void verifySTMResultsWarning() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("stmResultsChkBx");
+        stmResultsChkBx.setChecked(true);
+        Thread.sleep(2000);
+        WebAssert.assertTextPresent(page,
+                TestMessage.getValue("Builder.matlab.exportstmresults.support.warning"));
+    }
+
+    /*
+     * Test To verify UI displays Cobertura warning message when invalid MATLAB root entered.
+     * 
+     */
+
+    @Test
+    public void verifyCoberturaError() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("/fake/path"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaChkBx");
+        coberturaChkBx.setChecked(true);
+        Thread.sleep(2000);
+        String pageText = page.asText();
+        String filteredPageText = pageText
+                .replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText
+                .contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
+    }
+
+    /*
+     * Test To verify UI displays Model coverage warning message when MATLAB version does not
+     * support.
+     * 
+     */
+
+    @Test
+    public void verifyInvalidMatlabWarningForModelCoverage() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("/fake/path"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("modelCoverageChkBx");
+        modelCoverageChkBx.setChecked(true);
+        Thread.sleep(2000);
+        String pageText = page.asText();
+        String filteredPageText = pageText
+                .replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText
+                .contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
+    }
+
+    /*
+     * Test To verify UI displays Model test report warning message when MATLAB version does not
+     * support.
+     * 
+     */
+
+    @Test
+    public void verifyInvalidMatlabWarningForSTMResults() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("/fake/path"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("stmResultsChkBx");
+        stmResultsChkBx.setChecked(true);
+        Thread.sleep(2000);
+        String pageText = page.asText();
+        String filteredPageText = pageText
+                .replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
+        Assert.assertTrue(filteredPageText
+                .contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
+    }
+
+    /*
+     * Test to verify if MatlabRoot field supports Jenkins environment variables.
+     * 
+     */
+
+    @Test
+    public void verifyEnvVarSupportForMatlabRoot() throws Exception {
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars var = prop.getEnvVars();
+        var.put("MATLAB", "R2017a");
+        jenkins.jenkins.getGlobalNodeProperties().add(prop);
+        String mroot = getMatlabroot("R2017a");
+        this.buildWrapper.setMatlabRootFolder(mroot.replace("R2017a", "$MATLAB"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        setAllTestArtifacts(false, testBuilder);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains(mroot, build);
+
+    }
+
+
+    private void setAllTestArtifacts(boolean val, MatlabTestRunBuilder testBuilder) {
         testBuilder.setCoberturaChkBx(val);
         testBuilder.setJunitChkBx(val);
         testBuilder.setModelCoverageChkBx(val);
         testBuilder.setPdfReportChkBx(val);
         testBuilder.setTapChkBx(val);
-        testBuilder.setStmResultsChkBx(val);   
+        testBuilder.setStmResultsChkBx(val);
     }
 
 }

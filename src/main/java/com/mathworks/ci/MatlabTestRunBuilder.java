@@ -121,7 +121,7 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
         this.env = env;
     }
     
-    @Symbol("runMatlabTests")
+    @Symbol("RunMatlabTests")
     @Extension
     public static class MatlabTestDescriptor extends BuildStepDescriptor<Builder> {
 

@@ -1,11 +1,16 @@
 package com.mathworks.ci;
+/*
+ * Copyright 2020-2021 The MathWorks, Inc.
+ * 
+ * Test class for MatlabBuildWrapper
+ * 
+ */
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import org.junit.After;
 import org.junit.Assert;
@@ -16,10 +21,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import hudson.EnvVars;
-import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
-import hudson.model.Result;
 import hudson.tasks.BuildWrapper;
 
 

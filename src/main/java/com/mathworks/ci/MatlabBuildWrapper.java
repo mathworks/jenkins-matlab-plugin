@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -45,7 +46,7 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper {
         this.env = env;
     }
 
-
+    @Symbol("Matlab")
     @Extension
     public static final class MatlabBuildWrapperDescriptor extends BuildWrapperDescriptor {
 
