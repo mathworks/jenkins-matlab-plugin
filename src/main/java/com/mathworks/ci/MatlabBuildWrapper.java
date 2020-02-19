@@ -5,11 +5,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
-
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -22,15 +20,14 @@ import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
 import jenkins.tasks.SimpleBuildWrapper;
 
-public class MatlabBuildWrapper extends SimpleBuildWrapper  {
-    
+public class MatlabBuildWrapper extends SimpleBuildWrapper {
+
     private String matlabRootFolder;
     private EnvVars env;
-    
+
     @DataBoundConstructor
-     public MatlabBuildWrapper() {
-    }
-    
+    public MatlabBuildWrapper() {}
+
     public String getMatlabRootFolder() {
         return this.matlabRootFolder;
     }
@@ -39,19 +36,19 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
     public void setMatlabRootFolder(String matlabRootFolder) {
         this.matlabRootFolder = matlabRootFolder;
     }
-    
+
     private String getLocalMatlab() {
-        return this.env == null ? getMatlabRootFolder(): this.env.expand(getMatlabRootFolder());
-    }
-    
-    private void setEnv(EnvVars env) {
-       this.env = env;
+        return this.env == null ? getMatlabRootFolder() : this.env.expand(getMatlabRootFolder());
     }
 
-    
+    private void setEnv(EnvVars env) {
+        this.env = env;
+    }
+
+
     @Extension
-    public static final class MatabBuildWrapperDescriptor extends BuildWrapperDescriptor {
-        
+    public static final class MatlabBuildWrapperDescriptor extends BuildWrapperDescriptor {
+
         MatlabReleaseInfo rel;
         String matlabRootFolder;
 
@@ -64,17 +61,17 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
         }
 
         @Override
-        public boolean isApplicable(AbstractProject<?, ?> item) {       
+        public boolean isApplicable(AbstractProject<?, ?> item) {
             return true;
         }
-        
+
         @Override
         public String getDisplayName() {
-            return "With MATLAB";
+            return Message.getValue("Buildwrapper.display.name");
         }
-        
-        
-         /*
+
+
+        /*
          * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
          * these methods are used to perform basic validation on UI elements associated with this
          * descriptor class.
@@ -88,7 +85,7 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
             listOfCheckMethods.add(chkMatlabEmpty);
             listOfCheckMethods.add(chkMatlabSupportsRunTests);
 
-            return getFirstErrorOrWarning(listOfCheckMethods,matlabRootFolder);
+            return getFirstErrorOrWarning(listOfCheckMethods, matlabRootFolder);
         }
 
         public FormValidation getFirstErrorOrWarning(
@@ -111,14 +108,15 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
             }
             return FormValidation.ok();
         };
-        
+
         Function<String, FormValidation> chkMatlabSupportsRunTests = (String matlabRootFolder) -> {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRootFolder);
             if (!resolver.hasVariablePattern()) {
                 try {
                     FilePath matlabRootPath = new FilePath(new File(matlabRootFolder));
                     rel = new MatlabReleaseInfo(matlabRootPath);
-                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
+                    if (rel.verLessThan(
+                            MatlabBuilderConstants.BASE_MATLAB_VERSION_RUNTESTS_SUPPORT)) {
                         return FormValidation
                                 .error(Message.getValue("Builder.matlab.test.support.error"));
                     }
@@ -132,14 +130,17 @@ public class MatlabBuildWrapper extends SimpleBuildWrapper  {
     }
 
     @Override
-    public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher, TaskListener listener,
-            EnvVars initialEnvironment) throws IOException, InterruptedException {
+    public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher,
+            TaskListener listener, EnvVars initialEnvironment)
+            throws IOException, InterruptedException {
         CommandConstructUtil utils = new CommandConstructUtil(launcher, getLocalMatlab());
-        //Set Environment variable
-        
+        // Set Environment variable
+
         setEnv(initialEnvironment);
         String nodeSpecificFileSep = utils.getNodeSpecificFileSeperator();
+        // Add "matlabroot" without bin as env variable which will be available across the build.
         context.env("matlabroot", getLocalMatlab());
+        // Add matlab bin to path to invoke MATLAB directly on command line.
         context.env("PATH+matlabroot", getLocalMatlab() + nodeSpecificFileSep + "bin");
-    }    
+    }
 }

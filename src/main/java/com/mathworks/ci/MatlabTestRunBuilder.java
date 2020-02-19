@@ -1,5 +1,15 @@
 package com.mathworks.ci;
 
+/*
+ * Copyright 2020-2021 The MathWorks, Inc.
+ * 
+ * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate selected test artifacts.
+ * Author : Nikhil Bhoski email :
+ * nbhoski@mathworks.com Date : 11/02/2020 
+ * 
+ */
+
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import com.mathworks.ci.MatlabBuildWrapper.MatabBuildWrapperDescriptor;
+import com.mathworks.ci.MatlabBuildWrapper.MatlabBuildWrapperDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -110,7 +121,7 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
         this.env = env;
     }
     
-
+    @Symbol("runMatlabTests")
     @Extension
     public static class MatlabTestDescriptor extends BuildStepDescriptor<Builder> {
 
@@ -237,7 +248,7 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.ok();
             try {
                 final String matlabRoot = Jenkins.getInstance()
-                        .getDescriptorByType(MatabBuildWrapperDescriptor.class).getMatlabRootFolder();
+                        .getDescriptorByType(MatlabBuildWrapperDescriptor.class).getMatlabRootFolder();
                 for (Function<String, FormValidation> val : validations) {
                     FormValidation validationResult = val.apply(matlabRoot);
                     if (validationResult.kind.compareTo(Kind.ERROR) == 0
