@@ -1,5 +1,13 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
+ * 
+ * This class is BuildWrapper which accepts the "matlabroot" from user and updates the PATH varible with it.
+ * which could be later used across build.
+ * 
+ */
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,13 +29,13 @@ import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
 import jenkins.tasks.SimpleBuildWrapper;
 
-public class MatlabBuildWrapper extends SimpleBuildWrapper {
+public class AddMatlabToPathBuildWrapper extends SimpleBuildWrapper {
 
     private String matlabRootFolder;
     private EnvVars env;
 
     @DataBoundConstructor
-    public MatlabBuildWrapper() {}
+    public AddMatlabToPathBuildWrapper() {}
 
     public String getMatlabRootFolder() {
         return this.matlabRootFolder;

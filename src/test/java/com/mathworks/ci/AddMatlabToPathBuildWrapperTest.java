@@ -1,8 +1,8 @@
 package com.mathworks.ci;
-/*
- * Copyright 2020-2021 The MathWorks, Inc.
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
- * Test class for MatlabBuildWrapper
+ * Test class for AddMatlabToPathBuildWrapper
  * 
  */
 
@@ -25,10 +25,10 @@ import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildWrapper;
 
 
-public class MatlabBuildWrapperTest {
+public class AddMatlabToPathBuildWrapperTest {
     
     private FreeStyleProject project;
-    private MatlabBuildWrapper buildWrapper;
+    private AddMatlabToPathBuildWrapper buildWrapper;
     private static String FileSeperator;
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
     
@@ -49,7 +49,7 @@ public class MatlabBuildWrapperTest {
     @Before
     public void testSetup() throws IOException {
         this.project = jenkins.createFreeStyleProject();
-        this.buildWrapper = new MatlabBuildWrapper();
+        this.buildWrapper = new AddMatlabToPathBuildWrapper();
     }
 
     @After
@@ -67,7 +67,7 @@ public class MatlabBuildWrapperTest {
     }
     
     private URL getResource(String resource) {
-        return MatlabBuildWrapperTest.class.getClassLoader().getResource(resource); 
+        return AddMatlabToPathBuildWrapperTest.class.getClassLoader().getResource(resource); 
     }
     
     /*
@@ -95,7 +95,7 @@ public class MatlabBuildWrapperTest {
     public void verifyPATHupdated() throws Exception {
         this.buildWrapper.setMatlabRootFolder("/test/MATLAB/R2019a");
         project.getBuildWrappersList().add(this.buildWrapper);
-        MatlabTestRunBuilderTester buildTester = new MatlabTestRunBuilderTester("","");
+        RunMatlabTestsBuilderTester buildTester = new RunMatlabTestsBuilderTester("","");
         buildTester.setCoberturaChkBx(false);
         buildTester.setJunitChkBx(false);
         buildTester.setModelCoverageChkBx(false);

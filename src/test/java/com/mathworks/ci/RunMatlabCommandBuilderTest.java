@@ -1,9 +1,9 @@
 package com.mathworks.ci;
 
-/*
- * Copyright 2020-2021 The MathWorks, Inc.
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
- * Test class for MatlabScriptBuilderTest
+ * Test class for RunMatlabCommandBuilderTest
  * 
  */
 
@@ -27,12 +27,12 @@ import hudson.model.Result;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.Builder;
 
-public class MatlabScriptBuilderTest {
+public class RunMatlabCommandBuilderTest {
 
     private static String matlabExecutorAbsolutePath;
     private FreeStyleProject project;
-    private MatlabBuildWrapper buildWrapper;
-    private MatlabScriptBuilder scriptBuilder;
+    private AddMatlabToPathBuildWrapper buildWrapper;
+    private RunMatlabCommandBuilder scriptBuilder;
     private static URL url;
     private static String FileSeperator;
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
@@ -42,7 +42,7 @@ public class MatlabScriptBuilderTest {
 
     @BeforeClass
     public static void classSetup() throws URISyntaxException, IOException {
-        ClassLoader classLoader = MatlabScriptBuilderTest.class.getClassLoader();
+        ClassLoader classLoader = RunMatlabCommandBuilderTest.class.getClassLoader();
         if (!System.getProperty("os.name").startsWith("Win")) {
             FileSeperator = "/";
             url = classLoader.getResource("com/mathworks/ci/linux/bin/matlab.sh");
@@ -70,8 +70,8 @@ public class MatlabScriptBuilderTest {
     public void testSetup() throws IOException {
 
         this.project = jenkins.createFreeStyleProject();
-        this.scriptBuilder = new MatlabScriptBuilder();
-        this.buildWrapper = new MatlabBuildWrapper();
+        this.scriptBuilder = new RunMatlabCommandBuilder();
+        this.buildWrapper = new AddMatlabToPathBuildWrapper();
     }
 
     @After
@@ -91,7 +91,7 @@ public class MatlabScriptBuilderTest {
     }
 
     private URL getResource(String resource) {
-        return MatlabTestRunBuilderTest.class.getClassLoader().getResource(resource);
+        return RunMatlabTestsBuilderTest.class.getClassLoader().getResource(resource);
     }
 
     /*
@@ -165,8 +165,8 @@ public class MatlabScriptBuilderTest {
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        MatlabScriptBuilderTester tester =
-                new MatlabScriptBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
+        RunMatlabCommandBuilderTester tester =
+                new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
         tester.setMatlabCommand("pp");
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -181,8 +181,8 @@ public class MatlabScriptBuilderTest {
     public void verifyBuildFailureWhenMatlabCommandPasses() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        MatlabScriptBuilderTester tester =
-                new MatlabScriptBuilderTester(matlabExecutorAbsolutePath, "-positive");
+        RunMatlabCommandBuilderTester tester =
+                new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positive");
         tester.setMatlabCommand("pwd");
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();

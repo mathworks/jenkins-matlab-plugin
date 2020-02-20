@@ -1,11 +1,9 @@
 package com.mathworks.ci;
 
-/*
- * Copyright 2020-2021 The MathWorks, Inc.
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
  * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate selected test artifacts.
- * Author : Nikhil Bhoski email :
- * nbhoski@mathworks.com Date : 11/02/2020 
  * 
  */
 
@@ -22,7 +20,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import com.mathworks.ci.MatlabBuildWrapper.MatlabBuildWrapperDescriptor;
+import com.mathworks.ci.AddMatlabToPathBuildWrapper.MatlabBuildWrapperDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -40,7 +38,7 @@ import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
-public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
+public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
     
     private int buildResult;
     private EnvVars env;
@@ -52,7 +50,7 @@ public class MatlabTestRunBuilder extends Builder implements SimpleBuildStep {
     private boolean pdfReportChkBx;
 
     @DataBoundConstructor
-    public MatlabTestRunBuilder() {
+    public RunMatlabTestsBuilder() {
 
 
     }

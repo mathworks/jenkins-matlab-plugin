@@ -1,8 +1,8 @@
 package com.mathworks.ci;
-/*
- * Copyright 2020-2021 The MathWorks, Inc.
- * 
- * Tester builder for MatlabTestRunBuilder.
+
+/**
+ * Copyright 2019-2020 The MathWorks, Inc. Build Tester is used for unit testing to mock the actual
+ * build.
  * 
  */
 
@@ -25,102 +25,34 @@ import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import net.sf.json.JSONObject;
 
-public class MatlabTestRunBuilderTester extends MatlabTestRunBuilder {
-
-    private boolean tapChkBx;
-    private boolean junitChkBx;
-    private boolean coberturaChkBx;
-    private boolean stmResultsChkBx;
-    private boolean modelCoverageChkBx;
-    private boolean pdfReportChkBx;
-    private EnvVars env;
+public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
     private int buildResult;
+    private EnvVars env;
     private MatlabReleaseInfo matlabRel;
-    private String matlabroot;
+    private String matlabCommand;
     private String commandParameter;
     private String matlabExecutorPath;
 
-
-
-    public MatlabTestRunBuilderTester(String matlabExecutorPath, String customTestPointArgument) {
+    public RunMatlabCommandBuilderTester(String matlabExecutorPath, String customTestPointArgument) {
         super();
         this.commandParameter = customTestPointArgument;
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
 
-
     // Getter and Setters to access local members
 
-
-    @DataBoundSetter
-    public void setTapChkBx(boolean tapChkBx) {
-        this.tapChkBx = tapChkBx;
-    }
-
-    @DataBoundSetter
-    public void setJunitChkBx(boolean junitChkBx) {
-        this.junitChkBx = junitChkBx;
-    }
-
-    @DataBoundSetter
-    public void setCoberturaChkBx(boolean coberturaChkBx) {
-        this.coberturaChkBx = coberturaChkBx;
-    }
-
-    @DataBoundSetter
-    public void setStmResultsChkBx(boolean stmResultsChkBx) {
-        this.stmResultsChkBx = stmResultsChkBx;
-    }
-
-    @DataBoundSetter
-    public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
-        this.modelCoverageChkBx = modelCoverageChkBx;
-    }
-
-    @DataBoundSetter
-    public void setPdfReportChkBx(boolean pdfReportChkBx) {
-        this.pdfReportChkBx = pdfReportChkBx;
-    }
-
-    public boolean getTapChkBx() {
-        return tapChkBx;
-    }
-
-    public boolean getJunitChkBx() {
-        return junitChkBx;
-    }
-
-    public boolean getCoberturaChkBx() {
-        return coberturaChkBx;
-    }
-
-    public boolean getStmResultsChkBx() {
-        return stmResultsChkBx;
-    }
-
-    public boolean getModelCoverageChkBx() {
-        return modelCoverageChkBx;
-    }
-
-    public boolean getPdfReportChkBx() {
-        return pdfReportChkBx;
+    public void setMatlabCommand(String matlabCommand) {
+        this.matlabCommand = matlabCommand;
     }
 
     private void setEnv(EnvVars env) {
         this.env = env;
     }
 
-    public void geetEnv(EnvVars env) {
-        this.env = env;
-    }
-
-    public String getMatlabRoot() {
-        return this.matlabroot;
-    }
 
     @Extension
-    public static class Descriptor extends BuildStepDescriptor<Builder> {
+    public static class Desriptor extends BuildStepDescriptor<Builder> {
         @Override
         public String getDisplayName() {
             return null;
@@ -132,13 +64,6 @@ public class MatlabTestRunBuilderTester extends MatlabTestRunBuilder {
             return super.configure(req, formData);
         }
 
-        /*
-         * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
-         * 
-         * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
-         * 
-         * if it returns true then this build step will be applicable for all project type.
-         */
         @Override
         public boolean isApplicable(
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
@@ -150,21 +75,27 @@ public class MatlabTestRunBuilderTester extends MatlabTestRunBuilder {
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
+
         // Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
+        String matlabRoot = this.env.get("matlabroot");
 
-        this.matlabroot = this.env.get("matlabroot");
-        FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabroot);
+        // Get node specific matlabroot to get matlab version information
+        FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabRoot);
         matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
 
-        buildResult = execCommand(workspace, launcher, listener);
+        // Invoke MATLAB command and transfer output to standard
+        // Output Console
+
+        buildResult = execMatlabCommand(workspace, launcher, listener);
+
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    public int execCommand(FilePath workspace, Launcher launcher, TaskListener listener)
-            throws IOException, InterruptedException {
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
+            TaskListener listener) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
@@ -182,12 +113,12 @@ public class MatlabTestRunBuilderTester extends MatlabTestRunBuilder {
         return matlabLauncher.join();
     }
 
+    // Private custom method to pass mock MATLAB with parameters.
     private List<String> testMatlabCommand() {
         List<String> matlabDefaultArgs = new ArrayList<String>();
         matlabDefaultArgs.add(this.matlabExecutorPath);
         matlabDefaultArgs.add(this.commandParameter);
         return matlabDefaultArgs;
     }
-
-
 }
+

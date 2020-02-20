@@ -1,8 +1,8 @@
 package com.mathworks.ci;
-/*
- * Copyright 2020-2021 The MathWorks, Inc.
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
- * Test class for MatlabTestRunBuilder
+ * Test class for RunMatlabTestsBuilder
  * 
  */
 
@@ -31,13 +31,13 @@ import hudson.model.Result;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.Builder;
 
-public class MatlabTestRunBuilderTest {
+public class RunMatlabTestsBuilderTest {
 
 
     private static String matlabExecutorAbsolutePath;
     private FreeStyleProject project;
-    private MatlabBuildWrapper buildWrapper;
-    private MatlabTestRunBuilder testBuilder;
+    private AddMatlabToPathBuildWrapper buildWrapper;
+    private RunMatlabTestsBuilder testBuilder;
     private static URL url;
     private static String FileSeperator;
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
@@ -47,7 +47,7 @@ public class MatlabTestRunBuilderTest {
 
     @BeforeClass
     public static void classSetup() throws URISyntaxException, IOException {
-        ClassLoader classLoader = MatlabTestRunBuilderTest.class.getClassLoader();
+        ClassLoader classLoader = RunMatlabTestsBuilderTest.class.getClassLoader();
         if (!System.getProperty("os.name").startsWith("Win")) {
             FileSeperator = "/";
             url = classLoader.getResource("com/mathworks/ci/linux/bin/matlab.sh");
@@ -75,8 +75,8 @@ public class MatlabTestRunBuilderTest {
     public void testSetup() throws IOException {
 
         this.project = jenkins.createFreeStyleProject();
-        this.testBuilder = new MatlabTestRunBuilder();
-        this.buildWrapper = new MatlabBuildWrapper();
+        this.testBuilder = new RunMatlabTestsBuilder();
+        this.buildWrapper = new AddMatlabToPathBuildWrapper();
     }
 
     @After
@@ -96,7 +96,7 @@ public class MatlabTestRunBuilderTest {
     }
 
     private URL getResource(String resource) {
-        return MatlabTestRunBuilderTest.class.getClassLoader().getResource(resource);
+        return RunMatlabTestsBuilderTest.class.getClassLoader().getResource(resource);
     }
 
     /*
@@ -172,8 +172,8 @@ public class MatlabTestRunBuilderTest {
     public void verifyBuildFailureWhenMatlabException() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        MatlabTestRunBuilderTester tester =
-                new MatlabTestRunBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
+        RunMatlabTestsBuilderTester tester =
+                new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
         setAllTestArtifacts(false, tester);
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -188,8 +188,8 @@ public class MatlabTestRunBuilderTest {
     public void verifyBuildPassWhenTestPass() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        MatlabTestRunBuilderTester tester =
-                new MatlabTestRunBuilderTester(matlabExecutorAbsolutePath, "-positive");
+        RunMatlabTestsBuilderTester tester =
+                new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positive");
         setAllTestArtifacts(false, tester);
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -387,7 +387,7 @@ public class MatlabTestRunBuilderTest {
     }
 
 
-    private void setAllTestArtifacts(boolean val, MatlabTestRunBuilder testBuilder) {
+    private void setAllTestArtifacts(boolean val, RunMatlabTestsBuilder testBuilder) {
         testBuilder.setCoberturaChkBx(val);
         testBuilder.setJunitChkBx(val);
         testBuilder.setModelCoverageChkBx(val);

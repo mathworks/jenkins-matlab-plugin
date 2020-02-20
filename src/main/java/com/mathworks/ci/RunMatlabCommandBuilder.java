@@ -1,9 +1,8 @@
 package com.mathworks.ci;
-/*
- * Copyright 2020-2021 The MathWorks, Inc.
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
  * 
- * Script builder used to run custom MATLAB commands or scripts. Author : Nikhil Bhoski email :
- * nbhoski@mathworks.com Date : 11/02/2020
+ * Script builder used to run custom MATLAB commands or scripts.
  * 
  */
 
@@ -27,13 +26,13 @@ import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
-public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
+public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep {
     private int buildResult;
     private EnvVars env;
     private String matlabCommand;
 
     @DataBoundConstructor
-    public MatlabScriptBuilder() {
+    public RunMatlabCommandBuilder() {
 
     }
 
