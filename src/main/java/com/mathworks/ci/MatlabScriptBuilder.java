@@ -30,13 +30,10 @@ import net.sf.json.JSONObject;
 public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
     private int buildResult;
     private EnvVars env;
-    private MatlabReleaseInfo matlabRel;
-    private CommandConstructUtil cmdUtils;
     private String matlabCommand;
 
     @DataBoundConstructor
     public MatlabScriptBuilder() {
-
 
     }
 
@@ -61,13 +58,13 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
         this.env = env;
     }
 
+    private EnvVars getEnv() {
+        return this.env;
+    }
+
     @Symbol("RunMatlabCommand")
     @Extension
     public static class MatlabScriptDescriptor extends BuildStepDescriptor<Builder> {
-
-
-        MatlabReleaseInfo rel;
-
 
         // Overridden Method used to show the text under build dropdown
         @Override
@@ -103,18 +100,10 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
         // Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
 
-        // Create command util for command constrcution.
-        String matlabRoot = this.env.get("matlabroot");
-        cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
-
-        // Get node specific matlabroot to get matlab version information
-        FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabRoot);
-        matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
-
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-        buildResult = execMatlabCommand(workspace, launcher, listener);
+        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
@@ -122,10 +111,17 @@ public class MatlabScriptBuilder extends Builder implements SimpleBuildStep {
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener) throws IOException, InterruptedException {
+            TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
+            // Get mMatlabroot set in wrapper.
+            String matlabRoot = envVars.get("matlabroot");
+            CommandConstructUtil cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
+
+            // Get node specific matlabroot to get matlab version information
+            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabRoot);
+            MatlabReleaseInfo matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
+            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
             if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 matlabLauncher = matlabLauncher
