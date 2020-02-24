@@ -1,7 +1,8 @@
 <div>
- To run your tests, enter MATLAB commands separated by semicolons.<br>
- <b>Example:</b> cd c:\MATLAB\tests; runtests('IncludingSubfolder','true');<br>
- 
+ Enter the command you want to run in MATLAB. If the command represents a MATLAB function or script, do not specify the file extension.<br>
+ <b>Examples:</b><br>
+ <b>To run MATLAB commands :</b> cd c:\MATLAB\tests; runtests('IncludingSubfolder','true')<br> 
+ <b>To run MATLAB function or a script file :</b> cd c:\MATLAB\myscripts; runMyScript(arg1, arg2...)<br>
  <br>&nbsp;</br>
  <b>Recommendation:</b>If you require a number of MATLAB commands to execute your build, consider writing a MATLAB script and executing the script file instead.<br>
  <b>Note:</b> The build will fail if the execution of any MATLAB command causes an error.
