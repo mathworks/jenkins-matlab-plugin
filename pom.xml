@@ -52,8 +52,31 @@
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
 	  <tag>HEAD</tag>
   </scm>
-	
+
 	<build>
+		<plugins>
+			<!-- Plugin to download the matlab run scripts and keep it under class 
+				path -->
+			<plugin>
+				<groupId>com.googlecode.maven-download-plugin</groupId>
+				<artifactId>download-maven-plugin</artifactId>
+				<version>1.5.0</version>
+				<executions>
+					<execution>
+						<id>get-matlab-runner-scripts</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v0/run-matlab-command.zip</url>
+							<unpack>true</unpack>
+							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
 		<pluginManagement>
 			<plugins>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
@@ -91,6 +114,33 @@
 				<plugin>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>3.7.1</version>
+				</plugin>
+				<!-- Delete the runner files during clean operation -->
+				<plugin>
+					<artifactId>maven-clean-plugin</artifactId>
+					<version>3.0.0</version>
+					<executions>
+						<execution>
+							<id>default-clean</id>
+							<phase>clean</phase>
+							<goals>
+								<goal>clean</goal>
+							</goals>
+							<configuration>
+								<filesets>
+									<fileset>
+										<directory>${basedir}/src/main/resources</directory>
+										<includes>
+											<include>**/*.bat</include>
+											<include>**/*.sh</include>
+											<include>**/*.txt</include>
+										</includes>
+										<followSymlinks>false</followSymlinks>
+									</fileset>
+								</filesets>
+							</configuration>
+						</execution>
+					</executions>
 				</plugin>
 			</plugins>
 		</pluginManagement>

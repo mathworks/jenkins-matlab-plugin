@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import javax.annotation.Nonnull;
+import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -288,21 +289,21 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             // Get matlabroot set in wrapper class.
             String matlabRoot = envVars.get("matlabroot");     
             CommandConstructUtil cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
-            
-            // Get node specific matlabroot to get matlab version information
-            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabRoot);
-            MatlabReleaseInfo matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
-            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
-                ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(cmdUtils.constructDefaultCommandForTestRun(getInputArguments())).stderr(outStream);
-            } else {
-                matlabLauncher = matlabLauncher.cmds(cmdUtils.constructBatchCommandForTestRun(getInputArguments())).stdout(listener);
-            }
-                        
-            // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE, MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            if(launcher.isUnix()) {
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("/bin/bash","-c","./run_matlab_command.sh "+cmdUtils.constructCommandForTest(getInputArguments())).stdout(listener);
+                //Copy runner .sh for linux platform in workspace.
+                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
+            }else {
+                launcher = launcher.decorateByPrefix("cmd.exe","/C");
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\""+cmdUtils.constructCommandForTest(getInputArguments())+"\"").stdout(listener);
+                //Copy runner.bat for Windows platform in workspace.
+                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
+            }
+                       
+            // Copy MATLAB scratch file into the workspace.
+            cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE, MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
@@ -310,16 +311,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         return matlabLauncher.join();
     }
     
-    private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
+   /* private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
             String matlabRunnerTarget, FilePath targetWorkspace)
             throws IOException, InterruptedException {
         final ClassLoader classLoader = getClass().getClassLoader();
         FilePath targetFile =
                 new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
         InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
-
         targetFile.copyFrom(in);
-    }
+        //set executable permission to the file.
+        targetFile.chmod(0777);
+    }*/
     
     // Concatenate the input arguments
     private String getInputArguments() {
@@ -335,6 +337,4 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         
         return inputArgsToMatlabFcn;
     }
-    
-
 }

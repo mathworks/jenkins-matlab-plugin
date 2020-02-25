@@ -116,22 +116,18 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
             // Get mMatlabroot set in wrapper.
             String matlabRoot = envVars.get("matlabroot");
             CommandConstructUtil cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
-
-            // Get node specific matlabroot to get matlab version information
-            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabRoot);
-            MatlabReleaseInfo matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
-            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
-                ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher
-                        .cmds(cmdUtils.constructDefaultCommandForScriptRun(getCommand()))
-                        .stderr(outStream);
-            } else {
-                matlabLauncher = matlabLauncher
-                        .cmds(cmdUtils.constructBatchCommandForScriptRun(getCommand()))
-                        .stdout(listener);
+            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+            if(launcher.isUnix()) {
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("/bin/bash","-c","./run_matlab_command.sh "+cmdUtils.constructCommandForRunCommand(getCommand())).stdout(listener);
+                //Copy runner .sh for linux platform in workspace.
+                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
+            }else {
+                launcher = launcher.decorateByPrefix("cmd.exe","/C");
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\""+cmdUtils.constructCommandForRunCommand(getCommand())+"\"").stdout(listener);
+                //Copy runner.bat for Windows platform in workspace.
+                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
             }
-
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
