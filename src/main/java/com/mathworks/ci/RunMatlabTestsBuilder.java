@@ -289,28 +289,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             if (launcher.isUnix()) {
-                matlabLauncher =
-                        launcher.launch().pwd(workspace).envs(envVars)
-                                .cmds("./run_matlab_command.sh",
-                                        constructCommandForTest(getInputArguments()))
-                                .stdout(listener);
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("./run_matlab_command.sh",constructCommandForTest(getInputArguments())).stdout(listener);
                 // Copy runner .sh for linux platform in workspace.
-                cpoyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT,
-                        "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
+                cpoyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT,"Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
             } else {
                 launcher = launcher.decorateByPrefix("cmd.exe", "/C");
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
-                        .cmds("run_matlab_command.bat",
-                                "\"" + constructCommandForTest(getInputArguments()) + "\"")
-                        .stdout(listener);
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\"" + constructCommandForTest(getInputArguments()) + "\"").stdout(listener);
                 // Copy runner.bat for Windows platform in workspace.
-                cpoyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT,
-                        "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
+                cpoyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT,"Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
             }
 
             // Copy MATLAB scratch file into the workspace.
-            cpoyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            cpoyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
