@@ -281,29 +281,36 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars envVars)
-            throws IOException, InterruptedException {
-    
+            TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
             // Get matlabroot set in wrapper class.
-            String matlabRoot = envVars.get("matlabroot");     
-            CommandConstructUtil cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
+            String matlabRoot = envVars.get("matlabroot");
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            if(launcher.isUnix()) {
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("/bin/bash","-c","./run_matlab_command.sh "+cmdUtils.constructCommandForTest(getInputArguments())).stdout(listener);
-                //Copy runner .sh for linux platform in workspace.
-                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
-            }else {
-                launcher = launcher.decorateByPrefix("cmd.exe","/C");
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\""+cmdUtils.constructCommandForTest(getInputArguments())+"\"").stdout(listener);
-                //Copy runner.bat for Windows platform in workspace.
-                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
+            if (launcher.isUnix()) {
+                matlabLauncher =
+                        launcher.launch().pwd(workspace).envs(envVars)
+                                .cmds("./run_matlab_command.sh",
+                                        constructCommandForTest(getInputArguments()))
+                                .stdout(listener);
+                // Copy runner .sh for linux platform in workspace.
+                cpoyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT,
+                        "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
+            } else {
+                launcher = launcher.decorateByPrefix("cmd.exe", "/C");
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
+                        .cmds("run_matlab_command.bat",
+                                "\"" + constructCommandForTest(getInputArguments()) + "\"")
+                        .stdout(listener);
+                // Copy runner.bat for Windows platform in workspace.
+                cpoyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT,
+                        "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
             }
-                       
+
             // Copy MATLAB scratch file into the workspace.
-            cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE, MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            cpoyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
+                    MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
@@ -311,17 +318,23 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         return matlabLauncher.join();
     }
     
-   /* private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
-            String matlabRunnerTarget, FilePath targetWorkspace)
-            throws IOException, InterruptedException {
+    public String constructCommandForTest(String inputArguments) {
+        String runCommand;
+        String matlabFunctionName = FilenameUtils.removeExtension(
+                Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
+        runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
+        return runCommand;
+    }   
+    
+    private void cpoyFileInWorkspace(String matlabRunnerResourcePath, String matlabRunnerTarget,
+            FilePath targetWorkspace) throws IOException, InterruptedException {
         final ClassLoader classLoader = getClass().getClassLoader();
-        FilePath targetFile =
-                new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
+        FilePath targetFile = new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
         InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
         targetFile.copyFrom(in);
-        //set executable permission to the file.
-        targetFile.chmod(0777);
-    }*/
+        // set executable permission to the file.
+        targetFile.chmod(0755);
+    }
     
     // Concatenate the input arguments
     private String getInputArguments() {
@@ -330,11 +343,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
         String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
         String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
-        String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getModelCoverageChkBx();
-        
+        String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getModelCoverageChkBx();    
         String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
                 + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
-        
+  
         return inputArgsToMatlabFcn;
     }
 }

@@ -7,6 +7,7 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+import java.io.InputStream;
 import javax.annotation.Nonnull;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -115,18 +116,17 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         try {
             // Get mMatlabroot set in wrapper.
             String matlabRoot = envVars.get("matlabroot");
-            CommandConstructUtil cmdUtils = new CommandConstructUtil(launcher, matlabRoot);
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             if(launcher.isUnix()) {
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("/bin/bash","-c","./run_matlab_command.sh "+cmdUtils.constructCommandForRunCommand(getCommand())).stdout(listener);
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("./run_matlab_command.sh",getCommand()).stdout(listener);
                 //Copy runner .sh for linux platform in workspace.
-                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
+                copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
             }else {
                 launcher = launcher.decorateByPrefix("cmd.exe","/C");
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\""+cmdUtils.constructCommandForRunCommand(getCommand())+"\"").stdout(listener);
+                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\""+getCommand()+"\"").stdout(listener);
                 //Copy runner.bat for Windows platform in workspace.
-                cmdUtils.copyMatlabScratchFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
+                copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
             }
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
@@ -134,4 +134,15 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         }
         return matlabLauncher.join();
     }
+    
+    public void copyFileInWorkspace(String matlabRunnerResourcePath, String matlabRunnerTarget,
+            FilePath targetWorkspace) throws IOException, InterruptedException {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        FilePath targetFile = new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
+        InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
+        targetFile.copyFrom(in);
+        // set executable permission
+        targetFile.chmod(0755);
+    }
+
 }
