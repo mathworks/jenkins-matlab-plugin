@@ -112,23 +112,9 @@ public class RunMatlabCommandBuilderTest {
         Assert.assertTrue("Build step does not contain Run MATLAB Command option", found);
     }
 
-    /*
-     * Test To verify MATLAB is launched with default arguments and with -batch when release
-     * supports -batch
-     */
-
-    @Test
-    public void verifyMATLABlaunchedWithDefaultArgumentsBatch() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-batch", build);
-    }
 
     /*
-     * Test To verify MATLAB is launched with default arguments and with -r when release supports -r
+     * Test To verify MATLAB is launched using the default matlab runner script.
      * 
      */
 
@@ -139,8 +125,8 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-r", build);
-        jenkins.assertLogContains("eval(", build);
+        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("pwd", build);
     }
 
     /*
@@ -190,7 +176,7 @@ public class RunMatlabCommandBuilderTest {
     }
 
     /*
-     * Test to verify Builder picks the exact command that user entered in batch mode
+     * Test to verify Builder picks the exact command that user entered.
      */
 
     @Test
@@ -200,23 +186,8 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-batch", build);
+        jenkins.assertLogContains("run_matlab_command", build);
         jenkins.assertLogContains("pwd", build);
-    }
-
-    /*
-     * Test to verify Builder picks the exact command that user entered in -r mode
-     */
-
-    @Test
-    public void verifyBuildPicksTheCorretCommandR() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-r", build);
-        jenkins.assertLogContains("eval('pwd')", build);
     }
 
     /*
@@ -248,5 +219,25 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("pwd", build);
+    }
+    
+    /*
+     * Test to verify if appropriate MATALB runner file is copied in workspace.
+     */
+    @Test
+    public void verifyMATLABrunnerFileGeneratedForAutomaticOption() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        project.getBuildersList().add(scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String runnerFile;
+        if (!System.getProperty("os.name").startsWith("Win")) {
+            runnerFile = "run_matlab_command.sh";
+        }else {
+            runnerFile = "run_matlab_command.bat";
+        }
+        File matlabRunner = new File(build.getWorkspace() + File.separator + runnerFile);
+        Assert.assertTrue(matlabRunner.exists());
     }
 }

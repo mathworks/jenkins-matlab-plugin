@@ -118,8 +118,8 @@ public class RunMatlabTestsBuilderTest {
     }
 
     /*
-     * Test To verify MATLAB is launched with default arguments and with -batch when release
-     * supports -batch
+     * Test To verify MATLAB is launched using run matlab script for version above R2018b
+     * 
      */
 
     @Test
@@ -129,12 +129,12 @@ public class RunMatlabTestsBuilderTest {
         setAllTestArtifacts(false, this.testBuilder);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-batch", build);
+        jenkins.assertLogContains("run_matlab_command", build);
         jenkins.assertLogContains("exit(runMatlabTests", build);
     }
 
     /*
-     * Test To verify MATLAB is launched with default arguments and with -r when release supports -r
+     * Test To verify MATLAB is launched using run matlab script for version below R2018b
      * on windows
      */
 
@@ -145,8 +145,8 @@ public class RunMatlabTestsBuilderTest {
         setAllTestArtifacts(false, this.testBuilder);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-r", build);
-        jenkins.assertLogContains("runMatlabTests", build);
+        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("exit(runMatlabTests", build);
     }
 
     /*
@@ -224,7 +224,7 @@ public class RunMatlabTestsBuilderTest {
         setAllTestArtifacts(true, testBuilder);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("-batch", build);
+        jenkins.assertLogContains("run_matlab_command", build);
         jenkins.assertLogContains("\'PDFReport\',true,\'TAPResults\',true,"
                 + "\'JUnitResults\',true,\'SimulinkTestResults\',true,"
                 + "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
@@ -241,6 +241,26 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        Assert.assertTrue(matlabRunner.exists());
+    }
+    
+    /*
+     * Test to verify if appropriate MATALB runner file is copied in workspace.
+     */
+    @Test
+    public void verifyMATLABrunnerFileGeneratedForAutomaticOption() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String runnerFile;
+        if (!System.getProperty("os.name").startsWith("Win")) {
+            runnerFile = "run_matlab_command.sh";
+        }else {
+            runnerFile = "run_matlab_command.bat";
+        }
+        File matlabRunner = new File(build.getWorkspace() + File.separator + runnerFile);
         Assert.assertTrue(matlabRunner.exists());
     }
 
@@ -364,28 +384,6 @@ public class RunMatlabTestsBuilderTest {
         Assert.assertTrue(filteredPageText
                 .contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
     }
-
-    /*
-     * Test to verify if MatlabRoot field supports Jenkins environment variables.
-     * 
-     */
-
-    @Test
-    public void verifyEnvVarSupportForMatlabRoot() throws Exception {
-        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
-        EnvVars var = prop.getEnvVars();
-        var.put("MATLAB", "R2017a");
-        jenkins.jenkins.getGlobalNodeProperties().add(prop);
-        String mroot = getMatlabroot("R2017a");
-        this.buildWrapper.setMatlabRootFolder(mroot.replace("R2017a", "$MATLAB"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        setAllTestArtifacts(false, testBuilder);
-        project.getBuildersList().add(this.testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains(mroot, build);
-
-    }
-
 
     private void setAllTestArtifacts(boolean val, RunMatlabTestsBuilder testBuilder) {
         testBuilder.setCoberturaChkBx(val);

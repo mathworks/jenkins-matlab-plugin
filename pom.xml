@@ -56,7 +56,7 @@
 	<build>
 		<plugins>
 			<!-- Plugin to download the matlab run scripts and keep it under class 
-				path -->
+				resource folder -->
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
 				<artifactId>download-maven-plugin</artifactId>
