@@ -64,7 +64,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
 
     @Symbol("RunMatlabCommand")
     @Extension
-    public static class MatlabScriptDescriptor extends BuildStepDescriptor<Builder> {
+    public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
 
         // Overridden Method used to show the text under build dropdown
         @Override
@@ -114,8 +114,6 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            // Get mMatlabroot set in wrapper.
-            String matlabRoot = envVars.get("matlabroot");
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             if(launcher.isUnix()) {

@@ -21,7 +21,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import com.mathworks.ci.AddMatlabToPathBuildWrapper.MatlabBuildWrapperDescriptor;
+import com.mathworks.ci.AddMatlabToPathBuildWrapper.AddMatlabToPathDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -124,7 +124,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
     
     @Symbol("RunMatlabTests")
     @Extension
-    public static class MatlabTestDescriptor extends BuildStepDescriptor<Builder> {
+    public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
         
         MatlabReleaseInfo rel;
         
@@ -247,7 +247,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
                 return FormValidation.ok();
             try {
                 final String matlabRoot = Jenkins.getInstance()
-                        .getDescriptorByType(MatlabBuildWrapperDescriptor.class).getMatlabRootFolder();
+                        .getDescriptorByType(AddMatlabToPathDescriptor.class).getMatlabRootFolder();
                 for (Function<String, FormValidation> val : validations) {
                     FormValidation validationResult = val.apply(matlabRoot);
                     if (validationResult.kind.compareTo(Kind.ERROR) == 0
@@ -284,8 +284,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            // Get matlabroot set in wrapper class.
-            String matlabRoot = envVars.get("matlabroot");
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             if (launcher.isUnix()) {

@@ -56,7 +56,7 @@ public class AddMatlabToPathBuildWrapper extends SimpleBuildWrapper {
 
     @Symbol("Matlab")
     @Extension
-    public static final class MatlabBuildWrapperDescriptor extends BuildWrapperDescriptor {
+    public static final class AddMatlabToPathDescriptor extends BuildWrapperDescriptor {
 
         MatlabReleaseInfo rel;
         String matlabRootFolder;
