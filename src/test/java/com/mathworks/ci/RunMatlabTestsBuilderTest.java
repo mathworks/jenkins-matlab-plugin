@@ -23,12 +23,10 @@ import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.Builder;
 
 public class RunMatlabTestsBuilderTest {

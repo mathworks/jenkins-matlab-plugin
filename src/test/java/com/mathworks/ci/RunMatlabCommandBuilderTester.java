@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -29,7 +28,6 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
     private int buildResult;
     private EnvVars env;
     private MatlabReleaseInfo matlabRel;
-    private String matlabCommand;
     private String commandParameter;
     private String matlabExecutorPath;
 
@@ -41,10 +39,6 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
 
 
     // Getter and Setters to access local members
-
-    public void setMatlabCommand(String matlabCommand) {
-        this.matlabCommand = matlabCommand;
-    }
 
     private void setEnv(EnvVars env) {
         this.env = env;

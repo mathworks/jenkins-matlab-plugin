@@ -10,9 +10,7 @@ package com.mathworks.ci;
 
 import java.util.ArrayList;
 import java.util.List;
-import hudson.EnvVars;
 import hudson.Extension;
-import hudson.Launcher;
 import hudson.model.AbstractProject;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;

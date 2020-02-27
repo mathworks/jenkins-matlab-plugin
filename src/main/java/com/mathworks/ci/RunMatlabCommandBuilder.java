@@ -7,7 +7,6 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.io.InputStream;
 import javax.annotation.Nonnull;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -27,7 +26,7 @@ import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
-public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep {
+public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
     private EnvVars env;
     private String matlabCommand;
@@ -114,33 +113,11 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            if(launcher.isUnix()) {
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("./run_matlab_command.sh",getCommand()).stdout(listener);
-                //Copy runner .sh for linux platform in workspace.
-                copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
-            }else {
-                launcher = launcher.decorateByPrefix("cmd.exe","/C");
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\""+getCommand()+"\"").stdout(listener);
-                //Copy runner.bat for Windows platform in workspace.
-                copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
-            }
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,getCommand());
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         }
         return matlabLauncher.join();
-    }
-    
-    public void copyFileInWorkspace(String matlabRunnerResourcePath, String matlabRunnerTarget,
-            FilePath targetWorkspace) throws IOException, InterruptedException {
-        final ClassLoader classLoader = getClass().getClassLoader();
-        FilePath targetFile = new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
-        InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
-        targetFile.copyFrom(in);
-        // set executable permission
-        targetFile.chmod(0755);
-    }
-
+    } 
 }

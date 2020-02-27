@@ -10,7 +10,6 @@ package com.mathworks.ci;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -39,7 +38,7 @@ import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
-public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
+public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,MatlabBuild {
     
     private int buildResult;
     private EnvVars env;
@@ -284,21 +283,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            if (launcher.isUnix()) {
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("./run_matlab_command.sh",constructCommandForTest(getInputArguments())).stdout(listener);
-                // Copy runner .sh for linux platform in workspace.
-                cpoyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT,"Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
-            } else {
-                launcher = launcher.decorateByPrefix("cmd.exe", "/C");
-                matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds("run_matlab_command.bat","\"" + constructCommandForTest(getInputArguments()) + "\"").stdout(listener);
-                // Copy runner.bat for Windows platform in workspace.
-                cpoyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT,"Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
-            }
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+                    constructCommandForTest(getInputArguments()));
 
             // Copy MATLAB scratch file into the workspace.
-            cpoyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
+                    MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
@@ -313,16 +304,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
         return runCommand;
     }   
-    
-    private void cpoyFileInWorkspace(String matlabRunnerResourcePath, String matlabRunnerTarget,
-            FilePath targetWorkspace) throws IOException, InterruptedException {
-        final ClassLoader classLoader = getClass().getClassLoader();
-        FilePath targetFile = new FilePath(targetWorkspace, Message.getValue(matlabRunnerTarget));
-        InputStream in = classLoader.getResourceAsStream(matlabRunnerResourcePath);
-        targetFile.copyFrom(in);
-        // set executable permission to the file.
-        targetFile.chmod(0755);
-    }
     
     // Concatenate the input arguments
     private String getInputArguments() {
