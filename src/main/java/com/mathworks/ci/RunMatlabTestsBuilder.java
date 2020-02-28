@@ -20,7 +20,6 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import com.mathworks.ci.AddMatlabToPathBuildWrapper.AddMatlabToPathDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -33,8 +32,6 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
-import hudson.util.FormValidation.Kind;
-import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -155,6 +152,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
         /*
          * Validation for Test artifact generator checkBoxes
          */
+        
+        //Get the MATLAB root entered in build wrapper descriptor 
+        
+        
 
         public FormValidation doCheckCoberturaChkBx(@QueryParameter boolean coberturaChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
@@ -162,7 +163,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (coberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
-            return getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
@@ -190,7 +191,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (modelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
-            return getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
         }
         
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
@@ -218,7 +219,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (stmResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
-            return getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
         }
         
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
@@ -235,47 +236,33 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
                     return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
-            
-            
             return FormValidation.ok();
         };
-        
-        public FormValidation getFirstErrorOrWarning(
-                List<Function<String, FormValidation>> validations) {
-            if (validations == null || validations.isEmpty())
-                return FormValidation.ok();
-            try {
-                final String matlabRoot = Jenkins.getInstance()
-                        .getDescriptorByType(AddMatlabToPathDescriptor.class).getMatlabRootFolder();
-                for (Function<String, FormValidation> val : validations) {
-                    FormValidation validationResult = val.apply(matlabRoot);
-                    if (validationResult.kind.compareTo(Kind.ERROR) == 0
-                            || validationResult.kind.compareTo(Kind.WARNING) == 0) {
-                        return validationResult;
-                    }
-                }
-            }catch (Exception e) {
-                return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-            }
-           
-            return FormValidation.ok();
-        }
-    }
+     }
 
     @Override
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
-        //Set the environment variable specific to the this build
-        setEnv(build.getEnvironment(listener));
-        
-        // Invoke MATLAB command and transfer output to standard
-        // Output Console
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+        try {
+            // Set the environment variable specific to the this build
+            setEnv(build.getEnvironment(listener));
 
-        if (buildResult != 0) {
-            build.setResult(Result.FAILURE);
+            // Invoke MATLAB command and transfer output to standard
+            // Output Console
+
+            buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+
+            if (buildResult != 0) {
+                build.setResult(Result.FAILURE);
+            }
+        } finally {
+            // Cleanup the runner File from tmp directory
+            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher);
+            if (matlabRunnerScript.exists()) {
+                matlabRunnerScript.delete();
+            }
         }
     }
 
@@ -298,22 +285,21 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
     }
     
     public String constructCommandForTest(String inputArguments) {
-        String runCommand;
-        String matlabFunctionName = FilenameUtils.removeExtension(
+        final String matlabFunctionName = FilenameUtils.removeExtension(
                 Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
-        runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
+        final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
         return runCommand;
     }   
     
     // Concatenate the input arguments
     private String getInputArguments() {
-        String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getPdfReportChkBx();
-        String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTapChkBx();
-        String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
-        String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
-        String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
-        String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getModelCoverageChkBx();    
-        String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
+        final String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getPdfReportChkBx();
+        final String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTapChkBx();
+        final String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
+        final String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
+        final String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
+        final String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getModelCoverageChkBx();    
+        final String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
                 + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
   
         return inputArgsToMatlabFcn;

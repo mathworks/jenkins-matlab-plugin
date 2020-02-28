@@ -31,7 +31,7 @@ public class RunMatlabCommandBuilderTest {
 
     private static String matlabExecutorAbsolutePath;
     private FreeStyleProject project;
-    private AddMatlabToPathBuildWrapper buildWrapper;
+    private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabCommandBuilder scriptBuilder;
     private static URL url;
     private static String FileSeperator;
@@ -71,7 +71,7 @@ public class RunMatlabCommandBuilderTest {
 
         this.project = jenkins.createFreeStyleProject();
         this.scriptBuilder = new RunMatlabCommandBuilder();
-        this.buildWrapper = new AddMatlabToPathBuildWrapper();
+        this.buildWrapper = new UseMatlabVersionBuildWrapper();
     }
 
     @After
@@ -230,14 +230,14 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        project.scheduleBuild2(0).get();
         String runnerFile;
         if (!System.getProperty("os.name").startsWith("Win")) {
             runnerFile = "run_matlab_command.sh";
         }else {
             runnerFile = "run_matlab_command.bat";
         }
-        File matlabRunner = new File(build.getWorkspace() + File.separator + runnerFile);
+        File matlabRunner = new File(System.getProperty("java.io.tmpdir") + File.separator + runnerFile);
         Assert.assertTrue(matlabRunner.exists());
     }
 }

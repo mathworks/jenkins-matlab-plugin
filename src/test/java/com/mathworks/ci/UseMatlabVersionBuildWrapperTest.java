@@ -25,10 +25,10 @@ import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildWrapper;
 
 
-public class AddMatlabToPathBuildWrapperTest {
+public class UseMatlabVersionBuildWrapperTest {
     
     private FreeStyleProject project;
-    private AddMatlabToPathBuildWrapper buildWrapper;
+    private UseMatlabVersionBuildWrapper buildWrapper;
     private static String FileSeperator;
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
     
@@ -49,7 +49,7 @@ public class AddMatlabToPathBuildWrapperTest {
     @Before
     public void testSetup() throws IOException {
         this.project = jenkins.createFreeStyleProject();
-        this.buildWrapper = new AddMatlabToPathBuildWrapper();
+        this.buildWrapper = new UseMatlabVersionBuildWrapper();
     }
 
     @After
@@ -67,7 +67,7 @@ public class AddMatlabToPathBuildWrapperTest {
     }
     
     private URL getResource(String resource) {
-        return AddMatlabToPathBuildWrapperTest.class.getClassLoader().getResource(resource); 
+        return UseMatlabVersionBuildWrapperTest.class.getClassLoader().getResource(resource); 
     }
     
     /*

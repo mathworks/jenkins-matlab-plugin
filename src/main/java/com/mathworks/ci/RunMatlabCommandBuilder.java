@@ -95,17 +95,25 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
+        
+        try {
+            // Set the environment variable specific to the this build
+            setEnv(build.getEnvironment(listener));
 
-        // Set the environment variable specific to the this build
-        setEnv(build.getEnvironment(listener));
+            // Invoke MATLAB command and transfer output to standard
+            // Output Console
 
-        // Invoke MATLAB command and transfer output to standard
-        // Output Console
+            buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
-
-        if (buildResult != 0) {
-            build.setResult(Result.FAILURE);
+            if (buildResult != 0) {
+                build.setResult(Result.FAILURE);
+            }
+        } finally {
+            // Cleanup the runner File from tmp directory
+            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher);
+            if(matlabRunnerScript.exists()) {
+                matlabRunnerScript.delete();
+            }
         }
     }
 

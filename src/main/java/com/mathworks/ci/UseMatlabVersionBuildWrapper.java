@@ -26,16 +26,15 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
-import hudson.util.FormValidation.Kind;
 import jenkins.tasks.SimpleBuildWrapper;
 
-public class AddMatlabToPathBuildWrapper extends SimpleBuildWrapper {
+public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
     private String matlabRootFolder;
     private EnvVars env;
 
     @DataBoundConstructor
-    public AddMatlabToPathBuildWrapper() {}
+    public UseMatlabVersionBuildWrapper() {}
 
     public String getMatlabRootFolder() {
         return this.matlabRootFolder;
@@ -56,7 +55,7 @@ public class AddMatlabToPathBuildWrapper extends SimpleBuildWrapper {
 
     @Symbol("Matlab")
     @Extension
-    public static final class AddMatlabToPathDescriptor extends BuildWrapperDescriptor {
+    public static final class UseMatlabVersionDescriptor extends BuildWrapperDescriptor {
 
         MatlabReleaseInfo rel;
         String matlabRootFolder;
@@ -94,21 +93,7 @@ public class AddMatlabToPathBuildWrapper extends SimpleBuildWrapper {
             listOfCheckMethods.add(chkMatlabEmpty);
             listOfCheckMethods.add(chkMatlabSupportsRunTests);
 
-            return getFirstErrorOrWarning(listOfCheckMethods, matlabRootFolder);
-        }
-
-        public FormValidation getFirstErrorOrWarning(
-                List<Function<String, FormValidation>> validations, String matlabRootFolder) {
-            if (validations == null || validations.isEmpty())
-                return FormValidation.ok();
-            for (Function<String, FormValidation> val : validations) {
-                FormValidation validationResult = val.apply(matlabRootFolder);
-                if (validationResult.kind.compareTo(Kind.ERROR) == 0
-                        || validationResult.kind.compareTo(Kind.WARNING) == 0) {
-                    return validationResult;
-                }
-            }
-            return FormValidation.ok();
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
         }
 
         Function<String, FormValidation> chkMatlabEmpty = (String matlabRootFolder) -> {
