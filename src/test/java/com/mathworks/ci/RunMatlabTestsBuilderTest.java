@@ -249,17 +249,10 @@ public class RunMatlabTestsBuilderTest {
     public void verifyMATLABrunnerFileGeneratedForAutomaticOption() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        
+        setAllTestArtifacts(false, testBuilder);
         project.getBuildersList().add(testBuilder);
-        project.scheduleBuild2(0).get();
-        String runnerFile;
-        if (!System.getProperty("os.name").startsWith("Win")) {
-            runnerFile = "run_matlab_command.sh";
-        }else {
-            runnerFile = "run_matlab_command.bat";
-        }
-        File matlabRunner = new File(System.getProperty("java.io.tmpdir") + File.separator + runnerFile);
-        Assert.assertTrue(matlabRunner.exists());
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("MATLAB_ROOT", build);
     }
 
     /*
