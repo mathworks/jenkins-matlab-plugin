@@ -16,14 +16,12 @@ import jenkins.model.Jenkins;
 public class FormValidationUtil {
 
     public static FormValidation getFirstErrorOrWarning(
-            List<Function<String, FormValidation>> validations) {
+            List<Function<String, FormValidation>> validations, String validationArg) {
         if (validations == null || validations.isEmpty())
             return FormValidation.ok();
         try {
-            String matlabRoot = Jenkins.getInstance()
-                    .getDescriptorByType(UseMatlabVersionDescriptor.class).getMatlabRootFolder();
             for (Function<String, FormValidation> val : validations) {
-                FormValidation validationResult = val.apply(matlabRoot);
+                FormValidation validationResult = val.apply(validationArg);
                 if (validationResult.kind.compareTo(Kind.ERROR) == 0
                         || validationResult.kind.compareTo(Kind.WARNING) == 0) {
                     return validationResult;
@@ -33,5 +31,17 @@ public class FormValidationUtil {
             return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
         }
         return FormValidation.ok();
+    }
+    
+    //Method to get the MATLAB root from build wrapper class.
+    
+    public static String getMatlabRoot() {
+        try {
+            return Jenkins.getInstance().getDescriptorByType(UseMatlabVersionDescriptor.class)
+                    .getMatlabRootFolder();
+        } catch (Exception e) {
+            // For any exception during getMatlabRootFolder() operation, return matlabRoot as NULL.
+            return null;
+        }
     }
 }

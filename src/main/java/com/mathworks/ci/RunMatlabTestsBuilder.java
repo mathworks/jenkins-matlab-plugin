@@ -163,7 +163,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (coberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,FormValidationUtil.getMatlabRoot());
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
@@ -191,7 +191,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (modelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,FormValidationUtil.getMatlabRoot());
         }
         
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
@@ -219,7 +219,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (stmResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,FormValidationUtil.getMatlabRoot());
         }
         
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {

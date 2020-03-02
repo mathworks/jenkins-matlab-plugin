@@ -93,7 +93,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             listOfCheckMethods.add(chkMatlabEmpty);
             listOfCheckMethods.add(chkMatlabSupportsRunTests);
 
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,matlabRootFolder);
         }
 
         Function<String, FormValidation> chkMatlabEmpty = (String matlabRootFolder) -> {
