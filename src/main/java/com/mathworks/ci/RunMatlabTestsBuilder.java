@@ -20,6 +20,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import com.mathworks.ci.UseMatlabVersionBuildWrapper.UseMatlabVersionDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -32,6 +33,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -163,7 +165,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (coberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,FormValidationUtil.getMatlabRoot());
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,getMatlabRoot());
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
@@ -191,7 +193,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (modelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,FormValidationUtil.getMatlabRoot());
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,getMatlabRoot());
         }
         
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
@@ -219,7 +221,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (stmResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,FormValidationUtil.getMatlabRoot());
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,getMatlabRoot());
         }
         
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
@@ -238,6 +240,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             }
             return FormValidation.ok();
         };
+        
+        //Method to get the MatlabRoot value from Build wrapper class.
+        public static String getMatlabRoot() {
+            try {
+                return Jenkins.getInstance().getDescriptorByType(UseMatlabVersionDescriptor.class)
+                        .getMatlabRootFolder();
+            } catch (Exception e) {
+                // For any exception during getMatlabRootFolder() operation, return matlabRoot as NULL.
+                return null;
+            }
+        }
      }
 
     @Override

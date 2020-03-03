@@ -8,10 +8,8 @@ package com.mathworks.ci;
  */
 import java.util.List;
 import java.util.function.Function;
-import com.mathworks.ci.UseMatlabVersionBuildWrapper.UseMatlabVersionDescriptor;
 import hudson.util.FormValidation;
 import hudson.util.FormValidation.Kind;
-import jenkins.model.Jenkins;
 
 public class FormValidationUtil {
 
@@ -31,17 +29,5 @@ public class FormValidationUtil {
             return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
         }
         return FormValidation.ok();
-    }
-    
-    //Method to get the MATLAB root from build wrapper class.
-    
-    public static String getMatlabRoot() {
-        try {
-            return Jenkins.getInstance().getDescriptorByType(UseMatlabVersionDescriptor.class)
-                    .getMatlabRootFolder();
-        } catch (Exception e) {
-            // For any exception during getMatlabRootFolder() operation, return matlabRoot as NULL.
-            return null;
-        }
     }
 }
