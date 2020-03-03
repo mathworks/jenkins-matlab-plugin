@@ -11,9 +11,6 @@ package com.mathworks.ci;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -113,7 +110,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         // Overridden Method used to show the text under build dropdown
         @Override
         public String getDisplayName() {
-            return Message.getBuilderDisplayName();
+            // No name for this descriptor as its deprecated all the jobs will be 
+            // automatically delegated to the new TestRun or Script builders.
+            return "";
         }
 
         @Override

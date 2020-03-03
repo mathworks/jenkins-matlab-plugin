@@ -3,18 +3,10 @@ package com.mathworks.ci;
 
 
 import static org.junit.Assert.assertFalse;
-import hudson.EnvVars;
-import hudson.FilePath;
-import hudson.model.FreeStyleBuild;
-import hudson.model.Result;
-import hudson.slaves.EnvironmentVariablesNodeProperty;
-import hudson.model.FreeStyleProject;
-import hudson.tasks.Builder;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import org.junit.After;
@@ -29,6 +21,12 @@ import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
 import com.mathworks.ci.MatlabBuilder.RunTestsWithCustomCommandOption;
+import hudson.EnvVars;
+import hudson.FilePath;
+import hudson.model.FreeStyleBuild;
+import hudson.model.FreeStyleProject;
+import hudson.model.Result;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 
 
 /*
@@ -101,21 +99,13 @@ public class MatlabBuilderTest {
     
 
     /*
-     * Test Case to verify if Build step contains "Run MATLAB Tests" option.
+     * Test Case to verify if Build step contains "Run MATLAB Tests" option.This 
+     * Builder should not be displayed under buildstep.
      */
     @Test
     public void verifyBuildStepWithMATLABBuilder() throws Exception {
-        boolean found = false;
         this.matlabBuilder.setMatlabRoot("");
-        project.getBuildersList().add(this.matlabBuilder);
-        List<Builder> bl = project.getBuildersList();
-        for (Builder b : bl) {
-            if (b.getDescriptor().getDisplayName()
-                    .equalsIgnoreCase(Message.getBuilderDisplayName())) {
-                found = true;
-            }
-        }
-        Assert.assertTrue("Build step does not contain Run MATLAB Tests option", found);
+        Assert.assertTrue(this.matlabBuilder.getDescriptor().getDisplayName().equalsIgnoreCase(""));
     }
 
 
