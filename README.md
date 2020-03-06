@@ -24,6 +24,6 @@ MIT © 2019 The MathWorks, Inc.
 ## Build Results
 
 
-| Overall  | Linux  | Windows  | Mac  |
-|---|---|---|---|
-| [![Build Status](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_apis/build/status/mathworks.jenkins-matlab-plugin?branchName=master)](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_build/latest?definitionId=6&branchName=master) |[![Build Status](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_apis/build/status/mathworks.jenkins-matlab-plugin?branchName=master&jobName=Job&configuration=linux)](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_build/latest?definitionId=6&branchName=master) |[![Build Status](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_apis/build/status/mathworks.jenkins-matlab-plugin?branchName=master&jobName=Job&configuration=windows)](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_build/latest?definitionId=6&branchName=master) |[![Build Status](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_apis/build/status/mathworks.jenkins-matlab-plugin?branchName=master&jobName=Job&configuration=mac)](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_build/latest?definitionId=6&branchName=master) |
+| Overall  |
+|---|
+| [![Build Status](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_apis/build/status/mathworks.jenkins-matlab-plugin?branchName=master)](https://dev.azure.com/iat-ci/jenkins-matlab-plugin/_build/latest?definitionId=6&branchName=master) |
