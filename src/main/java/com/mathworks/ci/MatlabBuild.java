@@ -9,6 +9,8 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
+
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -28,46 +30,47 @@ public interface MatlabBuild {
      * @param matlabCommand MATLAB command to execute on shell 
      * @return matlabLauncher returns the process launcher to run MATLAB commands
      */
-    default ProcStarter getProcessToRunMatlabCommand(FilePath workspace, Launcher launcher,TaskListener listener, EnvVars envVars, String matlabCommand) throws IOException, InterruptedException {
+    default ProcStarter getProcessToRunMatlabCommand(FilePath workspace, Launcher launcher,TaskListener listener, EnvVars envVars, String matlabCommand,String uniqueName) throws IOException, InterruptedException {
         //Get node specific tmp directory to copy matlab runner script
         String tmpDir = getNodeSpecificTmpFolderPath();
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
         ProcStarter matlabLauncher;
         if(launcher.isUnix()) {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds(tmpDir+"/run_matlab_command.sh",matlabCommand).stdout(listener);
+        	final String runnerScriptName = "run_matlab_command"+uniqueName+".sh";
+            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds(tmpDir+"/"+runnerScriptName,matlabCommand).stdout(listener);
             
             //Copy runner .sh for linux platform in workspace.
-            copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.linux.name", targetWorkspace);
+            copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName, targetWorkspace);
         }else {
+        	final String runnerScriptName = "run_matlab_command"+uniqueName+".bat";
             launcher = launcher.decorateByPrefix("cmd.exe","/C");
-            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds(tmpDir+"\\"+"run_matlab_command.bat","\""+matlabCommand+"\"").stdout(listener);
+            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars).cmds(tmpDir+"\\"+runnerScriptName,"\""+matlabCommand+"\"").stdout(listener);
             //Copy runner.bat for Windows platform in workspace.
-            copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, "Builder.matlab.runner.script.target.file.windows.name", targetWorkspace);
+            copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName, targetWorkspace);
         }
         return matlabLauncher;
     }
 
-    /**
+    /*
      * Method to copy given file from source to target node specific workspace.
      */
     default void copyFileInWorkspace(String sourceFile, String targetFile,
             FilePath targetWorkspace) throws IOException, InterruptedException {
         final ClassLoader classLoader = getClass().getClassLoader();
-        FilePath targetFilePath = new FilePath(targetWorkspace, Message.getValue(targetFile));
+        FilePath targetFilePath = new FilePath(targetWorkspace, targetFile);
         InputStream in = classLoader.getResourceAsStream(sourceFile);
         targetFilePath.copyFrom(in);
         // set executable permission
-        targetFilePath.chmod(0755);
-        
+        targetFilePath.chmod(0755);       
     }
     
-    default FilePath getNodeSpecificMatlabRunnerScript(Launcher launcher) throws IOException, InterruptedException {
+    default FilePath getNodeSpecificMatlabRunnerScript(Launcher launcher,String uniqueName) throws IOException, InterruptedException {
         Computer cmp = Computer.currentComputer();
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
         if(launcher.isUnix()) {
-            tmpDir = tmpDir+"/run_matlab_command.sh";
+            tmpDir = tmpDir+"/run_matlab_command"+uniqueName+".sh";
         }else {
-            tmpDir = tmpDir+"\\"+"run_matlab_command.bat";
+            tmpDir = tmpDir+"\\"+"run_matlab_command"+uniqueName+".bat";
         }
         return new FilePath(launcher.getChannel(), tmpDir);   
     }
@@ -76,6 +79,10 @@ public interface MatlabBuild {
         Computer cmp = Computer.currentComputer();
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
         return tmpDir;
+    }
+    
+    default String getUniqueNameForRunnerFile() {
+    	return Instant.now().toString().replaceAll("[:,.]", "");
     }
 
 }

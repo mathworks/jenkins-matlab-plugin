@@ -10,6 +10,7 @@ package com.mathworks.ci;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -258,7 +259,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
 
-        try {
             // Set the environment variable specific to the this build
             setEnv(build.getEnvironment(listener));
 
@@ -269,32 +269,33 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
 
             if (buildResult != 0) {
                 build.setResult(Result.FAILURE);
-            }
-        } finally {
-            // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher);
-            if (matlabRunnerScript.exists()) {
-                matlabRunnerScript.delete();
-            }
-        }
+            }      
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    	final String uniqueFileName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments()));
+                    constructCommandForTest(getInputArguments()),uniqueFileName);
 
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             copyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
                     MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
+        }finally {
+            // Cleanup the runner File from tmp directory
+            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueFileName);
+            if (matlabRunnerScript.exists()) {
+                matlabRunnerScript.delete();
+            }
         }
-        return matlabLauncher.join();
+        
     }
     
     public String constructCommandForTest(String inputArguments) {

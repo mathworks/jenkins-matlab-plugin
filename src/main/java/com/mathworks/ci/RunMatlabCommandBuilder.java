@@ -7,6 +7,8 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+import java.time.Instant;
+
 import javax.annotation.Nonnull;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -95,8 +97,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
-        
-        try {
+     
             // Set the environment variable specific to the this build
             setEnv(build.getEnvironment(listener));
 
@@ -108,24 +109,25 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             if (buildResult != 0) {
                 build.setResult(Result.FAILURE);
             }
-        } finally {
-            // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher);
-            if(matlabRunnerScript.exists()) {
-                matlabRunnerScript.delete();
-            }
-        }
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    	final String uniqueFileName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,getCommand());
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,getCommand(),uniqueFileName);
+            return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
+        }finally {
+        	// Cleanup the runner File from tmp directory
+        	FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueFileName);
+            if(matlabRunnerScript.exists()) {
+                matlabRunnerScript.delete();
+            }
         }
-        return matlabLauncher.join();
+        
     } 
 }

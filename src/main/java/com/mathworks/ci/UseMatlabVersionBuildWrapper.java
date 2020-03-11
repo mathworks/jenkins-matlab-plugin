@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
+
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -30,7 +32,8 @@ import jenkins.tasks.SimpleBuildWrapper;
 
 public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
-    private String matlabRootFolder;
+    
+	private String matlabRootFolder;
     private EnvVars env;
 
     @DataBoundConstructor
@@ -124,7 +127,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     }
 
     @Override
-    public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher,
+    public synchronized void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars initialEnvironment)
             throws IOException, InterruptedException {
         // Set Environment variable
@@ -134,9 +137,9 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Add "matlabroot" without bin as env variable which will be available across the build.
         context.env("matlabroot", getLocalMatlab());
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", getLocalMatlab() + nodeSpecificFileSep + "bin");
+        context.env("PATH+matlabroot", getLocalMatlab() + nodeSpecificFileSep + "bin");     
     }
-    
+
     private String getNodeSpecificFileSeperator(Launcher launcher) {
         if (launcher.isUnix()) {
             return "/";
