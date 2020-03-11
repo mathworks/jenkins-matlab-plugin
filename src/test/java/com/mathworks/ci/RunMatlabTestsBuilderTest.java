@@ -228,19 +228,6 @@ public class RunMatlabTestsBuilderTest {
                 + "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
     }
 
-    /*
-     * Test to verify if MATALB scratch file is generated in workspace.
-     */
-    @Test
-    public void verifyMATLABscratchFileGeneratedForAutomaticOption() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        setAllTestArtifacts(false, testBuilder);
-        project.getBuildersList().add(testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertTrue(matlabRunner.exists());
-    }
     
     /*
      * Test to verify if appropriate MATALB runner file is copied in workspace.
