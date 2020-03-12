@@ -42,7 +42,7 @@ Create a new project and configure it by following these steps:
 5. In the **Build** section of Jenkins, click **Add build step > Run MATLAB Tests**. A new window opens that enables you to configure the Jenkins plugin for MATLAB:
 
    *   Paste the full path to the MATLAB root folder into the **MATLAB root** box. 
-   *   Choose the default Automatic test mode from the **Test mode** drop-down list.
+   *   Select the default Automatic test mode from the **Test mode** drop-down list.
    *   Select your desired test artifacts to be generated in the project workspace.
     
 The plugin in this example is configured to generate Cobertura code coverage and JUnit test result reports. For more information on how to configure the Jenkins plugin for MATLAB, see [Jenkins MATLAB Plugin](https://github.com/jenkinsci/matlab-plugin).
