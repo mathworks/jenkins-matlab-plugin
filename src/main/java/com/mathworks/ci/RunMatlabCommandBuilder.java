@@ -7,7 +7,6 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.time.Instant;
 
 import javax.annotation.Nonnull;
 import org.jenkinsci.Symbol;
@@ -113,19 +112,19 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-    	final String uniqueFileName = getUniqueNameForRunnerFile();
+    	final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,getCommand(),uniqueFileName);
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,getCommand(),uniqueTmpFldrName);
             return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         }finally {
         	// Cleanup the runner File from tmp directory
-        	FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueFileName);
-            if(matlabRunnerScript.exists()) {
-                matlabRunnerScript.delete();
+        	FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueTmpFldrName);
+            if(matlabRunnerScript.isDirectory()) {
+                matlabRunnerScript.deleteRecursive();
             }
         }
         

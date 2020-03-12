@@ -10,7 +10,6 @@ package com.mathworks.ci;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -274,11 +273,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-    	final String uniqueFileName = getUniqueNameForRunnerFile();
+    	final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments()),uniqueFileName);
+                    constructCommandForTest(getInputArguments()),uniqueTmpFldrName);
 
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
@@ -290,9 +289,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             return 1;
         }finally {
             // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueFileName);
-            if (matlabRunnerScript.exists()) {
-                matlabRunnerScript.delete();
+            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueTmpFldrName);
+            if (matlabRunnerScript.isDirectory()) {
+                matlabRunnerScript.deleteRecursive();
             }
         }
         
