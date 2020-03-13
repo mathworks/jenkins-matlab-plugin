@@ -7,7 +7,6 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-
 import javax.annotation.Nonnull;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -96,37 +95,38 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
-     
-            // Set the environment variable specific to the this build
-            setEnv(build.getEnvironment(listener));
 
-            // Invoke MATLAB command and transfer output to standard
-            // Output Console
+        // Set the environment variable specific to the this build
+        setEnv(build.getEnvironment(listener));
 
-            buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+        // Invoke MATLAB command and transfer output to standard
+        // Output Console
 
-            if (buildResult != 0) {
-                build.setResult(Result.FAILURE);
-            }
+        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+
+        if (buildResult != 0) {
+            build.setResult(Result.FAILURE);
+        }
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-    	final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
+        final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,getCommand(),uniqueTmpFldrName);
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+                    getCommand(), uniqueTmpFldrName);
             return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
-        }finally {
-        	// Cleanup the runner File from tmp directory
-        	FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher,uniqueTmpFldrName);
-            if(matlabRunnerScript.isDirectory()) {
+        } finally {
+            // Cleanup the runner File from tmp directory
+            FilePath matlabRunnerScript = getFilePathForUniqueFolder(launcher, uniqueTmpFldrName);
+            if (matlabRunnerScript.exists()) {
                 matlabRunnerScript.deleteRecursive();
             }
         }
-        
-    } 
+
+    }
 }
