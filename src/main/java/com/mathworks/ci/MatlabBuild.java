@@ -33,7 +33,7 @@ public interface MatlabBuild {
             TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath();
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
@@ -70,9 +70,12 @@ public interface MatlabBuild {
         targetFilePath.chmod(0755);
     }
 
-    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName)
+    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,FilePath workspace)
             throws IOException, InterruptedException {
-        Computer cmp = Computer.currentComputer();
+        /*Use of Computer is not recommended as jenkins hygeine for pipeline support
+         * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
+        
+        Computer cmp = workspace.toComputer();
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
         if (launcher.isUnix()) {
             tmpDir = tmpDir + "/" + uniqueName;
@@ -82,8 +85,8 @@ public interface MatlabBuild {
         return new FilePath(launcher.getChannel(), tmpDir);
     }
 
-    default String getNodeSpecificTmpFolderPath() throws IOException, InterruptedException {
-        Computer cmp = Computer.currentComputer();
+    default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
+        Computer cmp = workspace.toComputer();
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
         return tmpDir;
     }

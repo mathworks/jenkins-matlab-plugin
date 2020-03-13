@@ -299,12 +299,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return 1;
         } finally {
             // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript = getFilePathForUniqueFolder(launcher, uniqueTmpFldrName);
+            FilePath matlabRunnerScript =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
             if (matlabRunnerScript.exists()) {
                 matlabRunnerScript.deleteRecursive();
             }
         }
-
     }
 
     public String constructCommandForTest(String inputArguments) {
