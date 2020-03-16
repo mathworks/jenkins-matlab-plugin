@@ -3,7 +3,8 @@ package com.mathworks.ci;
 /**
  * Copyright 2019-2020 The MathWorks, Inc.
  * 
- * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate selected test artifacts.
+ * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate
+ * selected test artifacts.
  * 
  */
 
@@ -37,8 +38,8 @@ import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
-public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,MatlabBuild {
-    
+public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
+
     private int buildResult;
     private EnvVars env;
     private boolean tapChkBx;
@@ -72,22 +73,22 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
     public void setCoberturaChkBx(boolean coberturaChkBx) {
         this.coberturaChkBx = coberturaChkBx;
     }
-    
+
     @DataBoundSetter
     public void setStmResultsChkBx(boolean stmResultsChkBx) {
         this.stmResultsChkBx = stmResultsChkBx;
     }
-    
+
     @DataBoundSetter
     public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
         this.modelCoverageChkBx = modelCoverageChkBx;
     }
-    
+
     @DataBoundSetter
     public void setPdfReportChkBx(boolean pdfReportChkBx) {
         this.pdfReportChkBx = pdfReportChkBx;
     }
-            
+
     public boolean getTapChkBx() {
         return tapChkBx;
     }
@@ -103,29 +104,29 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
     public boolean getStmResultsChkBx() {
         return stmResultsChkBx;
     }
-            
+
     public boolean getModelCoverageChkBx() {
         return modelCoverageChkBx;
     }
-    
+
     public boolean getPdfReportChkBx() {
         return pdfReportChkBx;
     }
-    
+
     private void setEnv(EnvVars env) {
         this.env = env;
     }
-    
+
     private EnvVars getEnv() {
         return this.env;
     }
-    
+
     @Symbol("RunMatlabTests")
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
-        
+
         MatlabReleaseInfo rel;
-        
+
         // Overridden Method used to show the text under build dropdown
         @Override
         public String getDisplayName() {
@@ -146,18 +147,19 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
          * if it returns true then this build step will be applicable for all project type.
          */
         @Override
-        public boolean isApplicable(@SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
+        public boolean isApplicable(
+                @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
-        
-        
+
+
         /*
          * Validation for Test artifact generator checkBoxes
          */
-        
-        //Get the MATLAB root entered in build wrapper descriptor 
-        
-        
+
+        // Get the MATLAB root entered in build wrapper descriptor
+
+
 
         public FormValidation doCheckCoberturaChkBx(@QueryParameter boolean coberturaChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
@@ -165,156 +167,168 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep,Ma
             if (coberturaChkBx) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,getMatlabRoot());
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
         }
 
         Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
             FilePath matlabRootPath = new FilePath(new File(matlabRoot));
             rel = new MatlabReleaseInfo(matlabRootPath);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if(!resolver.hasVariablePattern()) {
+            if (!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
-                        return FormValidation
-                                .warning(Message.getValue("Builder.matlab.cobertura.support.warning"));
+                    if (rel.verLessThan(
+                            MatlabBuilderConstants.BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
+                        return FormValidation.warning(
+                                Message.getValue("Builder.matlab.cobertura.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
+                    return FormValidation
+                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
-            
+
 
             return FormValidation.ok();
         };
-        
-        public FormValidation doCheckModelCoverageChkBx(@QueryParameter boolean modelCoverageChkBx) {
+
+        public FormValidation doCheckModelCoverageChkBx(
+                @QueryParameter boolean modelCoverageChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             if (modelCoverageChkBx) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,getMatlabRoot());
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
         }
-        
+
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
             FilePath matlabRootPath = new FilePath(new File(matlabRoot));
             rel = new MatlabReleaseInfo(matlabRootPath);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if(!resolver.hasVariablePattern()) {
+            if (!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
-                        return FormValidation
-                                .warning(Message.getValue("Builder.matlab.modelcoverage.support.warning"));
+                    if (rel.verLessThan(
+                            MatlabBuilderConstants.BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
+                        return FormValidation.warning(
+                                Message.getValue("Builder.matlab.modelcoverage.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
+                    return FormValidation
+                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
-            
-            
+
+
             return FormValidation.ok();
         };
-        
+
         public FormValidation doCheckStmResultsChkBx(@QueryParameter boolean stmResultsChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             if (stmResultsChkBx) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,getMatlabRoot());
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
         }
-        
+
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
             FilePath matlabRootPath = new FilePath(new File(matlabRoot));
             rel = new MatlabReleaseInfo(matlabRootPath);
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if(!resolver.hasVariablePattern()) {
+            if (!resolver.hasVariablePattern()) {
                 try {
-                    if (rel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
-                        return FormValidation
-                                .warning(Message.getValue("Builder.matlab.exportstmresults.support.warning"));
+                    if (rel.verLessThan(
+                            MatlabBuilderConstants.BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
+                        return FormValidation.warning(Message
+                                .getValue("Builder.matlab.exportstmresults.support.warning"));
                     }
                 } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
+                    return FormValidation
+                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
             return FormValidation.ok();
         };
-        
-        //Method to get the MatlabRoot value from Build wrapper class.
+
+        // Method to get the MatlabRoot value from Build wrapper class.
         public static String getMatlabRoot() {
             try {
                 return Jenkins.getInstance().getDescriptorByType(UseMatlabVersionDescriptor.class)
                         .getMatlabRootFolder();
             } catch (Exception e) {
-                // For any exception during getMatlabRootFolder() operation, return matlabRoot as NULL.
+                // For any exception during getMatlabRootFolder() operation, return matlabRoot as
+                // NULL.
                 return null;
             }
         }
-     }
+    }
 
     @Override
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
 
-        try {
-            // Set the environment variable specific to the this build
-            setEnv(build.getEnvironment(listener));
+        // Set the environment variable specific to the this build
+        setEnv(build.getEnvironment(listener));
 
-            // Invoke MATLAB command and transfer output to standard
-            // Output Console
+        // Invoke MATLAB command and transfer output to standard
+        // Output Console
 
-            buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
-            if (buildResult != 0) {
-                build.setResult(Result.FAILURE);
-            }
-        } finally {
-            // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript = getNodeSpecificMatlabRunnerScript(launcher);
-            if (matlabRunnerScript.exists()) {
-                matlabRunnerScript.delete();
-            }
+        if (buildResult != 0) {
+            build.setResult(Result.FAILURE);
         }
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+        final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments()));
+                    constructCommandForTest(getInputArguments()), uniqueTmpFldrName);
 
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             copyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
                     MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+            return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
+        } finally {
+            // Cleanup the runner File from tmp directory
+            FilePath matlabRunnerScript =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+            if (matlabRunnerScript.exists()) {
+                matlabRunnerScript.deleteRecursive();
+            }
         }
-        return matlabLauncher.join();
     }
-    
+
     public String constructCommandForTest(String inputArguments) {
         final String matlabFunctionName = FilenameUtils.removeExtension(
                 Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
         final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
         return runCommand;
-    }   
-    
+    }
+
     // Concatenate the input arguments
     private String getInputArguments() {
         final String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getPdfReportChkBx();
         final String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTapChkBx();
-        final String junitResults = MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
-        final String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
-        final String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
-        final String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + this.getModelCoverageChkBx();    
+        final String junitResults =
+                MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
+        final String stmResults =
+                MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
+        final String coberturaCodeCoverage =
+                MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
+        final String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + ","
+                + this.getModelCoverageChkBx();
         final String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
                 + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
-  
+
         return inputArgsToMatlabFcn;
     }
 }
