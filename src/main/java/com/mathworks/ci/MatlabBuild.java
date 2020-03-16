@@ -9,6 +9,8 @@ package com.mathworks.ci;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
+import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -70,7 +72,9 @@ public interface MatlabBuild {
         targetFilePath.chmod(0755);
     }
 
-    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,FilePath workspace)
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+            justification = "workspace is passed through perform method, which will always have NonNull FilePath")
+    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName, FilePath workspace)
             throws IOException, InterruptedException {
         /*Use of Computer is not recommended as jenkins hygeine for pipeline support
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
@@ -85,6 +89,8 @@ public interface MatlabBuild {
         return new FilePath(launcher.getChannel(), tmpDir);
     }
 
+    @SuppressFBWarnings(value = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE",
+            justification = "workspace is passed through perform method, which will always have NonNull FilePath")
     default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
         Computer cmp = workspace.toComputer();
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");

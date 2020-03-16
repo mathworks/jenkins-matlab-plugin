@@ -292,7 +292,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             copyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE, targetWorkspace);
+                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
             return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
@@ -308,8 +308,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
 
     public String constructCommandForTest(String inputArguments) {
-        final String matlabFunctionName = FilenameUtils.removeExtension(
-                Message.getValue(MatlabBuilderConstants.MATLAB_RUNNER_TARGET_FILE));
+        final String matlabFunctionName =
+                FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
         final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
         return runCommand;
     }
