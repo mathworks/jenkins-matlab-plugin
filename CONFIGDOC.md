@@ -27,7 +27,7 @@ The automatic test execution feature of the plugin enables you to generate diffe
   
 ![run_matlab_tests](https://user-images.githubusercontent.com/48831250/76798712-785fd580-67a6-11ea-9949-52843e55e299.png)
   
-![run_matlab_command](https://user-images.githubusercontent.com/48831250/76800429-04273100-67aa-11ea-8667-60a3ff4dbca0.png)
+![run_matlab_commands](https://user-images.githubusercontent.com/48831250/76801842-d2fc3000-67ac-11ea-9174-0a6485595714.png)
 
 2) Select your desired test artifacts.
 
