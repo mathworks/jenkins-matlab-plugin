@@ -14,7 +14,7 @@ Once you install the plugin on Jenkins, the **Use MATLAB version** checkbox appe
 
 Select the **Use MATLAB version** checkbox to specify the full path to the MATLAB root folder that should be used for the build. The information in the **MATLAB root** box enables the plugin to prepend MATLAB to the PATH environment variable of the build agent. 
 
-If the build agent already has your desired MATLAB on the path, then you are not required to select the **Use MATLAB version** checkbox. When the checkbox is clear, the plugin uses the MATLAB directory closest to the top of the path. The build fails if the plugin cannot find MATLAB on the path.
+If the build agent already has your desired MATLAB on the path, then you are not required to select the **Use MATLAB version** checkbox. When the checkbox is clear, the plugin uses the first MATLAB instance it encounters on the path. The build fails if the operating system cannot find MATLAB on the path.
 
 ## Specify Build Steps
 When you set up the **Build** section of the project configuration window, the plugin provides you with the **Run MATLAB Tests** and **Run MATLAB Command** build steps. 
