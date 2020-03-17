@@ -8,7 +8,7 @@ You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-con
 -  [Set Up Multi-Configuration Project](#set-up-multi-configuration-project)
 
 ## Add MATLAB to System Path
-Once you install the plugin on Jenkins, the **Use MATLAB version** checkbox is displayed in the **Build Environment** section of the project configuration window.
+Once you install the plugin on Jenkins, the **Use MATLAB version** checkbox appears in the **Build Environment** section of the project configuration window.
 
 ![matlab_path](https://user-images.githubusercontent.com/48831250/76883191-1c528b00-6852-11ea-9242-7d143f8a5c46.png)
 
