@@ -82,4 +82,4 @@ From the **Test mode** drop-down list, select the **Custom** option. Use the sec
 * A multi-configuration project creates a separate workspace for each user-defined axis value. If you specify the full paths to where MATLAB is installed as axis values, Jenkins fails to create separate workspaces and fails the build.
 
 ## See Also
-[Run MATLAB Tests on Jenkins Server](/examples/run-matlab-tests.md)
+[Run MATLAB Tests on Jenkins Server](examples/run-matlab-tests.md)
