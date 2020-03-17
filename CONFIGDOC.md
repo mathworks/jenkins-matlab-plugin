@@ -10,7 +10,7 @@ You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-con
 When you set up the Build **section** of the project configuration window, the plugin provides you with the **Run MATLAB Tests** and **Run MATLAB Command** build steps. 
 
 ### Run MATLAB Tests
-This build step uses a default setting to run tests written using the MATLAB Unit Testing Framework and/or Simulink Test. If your source code is organized as files and folders within a MATLAB project, then the plugin includes any test files in the project that have been labeled as **Test**. If your code does not leverage a project or uses a MATLAB release before R2019a, the plugin includes all tests in the current Jenkins workspace including its subfolders. 
+This build step uses a default setting to run tests written using the MATLAB Unit Testing Framework and/or Simulink&reg; Test&trade;. If your source code is organized as files and folders within a MATLAB project, then the plugin includes any test files in the project that have been labeled as **Test**. If your code does not leverage a project or uses a MATLAB release before R2019a, the plugin includes all tests in the current Jenkins workspace including its subfolders. 
 
 If you use a source code management (SCM) system such as Git&trade;, then your project must include the appropriate SCM configuration to check out the code before it can invoke the MATLAB plugin. If you do not use any SCM systems to manage your code, then an additional build step is required to ensure that the code is available in the Jenkins workspace before the build starts.
 
