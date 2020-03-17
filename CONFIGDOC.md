@@ -69,7 +69,7 @@ You can define several axes in the **Configuration Matrix** section. For example
 
 2) In the **Build Environment** section, select **Use MATLAB version** and then specify the locations where MATLAB is installed using the user-defined axis name. (You can skip this step if MATLAB has already been added to the path on the build agents.)
 
-   In this example, **$VERSION** in the **MATLAB root** will be replaced by one axis value per build iteration. 
+   In this example, **$VERSION** in the **MATLAB root** box will be replaced by one axis value per build iteration. 
 
 ![build_environment_matrix](https://user-images.githubusercontent.com/48831250/76800665-87488700-67aa-11ea-9dbd-3c3ab518afa7.png)
 
