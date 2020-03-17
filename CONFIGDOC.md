@@ -40,7 +40,7 @@ To configure the plugin for a freestyle project, specify the location where MATL
   
 ![build_environment](https://user-images.githubusercontent.com/48831250/76798534-23bc5a80-67a6-11ea-9a48-861cbbc7b0ba.png)
   
-2) Add the required build steps:
+2) Add the required build steps in the **Build** section:
    *   If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, select check boxes for the artifacts be generated in the project workspace.
    *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. 
 
@@ -51,30 +51,23 @@ In addition to freestyle projects, the plugin supports [multi-configuration (mat
 
 To configure the plugin for a multi-configuration project, specify the location where MATLAB is installed as well as the required build steps. In addition, add user-defined axes in the **Configuration Matrix** section to specify the duplicating build steps. 
 
-1) Add a user-defined axis in the **Configuration Matrix** to represent the MATLAB versions in the build. Specify the name of the axis in the **Name** field and its values in the **Values** field. Separate the elements in the **Values** field with a space. In this example, four MATLAB versions are specified to run the same set of tests.
+1) Add a user-defined axis in the **Configuration Matrix** section to represent the MATLAB versions in the build. Specify the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. In this example, four MATLAB versions are specified to run the same set of tests.
 
 ![axis_version](https://user-images.githubusercontent.com/48831250/76800706-9a5b5700-67aa-11ea-98f0-25f2b7f3658c.png)
+
+You can specify several axes in the **Configuration Matrix** section. For example, add the **TEST_TAG** axis specifying the possible test tags for a group of tests.
+
 ![axis_version_testtag](https://user-images.githubusercontent.com/48831250/76800736-aa733680-67aa-11ea-86a7-a984d5795e11.png)
 
-
- Add a user-defined axis in the **Configuration Matrix** to represent the MATLAB versions in the build. 
-
-
-Add another user-defined axis using the **Add axis** button. In this example, the **TEST_TAG** axis specifies the possible test tags for a group of test elements.
-
-
-2) In the **Run MATLAB Tests** section of the project, include the user-defined axis name in the **MATLAB root** field to specify the locations where MATLAB is installed. In this example, **$VERSION** will be replaced by one axis value per build step.
+2) In the **Build Environment** section, include the user-defined axis name in the **MATLAB root** box to specify the locations where MATLAB is installed. In this example, **$VERSION** will be replaced by one axis value per build step.
 
 ![build_environment_matrix](https://user-images.githubusercontent.com/48831250/76800665-87488700-67aa-11ea-9dbd-3c3ab518afa7.png)
 
-In the **Run MATLAB Tests** section of the project, use the **VERSION** axis to specify the locations where MATLAB is installed.
-3) Add the required build steps:
+3) Add the required build steps in the **Build** section:
    *   If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, select check boxes for the artifacts be generated in the project workspace.
-   *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. 
+   *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. You can use the user-defined axes to create your commands. For example:
 
 ![run_matlab_command_matrix](https://user-images.githubusercontent.com/48831250/76800855-e3131000-67aa-11ea-99c8-f18b811eea6f.png)
-From the **Test mode** drop-down list, select the **Custom** option. Use the second user-defined axis to create your commands and enter them in the **MATLAB command** field. Then, save your settings and run the build. 
-
 
 **Note:**
 * For a user-defined axis named **VAR**,  **$VAR** and **${VAR}** are both valid formats for accessing the values.
