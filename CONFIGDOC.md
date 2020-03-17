@@ -41,8 +41,8 @@ To configure the plugin for a freestyle project, follow these steps:
 ![build_environment](https://user-images.githubusercontent.com/48831250/76798534-23bc5a80-67a6-11ea-9a48-861cbbc7b0ba.png)
   
 2) Add the required build steps.
-   *   If you add the **Run MATLAB Tests** build step, select check boxes for the artifacts be generated in the project workspace.
-   *   If you add the **Run MATLAB Command** build step, enter your commands in the **Command** box. 
+   *   If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, select check boxes for the artifacts be generated in the project workspace.
+   *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. 
 
 ## Multi-Configuration Project Setup
 In addition to freestyle projects, the Jenkins plugin for MATLAB supports [multi-configuration (matrix) projects](https://wiki.jenkins.io/display/JENKINS/Building+a+matrix+project). Multi-configuration projects are useful when builds include similar steps. For example:
