@@ -1,6 +1,8 @@
 You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-configuration projects. This guide demonstrates how to run MATLAB code on Jenkins, considering a Microsoft&reg; Windows&reg; platform.
 
 -  [Plugin Build Steps](#plugin-build-steps)
+      - [Run MATLAB Tests](#run-matlab-tests)
+      - [Run MATLAB Command](#run-matlab-command)
 -  [Freestyle Project Setup](#freestyle-project-setup)
 -  [Multi-Configuration Project Setup](#multi-configuration-project-setup)
 
