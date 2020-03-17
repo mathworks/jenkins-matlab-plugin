@@ -1,18 +1,20 @@
 You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-configuration projects. This guide demonstrates how to run MATLAB code on Jenkins, considering a Microsoft&reg; Windows&reg; platform.
 
--  [Add MATLAB to System Path](#add-matlab-to-system-path)
+-  [Use MATLAB for Build](#use-matlab-for-build)
 -  [Specify Build Steps](#specify-build-steps)
       - [Run MATLAB Tests](#run-matlab-tests)
       - [Run MATLAB Command](#run-matlab-command)
 -  [Set Up Freestyle Project](#set-up-freestyle-project)
 -  [Set Up Multi-Configuration Project](#set-up-multi-configuration-project)
 
-## Add MATLAB to System Path
+## Use MATLAB for Build
 Once you install the plugin on Jenkins, the **Use MATLAB version** checkbox appears in the **Build Environment** section of the project configuration window.
 
 ![matlab_path](https://user-images.githubusercontent.com/48831250/76883191-1c528b00-6852-11ea-9242-7d143f8a5c46.png)
 
-Select the **Use MATLAB version** checkbox to specify the full path to the MATLAB root folder that should be used for the build. The specified directory in the **MATLAB root** box is prepended to the PATH environment variable, and the matlab.exe file in the bin subdirectory is used to perform the build. You must not leave the **MATLAB root** box blank if no MATLAB directory exists on the path. If you do not select the checkbox or if you leave the text box blank, then the system tries to use the MATLAB directory closest to the top of the system path.
+Select the **Use MATLAB version** checkbox to specify the full path to the MATLAB root folder that should be used for the build. The information in the **MATLAB root** box enables the plugin to prepend MATLAB to the PATH environment variable of the build agent. 
+
+If the build agent already has your desired MATLAB on the path, then you are not required to select the **Use MATLAB version** checkbox. When the checkbox is clear, the plugin uses the MATLAB directory closest to the top of the path. The build fails if the plugin cannot find MATLAB on the path.
 
 ## Specify Build Steps
 When you set up the **Build** section of the project configuration window, the plugin provides you with the **Run MATLAB Tests** and **Run MATLAB Command** build steps. 
@@ -67,9 +69,7 @@ You can define several axes in the **Configuration Matrix** section. For example
 
 ![axis_version_testtag](https://user-images.githubusercontent.com/48831250/76800736-aa733680-67aa-11ea-86a7-a984d5795e11.png)
 
-2) In the **Build Environment** section, select **Use MATLAB version** and then specify the locations where MATLAB is installed using the user-defined axis name. (You can skip this step if MATLAB has already been added to the path on the build agents.)
-
-   In this example, **$VERSION** in the **MATLAB root** box will be replaced by one axis value per build iteration. 
+2) In the **Build Environment** section, select **Use MATLAB version** and then specify the locations where MATLAB is installed using the user-defined axis name. In this example, **$VERSION** in the **MATLAB root** box will be replaced by one axis value per build iteration. 
 
 ![build_environment_matrix](https://user-images.githubusercontent.com/48831250/76800665-87488700-67aa-11ea-9dbd-3c3ab518afa7.png)
 
