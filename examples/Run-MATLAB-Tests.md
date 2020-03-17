@@ -35,7 +35,7 @@ Create a new project and configure it by following these steps:
 
 ![clipboard](https://user-images.githubusercontent.com/48831250/71736069-1980f600-2e1e-11ea-9672-1af6c958d77d.png)
 
-4. In the Jenkins interface, paste the URL into the **Repository URL** box of the **Source Code Management** section. (You also can specify the branch to build in the **Branch Specifier** field.)
+4. In the Jenkins interface, paste the URL into the **Repository URL** box of the **Source Code Management** section. (You also can specify the branch to build in the **Branch Specifier** box.)
 
 ![source_control](https://user-images.githubusercontent.com/48831250/71735877-965fa000-2e1d-11ea-95c4-8b9259308e75.png)
 
