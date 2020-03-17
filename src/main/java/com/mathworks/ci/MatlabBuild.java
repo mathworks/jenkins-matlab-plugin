@@ -76,12 +76,7 @@ public interface MatlabBuild {
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
         String tmpDir = getNodeSpecificTmpFolderPath(workspace);
-        if (launcher.isUnix()) {
-            tmpDir = tmpDir + "/" + uniqueName;
-        } else {
-            tmpDir = tmpDir + "\\" + uniqueName;
-        }
-        return new FilePath(launcher.getChannel(), tmpDir);
+        return new FilePath(launcher.getChannel(), tmpDir+"/"+uniqueName);
     }
 
     default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
