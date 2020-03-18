@@ -26,6 +26,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
 import hudson.FilePath;
 import hudson.matrix.Axis;
 import hudson.matrix.AxisList;
@@ -307,6 +308,20 @@ public class RunMatlabTestsBuilderTest {
 		jenkins.assertLogContains("R2018b completed", build);
 		jenkins.assertBuildStatus(Result.SUCCESS, build);
 	}
+	
+	 /*
+     * Test to verify if MATALB scratch file is generated in workspace.
+     */
+    @Test
+    public void verifyMATLABscratchFileGenerated() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));  
+        project.getBuildWrappersList().add(this.buildWrapper);
+        setAllTestArtifacts(false, testBuilder);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        Assert.assertTrue(matlabRunner.exists());
+    }
 
 
     /*

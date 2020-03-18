@@ -70,23 +70,20 @@ public interface MatlabBuild {
         targetFilePath.chmod(0755);
     }
 
-    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,FilePath workspace)
+    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName, FilePath workspace)
             throws IOException, InterruptedException {
         /*Use of Computer is not recommended as jenkins hygeine for pipeline support
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
-        Computer cmp = workspace.toComputer();
-        String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
-        if (launcher.isUnix()) {
-            tmpDir = tmpDir + "/" + uniqueName;
-        } else {
-            tmpDir = tmpDir + "\\" + uniqueName;
-        }
-        return new FilePath(launcher.getChannel(), tmpDir);
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
+        return new FilePath(launcher.getChannel(), tmpDir+"/"+uniqueName);
     }
 
     default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
         Computer cmp = workspace.toComputer();
+        if (cmp == null) {
+            throw new IOException(Message.getValue("build.workspace.computer.not.found"));
+        }
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
         return tmpDir;
     }
@@ -94,5 +91,4 @@ public interface MatlabBuild {
     default String getUniqueNameForRunnerFile() {
         return UUID.randomUUID().toString();
     }
-
 }
