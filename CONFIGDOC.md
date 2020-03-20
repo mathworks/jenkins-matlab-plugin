@@ -1,109 +1,88 @@
-This guide shows you examples of how to configure the Jenkins&trade; plugin for MATLAB&reg;, considering a Microsoft&reg; Windows&reg; platform.
+You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-configuration projects. This guide demonstrates how to run MATLAB code on Jenkins, considering a Microsoft&reg; Windows&reg; platform.
 
-## Contents
+-  [Use MATLAB for Build](#use-matlab-for-build)
+-  [Specify Build Steps](#specify-build-steps)
+      - [Run MATLAB Tests](#run-matlab-tests)
+      - [Run MATLAB Command](#run-matlab-command)
+-  [Set Up Freestyle Project](#set-up-freestyle-project)
+-  [Set Up Multi-Configuration Project](#set-up-multi-configuration-project)
 
--  [Configure Plugin for Freestyle Project](#configure-plugin-for-freestyle-project)
-	- [Freestyle Project with Automatic Test Mode](#option-1-freestyle-project-with-automatic-test-mode)
-	- [Freestyle Project with Custom Test Mode](#option-2-freestyle-project-with-custom-test-mode)
--  [Configure Plugin for Multi-Configuration Project](#configure-plugin-for-multi-configuration-project)
-	- [Multi-Configuration Project with Automatic Test Mode](#option-1-multi-configuration-project-with-automatic-test-mode)
-	- [Multi-Configuration Project with Custom Test Mode](#option-2-multi-configuration-project-with-custom-test-mode)
-	
-## Configure Plugin for Freestyle Project
-To configure the plugin for a freestyle project, select **Run MATLAB Tests** from the **Add build step** list. Then, enter the value returned by the **matlabroot** function in the **MATLAB root** field.
+## Use MATLAB for Build
+Once you install the plugin on Jenkins, the **Use MATLAB version** checkbox appears in the **Build Environment** section of the project configuration window.
 
-  ![new_add_build_step](https://user-images.githubusercontent.com/47204011/55624172-be54a100-57c2-11e9-9596-52d3a60ee467.png)
-  
-  ![new_enter_matlabroot](https://user-images.githubusercontent.com/51316279/72131234-a5a49780-33a1-11ea-8497-45a1d9161ecf.png)
-  
-### Option 1: Freestyle Project with Automatic Test Mode
-With the Jenkins plugin for MATLAB, you have the option to run your tests in either *automatic* or *custom* mode. The automatic test mode employs a default setting to run tests written using the MATLAB Unit Testing Framework and/or Simulink Test. If your source code is organized as files and folders within a project, the plugin will consider any test files in the project that have been tagged as **Test**. If your code does not leverage a project or uses a MATLAB version prior to R2019a, the plugin will consider all tests in the current Jenkins workspace including the subfolders. 
+![matlab_path](https://user-images.githubusercontent.com/48831250/76883191-1c528b00-6852-11ea-9242-7d143f8a5c46.png)
 
-If you use a source code management (SCM) system such as Git, then your job must include the appropriate SCM configuration to check out the code before it can invoke the MATLAB plugin. If you do not use any SCM systems to manage your code, then an additional build step is required to ensure that the code is available in the Jenkins workspace before the build starts.
+Select the **Use MATLAB version** checkbox to specify the full path to the MATLAB root folder that should be used for the build. The information in the **MATLAB root** box enables the plugin to prepend MATLAB to the PATH environment variable of the build agent. 
 
-The automatic test execution feature of the plugin enables you to generate different types of test artifacts. To publish the test results, you can use these artifacts with other Jenkins plugins. To configure the Jenkins build where MATLAB tests run automatically, follow these steps.
+If the build agent already has your desired MATLAB on the path, then you are not required to select the **Use MATLAB version** checkbox. When the checkbox is clear, the plugin uses the first MATLAB instance it encounters on the path. The build fails if the operating system cannot find MATLAB on the path.
 
-1) From the **Test mode** drop-down list, select the **Automatic** option (**Automatic** is the default testing mode).
-  
-  ![new_select_automatic_option](https://user-images.githubusercontent.com/51316279/72131293-cc62ce00-33a1-11ea-9573-813ac3060790.png)
-  
-2) Select your desired test artifacts.
+## Specify Build Steps
+When you set up the **Build** section of the project configuration window, the plugin provides you with the **Run MATLAB Tests** and **Run MATLAB Command** build steps. 
 
-  ![new_select_all_test_artifacts](https://user-images.githubusercontent.com/51316279/72131319-e3a1bb80-33a1-11ea-99de-aef714bb5300.png)
+### Run MATLAB Tests
+This build step uses a default setting to run tests authored using the MATLAB Unit Testing Framework and/or Simulink&reg; Test&trade;. If your source code is organized as files and folders within a MATLAB project, then the plugin includes any test files in the project that have been labeled as **Test**. If your code does not leverage a MATLAB project or uses a MATLAB release before R2019a, then the plugin includes all tests in the current Jenkins workspace including its subfolders. 
 
-  The selected artifacts will be saved in the **matlabTestArtifacts** folder of the Jenkins workspace.
+If you use a source code management (SCM) system such as Git&trade;, then your project must include the appropriate SCM configuration to check out the code before it can invoke the MATLAB plugin. If you do not use any SCM systems to manage your code, then an additional build step is required to ensure that the code is available in the Jenkins workspace before the build starts.
 
-  ![Workspace01](https://user-images.githubusercontent.com/47204011/55470859-1e621080-5626-11e9-98f2-044144272643.JPG)
-  
-  ![Test_artifacts](https://user-images.githubusercontent.com/51316279/72140084-f625f000-33b5-11ea-8fd6-a4ebde6fcc5f.png)
-  
-  If you do not select any of the test artifact check boxes, the **matlabTestArtifacts** folder will not be created in the workspace. However, tests will still run and potential test failures will fail the build. 
-
-  The **Automatic** test mode results in a MATLAB script file named **runMatlabTests.m** in the Jenkins workspace. The plugin uses this file to run the tests and generate the test artifacts. You can review the contents of the script to understand the testing workflow.
-
-  ![Workspace01](https://user-images.githubusercontent.com/47204011/55470859-1e621080-5626-11e9-98f2-044144272643.JPG)
-
-  **Note:** Producing a PDF test report is not currently supported on MacOS platforms.
-
-### Option 2: Freestyle Project with Custom Test Mode
-This option enables you to develop your custom MATLAB commands for running tests. To configure the Jenkins build where you can customize the MATLAB test execution, follow these steps.
-
-1) From the **Test mode** drop-down list, select the **Custom** option.
-
-  ![new_select_custom](https://user-images.githubusercontent.com/51316279/72131434-31b6bf00-33a2-11ea-99da-a479dd76f826.png)
-
-2) Enter your commands in the **MATLAB command** field. If you specify more than one MATLAB command, use a comma or semicolon to separate the commands. The build will fail if the execution of any command results in an error.
-
-  ![new_custom_runtest_command](https://user-images.githubusercontent.com/47204011/55624949-096fb380-57c5-11e9-8711-98baf91816c0.png)
-
-  **Note:** If you need several MATLAB commands to run your tests, consider writing a MATLAB script or function as part of your repository and executing this script or function instead. Test artifacts are not autogenerated if you choose to run tests using custom MATLAB commands. You can generate your desired test artifacts by configuring the test runner in the script or function that you invoke from the **MATLAB command** field.
-
-  ![new_custom_script_example](https://user-images.githubusercontent.com/47204011/55625021-32904400-57c5-11e9-86b7-478b930796c0.png)
-
-## Configure Plugin for Multi-Configuration Project
-In addition to freestyle projects, the Jenkins plugin for MATLAB supports [multi-configuration (matrix) projects](https://wiki.jenkins.io/display/JENKINS/Building+a+matrix+project). Multi-configuration projects are useful when builds include similar steps, for example when the same test suite should run on different platforms (e.g., Windows, Linux, and Mac) or using several MATLAB versions.
-
-![image](https://user-images.githubusercontent.com/47204011/62458632-0e586a00-b79b-11e9-8611-3671adb8c289.png)
-
-As in a freestyle project, you can run your tests in automatic or custom mode within a multi-configuration project. The configuration requires you to specify the location where MATLAB is installed as well as the test execution mode. You should also add user-defined axes in the **Configuration Matrix** to specify the duplicating build steps. 
-
-### Option 1: Multi-Configuration Project with Automatic Test Mode
-
-To configure the plugin for a matrix build where tests run automatically in multiple MATLAB versions, create a multi-configuration project and follow these steps.
-
-1) Add a user-defined axis in the **Configuration Matrix** to represent the MATLAB versions in the build. Specify the name of the axis in the **Name** field and its values in the **Values** field. Separate the elements in the **Values** field with a space. In this example, four MATLAB versions are specified, which will be used to run the same set of tests.
-
-![image](https://user-images.githubusercontent.com/51316279/72132482-139e8e00-33a5-11ea-9d94-b8381c5dceca.png)
-
-2) In the **Run MATLAB Tests** section of the project, include the user-defined axis name in the **MATLAB root** field to specify the locations where MATLAB is installed. In this example, **$VERSION** will be replaced by one axis value per build step.
-
-![image](https://user-images.githubusercontent.com/51316279/72131571-aee23400-33a2-11ea-8e76-4b36274b9d5b.png)
-
-You can select the test artifact check boxes when tests run automatically. Once you have made your selections, save your settings and run the build.
-
+The **Run MATLAB Tests** build step enables you to easily generate different types of test artifacts. To publish the test results, you can use these artifacts with other Jenkins plugins. The selected artifacts are saved in the **matlabTestArtifacts** folder of the Jenkins workspace. If you do not select any of the test artifact check boxes, the folder is not created. However, the tests still run and test failures fail the build. 
+ 
+![run_matlab_tests](https://user-images.githubusercontent.com/48831250/76800820-d2629a00-67aa-11ea-9fa7-c466e8c17f27.png)
+ 
+The **Run MATLAB Tests** build step produces a MATLAB script file named **runMatlabTests.m** in the Jenkins workspace. The plugin uses this file to run the tests and generate the test artifacts. You can review the contents of the script to understand the testing workflow.
+ 
 **Note:** Producing a PDF test report is not currently supported on MacOS platforms.
+ 
+### Run MATLAB Command
+The **Run MATLAB Command** build step enables you to specify MATLAB commands tailored to your specific needs. For example, you can use this build step to customize your test run or add a different build step to your pipeline.
 
-### Option 2: Multi-Configuration Project with Custom Test Mode
+If you specify more than one MATLAB command, use a comma or semicolon to separate the commands. The build fails if the execution of any command results in an error.
 
-To configure the matrix build where you can customize the MATLAB test execution, create a multi-configuration project and follow these steps.
+![run_matlab_commands](https://user-images.githubusercontent.com/48831250/76801842-d2fc3000-67ac-11ea-9174-0a6485595714.png)
 
-1) Add a user-defined axis in the **Configuration Matrix** to represent the MATLAB versions in the build. 
+If you need to specify several MATLAB commands, consider writing a MATLAB script or function as part of your repository and executing this script or function instead. 
 
-![image](https://user-images.githubusercontent.com/51316279/72132482-139e8e00-33a5-11ea-9d94-b8381c5dceca.png)
+Test artifacts are not autogenerated if you choose to run tests using this build step. You can generate your desired test artifacts by configuring the test runner in the script or function that you invoke from the **Command** box.
 
-2) Add another user-defined axis using the **Add axis** button. In this example, the **TEST_TAG** axis specifies the possible test tags for a group of test elements.
+## Set Up Freestyle Project
+To configure the plugin for a freestyle project, specify the location where MATLAB is installed as well as the required build steps.
 
-![image](https://user-images.githubusercontent.com/51316279/72131623-d6d19780-33a2-11ea-9205-577d6634a1a6.png)
+1) In the **Build Environment** section of the project configuration window, select **Use MATLAB version**. Then, enter the value returned by the **matlabroot** function in the **MATLAB root** box. (You can skip this step if MATLAB has already been added to the path on the build agent.)
 
-3) In the **Run MATLAB Tests** section of the project, use the **VERSION** axis to specify the locations where MATLAB is installed.
+![build_environment](https://user-images.githubusercontent.com/48831250/76798534-23bc5a80-67a6-11ea-9a48-861cbbc7b0ba.png)
+  
+2) Add the required build steps in the **Build** section:
+   *   If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, select check boxes for the artifacts to be generated in the project workspace.
+   *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. 
 
-![image](https://user-images.githubusercontent.com/51316279/72131668-ef41b200-33a2-11ea-9f97-d9476ae0431a.png)
+## Set Up Multi-Configuration Project
+In addition to freestyle projects, the plugin supports [multi-configuration (matrix) projects](https://wiki.jenkins.io/display/JENKINS/Building+a+matrix+project). Multi-configuration projects are useful when builds include similar steps. For example:
+* The same test suite is run on different platforms (Windows, Linux, and Mac).
+* The same test suite is run against different versions of MATLAB.
 
-4) From the **Test mode** drop-down list, select the **Custom** option. Use the second user-defined axis to create your commands and enter them in the **MATLAB command** field. Then, save your settings and run the build. 
+To configure the plugin for a multi-configuration project, specify the locations where MATLAB is installed as well as the required build steps. In addition, add user-defined axes in the **Configuration Matrix** section to specify the duplicating build steps. 
 
-![image](https://user-images.githubusercontent.com/51316279/72131696-04b6dc00-33a3-11ea-876f-5cdff3a027b4.png)
+1) Add a user-defined axis in the **Configuration Matrix** section to represent the MATLAB versions in the build. Specify the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. In this example, four MATLAB versions are specified to run the same set of tests.
 
-**Notes:**
-1) For a user-defined axis named **VAR**,  **$VAR** and **${VAR}** are both valid formats for accessing the values.
+![axis_version](https://user-images.githubusercontent.com/48831250/76800706-9a5b5700-67aa-11ea-98f0-25f2b7f3658c.png)
 
-2) A multi-configuration project creates a separate workspace for each user-defined axis value. If you specify the full paths to where MATLAB is installed as axis values, Jenkins fails to create separate workspaces and fails the build.	
+You can define several axes in the **Configuration Matrix** section. For example, add the TEST_TAG axis specifying the possible test tags for a group of tests.
+
+![axis_version_testtag](https://user-images.githubusercontent.com/48831250/76800736-aa733680-67aa-11ea-86a7-a984d5795e11.png)
+
+2) In the **Build Environment** section, select **Use MATLAB version** and then specify the locations where MATLAB is installed using the user-defined axis name. In this example, **$VERSION** in the **MATLAB root** box will be replaced by one axis value per build iteration. 
+
+![build_environment_matrix](https://user-images.githubusercontent.com/48831250/76800665-87488700-67aa-11ea-9dbd-3c3ab518afa7.png)
+
+3) Add the required build steps in the **Build** section:
+   *   If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, select check boxes for the artifacts to be generated in the project workspace.
+   *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. You can use the user-defined axes to create your commands. For example:
+
+![run_matlab_command_matrix](https://user-images.githubusercontent.com/48831250/76883848-21fca080-6853-11ea-8ad3-89f85b997608.png)
+
+**Note:**
+* For a user-defined axis named **VAR**,  **$VAR** and **${VAR}** are both valid formats for accessing the values.
+
+* A multi-configuration project creates a separate workspace for each user-defined axis value. If you specify the full paths to where MATLAB is installed as axis values, Jenkins fails to create separate workspaces and fails the build.
+
+## See Also
+[Run MATLAB Tests on Jenkins Server](examples/Run-MATLAB-Tests.md)
