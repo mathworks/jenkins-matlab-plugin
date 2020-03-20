@@ -53,6 +53,15 @@
 	  <tag>HEAD</tag>
   </scm>
 
+	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/matrix-project -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>matrix-project</artifactId>
+			<version>1.14</version>
+		</dependency>
+	</dependencies>
+
 	<build>
 		<plugins>
 			<!-- Plugin to download the matlab run scripts and keep it under class 

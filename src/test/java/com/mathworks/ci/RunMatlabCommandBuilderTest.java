@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.junit.After;
 import org.junit.Assert;
@@ -21,6 +23,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import hudson.EnvVars;
+import hudson.matrix.Axis;
+import hudson.matrix.AxisList;
+import hudson.matrix.Combination;
+import hudson.matrix.MatrixBuild;
+import hudson.matrix.MatrixProject;
+import hudson.matrix.MatrixRun;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -233,4 +241,54 @@ public class RunMatlabCommandBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("MATLAB_ROOT", build);
     }
+    
+	/*
+	 * Test to verify if Matrix build fails when MATLAB is not available.
+	 */
+	@Test
+	public void verifyMatrixBuildFails() throws Exception {
+		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+		matrixProject.setAxes(new AxisList(axes));
+		String matlabRoot = getMatlabroot("R2018b");
+		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+		matrixProject.getBuildWrappersList().add(this.buildWrapper);
+
+		scriptBuilder.setMatlabCommand("pwd");
+		matrixProject.getBuildersList().add(scriptBuilder);
+		Map<String, String> vals = new HashMap<String, String>();
+		vals.put("VERSION", "R2018a");
+		Combination c1 = new Combination(vals);
+		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
+		jenkins.assertLogContains("MATLAB_ROOT", build);
+		jenkins.assertBuildStatus(Result.FAILURE, build);
+		vals.put("VERSION", "R2018b");
+		Combination c2 = new Combination(vals);
+		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+		jenkins.assertLogContains("MATLAB_ROOT", build2);
+		jenkins.assertBuildStatus(Result.FAILURE, build2);
+	}
+
+	/*
+	 * Test to verify if Matrix build passes (mock MATLAB).
+	 */
+	@Test
+	public void verifyMatrixBuildPasses() throws Exception {
+		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+		matrixProject.setAxes(new AxisList(axes));
+		String matlabRoot = getMatlabroot("R2018b");
+		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+		matrixProject.getBuildWrappersList().add(this.buildWrapper);
+		RunMatlabCommandBuilderTester tester = new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath,
+				"-positive");
+
+		tester.setMatlabCommand("pwd");
+		matrixProject.getBuildersList().add(tester);
+		MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+
+		jenkins.assertLogContains("R2018a completed", build);
+		jenkins.assertLogContains("R2018b completed", build);
+		jenkins.assertBuildStatus(Result.SUCCESS, build);
+	}
 }
