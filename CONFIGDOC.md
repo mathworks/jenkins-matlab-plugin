@@ -1,4 +1,4 @@
-You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-configuration projects. This guide demonstrates how to run your MATLAB code on Jenkins.
+You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-configuration projects. This guide demonstrates how to run your MATLAB code or Simulink&reg; model on Jenkins.
 
 -  [Use MATLAB for Build](#use-matlab-for-build)
 -  [Specify Build Steps](#specify-build-steps)
@@ -18,8 +18,6 @@ If the build agent already has your desired MATLAB on the path, then you are not
 
 **Note:** The [matlabroot](https://www.mathworks.com/help/matlab/ref/matlabroot.html) function returns the full path to the MATLAB root folder, which depends on the platform, MATLAB version, and installation location. This table shows examples of the root folder path on different platforms. 
 
-Examples
-
 | Platform     | Path to MATLAB Root Folder      |
 |--------------|---------------------------------|
 | Windows&reg; | C:\Program Files\MATLAB\R2019a  |
@@ -30,7 +28,7 @@ Examples
 When you set up the **Build** section of the project configuration window, the plugin provides you with the **Run MATLAB Tests** and **Run MATLAB Command** build steps. 
 
 ### Run MATLAB Tests
-This build step uses a default setting to run tests authored using the MATLAB Unit Testing Framework or Simulink&reg; Test&trade;. If your source code is organized into files and folders within a MATLAB project, then the plugin includes any test files in the project that have been labeled as **Test**. If your code does not leverage a MATLAB project or uses a MATLAB release before R2019a, then the plugin includes all tests in the current Jenkins workspace, including its subfolders. 
+This build step uses a default setting to run tests authored using the MATLAB Unit Testing Framework or Simulink Test&trade;. If your source code is organized into files and folders within a MATLAB project, then the plugin includes any test files in the project that have been labeled as **Test**. If your code does not leverage a MATLAB project or uses a MATLAB release before R2019a, then the plugin includes all tests in the current Jenkins workspace, including its subfolders. 
 
 If you use a source code management (SCM) system such as Git&trade;, then your project must include the appropriate SCM configuration to check out the code before it can invoke the MATLAB plugin. If you do not use any SCM systems to manage your code, then an additional build step is required to ensure that the code is available in the Jenkins workspace before the build starts.
 
@@ -47,7 +45,7 @@ The **Run MATLAB Command** build step enables you to specify MATLAB commands tai
 
 If you specify more than one MATLAB command, use a comma or semicolon to separate the commands. The build fails if the execution of any command results in an error.
 
-![run_matlab_commands](https://user-images.githubusercontent.com/48831250/76801842-d2fc3000-67ac-11ea-9174-0a6485595714.png)
+![run-matlab-command](https://user-images.githubusercontent.com/48831250/79279466-1d400200-7e7c-11ea-9ef5-0d006f100eea.png)
 
 If you need to specify several MATLAB commands, consider writing a MATLAB script or function as part of your repository and executing this script or function instead. 
 
