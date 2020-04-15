@@ -38,7 +38,7 @@ The **Run MATLAB Tests** build step enables you to easily generate different typ
  
 The **Run MATLAB Tests** build step produces a MATLAB script file named **runMatlabTests.m** in the Jenkins workspace. The plugin uses this file to run the tests and generate the test artifacts. You can review the contents of the script to understand the testing workflow.
  
-**Note:** Producing a PDF test report is not currently supported on MacOS platforms.
+**Note:** Producing a PDF test report is not currently supported on Mac platforms.
  
 ### Run MATLAB Command
 The **Run MATLAB Command** build step enables you to specify MATLAB commands tailored to your specific needs. For example, you can use this build step to customize your test run or add a different build step to your pipeline.
