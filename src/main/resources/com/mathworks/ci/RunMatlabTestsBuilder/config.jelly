@@ -2,30 +2,42 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     
 <f:section title="Generate Test Artifacts">
-  	 <f:entry field="pdfReportChkBx">	
-    	<f:checkbox title="PDF test report " name="pdfReportChkBx" checked="${instance.pdfReportChkBx}"/>	
+    <f:optionalBlock name="pdfReportChkBx" title="PDF test report" checked="${instance.pdfReportChkBx}" inline="true">
+  	 <f:entry field="pdfReportFilePath" title="Save PDF report at">	
+    	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
      </f:entry>
-
-	 <f:entry field="tapChkBx">
-    	<f:checkbox title="TAP test results" name="tapChkBx" checked="${instance.tapChkBx}"/>
+    </f:optionalBlock>
+    
+    <f:optionalBlock name="tapChkBx" title="TAP test results" checked="${instance.tapChkBx}" inline="true">   	
+     <f:entry field="tapChkBxFilePath" title="Save TAP report at">	
+    	<f:textbox default="matlabTestArtifacts/taptestresults.tap"/>
      </f:entry>
-     	
-  	  <f:entry field="junitChkBx">
-    	<f:checkbox title="JUnit-style test results" name="junitChkBx" checked="${instance.junitChkBx}"/>
+    </f:optionalBlock>
+     
+    <f:optionalBlock name="junitChkBx" title="JUnit-style test results" checked="${instance.junitChkBx}" inline="true"> 	
+  	  <f:entry field="junitChkBxFilePath" title="Save JUnit-style report at">
+    	<f:textbox default="matlabTestArtifacts/junittestresults.xml"/>
   	  </f:entry>      
-
-  	 <f:entry field="stmResultsChkBx">
-    	<f:checkbox title="Simulink Test Manager results" name="stmResultsChkBx" checked="${instance.stmResultsChkBx}"/>
+    </f:optionalBlock>
+    
+   <f:optionalBlock name="stmResultsChkBx" title="Simulink Test Manager results" checked="${instance.stmResultsChkBx}" inline="true">  
+  	 <f:entry field="stmResultsChkBxFilePath" title="Save Simulink Test Manager results at">
+    	<f:textbox default="matlabTestArtifacts/simulinktestresults.mldatx"/>
      </f:entry>   
+   </f:optionalBlock>
 </f:section>
 
 <f:section title="Generate Coverage Artifacts">
-	 <f:entry field="coberturaChkBx">
-    	<f:checkbox title="Cobertura code coverage" name="coberturaChkBx" checked="${instance.coberturaChkBx}"/>
+   <f:optionalBlock name="coberturaChkBx" title="Cobertura code coverage" checked="${instance.coberturaChkBx}" inline="true">
+	 <f:entry field="coberturaChkBxFilePath" title="Save Cobertura code coverage at">
+    	<f:textbox default="matlabTestArtifacts/cobertura.xml"/>
      </f:entry>
-     	
-  	  <f:entry field="modelCoverageChkBx">
-    	<f:checkbox title="Cobertura model coverage" name="modelCoverageChkBx" checked="${instance.modelCoverageChkBx}"/>
+   </f:optionalBlock>
+   
+   <f:optionalBlock name="modelCoverageChkBx" title="Cobertura model coverage" checked="${instance.modelCoverageChkBx}" inline="true">
+  	  <f:entry field="modelCoverageChkBxFilePath" title="Save Cobertura model coverage at">
+    	<f:textbox default="matlabTestArtifacts/coberturamodelcoverage.xml"/>
   	  </f:entry>  
+   </f:optionalBlock>
 </f:section>
 </j:jelly>

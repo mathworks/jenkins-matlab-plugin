@@ -13,6 +13,7 @@ public class MatlabBuilderConstants {
     
     static final String MATLAB_RUNNER_TARGET_FILE = "Builder.matlab.runner.target.file.name";
     static final String MATLAB_TESTS_RUNNER_TARGET_FILE = "runMatlabTests.m";
+    static final String MATLAB_TESTS_RUNNER_RESOURCE = "com/mathworks/ci/RunMatlabTestsBuilder/runMatlabTests.m";
     static final String MATLAB_RUNNER_RESOURCE = "com/mathworks/ci/MatlabBuilder/runMatlabTests.m";
     static final String AUTOMATIC_OPTION = "RunTestsAutomaticallyOption";
     
@@ -23,6 +24,12 @@ public class MatlabBuilderConstants {
     static final String STM_RESULTS = "'SimulinkTestResults'";
     static final String COBERTURA_CODE_COVERAGE = "'CoberturaCodeCoverage'";
     static final String COBERTURA_MODEL_COVERAGE = "'CoberturaModelCoverage'";
+    static final String PDF_REPORT_PATH = "'PDFReportPath'";
+    static final String TAP_RESULTS_PATH ="'TAPResultsPath'";
+    static final String JUNIT_RESULTS_PATH = "'JUnitResultsPath'";
+    static final String STM_RESULTS_PATH = "'SimulinkTestResultsPath'";
+    static final String COBERTURA_CODE_COVERAGE_PATH = "'CoberturaCodeCoveragePath'";
+    static final String COBERTURA_MODEL_COVERAGE_PATH = "'CoberturaModelCoveragePath'";
     
     // Matlab Runner files 
     static final String BAT_RUNNER_SCRIPT = "run_matlab_command.bat";

@@ -2,22 +2,35 @@
 
 function failed = runMatlabTests(varargin)
 
+
 p = inputParser;
 p.addParameter('PDFReport', false, @islogical);
+p.addParameter('PDFReportPath', 'matlabTestArtifacts/testreport.pdf', @ischar);
 p.addParameter('TAPResults', false, @islogical);
+p.addParameter('TAPResultsPath', 'matlabTestArtifacts/taptestresults.tap', @ischar);
 p.addParameter('JUnitResults', false, @islogical);
+p.addParameter('JUnitResultsPath', 'matlabTestArtifacts/junittestresults.xml', @ischar);
 p.addParameter('SimulinkTestResults', false, @islogical);
+p.addParameter('SimulinkTestResultsPath', 'matlabTestArtifacts/simulinktestresults.mldatx', @ischar);
 p.addParameter('CoberturaCodeCoverage', false, @islogical);
+p.addParameter('CoberturaCodeCoveragePath', 'matlabTestArtifacts/cobertura.xml', @ischar);
 p.addParameter('CoberturaModelCoverage', false, @islogical);
+p.addParameter('CoberturaModelCoveragePath', 'matlabTestArtifacts/coberturamodelcoverage.xml', @ischar);
 
 p.parse(varargin{:});
 
 producePDFReport         = p.Results.PDFReport;
+pdfReportPath            = p.Results.PDFReportPath;
 produceTAP               = p.Results.TAPResults;
+tapReportPath            = p.Results.TAPResultsPath;
 produceJUnit             = p.Results.JUnitResults;
+junitReportPath          = p.Results.JUnitResultsPath;
 exportSTMResults         = p.Results.SimulinkTestResults;
+stmReportPath            = p.Results.SimulinkTestResultsPath;
 produceCobertura         = p.Results.CoberturaCodeCoverage;
+coberturaReportPath      = p.Results.CoberturaCodeCoveragePath;
 produceModelCoverage     = p.Results.CoberturaModelCoverage;
+modelCoveragePath        = p.Results.CoberturaModelCoveragePath;
 
 BASE_VERSION_MATLABUNIT_SUPPORT = '8.1';
 
@@ -32,8 +45,7 @@ suite = getTestSuite();
 import('matlab.unittest.TestRunner');
 runner = TestRunner.withTextOutput;
 
-% Add the requested plugins
-resultsDir = fullfile(pwd, 'matlabTestArtifacts');
+
 
 % Produce JUnit report
 if produceJUnit
@@ -42,8 +54,7 @@ if produceJUnit
         warning('MATLAB:testArtifact:junitReportNotSupported', 'Producing JUnit xml results is not supported in this release.');
     else
         import('matlab.unittest.plugins.XMLPlugin');
-        mkdirIfNeeded(resultsDir)
-        xmlFile = fullfile(resultsDir, 'junittestresults.xml');
+        xmlFile = getFullFileForReport(junitReportPath);
         runner.addPlugin(XMLPlugin.producingJUnitFormat(xmlFile));
     end
 end
@@ -55,12 +66,12 @@ if produceTAP
     if verLessThan('matlab',BASE_VERSION_TAPORIGINALFORMAT_SUPPORT)
         warning('MATLAB:testArtifact:tapReportNotSupported', 'Producing TAP results is not supported in this release.');
     elseif verLessThan('matlab',BASE_VERSION_TAP13_SUPPORT)
-        tapFile = getTapResultFile(resultsDir);
+        tapFile = getTapResultFile(tapReportPath);
         import('matlab.unittest.plugins.TAPPlugin');
         tapPlugin = TAPPlugin.producingOriginalFormat(tapFile);
         runner.addPlugin(tapPlugin);
     else
-        tapFile = getTapResultFile(resultsDir);
+        tapFile = getTapResultFile(tapReportPath);
         import('matlab.unittest.plugins.TAPPlugin');
         tapPlugin = TAPPlugin.producingVersion13(tapFile);
         runner.addPlugin(tapPlugin);
@@ -77,8 +88,7 @@ if produceCobertura
          warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura code coverage results is not supported in this release.');
     else 
         import('matlab.unittest.plugins.CodeCoveragePlugin');
-        mkdirIfNeeded(resultsDir)
-        coverageFile = fullfile(resultsDir, 'cobertura.xml');
+        coverageFile = getFullFileForReport(coberturaReportPath);
         workSpace = fullfile(pwd);
         runner.addPlugin(CodeCoveragePlugin.forFolder(workSpace,'IncludingSubfolders',true,...
         'Producing', CoberturaFormat(coverageFile)));
@@ -93,8 +103,7 @@ if produceModelCoverage
     else 
         import('sltest.plugins.ModelCoveragePlugin');
         
-        mkdirIfNeeded(resultsDir);
-        coverageFile = fullfile(resultsDir, 'coberturamodelcoverage.xml');
+        coverageFile = getFullFileForReport(modelCoveragePath);
         runner.addPlugin(ModelCoveragePlugin('Producing',CoberturaFormat(coverageFile)));
     end
 end
@@ -106,8 +115,8 @@ if exportSTMResults
     if ~stmResultsPluginPresent || ~exportSTMResultsSupported
         issueExportSTMResultsUnsupportedWarning;
     else
-        mkdirIfNeeded(resultsDir);
-        runner.addPlugin(TestManagerResultsPlugin('ExportToFile', getMLDATXFilePath(resultsDir)));
+        stmResultFile = getFullFileForReport(stmReportPath);
+        runner.addPlugin(TestManagerResultsPlugin('ExportToFile', stmResultFile));
         stmResultsPluginAddedToRunner = true;
     end
 end
@@ -120,9 +129,9 @@ if producePDFReport
     elseif ~testReportPluginPresent
         issuePDFReportUnsupportedWarning;
     else
-        mkdirIfNeeded(resultsDir);
+        pdfReportFile = getFullFileForReport(pdfReportPath);
         import('matlab.unittest.plugins.TestReportPlugin');
-        runner.addPlugin(TestReportPlugin.producingPDF(getPDFFilePath(resultsDir)));
+        runner.addPlugin(TestReportPlugin.producingPDF(pdfReportFile));
         
         if ~stmResultsPluginAddedToRunner && stmResultsPluginPresent
             runner.addPlugin(TestManagerResultsPlugin);
@@ -133,11 +142,18 @@ end
 results = runner.run(suite);
 failed = any([results.Failed]);
 
+function fileName = getFullFileForReport(filePath)
+[filepath,name,ext] = fileparts(filePath);
+if (filepath == "")
+    fileName = fullfile(pwd,strcat(name,ext));
+else
+    mkdirIfNeeded(filepath)
+    fileName = fullfile(filepath, strcat(name,ext));
+end
 
 function tapToFile = getTapResultFile(resultsDir)
 import('matlab.unittest.plugins.ToFile');
-mkdirIfNeeded(resultsDir)
-tapFile = fullfile(resultsDir, 'taptestresults.tap');
+tapFile = getFullFileForReport(resultsDir);
 fclose(fopen(tapFile,'w'));
 tapToFile = matlab.unittest.plugins.ToFile(tapFile);
 
@@ -161,12 +177,6 @@ plugin = matlab.unittest.plugins.codecoverage.CoberturaFormat(varargin{:});
 
 function plugin = TestManagerResultsPlugin(varargin)
 plugin = sltest.plugins.TestManagerResultsPlugin(varargin{:});
-
-function filePath = getPDFFilePath(resultsDir)
-filePath = fullfile(resultsDir, 'testreport.pdf');
-
-function filePath = getMLDATXFilePath(resultsDir)
-filePath = fullfile(resultsDir, 'simulinktestresults.mldatx');
 
 function tf = testReportPluginPresent
 BASE_VERSION_REPORTPLUGIN_SUPPORT = '9.2'; % R2017a 

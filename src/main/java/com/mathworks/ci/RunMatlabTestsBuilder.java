@@ -43,11 +43,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private int buildResult;
     private EnvVars env;
     private boolean tapChkBx;
+    private String tapChkBxFilePath;
     private boolean junitChkBx;
+    private String junitChkBxFilePath;
     private boolean coberturaChkBx;
+    private String coberturaChkBxFilePath;
     private boolean stmResultsChkBx;
+    private String stmResultsChkBxFilePath;
     private boolean modelCoverageChkBx;
+    private String modelCoverageChkBxFilePath;
     private boolean pdfReportChkBx;
+    private String pdfReportFilePath;
+    private List<String> inputArgs = new ArrayList<String>();
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
@@ -63,54 +70,109 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public void setTapChkBx(boolean tapChkBx) {
         this.tapChkBx = tapChkBx;
     }
+    
+    @DataBoundSetter
+    public void setTapChkBxFilePath(String tapChkBxFilePath) {
+        this.tapChkBxFilePath = tapChkBxFilePath;
+    }
 
     @DataBoundSetter
     public void setJunitChkBx(boolean junitChkBx) {
         this.junitChkBx = junitChkBx;
+    }
+    
+    @DataBoundSetter
+    public void setJunitChkBxFilePath(String junitChkBxFilePath) {
+        this.junitChkBxFilePath = junitChkBxFilePath;
     }
 
     @DataBoundSetter
     public void setCoberturaChkBx(boolean coberturaChkBx) {
         this.coberturaChkBx = coberturaChkBx;
     }
+    
+    @DataBoundSetter
+    public void setCoberturaChkBxFilePath(String coberturaChkBxFilePath) {
+        this.coberturaChkBxFilePath = coberturaChkBxFilePath;
+    }
 
     @DataBoundSetter
     public void setStmResultsChkBx(boolean stmResultsChkBx) {
         this.stmResultsChkBx = stmResultsChkBx;
+    }
+    
+    @DataBoundSetter
+    public void setStmResultsChkBxFilePath(String stmResultsChkBxFilePath) {
+        this.stmResultsChkBxFilePath = stmResultsChkBxFilePath;
     }
 
     @DataBoundSetter
     public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
         this.modelCoverageChkBx = modelCoverageChkBx;
     }
+    
+    @DataBoundSetter
+    public void setModelCoverageChkBxFilePath(String modelCoverageChkBxFilePath) {
+        this.modelCoverageChkBxFilePath = modelCoverageChkBxFilePath;
+    }
 
     @DataBoundSetter
     public void setPdfReportChkBx(boolean pdfReportChkBx) {
         this.pdfReportChkBx = pdfReportChkBx;
     }
+    
+    @DataBoundSetter
+    public void setPdfReportFilePath(String pdfReportFilePath) {
+        this.pdfReportFilePath = pdfReportFilePath;
+    }
+
 
     public boolean getTapChkBx() {
         return tapChkBx;
+    }
+    
+    public String getTapChkBxFilePath() {
+        return tapChkBxFilePath;
     }
 
     public boolean getJunitChkBx() {
         return junitChkBx;
     }
+    
+    public String getJunitChkBxFilePath() {
+        return junitChkBxFilePath;
+    }
 
     public boolean getCoberturaChkBx() {
         return coberturaChkBx;
+    }
+    
+    public String getCoberturaChkBxFilePath() {
+        return coberturaChkBxFilePath;
     }
 
     public boolean getStmResultsChkBx() {
         return stmResultsChkBx;
     }
+    
+    public String getStmResultsChkBxFilePath() {
+        return stmResultsChkBxFilePath;
+    }
 
     public boolean getModelCoverageChkBx() {
         return modelCoverageChkBx;
     }
+    
+    public String getModelCoverageChkBxFilePath() {
+        return modelCoverageChkBxFilePath;
+    }
 
     public boolean getPdfReportChkBx() {
         return pdfReportChkBx;
+    }
+    
+    public String getPdfReportFilePath() {
+        return this.pdfReportFilePath;
     }
 
     private void setEnv(EnvVars env) {
@@ -291,7 +353,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
+            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
                     MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
             return matlabLauncher.join();
         } catch (Exception e) {
@@ -316,19 +378,40 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     // Concatenate the input arguments
     private String getInputArguments() {
-        final String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getPdfReportChkBx();
-        final String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTapChkBx();
-        final String junitResults =
-                MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
-        final String stmResults =
-                MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
-        final String coberturaCodeCoverage =
-                MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
-        final String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + ","
-                + this.getModelCoverageChkBx();
-        final String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
-                + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
 
-        return inputArgsToMatlabFcn;
+        addInputArgs(MatlabBuilderConstants.PDF_REPORT, getPdfReportChkBx(),
+                MatlabBuilderConstants.PDF_REPORT_PATH, getPdfReportFilePath());
+
+        addInputArgs(MatlabBuilderConstants.TAP_RESULTS, getTapChkBx(),
+                MatlabBuilderConstants.TAP_RESULTS_PATH, getTapChkBxFilePath());
+
+        addInputArgs(MatlabBuilderConstants.JUNIT_RESULTS, getJunitChkBx(),
+                MatlabBuilderConstants.JUNIT_RESULTS_PATH, getJunitChkBxFilePath());
+
+        addInputArgs(MatlabBuilderConstants.STM_RESULTS, getStmResultsChkBx(),
+                MatlabBuilderConstants.STM_RESULTS_PATH, getStmResultsChkBxFilePath());
+
+        addInputArgs(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE, getCoberturaChkBx(),
+                MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH, getCoberturaChkBxFilePath());
+
+        addInputArgs(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE, getModelCoverageChkBx(),
+                MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH,
+                getModelCoverageChkBxFilePath());
+
+        if (inputArgs.isEmpty()) {
+            return "";
+        }
+
+        return String.join(",", inputArgs);
+    }
+
+    private void addInputArgs(String chkbxName, boolean chkBxValue, String reportName,
+            String reportPath) {
+        if (chkBxValue) {
+            inputArgs.add(chkbxName + "," + chkBxValue);
+            if (!reportPath.isEmpty()) {
+                inputArgs.add(reportName + "," + "'" + reportPath + "'");
+            }
+        }
     }
 }
