@@ -96,12 +96,6 @@ public class UseMatlabVersionBuildWrapperTest {
         this.buildWrapper.setMatlabRootFolder("/test/MATLAB/R2019a");
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilderTester buildTester = new RunMatlabTestsBuilderTester("","");
-        buildTester.setCoberturaChkBx(false);
-        buildTester.setJunitChkBx(false);
-        buildTester.setModelCoverageChkBx(false);
-        buildTester.setPdfReportChkBx(false);
-        buildTester.setTapChkBx(false);
-        buildTester.setStmResultsChkBx(false);   
         project.getBuildersList().add(buildTester);
         project.scheduleBuild2(0).get();
         Assert.assertTrue("Build does not have MATLAB build environment", this.buildWrapper.getMatlabRootFolder().equalsIgnoreCase(buildTester.getMatlabRoot()));

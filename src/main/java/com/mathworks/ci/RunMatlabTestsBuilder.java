@@ -42,23 +42,23 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    private boolean tapChkBx;
-    private String tapChkBxFilePath;
-    private boolean junitChkBx;
-    private String junitChkBxFilePath;
-    private boolean coberturaChkBx;
-    private String coberturaChkBxFilePath;
-    private boolean stmResultsChkBx;
-    private String stmResultsChkBxFilePath;
-    private boolean modelCoverageChkBx;
-    private String modelCoverageChkBxFilePath;
-    private boolean pdfReportChkBx;
+    private TapChkBx tapChkBx;
+    private JunitChkBx junitChkBx;   
+    private CoberturaChkBx coberturaChkBx;
+    private StmResultsChkBx stmResultsChkBx; 
+    private ModelCovChkBx modelCoverageChkBx; 
+    private PdfChkBx pdfReportChkBx;
+    private String tapReportFilePath;
     private String pdfReportFilePath;
+    private String junitReportFilePath;
+    private String coberturaReportFilePath;
+    private String stmResultsFilePath;
+    private String modelCoverageFilePath;
+   
     private List<String> inputArgs = new ArrayList<String>();
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
-
 
     }
 
@@ -67,114 +67,129 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
 
     @DataBoundSetter
-    public void setTapChkBx(boolean tapChkBx) {
+    public void setTapChkBx(TapChkBx tapChkBx) {
         this.tapChkBx = tapChkBx;
-    }
-    
+        this.tapReportFilePath = this.tapChkBx.getTapReportFilePath();
+    } 
+   
     @DataBoundSetter
-    public void setTapChkBxFilePath(String tapChkBxFilePath) {
-        this.tapChkBxFilePath = tapChkBxFilePath;
-    }
-
-    @DataBoundSetter
-    public void setJunitChkBx(boolean junitChkBx) {
+    public void setJunitChkBx(JunitChkBx junitChkBx) {
         this.junitChkBx = junitChkBx;
+        this.junitReportFilePath = this.junitChkBx.getJunitReportFilePath();
     }
     
     @DataBoundSetter
-    public void setJunitChkBxFilePath(String junitChkBxFilePath) {
-        this.junitChkBxFilePath = junitChkBxFilePath;
-    }
-
-    @DataBoundSetter
-    public void setCoberturaChkBx(boolean coberturaChkBx) {
+    public void setCoberturaChkBx(CoberturaChkBx coberturaChkBx) {
         this.coberturaChkBx = coberturaChkBx;
+        this.coberturaReportFilePath = this.coberturaChkBx.getCoberturaReportFilePath();
     }
     
     @DataBoundSetter
-    public void setCoberturaChkBxFilePath(String coberturaChkBxFilePath) {
-        this.coberturaChkBxFilePath = coberturaChkBxFilePath;
-    }
-
-    @DataBoundSetter
-    public void setStmResultsChkBx(boolean stmResultsChkBx) {
+    public void setStmResultsChkBx(StmResultsChkBx stmResultsChkBx) {
         this.stmResultsChkBx = stmResultsChkBx;
+        this.stmResultsFilePath = this.stmResultsChkBx.getStmResultsFilePath();
     }
     
     @DataBoundSetter
-    public void setStmResultsChkBxFilePath(String stmResultsChkBxFilePath) {
-        this.stmResultsChkBxFilePath = stmResultsChkBxFilePath;
-    }
-
-    @DataBoundSetter
-    public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
+    public void setModelCoverageChkBx(ModelCovChkBx modelCoverageChkBx) {
         this.modelCoverageChkBx = modelCoverageChkBx;
-    }
-    
-    @DataBoundSetter
-    public void setModelCoverageChkBxFilePath(String modelCoverageChkBxFilePath) {
-        this.modelCoverageChkBxFilePath = modelCoverageChkBxFilePath;
-    }
+        this.modelCoverageFilePath = this.modelCoverageChkBx.getModelCoverageFilePath();
+    }   
 
     @DataBoundSetter
-    public void setPdfReportChkBx(boolean pdfReportChkBx) {
+    public void setPdfReportChkBx(PdfChkBx pdfReportChkBx) {
         this.pdfReportChkBx = pdfReportChkBx;
+        this.pdfReportFilePath = this.pdfReportChkBx.getPdfReportFilePath();
     }
     
-    @DataBoundSetter
-    public void setPdfReportFilePath(String pdfReportFilePath) {
-        this.pdfReportFilePath = pdfReportFilePath;
+    public String getTapReportFilePath() {
+        return this.tapReportFilePath;
+    }      
+    public boolean getIsPdfChecked() {
+        if(this.pdfReportChkBx != null) {
+            return true;
+        }
+        return false;
     }
-
-
-    public boolean getTapChkBx() {
-        return tapChkBx;
-    }
-    
-    public String getTapChkBxFilePath() {
-        return tapChkBxFilePath;
-    }
-
-    public boolean getJunitChkBx() {
-        return junitChkBx;
+    public TapChkBx getTapChkBx() {
+        return this.tapChkBx;
     }
     
-    public String getJunitChkBxFilePath() {
-        return junitChkBxFilePath;
-    }
-
-    public boolean getCoberturaChkBx() {
-        return coberturaChkBx;
-    }
-    
-    public String getCoberturaChkBxFilePath() {
-        return coberturaChkBxFilePath;
-    }
-
-    public boolean getStmResultsChkBx() {
-        return stmResultsChkBx;
+    public boolean getIsTapChecked() {
+        if(this.tapChkBx != null) {
+            return true;
+        }
+        return false;
     }
     
-    public String getStmResultsChkBxFilePath() {
-        return stmResultsChkBxFilePath;
-    }
-
-    public boolean getModelCoverageChkBx() {
-        return modelCoverageChkBx;
+    public JunitChkBx getJunitChkBx() {
+        return this.junitChkBx;
     }
     
-    public String getModelCoverageChkBxFilePath() {
-        return modelCoverageChkBxFilePath;
+    public String getJunitReportFilePath() {
+        return this.junitReportFilePath;
     }
-
-    public boolean getPdfReportChkBx() {
-        return pdfReportChkBx;
+    
+    public boolean getIsJunitChecked() {
+        if(this.junitChkBx != null) {
+            return true;
+        }
+        return false;
+    }
+    
+    public CoberturaChkBx getCoberturaChkBx() {
+        return this.coberturaChkBx;
+    }
+    
+    public String getCoberturaReportFilePath() {
+        return this.coberturaReportFilePath;
+    }
+    
+    public boolean getIsCoberturaChecked() {
+        if(this.coberturaChkBx != null) {
+            return true;
+        }
+        return false;
+    }
+      
+    public StmResultsChkBx getStmResultsChkBx() {
+        return this.stmResultsChkBx;
+    } 
+    
+    public String getStmResultsFilePath() {
+        return stmResultsFilePath;
+    }
+    
+    public boolean getIsStmChecked() {
+        if(this.stmResultsChkBx != null) {
+            return true;
+        }
+        return false;
+    }
+   
+    public ModelCovChkBx getModelCoverageChkBx() {
+        return this.modelCoverageChkBx;
+    }
+    
+    public String getModelCoverageFilePath() {
+        return modelCoverageFilePath;
+    }
+    
+    public boolean getIsModelCovChecked() {
+        if(this.modelCoverageChkBx != null) {
+            return true;
+        }
+        return false;
+    }
+    
+    public PdfChkBx getPdfReportChkBx() {
+        return this.pdfReportChkBx;
     }
     
     public String getPdfReportFilePath() {
         return this.pdfReportFilePath;
-    }
-
+    }  
+    
     private void setEnv(EnvVars env) {
         this.env = env;
     }
@@ -223,10 +238,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
 
 
-        public FormValidation doCheckCoberturaChkBx(@QueryParameter boolean coberturaChkBx) {
+        public FormValidation doCheckCoberturaChkBxFilePath(@QueryParameter String coberturaChkBxFilePath) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            if (coberturaChkBx) {
+            if(!coberturaChkBxFilePath.isEmpty()) {
                 listOfCheckMethods.add(chkCoberturaSupport);
             }
             return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
@@ -252,12 +267,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
             return FormValidation.ok();
         };
-
-        public FormValidation doCheckModelCoverageChkBx(
-                @QueryParameter boolean modelCoverageChkBx) {
+                
+        public FormValidation doCheckModelCoverageChkBxFilePath(
+                @QueryParameter String modelCoverageChkBxFilePath) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            if (modelCoverageChkBx) {
+            if (!modelCoverageChkBxFilePath.isEmpty()) {
                 listOfCheckMethods.add(chkModelCoverageSupport);
             }
             return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
@@ -284,10 +299,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return FormValidation.ok();
         };
 
-        public FormValidation doCheckStmResultsChkBx(@QueryParameter boolean stmResultsChkBx) {
+        public FormValidation doCheckStmResultsChkBxFilePath(@QueryParameter String stmResultsChkBxFilePath) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
-            if (stmResultsChkBx) {
+            if (!stmResultsChkBxFilePath.isEmpty()) {
                 listOfCheckMethods.add(chkSTMResultsSupport);
             }
             return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
@@ -378,25 +393,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     // Concatenate the input arguments
     private String getInputArguments() {
-
-        addInputArgs(MatlabBuilderConstants.PDF_REPORT, getPdfReportChkBx(),
-                MatlabBuilderConstants.PDF_REPORT_PATH, getPdfReportFilePath());
-
-        addInputArgs(MatlabBuilderConstants.TAP_RESULTS, getTapChkBx(),
-                MatlabBuilderConstants.TAP_RESULTS_PATH, getTapChkBxFilePath());
-
-        addInputArgs(MatlabBuilderConstants.JUNIT_RESULTS, getJunitChkBx(),
-                MatlabBuilderConstants.JUNIT_RESULTS_PATH, getJunitChkBxFilePath());
-
-        addInputArgs(MatlabBuilderConstants.STM_RESULTS, getStmResultsChkBx(),
-                MatlabBuilderConstants.STM_RESULTS_PATH, getStmResultsChkBxFilePath());
-
-        addInputArgs(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE, getCoberturaChkBx(),
-                MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH, getCoberturaChkBxFilePath());
-
-        addInputArgs(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE, getModelCoverageChkBx(),
-                MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH,
-                getModelCoverageChkBxFilePath());
+        addInputArgs(MatlabBuilderConstants.PDF_REPORT_PATH, getPdfReportFilePath());
+        addInputArgs(MatlabBuilderConstants.TAP_RESULTS_PATH, getTapReportFilePath());
+        addInputArgs(MatlabBuilderConstants.JUNIT_RESULTS_PATH, getJunitReportFilePath());
+        addInputArgs(MatlabBuilderConstants.STM_RESULTS_PATH, getStmResultsFilePath());
+        addInputArgs(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH,
+                getCoberturaReportFilePath());
+        addInputArgs(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH,
+                getModelCoverageFilePath());
 
         if (inputArgs.isEmpty()) {
             return "";
@@ -404,14 +408,129 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         return String.join(",", inputArgs);
     }
-
-    private void addInputArgs(String chkbxName, boolean chkBxValue, String reportName,
-            String reportPath) {
-        if (chkBxValue) {
-            inputArgs.add(chkbxName + "," + chkBxValue);
-            if (!reportPath.isEmpty()) {
-                inputArgs.add(reportName + "," + "'" + reportPath + "'");
-            }
+    
+    private void addInputArgs(String reportName, String reportPath) {
+        if (reportPath != null) {
+            inputArgs.add(reportName + "," + "'" + reportPath + "'");
         }
     }
+
+    /*
+     * Classes for each optional block in jelly file.This is restriction from Stapler architecture
+     * when we use <f:optionalBlock> as it creates a object for each block in JSON. This could be
+     * simplified by using inline=true attribute of <f:optionalBlock> however it has some abrupt UI
+     * scrolling issue on click and also some esthetic issue like broken gray side bar appears.Some
+     * discussion about this on Jenkins forum
+     * https://groups.google.com/forum/#!searchin/jenkinsci-dev/OptionalBlock$20action$20class%
+     * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
+     * 
+     */
+    public class PdfChkBx {
+        String pdfReportFilePath;
+
+        @DataBoundConstructor
+        public PdfChkBx() {
+            
+        }
+
+        @DataBoundSetter
+        public void setPdfReportFilePath(String pdfReportFilePath) {
+            this.pdfReportFilePath = pdfReportFilePath;
+        }
+
+        public String getPdfReportFilePath() {
+            return this.pdfReportFilePath;
+        }
+    }
+
+    public class TapChkBx {
+        String tapReportFilePath;
+
+        @DataBoundConstructor
+        public TapChkBx() {
+
+        }
+
+        @DataBoundSetter
+        public void setTapReportFilePath(String tapReportFilePath) {
+            this.tapReportFilePath = tapReportFilePath;
+        }
+
+        public String getTapReportFilePath() {
+            return tapReportFilePath;
+        }
+    }
+
+    public class JunitChkBx {
+        String junitReportFilePath;
+
+        @DataBoundConstructor
+        public JunitChkBx() {
+
+        }
+
+        @DataBoundSetter
+        public void setJunitReportFilePath(String junitReportFilePath) {
+            this.junitReportFilePath = junitReportFilePath;
+        }
+
+        public String getJunitReportFilePath() {
+            return this.junitReportFilePath;
+        }
+    }
+
+    public class CoberturaChkBx {
+        String coberturaReportFilePath;
+
+        @DataBoundConstructor
+        public CoberturaChkBx() {
+
+        }
+
+        @DataBoundSetter
+        public void setCoberturaReportFilePath(String coberturaReportFilePath) {
+            this.coberturaReportFilePath = coberturaReportFilePath;
+        }
+
+        public String getCoberturaReportFilePath() {
+            return this.coberturaReportFilePath;
+        }
+    }
+
+    public class StmResultsChkBx {
+        String stmResultsFilePath;
+
+        @DataBoundConstructor
+        public StmResultsChkBx() {
+
+        }
+
+        @DataBoundSetter
+        public void setStmResultsFilePath(String stmResultsFilePath) {
+            this.stmResultsFilePath = stmResultsFilePath;
+        }
+
+        public String getStmResultsFilePath() {
+            return stmResultsFilePath;
+        }
+    }
+
+    public class ModelCovChkBx {
+        String modelCoverageFilePath;
+
+        @DataBoundConstructor
+        public ModelCovChkBx() {
+
+        }
+
+        @DataBoundSetter
+        public void setModelCoverageFilePath(String modelCoverageFilePath) {
+            this.modelCoverageFilePath = modelCoverageFilePath;
+        }
+
+        public String getModelCoverageFilePath() {
+            return modelCoverageFilePath;
+        }
+    }
+    
 }

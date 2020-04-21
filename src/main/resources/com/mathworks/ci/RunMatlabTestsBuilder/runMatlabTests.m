@@ -4,32 +4,21 @@ function failed = runMatlabTests(varargin)
 
 
 p = inputParser;
-p.addParameter('PDFReport', false, @islogical);
-p.addParameter('PDFReportPath', 'matlabTestArtifacts/testreport.pdf', @ischar);
-p.addParameter('TAPResults', false, @islogical);
-p.addParameter('TAPResultsPath', 'matlabTestArtifacts/taptestresults.tap', @ischar);
-p.addParameter('JUnitResults', false, @islogical);
-p.addParameter('JUnitResultsPath', 'matlabTestArtifacts/junittestresults.xml', @ischar);
-p.addParameter('SimulinkTestResults', false, @islogical);
-p.addParameter('SimulinkTestResultsPath', 'matlabTestArtifacts/simulinktestresults.mldatx', @ischar);
-p.addParameter('CoberturaCodeCoverage', false, @islogical);
-p.addParameter('CoberturaCodeCoveragePath', 'matlabTestArtifacts/cobertura.xml', @ischar);
-p.addParameter('CoberturaModelCoverage', false, @islogical);
-p.addParameter('CoberturaModelCoveragePath', 'matlabTestArtifacts/coberturamodelcoverage.xml', @ischar);
+p.addParameter('PDFReportPath', '', @ischar);
+p.addParameter('TAPResultsPath', '', @ischar);
+p.addParameter('JUnitResultsPath', '', @ischar);
+p.addParameter('SimulinkTestResultsPath', '', @ischar);
+p.addParameter('CoberturaCodeCoveragePath', '', @ischar);
+p.addParameter('CoberturaModelCoveragePath', '', @ischar);
 
 p.parse(varargin{:});
 
-producePDFReport         = p.Results.PDFReport;
+
 pdfReportPath            = p.Results.PDFReportPath;
-produceTAP               = p.Results.TAPResults;
 tapReportPath            = p.Results.TAPResultsPath;
-produceJUnit             = p.Results.JUnitResults;
 junitReportPath          = p.Results.JUnitResultsPath;
-exportSTMResults         = p.Results.SimulinkTestResults;
 stmReportPath            = p.Results.SimulinkTestResultsPath;
-produceCobertura         = p.Results.CoberturaCodeCoverage;
 coberturaReportPath      = p.Results.CoberturaCodeCoveragePath;
-produceModelCoverage     = p.Results.CoberturaModelCoverage;
 modelCoveragePath        = p.Results.CoberturaModelCoveragePath;
 
 BASE_VERSION_MATLABUNIT_SUPPORT = '8.1';
@@ -48,7 +37,7 @@ runner = TestRunner.withTextOutput;
 
 
 % Produce JUnit report
-if produceJUnit
+if ~isempty(junitReportPath)
     BASE_VERSION_JUNIT_SUPPORT = '8.6';
     if verLessThan('matlab',BASE_VERSION_JUNIT_SUPPORT)
         warning('MATLAB:testArtifact:junitReportNotSupported', 'Producing JUnit xml results is not supported in this release.');
@@ -60,7 +49,7 @@ if produceJUnit
 end
 
 % Produce TAP report
-if produceTAP
+if ~isempty(tapReportPath)
     BASE_VERSION_TAPORIGINALFORMAT_SUPPORT = '8.3';
     BASE_VERSION_TAP13_SUPPORT = '9.1';
     if verLessThan('matlab',BASE_VERSION_TAPORIGINALFORMAT_SUPPORT)
@@ -81,7 +70,7 @@ end
 
 % Produce Cobertura report (Cobertura report generation is not supported
 % below R17a) 
-if produceCobertura 
+if ~isempty(coberturaReportPath) 
     BASE_VERSION_COBERTURA_SUPPORT = '9.3';
     
     if verLessThan('matlab',BASE_VERSION_COBERTURA_SUPPORT)
@@ -96,7 +85,7 @@ if produceCobertura
 end
 
 % Produce Cobertura model coverage report (Not supported below R2018b) 
-if produceModelCoverage
+if ~isempty(modelCoveragePath)
     if ~exist('sltest.plugins.ModelCoveragePlugin', 'class') || ~coberturaModelCoverageSupported
         warning('MATLAB:testArtifact:cannotGenerateModelCoverageReport', ...
                 'Unable to generate Cobertura model coverage report. To generate the report, use a Simulink Coverage license with MATLAB R2018b or a newer release.');
@@ -111,7 +100,7 @@ end
 stmResultsPluginAddedToRunner = false;
 
 % Save Simulink Test Manager results in MLDATX format (Not supported below R2019a)
-if exportSTMResults
+if ~isempty(stmReportPath)
     if ~stmResultsPluginPresent || ~exportSTMResultsSupported
         issueExportSTMResultsUnsupportedWarning;
     else
@@ -122,7 +111,7 @@ if exportSTMResults
 end
 
 % Produce PDF test report (Not supported on MacOS platforms and below R2017a)
-if producePDFReport
+if ~isempty(pdfReportPath)
     if ismac
         warning('MATLAB:testArtifact:unSupportedPlatform', ...
             'Producing a PDF test report is not currently supported on MacOS platforms.');
