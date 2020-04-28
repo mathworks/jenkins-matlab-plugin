@@ -1,27 +1,14 @@
 package com.mathworks.ci;
 
-/**
- * Copyright 2019-2020 The MathWorks, Inc.
- * 
- * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate
- * selected test artifacts.
- * 
- */
-
-
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import com.mathworks.ci.UseMatlabVersionBuildWrapper.UseMatlabVersionDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -33,8 +20,6 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.FormValidation;
-import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -202,8 +187,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
 
-        MatlabReleaseInfo rel;
-
         // Overridden Method used to show the text under build dropdown
         @Override
         public String getDisplayName() {
@@ -227,116 +210,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public boolean isApplicable(
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
-        }
-
-
-        /*
-         * Validation for Test artifact generator checkBoxes
-         */
-
-        // Get the MATLAB root entered in build wrapper descriptor
-
-
-
-        public FormValidation doCheckCoberturaChkBxFilePath(@QueryParameter String coberturaChkBxFilePath) {
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
-            if(!coberturaChkBxFilePath.isEmpty()) {
-                listOfCheckMethods.add(chkCoberturaSupport);
-            }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
-        }
-
-        Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
-            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
-            rel = new MatlabReleaseInfo(matlabRootPath);
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if (!resolver.hasVariablePattern()) {
-                try {
-                    if (rel.verLessThan(
-                            MatlabBuilderConstants.BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
-                        return FormValidation.warning(
-                                Message.getValue("Builder.matlab.cobertura.support.warning"));
-                    }
-                } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-                }
-            }
-
-
-            return FormValidation.ok();
-        };
-                
-        public FormValidation doCheckModelCoverageChkBxFilePath(
-                @QueryParameter String modelCoverageChkBxFilePath) {
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
-            if (!modelCoverageChkBxFilePath.isEmpty()) {
-                listOfCheckMethods.add(chkModelCoverageSupport);
-            }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
-        }
-
-        Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
-            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
-            rel = new MatlabReleaseInfo(matlabRootPath);
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if (!resolver.hasVariablePattern()) {
-                try {
-                    if (rel.verLessThan(
-                            MatlabBuilderConstants.BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
-                        return FormValidation.warning(
-                                Message.getValue("Builder.matlab.modelcoverage.support.warning"));
-                    }
-                } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-                }
-            }
-
-
-            return FormValidation.ok();
-        };
-
-        public FormValidation doCheckStmResultsChkBxFilePath(@QueryParameter String stmResultsChkBxFilePath) {
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
-            if (!stmResultsChkBxFilePath.isEmpty()) {
-                listOfCheckMethods.add(chkSTMResultsSupport);
-            }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
-        }
-
-        Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
-            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
-            rel = new MatlabReleaseInfo(matlabRootPath);
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if (!resolver.hasVariablePattern()) {
-                try {
-                    if (rel.verLessThan(
-                            MatlabBuilderConstants.BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
-                        return FormValidation.warning(Message
-                                .getValue("Builder.matlab.exportstmresults.support.warning"));
-                    }
-                } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-                }
-            }
-            return FormValidation.ok();
-        };
-
-        // Method to get the MatlabRoot value from Build wrapper class.
-        public static String getMatlabRoot() {
-            try {
-                return Jenkins.getInstance().getDescriptorByType(UseMatlabVersionDescriptor.class)
-                        .getMatlabRootFolder();
-            } catch (Exception e) {
-                // For any exception during getMatlabRootFolder() operation, return matlabRoot as
-                // NULL.
-                return null;
-            }
         }
     }
 
@@ -425,8 +298,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
-    public class PdfChkBx {
-        String pdfReportFilePath;
+    public static class PdfChkBx {
+        private String pdfReportFilePath;
 
         @DataBoundConstructor
         public PdfChkBx() {
@@ -443,8 +316,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    public class TapChkBx {
-        String tapReportFilePath;
+    public static class TapChkBx {
+        private String tapReportFilePath;
 
         @DataBoundConstructor
         public TapChkBx() {
@@ -461,8 +334,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    public class JunitChkBx {
-        String junitReportFilePath;
+    public static class JunitChkBx {
+        private String junitReportFilePath;
 
         @DataBoundConstructor
         public JunitChkBx() {
@@ -479,8 +352,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    public class CoberturaChkBx {
-        String coberturaReportFilePath;
+    public static class CoberturaChkBx {
+        private String coberturaReportFilePath;
 
         @DataBoundConstructor
         public CoberturaChkBx() {
@@ -497,8 +370,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    public class StmResultsChkBx {
-        String stmResultsFilePath;
+    public static class StmResultsChkBx {
+        private String stmResultsFilePath;
 
         @DataBoundConstructor
         public StmResultsChkBx() {
@@ -515,8 +388,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    public class ModelCovChkBx {
-        String modelCoverageFilePath;
+    public static class ModelCovChkBx {
+        private String modelCoverageFilePath;
 
         @DataBoundConstructor
         public ModelCovChkBx() {
