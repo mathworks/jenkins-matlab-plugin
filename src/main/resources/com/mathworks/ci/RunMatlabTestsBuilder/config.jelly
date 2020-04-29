@@ -3,25 +3,25 @@
     
 <f:section title="Generate Test Artifacts">
     <f:optionalBlock name="pdfReportChkBx" field="pdfReportChkBx" title="PDF test report" checked="${instance.isPdfChecked}">
-  	 <f:entry field="pdfReportFilePath" title="File location ">	
+  	 <f:entry field="pdfReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
      </f:entry>
     </f:optionalBlock>
      
     <f:optionalBlock name="tapChkBx" field="tapChkBx" title="TAP test results" checked="${instance.isTapChecked}">   	
-     <f:entry field="tapReportFilePath" title="File location ">	
+     <f:entry field="tapReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/taptestresults.tap"/>
      </f:entry>
     </f:optionalBlock>
      
     <f:optionalBlock name="junitChkBx" field="junitChkBx" title="JUnit-style test results" checked="${instance.isJunitChecked}"> 	
-  	  <f:entry field="junitReportFilePath" title="File location ">
+  	  <f:entry field="junitReportFilePath" title="File path: ">
     	<f:textbox default="matlabTestArtifacts/junittestresults.xml"/>
   	  </f:entry>      
     </f:optionalBlock>
     
    <f:optionalBlock name="stmResultsChkBx" field="stmResultsChkBx" title="Simulink Test Manager results" checked="${instance.isStmChecked}">  
-  	 <f:entry field="stmResultsFilePath" title="File location ">
+  	 <f:entry field="stmResultsFilePath" title="File path: ">
     	<f:textbox default="matlabTestArtifacts/simulinktestresults.mldatx"/>
      </f:entry>   
    </f:optionalBlock>
@@ -30,13 +30,13 @@
 
 <f:section title="Generate Coverage Artifacts">
    <f:optionalBlock name="coberturaChkBx" field="coberturaChkBx" title="Cobertura code coverage" checked="${instance.isCoberturaChecked}">
-	 <f:entry field="coberturaReportFilePath" title="File location ">
+	 <f:entry field="coberturaReportFilePath" title="File path: ">
     	<f:textbox default="matlabTestArtifacts/cobertura.xml"/>
      </f:entry>
    </f:optionalBlock>
    
    <f:optionalBlock name="modelCoverageChkBx" field="modelCoverageChkBx" title="Cobertura model coverage" checked="${instance.isModelCovChecked}">
-  	  <f:entry field="modelCoverageFilePath" title="File location ">
+  	  <f:entry field="modelCoverageFilePath" title="File path: ">
   	  <f:textbox default="matlabTestArtifacts/modelcoverage.xml"/>
   	  </f:entry>
    </f:optionalBlock>
