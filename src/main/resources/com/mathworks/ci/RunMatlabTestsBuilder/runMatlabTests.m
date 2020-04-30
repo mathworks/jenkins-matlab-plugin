@@ -2,14 +2,15 @@
 
 function failed = runMatlabTests(varargin)
 
-
 p = inputParser;
-p.addParameter('PDFReportPath', '', @ischar);
-p.addParameter('TAPResultsPath', '', @ischar);
-p.addParameter('JUnitResultsPath', '', @ischar);
-p.addParameter('SimulinkTestResultsPath', '', @ischar);
-p.addParameter('CoberturaCodeCoveragePath', '', @ischar);
-p.addParameter('CoberturaModelCoveragePath', '', @ischar);
+validationFcn = @(c)ischar(c) && (isempty(c) || isrow(c));
+
+p.addParameter('PDFReportPath', '', validationFcn);
+p.addParameter('TAPResultsPath', '', validationFcn);
+p.addParameter('JUnitResultsPath', '', validationFcn);
+p.addParameter('SimulinkTestResultsPath', '', validationFcn);
+p.addParameter('CoberturaCodeCoveragePath', '', validationFcn);
+p.addParameter('CoberturaModelCoveragePath', '', validationFcn);
 
 p.parse(varargin{:});
 
@@ -43,8 +44,8 @@ if ~isempty(junitReportPath)
         warning('MATLAB:testArtifact:junitReportNotSupported', 'Producing JUnit xml results is not supported in this release.');
     else
         import('matlab.unittest.plugins.XMLPlugin');
-        xmlFile = getFullFileForReport(junitReportPath);
-        runner.addPlugin(XMLPlugin.producingJUnitFormat(xmlFile));
+        preparePath(junitReportPath);
+        runner.addPlugin(XMLPlugin.producingJUnitFormat(junitReportPath));
     end
 end
 
@@ -77,10 +78,10 @@ if ~isempty(coberturaReportPath)
          warning('MATLAB:testArtifact:coberturaReportNotSupported', 'Producing Cobertura code coverage results is not supported in this release.');
     else 
         import('matlab.unittest.plugins.CodeCoveragePlugin');
-        coverageFile = getFullFileForReport(coberturaReportPath);
+        preparePath(coberturaReportPath);
         workSpace = fullfile(pwd);
         runner.addPlugin(CodeCoveragePlugin.forFolder(workSpace,'IncludingSubfolders',true,...
-        'Producing', CoberturaFormat(coverageFile)));
+        'Producing', CoberturaFormat(coberturaReportPath)));
     end
 end
 
@@ -92,8 +93,8 @@ if ~isempty(modelCoveragePath)
     else 
         import('sltest.plugins.ModelCoveragePlugin');
         
-        coverageFile = getFullFileForReport(modelCoveragePath);
-        runner.addPlugin(ModelCoveragePlugin('Producing',CoberturaFormat(coverageFile)));
+        preparePath(modelCoveragePath);
+        runner.addPlugin(ModelCoveragePlugin('Producing',CoberturaFormat(modelCoveragePath)));
     end
 end
 
@@ -104,8 +105,8 @@ if ~isempty(stmReportPath)
     if ~stmResultsPluginPresent || ~exportSTMResultsSupported
         issueExportSTMResultsUnsupportedWarning;
     else
-        stmResultFile = getFullFileForReport(stmReportPath);
-        runner.addPlugin(TestManagerResultsPlugin('ExportToFile', stmResultFile));
+        preparePath(stmReportPath);
+        runner.addPlugin(TestManagerResultsPlugin('ExportToFile', stmReportPath));
         stmResultsPluginAddedToRunner = true;
     end
 end
@@ -118,9 +119,9 @@ if ~isempty(pdfReportPath)
     elseif ~testReportPluginPresent
         issuePDFReportUnsupportedWarning;
     else
-        pdfReportFile = getFullFileForReport(pdfReportPath);
+        preparePath(pdfReportPath);
         import('matlab.unittest.plugins.TestReportPlugin');
-        runner.addPlugin(TestReportPlugin.producingPDF(pdfReportFile));
+        runner.addPlugin(TestReportPlugin.producingPDF(pdfReportPath));
         
         if ~stmResultsPluginAddedToRunner && stmResultsPluginPresent
             runner.addPlugin(TestManagerResultsPlugin);
@@ -131,20 +132,18 @@ end
 results = runner.run(suite);
 failed = any([results.Failed]);
 
-function fileName = getFullFileForReport(filePath)
-[filepath,name,ext] = fileparts(filePath);
-if (filepath == "")
-    fileName = fullfile(pwd,strcat(name,ext));
-else
-    mkdirIfNeeded(filepath)
-    fileName = fullfile(filepath, strcat(name,ext));
+function preparePath(path)
+dir = fileparts(path);
+dirExists = isempty(dir) || exist(dir,'dir') == 7;
+if ~dirExists		
+    mkdir(dir);		    
 end
 
 function tapToFile = getTapResultFile(resultsDir)
 import('matlab.unittest.plugins.ToFile');
-tapFile = getFullFileForReport(resultsDir);
-fclose(fopen(tapFile,'w'));
-tapToFile = matlab.unittest.plugins.ToFile(tapFile);
+preparePath(resultsDir);
+fclose(fopen(resultsDir,'w'));
+tapToFile = matlab.unittest.plugins.ToFile(resultsDir);
 
 function suite = getTestSuite()
 import('matlab.unittest.TestSuite');
@@ -153,12 +152,6 @@ if verLessThan('matlab',BASE_VERSION_TESTSUITE_SUPPORT)
     suite = matlab.unittest.TestSuite.fromFolder(pwd,'IncludingSubfolders',true);
 else
     suite = testsuite(pwd,'IncludeSubfolders',true);
-end
-
-
-function mkdirIfNeeded(dir)
-if exist(dir,'dir') ~= 7
-    mkdir(dir);
 end
 
 function plugin = CoberturaFormat(varargin)

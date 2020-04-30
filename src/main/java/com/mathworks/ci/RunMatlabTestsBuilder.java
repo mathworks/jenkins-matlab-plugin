@@ -1,5 +1,13 @@
 package com.mathworks.ci;
 
+/** 
+ * Copyright 2019-2020 The MathWorks, Inc.  
+ *  
+ * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate   
+ * selected test artifacts. 
+ *  
+ */
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -142,7 +150,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     } 
     
     public String getStmResultsFilePath() {
-        return stmResultsFilePath;
+        return this.stmResultsFilePath;
     }
     
     public boolean getIsStmChecked() {
