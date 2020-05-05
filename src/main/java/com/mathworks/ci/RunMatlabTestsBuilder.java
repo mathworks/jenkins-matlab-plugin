@@ -10,6 +10,7 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.FilenameUtils;
@@ -48,7 +49,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private String stmResultsFilePath;
     private String modelCoverageFilePath;
    
-    private List<String> inputArgs = new ArrayList<String>();
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
@@ -235,28 +235,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     // Concatenate the input arguments
     private String getInputArguments() {
 
-        if (getPdfReportArtifact() != null) {
-            getPdfReportArtifact().addFilePathArgTo(inputArgs);
-        }
+        final List<String> inputArgs = new ArrayList<String>();
+        final List<Artifact> artifactList =
+                new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
+                        getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
+                        getModelCoverageArtifact()));
 
-        if (getTapArtifact() != null) {
-            getTapArtifact().addFilePathArgTo(inputArgs);
-        }
-
-        if (getJunitArtifact() != null) {
-            getJunitArtifact().addFilePathArgTo(inputArgs);
-        }
-
-        if (getStmResultsArtifact() != null) {
-            getStmResultsArtifact().addFilePathArgTo(inputArgs);
-        }
-
-        if (getCoberturaArtifact() != null) {
-            getCoberturaArtifact().addFilePathArgTo(inputArgs);
-        }
-
-        if (getModelCoverageArtifact() != null) {
-            getModelCoverageArtifact().addFilePathArgTo(inputArgs);
+        for (Artifact artifact : artifactList) {
+            addInputArgs(artifact, inputArgs);
         }
 
         if (inputArgs.isEmpty()) {
@@ -266,7 +252,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return String.join(",", inputArgs);
     }
 
-
+    public void addInputArgs(Artifact artifactType, List<String> inputArgs) {
+        if (artifactType != null) {
+            artifactType.addFilePathArgTo(inputArgs);
+        }
+    }
+    
+    
     /*
      * Classes for each optional block in jelly file.This is restriction from Stapler architecture
      * when we use <f:optionalBlock> as it creates a object for each block in JSON. This could be
@@ -277,7 +269,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
-    public static class PdfArtifact {
+    public static class PdfArtifact implements Artifact {
         private String pdfReportFilePath;
 
         @DataBoundConstructor
@@ -293,14 +285,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getPdfReportFilePath() {
             return this.pdfReportFilePath;
         }
-
+        
+        @Override
         public void addFilePathArgTo(List<String> inputArgs) {
             inputArgs.add(MatlabBuilderConstants.PDF_REPORT_PATH + "," + "'"
                     + getPdfReportFilePath() + "'");
         }
     }
 
-    public static class TapArtifact {
+    public static class TapArtifact implements Artifact {
         private String tapReportFilePath;
 
         @DataBoundConstructor
@@ -317,13 +310,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return tapReportFilePath;
         }
 
+        @Override
         public void addFilePathArgTo(List<String> inputArgs) {
             inputArgs.add(MatlabBuilderConstants.TAP_RESULTS_PATH + "," + "'"
                     + getTapReportFilePath() + "'");
         }
     }
 
-    public static class JunitArtifact {
+    public static class JunitArtifact implements Artifact {
         private String junitReportFilePath;
 
         @DataBoundConstructor
@@ -340,13 +334,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return this.junitReportFilePath;
         }
 
+        @Override
         public void addFilePathArgTo(List<String> inputArgs) {
             inputArgs.add(MatlabBuilderConstants.JUNIT_RESULTS_PATH + "," + "'"
                     + getJunitReportFilePath() + "'");
         }
     }
 
-    public static class CoberturaArtifact {
+    public static class CoberturaArtifact implements Artifact {
         private String coberturaReportFilePath;
 
         @DataBoundConstructor
@@ -363,13 +358,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return this.coberturaReportFilePath;
         }
 
+        @Override
         public void addFilePathArgTo(List<String> inputArgs) {
             inputArgs.add(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH + "," + "'"
                     + getCoberturaReportFilePath() + "'");
         }
     }
 
-    public static class StmResultsArtifact {
+    public static class StmResultsArtifact implements Artifact{
         private String stmResultsFilePath;
 
         @DataBoundConstructor
@@ -386,13 +382,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return stmResultsFilePath;
         }
 
+        @Override
         public void addFilePathArgTo(List<String> inputArgs) {
             inputArgs.add(MatlabBuilderConstants.STM_RESULTS_PATH + "," + "'"
                     + getStmResultsFilePath() + "'");
         }
     }
 
-    public static class ModelCovArtifact {
+    public static class ModelCovArtifact implements Artifact {
         private String modelCoverageFilePath;
 
         @DataBoundConstructor
@@ -409,9 +406,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return modelCoverageFilePath;
         }
 
+        @Override
         public void addFilePathArgTo(List<String> inputArgs) {
             inputArgs.add(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH + "," + "'"
                     + getModelCoverageFilePath() + "'");
         }
     }
+    
+    public interface Artifact {
+        public void addFilePathArgTo(List<String> inputArgs);
+    }
+    
 }
