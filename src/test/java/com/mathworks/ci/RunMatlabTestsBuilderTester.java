@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nonnull;
-import org.codehaus.groovy.vmplugin.v5.JUnit4Utils;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
@@ -28,12 +27,12 @@ import net.sf.json.JSONObject;
 
 public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
 
-    private TapChkBx tapChkBx;
-    private JunitChkBx junitChkBx;
-    private CoberturaChkBx coberturaChkBx;
-    private StmResultsChkBx stmResultsChkBx;
-    private ModelCovChkBx modelCoverageChkBx;
-    private PdfChkBx pdfReportChkBx;
+    private TapArtifact tapChkBx;
+    private JunitArtifact junitChkBx;
+    private CoberturaArtifact coberturaChkBx;
+    private StmResultsArtifact stmResultsChkBx;
+    private ModelCovArtifact modelCoverageChkBx;
+    private PdfArtifact pdfReportChkBx;
     private EnvVars env;
     private int buildResult;
     private MatlabReleaseInfo matlabRel;
@@ -55,56 +54,56 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
 
 
     @DataBoundSetter
-    public void setTapChkBx(TapChkBx tapChkBx) {
+    public void setTapChkBx(TapArtifact tapChkBx) {
         this.tapChkBx = tapChkBx;
     }
 
     @DataBoundSetter
-    public void setJunitChkBx(JunitChkBx junitChkBx) {
+    public void setJunitChkBx(JunitArtifact junitChkBx) {
         this.junitChkBx = junitChkBx;
     }
 
     @DataBoundSetter
-    public void setCoberturaChkBx(CoberturaChkBx coberturaChkBx) {
+    public void setCoberturaChkBx(CoberturaArtifact coberturaChkBx) {
         this.coberturaChkBx = coberturaChkBx;
     }
 
     @DataBoundSetter
-    public void setStmResultsChkBx(StmResultsChkBx stmResultsChkBx) {
+    public void setStmResultsChkBx(StmResultsArtifact stmResultsChkBx) {
         this.stmResultsChkBx = stmResultsChkBx;
     }
 
     @DataBoundSetter
-    public void setModelCoverageChkBx(ModelCovChkBx modelCoverageChkBx) {
+    public void setModelCoverageChkBx(ModelCovArtifact modelCoverageChkBx) {
         this.modelCoverageChkBx = modelCoverageChkBx;
     }
 
     @DataBoundSetter
-    public void setPdfReportChkBx(PdfChkBx pdfReportChkBx) {
+    public void setPdfReportChkBx(PdfArtifact pdfReportChkBx) {
         this.pdfReportChkBx = pdfReportChkBx;
     }
 
-    public TapChkBx getTapChkBx() {
+    public TapArtifact getTapChkBx() {
         return tapChkBx;
     }
 
-    public JunitChkBx getJunitChkBx() {
+    public JunitArtifact getJunitChkBx() {
         return junitChkBx;
     }
 
-    public CoberturaChkBx getCoberturaChkBx() {
+    public CoberturaArtifact getCoberturaChkBx() {
         return coberturaChkBx;
     }
 
-    public StmResultsChkBx getStmResultsChkBx() {
+    public StmResultsArtifact getStmResultsChkBx() {
         return stmResultsChkBx;
     }
 
-    public ModelCovChkBx getModelCoverageChkBx() {
+    public ModelCovArtifact getModelCoverageChkBx() {
         return modelCoverageChkBx;
     }
 
-    public PdfChkBx getPdfReportChkBx() {
+    public PdfArtifact getPdfReportChkBx() {
         return pdfReportChkBx;
     }
 

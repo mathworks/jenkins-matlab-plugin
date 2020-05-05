@@ -27,12 +27,12 @@ import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
-import com.mathworks.ci.RunMatlabTestsBuilder.CoberturaChkBx;
-import com.mathworks.ci.RunMatlabTestsBuilder.JunitChkBx;
-import com.mathworks.ci.RunMatlabTestsBuilder.ModelCovChkBx;
-import com.mathworks.ci.RunMatlabTestsBuilder.PdfChkBx;
-import com.mathworks.ci.RunMatlabTestsBuilder.StmResultsChkBx;
-import com.mathworks.ci.RunMatlabTestsBuilder.TapChkBx;
+import com.mathworks.ci.RunMatlabTestsBuilder.CoberturaArtifact;
+import com.mathworks.ci.RunMatlabTestsBuilder.JunitArtifact;
+import com.mathworks.ci.RunMatlabTestsBuilder.ModelCovArtifact;
+import com.mathworks.ci.RunMatlabTestsBuilder.PdfArtifact;
+import com.mathworks.ci.RunMatlabTestsBuilder.StmResultsArtifact;
+import com.mathworks.ci.RunMatlabTestsBuilder.TapArtifact;
 import hudson.FilePath;
 import hudson.matrix.Axis;
 import hudson.matrix.AxisList;
@@ -229,14 +229,14 @@ public class RunMatlabTestsBuilderTest {
     public void verifySpecificTestArtifactsParameters() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilder.TapChkBx tap = new TapChkBx();
+        RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact();
         tap.setTapReportFilePath("mytap/report.tap");
 
-        RunMatlabTestsBuilder.StmResultsChkBx stmResults = new StmResultsChkBx();
+        RunMatlabTestsBuilder.StmResultsArtifact stmResults = new StmResultsArtifact();
         stmResults.setStmResultsFilePath("mystm/results.mldatx");
 
-        testBuilder.setTapChkBx(tap);
-        testBuilder.setStmResultsChkBx(stmResults);
+        testBuilder.setTapArtifact(tap);
+        testBuilder.setStmResultsArtifact(stmResults);
 
 
         project.getBuildersList().add(this.testBuilder);
@@ -256,19 +256,19 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        HtmlCheckBoxInput tapChkBx = page.getElementByName("tapChkBx");
-        HtmlCheckBoxInput pdfReportChkBx = page.getElementByName("pdfReportChkBx");
-        HtmlCheckBoxInput junitChkBx = page.getElementByName("junitChkBx");
-        HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("stmResultsChkBx");
-        HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaChkBx");
-        HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("modelCoverageChkBx");
+        HtmlCheckBoxInput tapArtifact = page.getElementByName("tapArtifact");
+        HtmlCheckBoxInput pdfReportArtifact = page.getElementByName("pdfReportArtifact");
+        HtmlCheckBoxInput junitArtifact = page.getElementByName("junitArtifact");
+        HtmlCheckBoxInput stmResultsArtifact = page.getElementByName("stmResultsArtifact");
+        HtmlCheckBoxInput coberturaArtifact = page.getElementByName("coberturaArtifact");
+        HtmlCheckBoxInput modelCoverageArtifact = page.getElementByName("modelCoverageArtifact");
         
-        tapChkBx.click();
-        pdfReportChkBx.click();
-        junitChkBx.click();
-        stmResultsChkBx.click();
-        coberturaChkBx.click();
-        modelCoverageChkBx.click();
+        tapArtifact.click();
+        pdfReportArtifact.click();
+        junitArtifact.click();
+        stmResultsArtifact.click();
+        coberturaArtifact.click();
+        modelCoverageArtifact.click();
         Thread.sleep(2000);
         
         WebAssert.assertTextPresent(page,"matlabTestArtifacts/taptestresults.tap");
@@ -287,30 +287,30 @@ public class RunMatlabTestsBuilderTest {
     public void verifyAllTestArtifactsParameters() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilder.TapChkBx tap = new TapChkBx();
+        RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact();
         tap.setTapReportFilePath("mytap/report.tap");
         
-        RunMatlabTestsBuilder.PdfChkBx pdf = new PdfChkBx();
+        RunMatlabTestsBuilder.PdfArtifact pdf = new PdfArtifact();
         pdf.setPdfReportFilePath("mypdf/report.pdf");
         
-        RunMatlabTestsBuilder.JunitChkBx junit = new JunitChkBx();
+        RunMatlabTestsBuilder.JunitArtifact junit = new JunitArtifact();
         junit.setJunitReportFilePath("myjunit/report.xml");
         
-        RunMatlabTestsBuilder.CoberturaChkBx cobertura = new CoberturaChkBx();
+        RunMatlabTestsBuilder.CoberturaArtifact cobertura = new CoberturaArtifact();
         cobertura.setCoberturaReportFilePath("mycobertura/report.xml");
         
-        RunMatlabTestsBuilder.ModelCovChkBx modelCov = new ModelCovChkBx();
+        RunMatlabTestsBuilder.ModelCovArtifact modelCov = new ModelCovArtifact();
         modelCov.setModelCoverageFilePath("mymodel/report.xml");
         
-        RunMatlabTestsBuilder.StmResultsChkBx stmResults = new StmResultsChkBx();
+        RunMatlabTestsBuilder.StmResultsArtifact stmResults = new StmResultsArtifact();
         stmResults.setStmResultsFilePath("mystm/results.mldatx");
         
-        testBuilder.setTapChkBx(tap);
-        testBuilder.setPdfReportChkBx(pdf);
-        testBuilder.setJunitChkBx(junit);
-        testBuilder.setCoberturaChkBx(cobertura);
-        testBuilder.setModelCoverageChkBx(modelCov);
-        testBuilder.setStmResultsChkBx(stmResults);
+        testBuilder.setTapArtifact(tap);
+        testBuilder.setPdfReportArtifact(pdf);
+        testBuilder.setJunitArtifact(junit);
+        testBuilder.setCoberturaArtifact(cobertura);
+        testBuilder.setModelCoverageArtifact(modelCov);
+        testBuilder.setStmResultsArtifact(stmResults);
         
         
         project.getBuildersList().add(this.testBuilder);

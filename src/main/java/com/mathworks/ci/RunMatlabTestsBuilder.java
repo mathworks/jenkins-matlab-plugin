@@ -35,12 +35,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    private TapChkBx tapChkBx;
-    private JunitChkBx junitChkBx;   
-    private CoberturaChkBx coberturaChkBx;
-    private StmResultsChkBx stmResultsChkBx; 
-    private ModelCovChkBx modelCoverageChkBx; 
-    private PdfChkBx pdfReportChkBx;
+    private TapArtifact tapArtifact;
+    private JunitArtifact junitArtifact;   
+    private CoberturaArtifact coberturaArtifact;
+    private StmResultsArtifact stmResultsArtifact; 
+    private ModelCovArtifact modelCoverageArtifact; 
+    private PdfArtifact pdfReportArtifact;
     private String tapReportFilePath;
     private String pdfReportFilePath;
     private String junitReportFilePath;
@@ -60,123 +60,83 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
 
     @DataBoundSetter
-    public void setTapChkBx(TapChkBx tapChkBx) {
-        this.tapChkBx = tapChkBx;
-        this.tapReportFilePath = this.tapChkBx.getTapReportFilePath();
+    public void setTapArtifact(TapArtifact tapArtifact) {
+        this.tapArtifact = tapArtifact;
+        this.tapReportFilePath = this.tapArtifact.getTapReportFilePath();
     } 
    
     @DataBoundSetter
-    public void setJunitChkBx(JunitChkBx junitChkBx) {
-        this.junitChkBx = junitChkBx;
-        this.junitReportFilePath = this.junitChkBx.getJunitReportFilePath();
+    public void setJunitArtifact(JunitArtifact junitArtifact) {
+        this.junitArtifact = junitArtifact;
+        this.junitReportFilePath = this.junitArtifact.getJunitReportFilePath();
     }
     
     @DataBoundSetter
-    public void setCoberturaChkBx(CoberturaChkBx coberturaChkBx) {
-        this.coberturaChkBx = coberturaChkBx;
-        this.coberturaReportFilePath = this.coberturaChkBx.getCoberturaReportFilePath();
+    public void setCoberturaArtifact(CoberturaArtifact coberturaArtifact) {
+        this.coberturaArtifact = coberturaArtifact;
+        this.coberturaReportFilePath = this.coberturaArtifact.getCoberturaReportFilePath();
     }
     
     @DataBoundSetter
-    public void setStmResultsChkBx(StmResultsChkBx stmResultsChkBx) {
-        this.stmResultsChkBx = stmResultsChkBx;
-        this.stmResultsFilePath = this.stmResultsChkBx.getStmResultsFilePath();
+    public void setStmResultsArtifact(StmResultsArtifact stmResultsArtifact) {
+        this.stmResultsArtifact = stmResultsArtifact;
+        this.stmResultsFilePath = this.stmResultsArtifact.getStmResultsFilePath();
     }
     
     @DataBoundSetter
-    public void setModelCoverageChkBx(ModelCovChkBx modelCoverageChkBx) {
-        this.modelCoverageChkBx = modelCoverageChkBx;
-        this.modelCoverageFilePath = this.modelCoverageChkBx.getModelCoverageFilePath();
+    public void setModelCoverageArtifact(ModelCovArtifact modelCoverageArtifact) {
+        this.modelCoverageArtifact = modelCoverageArtifact;
+        this.modelCoverageFilePath = this.modelCoverageArtifact.getModelCoverageFilePath();
     }   
 
     @DataBoundSetter
-    public void setPdfReportChkBx(PdfChkBx pdfReportChkBx) {
-        this.pdfReportChkBx = pdfReportChkBx;
-        this.pdfReportFilePath = this.pdfReportChkBx.getPdfReportFilePath();
+    public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
+        this.pdfReportArtifact = pdfReportArtifact;
+        this.pdfReportFilePath = this.pdfReportArtifact.getPdfReportFilePath();
     }
     
     public String getTapReportFilePath() {
         return this.tapReportFilePath;
     }      
-    public boolean getIsPdfChecked() {
-        if(this.pdfReportChkBx != null) {
-            return true;
-        }
-        return false;
-    }
-    public TapChkBx getTapChkBx() {
-        return this.tapChkBx;
-    }
     
-    public boolean getIsTapChecked() {
-        if(this.tapChkBx != null) {
-            return true;
-        }
-        return false;
+    public TapArtifact getTapArtifact() {
+        return this.tapArtifact;
     }
-    
-    public JunitChkBx getJunitChkBx() {
-        return this.junitChkBx;
+        
+    public JunitArtifact getJunitArtifact() {
+        return this.junitArtifact;
     }
     
     public String getJunitReportFilePath() {
         return this.junitReportFilePath;
     }
-    
-    public boolean getIsJunitChecked() {
-        if(this.junitChkBx != null) {
-            return true;
-        }
-        return false;
-    }
-    
-    public CoberturaChkBx getCoberturaChkBx() {
-        return this.coberturaChkBx;
+        
+    public CoberturaArtifact getCoberturaArtifact() {
+        return this.coberturaArtifact;
     }
     
     public String getCoberturaReportFilePath() {
         return this.coberturaReportFilePath;
     }
-    
-    public boolean getIsCoberturaChecked() {
-        if(this.coberturaChkBx != null) {
-            return true;
-        }
-        return false;
-    }
-      
-    public StmResultsChkBx getStmResultsChkBx() {
-        return this.stmResultsChkBx;
+          
+    public StmResultsArtifact getStmResultsArtifact() {
+        return this.stmResultsArtifact;
     } 
     
     public String getStmResultsFilePath() {
         return this.stmResultsFilePath;
     }
-    
-    public boolean getIsStmChecked() {
-        if(this.stmResultsChkBx != null) {
-            return true;
-        }
-        return false;
-    }
-   
-    public ModelCovChkBx getModelCoverageChkBx() {
-        return this.modelCoverageChkBx;
+       
+    public ModelCovArtifact getModelCoverageArtifact() {
+        return this.modelCoverageArtifact;
     }
     
     public String getModelCoverageFilePath() {
         return modelCoverageFilePath;
     }
     
-    public boolean getIsModelCovChecked() {
-        if(this.modelCoverageChkBx != null) {
-            return true;
-        }
-        return false;
-    }
-    
-    public PdfChkBx getPdfReportChkBx() {
-        return this.pdfReportChkBx;
+    public PdfArtifact getPdfReportArtifact() {
+        return this.pdfReportArtifact;
     }
     
     public String getPdfReportFilePath() {
@@ -274,14 +234,30 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     // Concatenate the input arguments
     private String getInputArguments() {
-        addInputArgs(MatlabBuilderConstants.PDF_REPORT_PATH, getPdfReportFilePath());
-        addInputArgs(MatlabBuilderConstants.TAP_RESULTS_PATH, getTapReportFilePath());
-        addInputArgs(MatlabBuilderConstants.JUNIT_RESULTS_PATH, getJunitReportFilePath());
-        addInputArgs(MatlabBuilderConstants.STM_RESULTS_PATH, getStmResultsFilePath());
-        addInputArgs(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH,
-                getCoberturaReportFilePath());
-        addInputArgs(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH,
-                getModelCoverageFilePath());
+
+        if (getPdfReportArtifact() != null) {
+            getPdfReportArtifact().addFilePathArgTo(inputArgs);
+        }
+
+        if (getTapArtifact() != null) {
+            getTapArtifact().addFilePathArgTo(inputArgs);
+        }
+
+        if (getJunitArtifact() != null) {
+            getJunitArtifact().addFilePathArgTo(inputArgs);
+        }
+
+        if (getStmResultsArtifact() != null) {
+            getStmResultsArtifact().addFilePathArgTo(inputArgs);
+        }
+
+        if (getCoberturaArtifact() != null) {
+            getCoberturaArtifact().addFilePathArgTo(inputArgs);
+        }
+
+        if (getModelCoverageArtifact() != null) {
+            getModelCoverageArtifact().addFilePathArgTo(inputArgs);
+        }
 
         if (inputArgs.isEmpty()) {
             return "";
@@ -289,12 +265,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         return String.join(",", inputArgs);
     }
-    
-    private void addInputArgs(String reportName, String reportPath) {
-        if (reportPath != null) {
-            inputArgs.add(reportName + "," + "'" + reportPath + "'");
-        }
-    }
+
 
     /*
      * Classes for each optional block in jelly file.This is restriction from Stapler architecture
@@ -306,12 +277,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
-    public static class PdfChkBx {
+    public static class PdfArtifact {
         private String pdfReportFilePath;
 
         @DataBoundConstructor
-        public PdfChkBx() {
-            
+        public PdfArtifact() {
+
         }
 
         @DataBoundSetter
@@ -322,13 +293,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getPdfReportFilePath() {
             return this.pdfReportFilePath;
         }
+
+        public void addFilePathArgTo(List<String> inputArgs) {
+            inputArgs.add(MatlabBuilderConstants.PDF_REPORT_PATH + "," + "'"
+                    + getPdfReportFilePath() + "'");
+        }
     }
 
-    public static class TapChkBx {
+    public static class TapArtifact {
         private String tapReportFilePath;
 
         @DataBoundConstructor
-        public TapChkBx() {
+        public TapArtifact() {
 
         }
 
@@ -340,13 +316,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getTapReportFilePath() {
             return tapReportFilePath;
         }
+
+        public void addFilePathArgTo(List<String> inputArgs) {
+            inputArgs.add(MatlabBuilderConstants.TAP_RESULTS_PATH + "," + "'"
+                    + getTapReportFilePath() + "'");
+        }
     }
 
-    public static class JunitChkBx {
+    public static class JunitArtifact {
         private String junitReportFilePath;
 
         @DataBoundConstructor
-        public JunitChkBx() {
+        public JunitArtifact() {
 
         }
 
@@ -358,13 +339,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getJunitReportFilePath() {
             return this.junitReportFilePath;
         }
+
+        public void addFilePathArgTo(List<String> inputArgs) {
+            inputArgs.add(MatlabBuilderConstants.JUNIT_RESULTS_PATH + "," + "'"
+                    + getJunitReportFilePath() + "'");
+        }
     }
 
-    public static class CoberturaChkBx {
+    public static class CoberturaArtifact {
         private String coberturaReportFilePath;
 
         @DataBoundConstructor
-        public CoberturaChkBx() {
+        public CoberturaArtifact() {
 
         }
 
@@ -376,13 +362,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getCoberturaReportFilePath() {
             return this.coberturaReportFilePath;
         }
+
+        public void addFilePathArgTo(List<String> inputArgs) {
+            inputArgs.add(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH + "," + "'"
+                    + getCoberturaReportFilePath() + "'");
+        }
     }
 
-    public static class StmResultsChkBx {
+    public static class StmResultsArtifact {
         private String stmResultsFilePath;
 
         @DataBoundConstructor
-        public StmResultsChkBx() {
+        public StmResultsArtifact() {
 
         }
 
@@ -394,13 +385,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getStmResultsFilePath() {
             return stmResultsFilePath;
         }
+
+        public void addFilePathArgTo(List<String> inputArgs) {
+            inputArgs.add(MatlabBuilderConstants.STM_RESULTS_PATH + "," + "'"
+                    + getStmResultsFilePath() + "'");
+        }
     }
 
-    public static class ModelCovChkBx {
+    public static class ModelCovArtifact {
         private String modelCoverageFilePath;
 
         @DataBoundConstructor
-        public ModelCovChkBx() {
+        public ModelCovArtifact() {
 
         }
 
@@ -412,6 +408,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getModelCoverageFilePath() {
             return modelCoverageFilePath;
         }
+
+        public void addFilePathArgTo(List<String> inputArgs) {
+            inputArgs.add(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH + "," + "'"
+                    + getModelCoverageFilePath() + "'");
+        }
     }
-    
 }
