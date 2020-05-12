@@ -18,7 +18,6 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.export.Model;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -205,7 +204,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private String getInputArguments() {
 
         final List<String> inputArgs = new ArrayList<String>();
-       /* final List<Artifact> artifactList =
+        final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
@@ -218,15 +217,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return "";
         }
 
-        return String.join(",", inputArgs);*/
-        return "";
+        return String.join(",", inputArgs);
     }
 
-    /*public void addInputArgs(Artifact artifactType, List<String> inputArgs) {
+    public void addInputArgs(Artifact artifactType, List<String> inputArgs) {
         if (artifactType != null) {
             artifactType.addFilePathArgTo(inputArgs);
         }
-    }*/
+    }
     
     
     /*
@@ -389,13 +387,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @Extension public static class DescriptorImpl extends Descriptor<ModelCovArtifact> {}
     }
   
-    
-   /* public static class Artifact extends AbstractDescribableImpl<Artifact> {
-        public void addFilePathArgTo(List<String> inputArgs) {
-            
-        }
-        @Extension public static class DescriptorImpl extends Descriptor<Artifact> {}
-    }*/
     public interface Artifact{
         public void addFilePathArgTo(List<String> inputArgs);
     }
