@@ -18,7 +18,6 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
-import org.w3c.dom.views.AbstractView;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -54,32 +53,32 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
 
     @DataBoundSetter
-    public void setTapArtifact(Artifact tapArtifact) {
+    public void setTapArtifact(TapArtifact tapArtifact) {
         this.tapArtifact = tapArtifact;
     } 
    
     @DataBoundSetter
-    public void setJunitArtifact(Artifact junitArtifact) {
+    public void setJunitArtifact(JunitArtifact junitArtifact) {
         this.junitArtifact = junitArtifact;
     }
     
     @DataBoundSetter
-    public void setCoberturaArtifact(Artifact coberturaArtifact) {
+    public void setCoberturaArtifact(CoberturaArtifact coberturaArtifact) {
         this.coberturaArtifact = coberturaArtifact;
     }
     
     @DataBoundSetter
-    public void setStmResultsArtifact(Artifact stmResultsArtifact) {
+    public void setStmResultsArtifact(StmResultsArtifact stmResultsArtifact) {
         this.stmResultsArtifact = stmResultsArtifact;
     }
     
     @DataBoundSetter
-    public void setModelCoverageArtifact(Artifact modelCoverageArtifact) {
+    public void setModelCoverageArtifact(ModelCovArtifact modelCoverageArtifact) {
         this.modelCoverageArtifact = modelCoverageArtifact;
     }   
 
     @DataBoundSetter
-    public void setPdfReportArtifact(Artifact pdfReportArtifact) {
+    public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
     }
     
@@ -230,23 +229,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                         getModelCoverageArtifact()));
 
         for (Artifact artifact : artifactList) {
-            //addInputArgs(artifact, inputArgs);
             artifact.addFilePathArgTo(inputArgs);
-        }
-
-        if (inputArgs.isEmpty()) {
-            return "";
         }
 
         return String.join(",", inputArgs);
     }
 
-    /*public void addInputArgs(Artifact artifactType, List<String> inputArgs) {
-        if (artifactType != null) {
-            artifactType.addFilePathArgTo(inputArgs);
-        }
-    }*/
-    
     
     /*
      * Classes for each optional block in jelly file.This is restriction from Stapler architecture
@@ -264,7 +252,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @DataBoundConstructor
         public PdfArtifact() {
            
-
         }
 
         @DataBoundSetter
@@ -286,12 +273,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath() {
             return getPdfReportFilePath();
         }
-
-        
-        public boolean getDefault() {
-            
-            return true;
-        }
     }
 
     public static class TapArtifact extends Artifact {
@@ -300,7 +281,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @DataBoundConstructor
         public TapArtifact() {
             
-
         }
 
         @DataBoundSetter
@@ -322,11 +302,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath() {
             return getTapReportFilePath();
         }
-
-        
-        public boolean getDefault() {
-            return true;
-        }
     }
 
     public static class JunitArtifact extends Artifact {
@@ -335,7 +310,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @DataBoundConstructor
         public JunitArtifact() {
             
-
         }
 
         @DataBoundSetter
@@ -357,11 +331,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath() {
             return getJunitReportFilePath();
         }
-
-        
-        public boolean getDefault() {
-            return true;
-        }
     }
 
     public static class CoberturaArtifact extends Artifact {
@@ -370,7 +339,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @DataBoundConstructor
         public CoberturaArtifact() {
             
-
         }
 
         @DataBoundSetter
@@ -392,11 +360,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath() {
             return getCoberturaReportFilePath();
         }
-
-        
-        public boolean getDefault() {
-            return true;
-        }
     }
 
     public static class StmResultsArtifact extends Artifact {
@@ -405,7 +368,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @DataBoundConstructor
         public StmResultsArtifact() {
             
-
         }
 
         @DataBoundSetter
@@ -427,11 +389,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath() {
             return getStmResultsFilePath();
         }
-
-        
-        public boolean getDefault() {
-            return true;
-        }
     }
 
     public static class ModelCovArtifact extends Artifact {
@@ -440,7 +397,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         @DataBoundConstructor
         public ModelCovArtifact() {
             
-
         }
 
         @DataBoundSetter
@@ -463,57 +419,39 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             
             return getModelCoverageFilePath();
         }
+    }
+    
+    public static class NullArtifact extends Artifact {
+
+        @DataBoundConstructor
+        public NullArtifact() {
+
+        }
 
         @Override
+        public void addFilePathArgTo(List<String> inputArgs) {
+
+        }
+
+        @Override
+        public boolean getDefault() {
+            return false;
+        }
+
+        @Override
+        public String getFilePath() {
+            return null;
+        }
+    }
+
+    
+    public static abstract class Artifact {
+        public abstract void addFilePathArgTo(List<String> inputArgs);
+
+        public abstract String getFilePath();
+
         public boolean getDefault() {
             return true;
         }
     }
-    
-    public static class NullArtifact extends Artifact {
-        
-        @DataBoundConstructor
-        public NullArtifact() {         
-  
-        }
-
-        @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            
-        }
-        
-        
-        public boolean getDefault() {
-            return false;
-        }
-
-        @Override
-        public String getFilePath() {
-            return null;
-        }
-        
-    }
-   
-    
-    public static class Artifact {
-      
-        @DataBoundConstructor
-        public Artifact() {
-            
-        }
-        
-        
-      
-        public void addFilePathArgTo(List<String> inputArgs) {
-            
-        }
-        
-        public String getFilePath() {
-            return null;
-        }
-        
-        public boolean getDefault() {
-            return false;
-        }
-    } 
 }
