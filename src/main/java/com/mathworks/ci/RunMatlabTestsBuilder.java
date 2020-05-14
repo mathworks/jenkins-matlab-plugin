@@ -255,7 +255,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      */
     public static class PdfArtifact extends AbstractArtifactImpl {
 
-        static final String PDF_REPORT_PATH = "PDFReportPath";
+        private static final String PDF_REPORT_PATH = "PDFReportPath";
 
         @DataBoundConstructor
         public PdfArtifact(String pdfReportFilePath) {
@@ -270,7 +270,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class TapArtifact extends AbstractArtifactImpl {
 
-        static final String TAP_RESULTS_PATH = "TAPResultsPath";
+        private static final String TAP_RESULTS_PATH = "TAPResultsPath";
 
         @DataBoundConstructor
         public TapArtifact(String tapReportFilePath) {
@@ -285,7 +285,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class JunitArtifact extends AbstractArtifactImpl {
 
-        static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+        private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
 
         @DataBoundConstructor
         public JunitArtifact(String junitReportFilePath) {
@@ -300,7 +300,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class CoberturaArtifact extends AbstractArtifactImpl {
 
-        static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
 
         @DataBoundConstructor
         public CoberturaArtifact(String coberturaReportFilePath) {
@@ -315,7 +315,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class StmResultsArtifact extends AbstractArtifactImpl {
 
-        static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+        private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
 
         @DataBoundConstructor
         public StmResultsArtifact(String stmResultsFilePath) {
@@ -330,7 +330,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class ModelCovArtifact extends AbstractArtifactImpl {
 
-        static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
 
         @DataBoundConstructor
         public ModelCovArtifact(String modelCoverageFilePath) {
