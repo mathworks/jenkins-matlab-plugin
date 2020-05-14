@@ -11,8 +11,11 @@ package com.mathworks.ci;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -222,17 +225,21 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     // Concatenate the input arguments
     private String getInputArguments() {
 
-        final List<String> inputArgs = new ArrayList<String>();
+        final List<String> inputArgsList = new ArrayList<String>();
+        final Map<String,String> args = new HashMap<String,String>();
+        
         final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
 
         for (Artifact artifact : artifactList) {
-            artifact.addFilePathArgTo(inputArgs);
+            artifact.addFilePathArgTo(args);
         }
 
-        return String.join(",", inputArgs);
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+
+        return String.join(",", inputArgsList);
     }
 
     
@@ -247,149 +254,141 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 
      */
     public static class PdfArtifact extends AbstractArtifactImpl {
-        
+
+        static final String PDF_REPORT_PATH = "PDFReportPath";
+
         @DataBoundConstructor
         public PdfArtifact(String pdfReportFilePath) {
-           super(pdfReportFilePath);
+            super(pdfReportFilePath);
         }
-       
+
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.PDF_REPORT_PATH + "," + "'"
-                    + getFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(PDF_REPORT_PATH, getFilePath());
         }
     }
 
     public static class TapArtifact extends AbstractArtifactImpl {
 
+        static final String TAP_RESULTS_PATH = "TAPResultsPath";
+
         @DataBoundConstructor
         public TapArtifact(String tapReportFilePath) {
             super(tapReportFilePath);
-         }
-
-
-        @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.TAP_RESULTS_PATH + "," + "'"
-                    + getFilePath() + "'");
         }
 
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(TAP_RESULTS_PATH, getFilePath());
+        }
     }
 
     public static class JunitArtifact extends AbstractArtifactImpl {
 
+        static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+
         @DataBoundConstructor
         public JunitArtifact(String junitReportFilePath) {
             super(junitReportFilePath);
-         }
-
-        @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.JUNIT_RESULTS_PATH + "," + "'"
-                    + getFilePath() + "'");
         }
 
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(JUNIT_RESULTS_PATH, getFilePath());
+        }
     }
 
     public static class CoberturaArtifact extends AbstractArtifactImpl {
 
+        static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+
         @DataBoundConstructor
         public CoberturaArtifact(String coberturaReportFilePath) {
             super(coberturaReportFilePath);
-         }
-
-
-        @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH + "," + "'"
-                    + getFilePath() + "'");
         }
 
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(COBERTURA_CODE_COVERAGE_PATH, getFilePath());
+        }
     }
 
     public static class StmResultsArtifact extends AbstractArtifactImpl {
 
+        static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+
         @DataBoundConstructor
         public StmResultsArtifact(String stmResultsFilePath) {
             super(stmResultsFilePath);
-         }
-
-
+        }
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.STM_RESULTS_PATH + "," + "'"
-                    + getFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(STM_RESULTS_PATH, getFilePath());
         }
- 
     }
 
     public static class ModelCovArtifact extends AbstractArtifactImpl {
 
+        static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+
         @DataBoundConstructor
         public ModelCovArtifact(String modelCoverageFilePath) {
             super(modelCoverageFilePath);
-         }
-
-
-        @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH + "," + "'"
-                    + getFilePath() + "'");
         }
 
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(COBERTURA_MODEL_COVERAGE_PATH, getFilePath());
+        }
     }
-    
-    public static class NullArtifact implements  Artifact {
+
+    public static class NullArtifact implements Artifact {
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
 
         }
 
         @Override
         public boolean getDefault() {
-            
             return false;
         }
 
         @Override
         public String getFilePath() {
-            
             return null;
         }
 
     }
-    
-    //Andys code 
+
     public static abstract class AbstractArtifactImpl implements Artifact {
 
         private String filePath;
 
-        protected AbstractArtifactImpl(String path){
+        protected AbstractArtifactImpl(String path) {
             this.filePath = path;
         }
 
-        
-        public boolean getDefault(){
+        public boolean getDefault() {
             return true;
         }
 
-        public void setFilePath(String path){
+        public void setFilePath(String path) {
             this.filePath = path;
         }
-        public String getFilePath(){
+
+        public String getFilePath() {
             return this.filePath;
         }
     }
 
-    
+
     public interface Artifact {
-        public void addFilePathArgTo(List<String> inputArgs);
+        public void addFilePathArgTo(Map<String, String> inputArgs);
 
         public String getFilePath();
 
         public boolean getDefault();
-        //public List<String> getNameAndValue();
     }
 }
