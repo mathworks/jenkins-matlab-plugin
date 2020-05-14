@@ -229,11 +229,9 @@ public class RunMatlabTestsBuilderTest {
     public void verifySpecificTestArtifactsParameters() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact();
-        tap.setTapReportFilePath("mytap/report.tap");
+        RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact("mytap/report.tap");
 
-        RunMatlabTestsBuilder.StmResultsArtifact stmResults = new StmResultsArtifact();
-        stmResults.setStmResultsFilePath("mystm/results.mldatx");
+        RunMatlabTestsBuilder.StmResultsArtifact stmResults = new StmResultsArtifact("mystm/results.mldatx");
 
         testBuilder.setTapArtifact(tap);
         testBuilder.setStmResultsArtifact(stmResults);
@@ -287,23 +285,17 @@ public class RunMatlabTestsBuilderTest {
     public void verifyAllTestArtifactsParameters() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact();
-        tap.setTapReportFilePath("mytap/report.tap");
+        RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact("mytap/report.tap");
         
-        RunMatlabTestsBuilder.PdfArtifact pdf = new PdfArtifact();
-        pdf.setPdfReportFilePath("mypdf/report.pdf");
+        RunMatlabTestsBuilder.PdfArtifact pdf = new PdfArtifact("mypdf/report.pdf");
+       
+        RunMatlabTestsBuilder.JunitArtifact junit = new JunitArtifact("myjunit/report.xml");
         
-        RunMatlabTestsBuilder.JunitArtifact junit = new JunitArtifact();
-        junit.setJunitReportFilePath("myjunit/report.xml");
+        RunMatlabTestsBuilder.CoberturaArtifact cobertura = new CoberturaArtifact("mycobertura/report.xml");
         
-        RunMatlabTestsBuilder.CoberturaArtifact cobertura = new CoberturaArtifact();
-        cobertura.setCoberturaReportFilePath("mycobertura/report.xml");
+        RunMatlabTestsBuilder.ModelCovArtifact modelCov = new ModelCovArtifact("mymodel/report.xml");
         
-        RunMatlabTestsBuilder.ModelCovArtifact modelCov = new ModelCovArtifact();
-        modelCov.setModelCoverageFilePath("mymodel/report.xml");
-        
-        RunMatlabTestsBuilder.StmResultsArtifact stmResults = new StmResultsArtifact();
-        stmResults.setStmResultsFilePath("mystm/results.mldatx");
+        RunMatlabTestsBuilder.StmResultsArtifact stmResults = new StmResultsArtifact("mystm/results.mldatx");
         
         testBuilder.setTapArtifact(tap);
         testBuilder.setPdfReportArtifact(pdf);
@@ -316,12 +308,13 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("\'PDFReportPath\',\'mypdf/report.pdf\',"
-                + "\'TAPResultsPath\',\'mytap/report.tap\',"
-                + "\'JUnitResultsPath\',\'myjunit/report.xml\',"
-                + "\'SimulinkTestResultsPath\',\'mystm/results.mldatx\',"
-                + "\'CoberturaCodeCoveragePath\',\'mycobertura/report.xml\',"
-                + "\'CoberturaModelCoveragePath\',\'mymodel/report.xml\'", build);
+        jenkins.assertLogContains("\'PDFReportPath\',\'mypdf/report.pdf\'",build);
+        jenkins.assertLogContains("\'TAPResultsPath\',\'mytap/report.tap\'",build);
+        jenkins.assertLogContains("\'JUnitResultsPath\',\'myjunit/report.xml\'",build);
+        jenkins.assertLogContains("\'SimulinkTestResultsPath\',\'mystm/results.mldatx\'",build);
+        jenkins.assertLogContains("\'CoberturaCodeCoveragePath\',\'mycobertura/report.xml\'",build);
+        jenkins.assertLogContains("\'CoberturaModelCoveragePath\',\'mymodel/report.xml\'",build);
+  
     }
     
     /*
