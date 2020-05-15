@@ -11,8 +11,11 @@ package com.mathworks.ci;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nonnull;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -36,20 +39,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    private TapArtifact tapArtifact;
-    private JunitArtifact junitArtifact;   
-    private CoberturaArtifact coberturaArtifact;
-    private StmResultsArtifact stmResultsArtifact; 
-    private ModelCovArtifact modelCoverageArtifact; 
-    private PdfArtifact pdfReportArtifact;
-    private String tapReportFilePath;
-    private String pdfReportFilePath;
-    private String junitReportFilePath;
-    private String coberturaReportFilePath;
-    private String stmResultsFilePath;
-    private String modelCoverageFilePath;
+    private Artifact tapArtifact = new NullArtifact();
+    private Artifact junitArtifact = new NullArtifact();
+    private Artifact coberturaArtifact = new NullArtifact();
+    private Artifact stmResultsArtifact = new NullArtifact();
+    private Artifact modelCoverageArtifact = new NullArtifact();
+    private Artifact pdfReportArtifact = new NullArtifact();
    
-
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
@@ -62,85 +58,79 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @DataBoundSetter
     public void setTapArtifact(TapArtifact tapArtifact) {
         this.tapArtifact = tapArtifact;
-        this.tapReportFilePath = this.tapArtifact.getTapReportFilePath();
     } 
    
     @DataBoundSetter
     public void setJunitArtifact(JunitArtifact junitArtifact) {
         this.junitArtifact = junitArtifact;
-        this.junitReportFilePath = this.junitArtifact.getJunitReportFilePath();
     }
     
     @DataBoundSetter
     public void setCoberturaArtifact(CoberturaArtifact coberturaArtifact) {
         this.coberturaArtifact = coberturaArtifact;
-        this.coberturaReportFilePath = this.coberturaArtifact.getCoberturaReportFilePath();
     }
     
     @DataBoundSetter
     public void setStmResultsArtifact(StmResultsArtifact stmResultsArtifact) {
         this.stmResultsArtifact = stmResultsArtifact;
-        this.stmResultsFilePath = this.stmResultsArtifact.getStmResultsFilePath();
     }
     
     @DataBoundSetter
     public void setModelCoverageArtifact(ModelCovArtifact modelCoverageArtifact) {
         this.modelCoverageArtifact = modelCoverageArtifact;
-        this.modelCoverageFilePath = this.modelCoverageArtifact.getModelCoverageFilePath();
     }   
 
     @DataBoundSetter
     public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
-        this.pdfReportFilePath = this.pdfReportArtifact.getPdfReportFilePath();
     }
     
     public String getTapReportFilePath() {
-        return this.tapReportFilePath;
+        return this.getTapArtifact().getFilePath();
     }      
     
-    public TapArtifact getTapArtifact() {
+    public Artifact getTapArtifact() {
         return this.tapArtifact;
     }
         
-    public JunitArtifact getJunitArtifact() {
+    public Artifact getJunitArtifact() {
         return this.junitArtifact;
     }
     
     public String getJunitReportFilePath() {
-        return this.junitReportFilePath;
+        return this.getJunitArtifact().getFilePath();
     }
         
-    public CoberturaArtifact getCoberturaArtifact() {
+    public Artifact getCoberturaArtifact() {
         return this.coberturaArtifact;
     }
     
     public String getCoberturaReportFilePath() {
-        return this.coberturaReportFilePath;
+        return this.getCoberturaArtifact().getFilePath();
     }
           
-    public StmResultsArtifact getStmResultsArtifact() {
+    public Artifact getStmResultsArtifact() {
         return this.stmResultsArtifact;
     } 
     
     public String getStmResultsFilePath() {
-        return this.stmResultsFilePath;
+        return this.getStmResultsArtifact().getFilePath();
     }
        
-    public ModelCovArtifact getModelCoverageArtifact() {
+    public Artifact getModelCoverageArtifact() {
         return this.modelCoverageArtifact;
     }
     
     public String getModelCoverageFilePath() {
-        return modelCoverageFilePath;
+        return this.getModelCoverageArtifact().getFilePath();
     }
     
-    public PdfArtifact getPdfReportArtifact() {
+    public Artifact getPdfReportArtifact() {
         return this.pdfReportArtifact;
     }
     
     public String getPdfReportFilePath() {
-        return this.pdfReportFilePath;
+        return this.getPdfReportArtifact().getFilePath();
     }  
     
     private void setEnv(EnvVars env) {
@@ -235,29 +225,23 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     // Concatenate the input arguments
     private String getInputArguments() {
 
-        final List<String> inputArgs = new ArrayList<String>();
+        final List<String> inputArgsList = new ArrayList<String>();
+        final Map<String,String> args = new HashMap<String,String>();
+        
         final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
 
         for (Artifact artifact : artifactList) {
-            addInputArgs(artifact, inputArgs);
+            artifact.addFilePathArgTo(args);
         }
 
-        if (inputArgs.isEmpty()) {
-            return "";
-        }
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
 
-        return String.join(",", inputArgs);
+        return String.join(",", inputArgsList);
     }
 
-    public void addInputArgs(Artifact artifactType, List<String> inputArgs) {
-        if (artifactType != null) {
-            artifactType.addFilePathArgTo(inputArgs);
-        }
-    }
-    
     
     /*
      * Classes for each optional block in jelly file.This is restriction from Stapler architecture
@@ -269,152 +253,142 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
-    public static class PdfArtifact implements Artifact {
-        private String pdfReportFilePath;
+    public static class PdfArtifact extends AbstractArtifactImpl {
+
+        private static final String PDF_REPORT_PATH = "PDFReportPath";
 
         @DataBoundConstructor
-        public PdfArtifact() {
-
-        }
-
-        @DataBoundSetter
-        public void setPdfReportFilePath(String pdfReportFilePath) {
-            this.pdfReportFilePath = pdfReportFilePath;
-        }
-
-        public String getPdfReportFilePath() {
-            return this.pdfReportFilePath;
-        }
-        
-        @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.PDF_REPORT_PATH + "," + "'"
-                    + getPdfReportFilePath() + "'");
-        }
-    }
-
-    public static class TapArtifact implements Artifact {
-        private String tapReportFilePath;
-
-        @DataBoundConstructor
-        public TapArtifact() {
-
-        }
-
-        @DataBoundSetter
-        public void setTapReportFilePath(String tapReportFilePath) {
-            this.tapReportFilePath = tapReportFilePath;
-        }
-
-        public String getTapReportFilePath() {
-            return tapReportFilePath;
+        public PdfArtifact(String pdfReportFilePath) {
+            super(pdfReportFilePath);
         }
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.TAP_RESULTS_PATH + "," + "'"
-                    + getTapReportFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(PDF_REPORT_PATH, getFilePath());
         }
     }
 
-    public static class JunitArtifact implements Artifact {
-        private String junitReportFilePath;
+    public static class TapArtifact extends AbstractArtifactImpl {
+
+        private static final String TAP_RESULTS_PATH = "TAPResultsPath";
 
         @DataBoundConstructor
-        public JunitArtifact() {
-
-        }
-
-        @DataBoundSetter
-        public void setJunitReportFilePath(String junitReportFilePath) {
-            this.junitReportFilePath = junitReportFilePath;
-        }
-
-        public String getJunitReportFilePath() {
-            return this.junitReportFilePath;
+        public TapArtifact(String tapReportFilePath) {
+            super(tapReportFilePath);
         }
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.JUNIT_RESULTS_PATH + "," + "'"
-                    + getJunitReportFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(TAP_RESULTS_PATH, getFilePath());
         }
     }
 
-    public static class CoberturaArtifact implements Artifact {
-        private String coberturaReportFilePath;
+    public static class JunitArtifact extends AbstractArtifactImpl {
+
+        private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
 
         @DataBoundConstructor
-        public CoberturaArtifact() {
-
-        }
-
-        @DataBoundSetter
-        public void setCoberturaReportFilePath(String coberturaReportFilePath) {
-            this.coberturaReportFilePath = coberturaReportFilePath;
-        }
-
-        public String getCoberturaReportFilePath() {
-            return this.coberturaReportFilePath;
+        public JunitArtifact(String junitReportFilePath) {
+            super(junitReportFilePath);
         }
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.COBERTURA_CODE_COVERAGE_PATH + "," + "'"
-                    + getCoberturaReportFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(JUNIT_RESULTS_PATH, getFilePath());
         }
     }
 
-    public static class StmResultsArtifact implements Artifact{
-        private String stmResultsFilePath;
+    public static class CoberturaArtifact extends AbstractArtifactImpl {
+
+        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
 
         @DataBoundConstructor
-        public StmResultsArtifact() {
-
-        }
-
-        @DataBoundSetter
-        public void setStmResultsFilePath(String stmResultsFilePath) {
-            this.stmResultsFilePath = stmResultsFilePath;
-        }
-
-        public String getStmResultsFilePath() {
-            return stmResultsFilePath;
+        public CoberturaArtifact(String coberturaReportFilePath) {
+            super(coberturaReportFilePath);
         }
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.STM_RESULTS_PATH + "," + "'"
-                    + getStmResultsFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(COBERTURA_CODE_COVERAGE_PATH, getFilePath());
         }
     }
 
-    public static class ModelCovArtifact implements Artifact {
-        private String modelCoverageFilePath;
+    public static class StmResultsArtifact extends AbstractArtifactImpl {
+
+        private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
 
         @DataBoundConstructor
-        public ModelCovArtifact() {
-
-        }
-
-        @DataBoundSetter
-        public void setModelCoverageFilePath(String modelCoverageFilePath) {
-            this.modelCoverageFilePath = modelCoverageFilePath;
-        }
-
-        public String getModelCoverageFilePath() {
-            return modelCoverageFilePath;
+        public StmResultsArtifact(String stmResultsFilePath) {
+            super(stmResultsFilePath);
         }
 
         @Override
-        public void addFilePathArgTo(List<String> inputArgs) {
-            inputArgs.add(MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE_PATH + "," + "'"
-                    + getModelCoverageFilePath() + "'");
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(STM_RESULTS_PATH, getFilePath());
         }
     }
-    
+
+    public static class ModelCovArtifact extends AbstractArtifactImpl {
+
+        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+
+        @DataBoundConstructor
+        public ModelCovArtifact(String modelCoverageFilePath) {
+            super(modelCoverageFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(COBERTURA_MODEL_COVERAGE_PATH, getFilePath());
+        }
+    }
+
+    public static class NullArtifact implements Artifact {
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+
+        }
+
+        @Override
+        public boolean getSelected() {
+            return false;
+        }
+
+        @Override
+        public String getFilePath() {
+            return null;
+        }
+
+    }
+
+    public static abstract class AbstractArtifactImpl implements Artifact {
+
+        private String filePath;
+
+        protected AbstractArtifactImpl(String path) {
+            this.filePath = path;
+        }
+
+        public boolean getSelected() {
+            return true;
+        }
+
+        public void setFilePath(String path) {
+            this.filePath = path;
+        }
+
+        public String getFilePath() {
+            return this.filePath;
+        }
+    }
+
+
     public interface Artifact {
-        public void addFilePathArgTo(List<String> inputArgs);
+        public void addFilePathArgTo(Map<String, String> inputArgs);
+
+        public String getFilePath();
+
+        public boolean getSelected();
     }
-    
 }
