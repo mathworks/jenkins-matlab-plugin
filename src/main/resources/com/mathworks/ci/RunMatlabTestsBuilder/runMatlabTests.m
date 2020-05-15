@@ -139,11 +139,11 @@ if ~dirExists
     mkdir(dir);		    
 end
 
-function tapToFile = getTapResultFile(resultsDir)
+function tapFile = getTapResultFile(resultsDir)
 import('matlab.unittest.plugins.ToFile');
 preparePath(resultsDir);
 fclose(fopen(resultsDir,'w'));
-tapToFile = matlab.unittest.plugins.ToFile(resultsDir);
+tapFile = matlab.unittest.plugins.ToFile(resultsDir);
 
 function suite = getTestSuite()
 import('matlab.unittest.TestSuite');

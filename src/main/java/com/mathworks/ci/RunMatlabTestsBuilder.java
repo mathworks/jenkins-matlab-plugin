@@ -351,7 +351,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
 
         @Override
-        public boolean getDefault() {
+        public boolean getSelected() {
             return false;
         }
 
@@ -370,7 +370,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             this.filePath = path;
         }
 
-        public boolean getDefault() {
+        public boolean getSelected() {
             return true;
         }
 
@@ -389,6 +389,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         public String getFilePath();
 
-        public boolean getDefault();
+        public boolean getSelected();
     }
 }
