@@ -27,12 +27,12 @@ import net.sf.json.JSONObject;
 
 public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
 
-    private boolean tapChkBx;
-    private boolean junitChkBx;
-    private boolean coberturaChkBx;
-    private boolean stmResultsChkBx;
-    private boolean modelCoverageChkBx;
-    private boolean pdfReportChkBx;
+    private Artifact tapArtifact = new NullArtifact();;
+    private Artifact junitArtifact = new NullArtifact();;
+    private Artifact coberturaArtifact = new NullArtifact();;
+    private Artifact stmResultsArtifact = new NullArtifact();;
+    private Artifact modelCoverageArtifact = new NullArtifact();
+    private Artifact pdfReportArtifact = new NullArtifact();;
     private EnvVars env;
     private int buildResult;
     private MatlabReleaseInfo matlabRel;
@@ -54,57 +54,57 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
 
 
     @DataBoundSetter
-    public void setTapChkBx(boolean tapChkBx) {
-        this.tapChkBx = tapChkBx;
+    public void setTapChkBx(TapArtifact tapArtifact) {
+        this.tapArtifact = tapArtifact;
     }
 
     @DataBoundSetter
-    public void setJunitChkBx(boolean junitChkBx) {
-        this.junitChkBx = junitChkBx;
+    public void setJunitChkBx(JunitArtifact junitArtifact) {
+        this.junitArtifact = junitArtifact;
     }
 
     @DataBoundSetter
-    public void setCoberturaChkBx(boolean coberturaChkBx) {
-        this.coberturaChkBx = coberturaChkBx;
+    public void setCoberturaChkBx(CoberturaArtifact coberturaArtifact) {
+        this.coberturaArtifact = coberturaArtifact;
     }
 
     @DataBoundSetter
-    public void setStmResultsChkBx(boolean stmResultsChkBx) {
-        this.stmResultsChkBx = stmResultsChkBx;
+    public void setStmResultsChkBx(StmResultsArtifact stmResultsArtifact) {
+        this.stmResultsArtifact = stmResultsArtifact;
     }
 
     @DataBoundSetter
-    public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
-        this.modelCoverageChkBx = modelCoverageChkBx;
+    public void setModelCoverageChkBx(ModelCovArtifact modelCoverageArtifact) {
+        this.modelCoverageArtifact = modelCoverageArtifact;
     }
 
     @DataBoundSetter
-    public void setPdfReportChkBx(boolean pdfReportChkBx) {
-        this.pdfReportChkBx = pdfReportChkBx;
+    public void setPdfReportChkBx(PdfArtifact pdfReportArtifact) {
+        this.pdfReportArtifact = pdfReportArtifact;
     }
 
-    public boolean getTapChkBx() {
-        return tapChkBx;
+    public Artifact getTapChkBx() {
+        return tapArtifact;
     }
 
-    public boolean getJunitChkBx() {
-        return junitChkBx;
+    public Artifact getJunitChkBx() {
+        return junitArtifact;
     }
 
-    public boolean getCoberturaChkBx() {
-        return coberturaChkBx;
+    public Artifact getCoberturaChkBx() {
+        return coberturaArtifact;
     }
 
-    public boolean getStmResultsChkBx() {
-        return stmResultsChkBx;
+    public Artifact getStmResultsChkBx() {
+        return stmResultsArtifact;
     }
 
-    public boolean getModelCoverageChkBx() {
-        return modelCoverageChkBx;
+    public Artifact getModelCoverageChkBx() {
+        return modelCoverageArtifact;
     }
 
-    public boolean getPdfReportChkBx() {
-        return pdfReportChkBx;
+    public Artifact getPdfReportChkBx() {
+        return pdfReportArtifact;
     }
 
     private void setEnv(EnvVars env) {

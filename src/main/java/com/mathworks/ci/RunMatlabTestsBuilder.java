@@ -1,27 +1,26 @@
 package com.mathworks.ci;
 
-/**
- * Copyright 2019-2020 The MathWorks, Inc.
- * 
- * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate
- * selected test artifacts.
- * 
+/** 
+ * Copyright 2019-2020 The MathWorks, Inc.  
+ *  
+ * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate   
+ * selected test artifacts. 
+ *  
  */
 
-
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
+import java.util.Map;
 import javax.annotation.Nonnull;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import com.mathworks.ci.UseMatlabVersionBuildWrapper.UseMatlabVersionDescriptor;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -33,8 +32,6 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.util.FormValidation;
-import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -42,16 +39,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    private boolean tapChkBx;
-    private boolean junitChkBx;
-    private boolean coberturaChkBx;
-    private boolean stmResultsChkBx;
-    private boolean modelCoverageChkBx;
-    private boolean pdfReportChkBx;
-
+    private Artifact tapArtifact = new NullArtifact();
+    private Artifact junitArtifact = new NullArtifact();
+    private Artifact coberturaArtifact = new NullArtifact();
+    private Artifact stmResultsArtifact = new NullArtifact();
+    private Artifact modelCoverageArtifact = new NullArtifact();
+    private Artifact pdfReportArtifact = new NullArtifact();
+   
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
-
 
     }
 
@@ -60,59 +56,83 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
 
     @DataBoundSetter
-    public void setTapChkBx(boolean tapChkBx) {
-        this.tapChkBx = tapChkBx;
+    public void setTapArtifact(TapArtifact tapArtifact) {
+        this.tapArtifact = tapArtifact;
+    } 
+   
+    @DataBoundSetter
+    public void setJunitArtifact(JunitArtifact junitArtifact) {
+        this.junitArtifact = junitArtifact;
     }
+    
+    @DataBoundSetter
+    public void setCoberturaArtifact(CoberturaArtifact coberturaArtifact) {
+        this.coberturaArtifact = coberturaArtifact;
+    }
+    
+    @DataBoundSetter
+    public void setStmResultsArtifact(StmResultsArtifact stmResultsArtifact) {
+        this.stmResultsArtifact = stmResultsArtifact;
+    }
+    
+    @DataBoundSetter
+    public void setModelCoverageArtifact(ModelCovArtifact modelCoverageArtifact) {
+        this.modelCoverageArtifact = modelCoverageArtifact;
+    }   
 
     @DataBoundSetter
-    public void setJunitChkBx(boolean junitChkBx) {
-        this.junitChkBx = junitChkBx;
+    public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
+        this.pdfReportArtifact = pdfReportArtifact;
     }
-
-    @DataBoundSetter
-    public void setCoberturaChkBx(boolean coberturaChkBx) {
-        this.coberturaChkBx = coberturaChkBx;
+    
+    public String getTapReportFilePath() {
+        return this.getTapArtifact().getFilePath();
+    }      
+    
+    public Artifact getTapArtifact() {
+        return this.tapArtifact;
     }
-
-    @DataBoundSetter
-    public void setStmResultsChkBx(boolean stmResultsChkBx) {
-        this.stmResultsChkBx = stmResultsChkBx;
+        
+    public Artifact getJunitArtifact() {
+        return this.junitArtifact;
     }
-
-    @DataBoundSetter
-    public void setModelCoverageChkBx(boolean modelCoverageChkBx) {
-        this.modelCoverageChkBx = modelCoverageChkBx;
+    
+    public String getJunitReportFilePath() {
+        return this.getJunitArtifact().getFilePath();
     }
-
-    @DataBoundSetter
-    public void setPdfReportChkBx(boolean pdfReportChkBx) {
-        this.pdfReportChkBx = pdfReportChkBx;
+        
+    public Artifact getCoberturaArtifact() {
+        return this.coberturaArtifact;
     }
-
-    public boolean getTapChkBx() {
-        return tapChkBx;
+    
+    public String getCoberturaReportFilePath() {
+        return this.getCoberturaArtifact().getFilePath();
     }
-
-    public boolean getJunitChkBx() {
-        return junitChkBx;
+          
+    public Artifact getStmResultsArtifact() {
+        return this.stmResultsArtifact;
+    } 
+    
+    public String getStmResultsFilePath() {
+        return this.getStmResultsArtifact().getFilePath();
     }
-
-    public boolean getCoberturaChkBx() {
-        return coberturaChkBx;
+       
+    public Artifact getModelCoverageArtifact() {
+        return this.modelCoverageArtifact;
     }
-
-    public boolean getStmResultsChkBx() {
-        return stmResultsChkBx;
+    
+    public String getModelCoverageFilePath() {
+        return this.getModelCoverageArtifact().getFilePath();
     }
-
-    public boolean getModelCoverageChkBx() {
-        return modelCoverageChkBx;
+    
+    public Artifact getPdfReportArtifact() {
+        return this.pdfReportArtifact;
     }
-
-    public boolean getPdfReportChkBx() {
-        return pdfReportChkBx;
-    }
-
+    
+    public String getPdfReportFilePath() {
+        return this.getPdfReportArtifact().getFilePath();
+    }  
+    
     private void setEnv(EnvVars env) {
         this.env = env;
     }
@@ -124,8 +144,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @Symbol("RunMatlabTests")
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
-
-        MatlabReleaseInfo rel;
 
         // Overridden Method used to show the text under build dropdown
         @Override
@@ -150,116 +168,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public boolean isApplicable(
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
-        }
-
-
-        /*
-         * Validation for Test artifact generator checkBoxes
-         */
-
-        // Get the MATLAB root entered in build wrapper descriptor
-
-
-
-        public FormValidation doCheckCoberturaChkBx(@QueryParameter boolean coberturaChkBx) {
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
-            if (coberturaChkBx) {
-                listOfCheckMethods.add(chkCoberturaSupport);
-            }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
-        }
-
-        Function<String, FormValidation> chkCoberturaSupport = (String matlabRoot) -> {
-            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
-            rel = new MatlabReleaseInfo(matlabRootPath);
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if (!resolver.hasVariablePattern()) {
-                try {
-                    if (rel.verLessThan(
-                            MatlabBuilderConstants.BASE_MATLAB_VERSION_COBERTURA_SUPPORT)) {
-                        return FormValidation.warning(
-                                Message.getValue("Builder.matlab.cobertura.support.warning"));
-                    }
-                } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-                }
-            }
-
-
-            return FormValidation.ok();
-        };
-
-        public FormValidation doCheckModelCoverageChkBx(
-                @QueryParameter boolean modelCoverageChkBx) {
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
-            if (modelCoverageChkBx) {
-                listOfCheckMethods.add(chkModelCoverageSupport);
-            }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
-        }
-
-        Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
-            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
-            rel = new MatlabReleaseInfo(matlabRootPath);
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if (!resolver.hasVariablePattern()) {
-                try {
-                    if (rel.verLessThan(
-                            MatlabBuilderConstants.BASE_MATLAB_VERSION_MODELCOVERAGE_SUPPORT)) {
-                        return FormValidation.warning(
-                                Message.getValue("Builder.matlab.modelcoverage.support.warning"));
-                    }
-                } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-                }
-            }
-
-
-            return FormValidation.ok();
-        };
-
-        public FormValidation doCheckStmResultsChkBx(@QueryParameter boolean stmResultsChkBx) {
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
-            if (stmResultsChkBx) {
-                listOfCheckMethods.add(chkSTMResultsSupport);
-            }
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, getMatlabRoot());
-        }
-
-        Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
-            FilePath matlabRootPath = new FilePath(new File(matlabRoot));
-            rel = new MatlabReleaseInfo(matlabRootPath);
-            final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
-            if (!resolver.hasVariablePattern()) {
-                try {
-                    if (rel.verLessThan(
-                            MatlabBuilderConstants.BASE_MATLAB_VERSION_EXPORTSTMRESULTS_SUPPORT)) {
-                        return FormValidation.warning(Message
-                                .getValue("Builder.matlab.exportstmresults.support.warning"));
-                    }
-                } catch (MatlabVersionNotFoundException e) {
-                    return FormValidation
-                            .warning(Message.getValue("Builder.invalid.matlab.root.warning"));
-                }
-            }
-            return FormValidation.ok();
-        };
-
-        // Method to get the MatlabRoot value from Build wrapper class.
-        public static String getMatlabRoot() {
-            try {
-                return Jenkins.getInstance().getDescriptorByType(UseMatlabVersionDescriptor.class)
-                        .getMatlabRootFolder();
-            } catch (Exception e) {
-                // For any exception during getMatlabRootFolder() operation, return matlabRoot as
-                // NULL.
-                return null;
-            }
         }
     }
 
@@ -291,7 +199,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_RUNNER_RESOURCE,
+            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
                     MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
             return matlabLauncher.join();
         } catch (Exception e) {
@@ -316,19 +224,171 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     // Concatenate the input arguments
     private String getInputArguments() {
-        final String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + this.getPdfReportChkBx();
-        final String tapResults = MatlabBuilderConstants.TAP_RESULTS + "," + this.getTapChkBx();
-        final String junitResults =
-                MatlabBuilderConstants.JUNIT_RESULTS + "," + this.getJunitChkBx();
-        final String stmResults =
-                MatlabBuilderConstants.STM_RESULTS + "," + this.getStmResultsChkBx();
-        final String coberturaCodeCoverage =
-                MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + this.getCoberturaChkBx();
-        final String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + ","
-                + this.getModelCoverageChkBx();
-        final String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
-                + stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
 
-        return inputArgsToMatlabFcn;
+        final List<String> inputArgsList = new ArrayList<String>();
+        final Map<String,String> args = new HashMap<String,String>();
+        
+        final List<Artifact> artifactList =
+                new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
+                        getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
+                        getModelCoverageArtifact()));
+
+        for (Artifact artifact : artifactList) {
+            artifact.addFilePathArgTo(args);
+        }
+
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+
+        return String.join(",", inputArgsList);
+    }
+
+    
+    /*
+     * Classes for each optional block in jelly file.This is restriction from Stapler architecture
+     * when we use <f:optionalBlock> as it creates a object for each block in JSON. This could be
+     * simplified by using inline=true attribute of <f:optionalBlock> however it has some abrupt UI
+     * scrolling issue on click and also some esthetic issue like broken gray side bar appears.Some
+     * discussion about this on Jenkins forum
+     * https://groups.google.com/forum/#!searchin/jenkinsci-dev/OptionalBlock$20action$20class%
+     * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
+     * 
+     */
+    public static class PdfArtifact extends AbstractArtifactImpl {
+
+        private static final String PDF_REPORT_PATH = "PDFReportPath";
+
+        @DataBoundConstructor
+        public PdfArtifact(String pdfReportFilePath) {
+            super(pdfReportFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(PDF_REPORT_PATH, getFilePath());
+        }
+    }
+
+    public static class TapArtifact extends AbstractArtifactImpl {
+
+        private static final String TAP_RESULTS_PATH = "TAPResultsPath";
+
+        @DataBoundConstructor
+        public TapArtifact(String tapReportFilePath) {
+            super(tapReportFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(TAP_RESULTS_PATH, getFilePath());
+        }
+    }
+
+    public static class JunitArtifact extends AbstractArtifactImpl {
+
+        private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+
+        @DataBoundConstructor
+        public JunitArtifact(String junitReportFilePath) {
+            super(junitReportFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(JUNIT_RESULTS_PATH, getFilePath());
+        }
+    }
+
+    public static class CoberturaArtifact extends AbstractArtifactImpl {
+
+        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+
+        @DataBoundConstructor
+        public CoberturaArtifact(String coberturaReportFilePath) {
+            super(coberturaReportFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(COBERTURA_CODE_COVERAGE_PATH, getFilePath());
+        }
+    }
+
+    public static class StmResultsArtifact extends AbstractArtifactImpl {
+
+        private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+
+        @DataBoundConstructor
+        public StmResultsArtifact(String stmResultsFilePath) {
+            super(stmResultsFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(STM_RESULTS_PATH, getFilePath());
+        }
+    }
+
+    public static class ModelCovArtifact extends AbstractArtifactImpl {
+
+        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+
+        @DataBoundConstructor
+        public ModelCovArtifact(String modelCoverageFilePath) {
+            super(modelCoverageFilePath);
+        }
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+            inputArgs.put(COBERTURA_MODEL_COVERAGE_PATH, getFilePath());
+        }
+    }
+
+    public static class NullArtifact implements Artifact {
+
+        @Override
+        public void addFilePathArgTo(Map<String, String> inputArgs) {
+
+        }
+
+        @Override
+        public boolean getSelected() {
+            return false;
+        }
+
+        @Override
+        public String getFilePath() {
+            return null;
+        }
+
+    }
+
+    public static abstract class AbstractArtifactImpl implements Artifact {
+
+        private String filePath;
+
+        protected AbstractArtifactImpl(String path) {
+            this.filePath = path;
+        }
+
+        public boolean getSelected() {
+            return true;
+        }
+
+        public void setFilePath(String path) {
+            this.filePath = path;
+        }
+
+        public String getFilePath() {
+            return this.filePath;
+        }
+    }
+
+
+    public interface Artifact {
+        public void addFilePathArgTo(Map<String, String> inputArgs);
+
+        public String getFilePath();
+
+        public boolean getSelected();
     }
 }
