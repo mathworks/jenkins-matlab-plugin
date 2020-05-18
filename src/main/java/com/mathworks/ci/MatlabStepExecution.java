@@ -10,14 +10,14 @@ import hudson.Launcher.ProcStarter;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 
-public class MatlabCommandStepExecution extends StepExecution implements MatlabBuild {
+public class MatlabStepExecution extends StepExecution implements MatlabBuild {
     private static final long serialVersionUID = 1L;
     private String command;
     private EnvVars env;
     private boolean copyScratchFile;
 
 
-    public MatlabCommandStepExecution(StepContext context, String command, boolean copyScratchFile) {
+    public MatlabStepExecution(StepContext context, String command, boolean copyScratchFile) {
         super(context);
         this.command = command;
         this.copyScratchFile = copyScratchFile;
@@ -72,11 +72,13 @@ public class MatlabCommandStepExecution extends StepExecution implements MatlabB
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                     getCommand(), uniqueTmpFldrName);
             
-            // Copy MATLAB scratch file into the workspace.
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
-            
+            // Copy MATLAB scratch file into the workspace if required.
+            if(this.copyScratchFile) {
+                FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+                copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
+                        MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+            }
+                     
             return matlabLauncher.join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());

@@ -18,6 +18,7 @@ public class RunMatlabCommandStep extends Step {
 
     private EnvVars env;
     private String matlabCommand;
+    private static boolean COPY_SCRATCH_FILE = false;
 
     @DataBoundConstructor
     public RunMatlabCommandStep(String command) {
@@ -44,7 +45,7 @@ public class RunMatlabCommandStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabCommandStepExecution(context, getCommand(), true);
+        return new MatlabStepExecution(context, getCommand(), COPY_SCRATCH_FILE);
     }
 
     @Extension
