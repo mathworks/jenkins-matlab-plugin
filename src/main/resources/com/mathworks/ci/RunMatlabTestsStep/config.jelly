@@ -1,0 +1,28 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    
+	  <f:entry title="Pdf Report" field="testResultsPdf">
+	        <f:textbox/>
+	  </f:entry> 
+	  
+	  <f:entry title="TAP report" field="testResultsTAP">
+	        <f:textbox/>
+	  </f:entry> 
+	  
+	  <f:entry title="Junit report" field="testResultsJUnit">
+	        <f:textbox/>
+	  </f:entry> 
+	  
+	  <f:entry title="Cobertura code coverage" field="codeCoverageCobertura">
+	        <f:textbox/>
+	  </f:entry>
+	  
+	  <f:entry title="Simulink Test report" field="testResultsSimulinkTest">
+	        <f:textbox/>
+	  </f:entry> 
+	  
+	  <f:entry title="Model coverage report" field="modelCoverageCobertura">
+	        <f:textbox/>
+	  </f:entry> 
+
+</j:jelly>
