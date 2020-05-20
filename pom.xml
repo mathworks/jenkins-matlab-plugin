@@ -22,6 +22,7 @@
 	<properties>
 		<jenkins.version>2.164.3</jenkins.version>
 		<java.level>8</java.level>
+		<hpi.compatibleSinceVersion>3.0.0</hpi.compatibleSinceVersion>
 	</properties>
 	
 	<name>MATLAB Plugin</name>
@@ -64,26 +65,23 @@
     </dependencies>
 </dependencyManagement>
 	<dependencies>
-	    
-		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/matrix-project -->
-		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>matrix-project</artifactId>
-			<!--  <version>1.14</version> -->
-		</dependency>
+	
+    <!--  Pipeline Step dependencies -->
+    
+	<dependency>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>matrix-project</artifactId>
+	</dependency>
 
-	<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins.workflow/workflow-step-api -->
 	<dependency>
 		<groupId>org.jenkins-ci.plugins.workflow</groupId>
 		<artifactId>workflow-step-api</artifactId>
-		<!--  <version>2.22</version> -->
 	</dependency>
-	<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins.workflow/workflow-api -->
 	<dependency>
 		<groupId>org.jenkins-ci.plugins.workflow</groupId>
 		<artifactId>workflow-api</artifactId>
-		<!--  <version>2.23</version> -->
 	</dependency>
+	
 	<!--  Jenkins workflow test dependencies -->
 	
 	<dependency>
