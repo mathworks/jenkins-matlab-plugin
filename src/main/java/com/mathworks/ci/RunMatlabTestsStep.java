@@ -28,12 +28,12 @@ public class RunMatlabTestsStep extends Step {
     private String codeCoverageCobertura;
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
-    private static final String PDF_REPORT_PATH = "'PDFReportPath'";
-    private static final String TAP_RESULTS_PATH = "'TAPResultsPath'";
-    private static final String JUNIT_RESULTS_PATH = "'JUnitResultsPath'";
-    private static final String COBERTURA_CODE_COVERAGE_PATH = "'CoberturaCodeCoveragePath'";
-    private static final String STM_RESULTS_PATH = "'SimulinkTestResultsPath'";
-    private static final String COBERTURA_MODEL_COVERAGE_PATH = "'CoberturaModelCoveragePath'";
+    private static final String PDF_REPORT_PATH = "PDFReportPath";
+    private static final String TAP_RESULTS_PATH = "TAPResultsPath";
+    private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+    private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+    private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+    private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
     private static boolean COPY_SCRATCH_FILE = true;
 
     @DataBoundConstructor
@@ -146,7 +146,7 @@ public class RunMatlabTestsStep extends Step {
     
     private void addInputArgs(String reportName, String reportPath, List<String> inputArgs) {   
         if (reportPath != null) {   
-            inputArgs.add(reportName + "," + "'" + reportPath + "'");   
+            inputArgs.add("'" + reportName + "'" + "," + "'" + reportPath + "'");   
         }   
     }
 }
