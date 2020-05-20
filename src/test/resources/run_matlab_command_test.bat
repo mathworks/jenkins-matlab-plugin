@@ -1,4 +1,4 @@
-rem Copyright 2018 The MathWorks, Inc.
+rem Copyright 2020 The MathWorks, Inc.
 
 echo off
 

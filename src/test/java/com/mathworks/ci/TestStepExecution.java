@@ -1,4 +1,8 @@
 package com.mathworks.ci;
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
+ * 
+ */
 
 import java.io.IOException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -8,13 +12,13 @@ import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.model.TaskListener;
 
-public class TestStepExecution extends MatlabStepExecution{
+public class TestStepExecution extends MatlabStepExecution {
 
     public TestStepExecution(StepContext context, String command, boolean copyScratchFile) {
         super(context, command, copyScratchFile);
-        
+
     }
-    
+
     @Override
     public ProcStarter getProcessToRunMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
@@ -29,8 +33,7 @@ public class TestStepExecution extends MatlabStepExecution{
                     .cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
-            copyFileInWorkspace("run_matlab_command_test.sh", runnerScriptName,
-                    targetWorkspace);
+            copyFileInWorkspace("run_matlab_command_test.sh", runnerScriptName, targetWorkspace);
         } else {
             final String runnerScriptName = uniqueName + "\\run_matlab_command_test.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
@@ -38,11 +41,8 @@ public class TestStepExecution extends MatlabStepExecution{
                     .cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
-            copyFileInWorkspace("run_matlab_command_test.bat", runnerScriptName,
-                    targetWorkspace);
+            copyFileInWorkspace("run_matlab_command_test.bat", runnerScriptName, targetWorkspace);
         }
         return matlabLauncher;
     }
-
-    
 }

@@ -1,4 +1,8 @@
 package com.mathworks.ci;
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
+ *  
+ */
 
 import java.io.IOException;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;

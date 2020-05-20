@@ -1,8 +1,14 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
+ *  
+ */
+
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.plugins.workflow.steps.Step;
@@ -12,7 +18,6 @@ import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import com.google.common.collect.ImmutableSet;
-import com.mathworks.ci.RunMatlabTestsBuilder.PdfArtifact;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -127,26 +132,30 @@ public class RunMatlabTestsStep extends Step {
 
     
     private String getInputArgs() {
-        List<String> inputArgs = new ArrayList<>();    
-        addInputArgs(PDF_REPORT_PATH, getTestResultsPdf(),inputArgs);  
-        addInputArgs(TAP_RESULTS_PATH, getTestResultsTAP(), inputArgs);          
-        addInputArgs(JUNIT_RESULTS_PATH, getTestResultsJUnit(), inputArgs);              
-        addInputArgs(STM_RESULTS_PATH, getTestResultsSimulinkTest(), inputArgs);         
-        addInputArgs(COBERTURA_CODE_COVERAGE_PATH,   
-                getCodeCoverageCobertura(), inputArgs);          
-        addInputArgs(COBERTURA_MODEL_COVERAGE_PATH,              
-                getModelCoverageCobertura(), inputArgs);
-        
+        final List<String> inputArgs = new ArrayList<>();
+        final Map<String, String> args = getMatlabArgs();
+
+        args.forEach((key, val) -> {
+            if (val != null) {
+                inputArgs.add("'" + key + "'" + "," + "'" + val + "'");
+            }
+        });
+
         if (inputArgs.isEmpty()) {
-            return "";              
-        }   
-        
-        return String.join(",", inputArgs);       
+            return "";
+        }
+
+        return String.join(",", inputArgs);
     }
     
-    private void addInputArgs(String reportName, String reportPath, List<String> inputArgs) {   
-        if (reportPath != null) {   
-            inputArgs.add("'" + reportName + "'" + "," + "'" + reportPath + "'");   
-        }   
+    private Map<String, String> getMatlabArgs() {
+        final Map<String, String> args = new HashMap<String, String>();
+        args.put(PDF_REPORT_PATH, getTestResultsPdf());
+        args.put(TAP_RESULTS_PATH, getTestResultsTAP());
+        args.put(JUNIT_RESULTS_PATH, getTestResultsJUnit());
+        args.put(STM_RESULTS_PATH, getTestResultsSimulinkTest());
+        args.put(COBERTURA_CODE_COVERAGE_PATH, getCodeCoverageCobertura());
+        args.put(COBERTURA_MODEL_COVERAGE_PATH, getModelCoverageCobertura());
+        return args;
     }
 }

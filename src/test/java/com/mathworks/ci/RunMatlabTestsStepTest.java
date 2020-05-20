@@ -1,5 +1,10 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2019-2020 The MathWorks, Inc.
+ *  
+ */
+
 import java.io.IOException;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -83,6 +88,24 @@ public class RunMatlabTestsStepTest {
                 "node {runMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("'PDFReportPath','myresult/result.pdf'", build);
+        j.assertLogNotContains("TAPResultsPath", build);
+        j.assertLogNotContains("JUnitResultsPath", build);
+        j.assertLogNotContains("CoberturaCodeCoveragePath", build);
+        j.assertLogNotContains("SimulinkTestResultsPath", build);
+        j.assertLogNotContains("CoberturaModelCoveragePath", build);
+    }
+    
+    /*
+     * Verify runMatlabTests runs with empty parameters when nothing no artifact selected 
+     */
+
+    @Test
+    public void verifyEmptyParameter() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests()}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("runMatlabTests()", build);
+        j.assertLogNotContains("PDFReportPath", build);
         j.assertLogNotContains("TAPResultsPath", build);
         j.assertLogNotContains("JUnitResultsPath", build);
         j.assertLogNotContains("CoberturaCodeCoveragePath", build);
