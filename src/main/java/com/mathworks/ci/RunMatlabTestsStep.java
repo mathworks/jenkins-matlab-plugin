@@ -145,7 +145,7 @@ public class RunMatlabTestsStep extends Step {
 
         args.forEach((key, val) -> {
             if (val != null) {
-                inputArgs.add("'" + key + "'" + "," + "'" + val + "'");
+                inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
             }
         });
 
@@ -158,18 +158,12 @@ public class RunMatlabTestsStep extends Step {
     
     private Map<String, String> getMatlabArgs() {
         final Map<String, String> args = new HashMap<String, String>();
-        args.put(PDF_REPORT_PATH,
-                getTestResultsPDF() == null ? null : getTestResultsPDF().replaceAll("'", "''"));
-        args.put(TAP_RESULTS_PATH,
-                getTestResultsTAP() == null ? null : getTestResultsTAP().replaceAll("'", "''"));
-        args.put(JUNIT_RESULTS_PATH,
-                getTestResultsJUnit() == null ? null : getTestResultsJUnit().replaceAll("'", "''"));
-        args.put(STM_RESULTS_PATH, getTestResultsSimulinkTest() == null ? null
-                : getTestResultsSimulinkTest().replaceAll("'", "''"));
-        args.put(COBERTURA_CODE_COVERAGE_PATH, getCodeCoverageCobertura() == null ? null
-                : getCodeCoverageCobertura().replaceAll("'", "''"));
-        args.put(COBERTURA_MODEL_COVERAGE_PATH, getModelCoverageCobertura() == null ? null
-                : getModelCoverageCobertura().replaceAll("'", "''"));
+        args.put(PDF_REPORT_PATH,getTestResultsPDF());
+        args.put(TAP_RESULTS_PATH,getTestResultsTAP());
+        args.put(JUNIT_RESULTS_PATH,getTestResultsJUnit());
+        args.put(STM_RESULTS_PATH, getTestResultsSimulinkTest());
+        args.put(COBERTURA_CODE_COVERAGE_PATH, getCodeCoverageCobertura());
+        args.put(COBERTURA_MODEL_COVERAGE_PATH, getModelCoverageCobertura());
         return args;
     }
     
