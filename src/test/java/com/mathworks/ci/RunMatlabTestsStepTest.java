@@ -63,7 +63,7 @@ public class RunMatlabTestsStepTest {
                 "node('!master') {testMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("tester_started", build);
+        j.assertBuildStatusSuccess(build);
     }
 
     /*
