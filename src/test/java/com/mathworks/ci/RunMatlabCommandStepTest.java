@@ -73,7 +73,8 @@ public class RunMatlabCommandStepTest {
 
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("tester_started", build);
+        
+        j.assertBuildStatusSuccess(build);
     }
 
     /*
@@ -82,13 +83,11 @@ public class RunMatlabCommandStepTest {
      */
 
     @Test
-    public void verifyCommandSamAsScript() throws Exception {
-        DumbSlave s = j.createOnlineSlave();
+    public void verifyCommandSameAsScript() throws Exception {
         project.setDefinition(
                 new CpsFlowDefinition("node { writeFile text: 'worksapce', file: 'test.txt'\n"
                         + "runMATLABCommand(matlabCommand: 'pwd')}", true));
 
-        s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("pwd", build);
     }
