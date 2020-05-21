@@ -53,17 +53,17 @@
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
 	  <tag>HEAD</tag>
   </scm>
-<dependencyManagement>
-    <dependencies>
-        <dependency>
-            <groupId>io.jenkins.tools.bom</groupId>
-            <artifactId>bom-2.164.x</artifactId>
-            <version>4</version>
-            <scope>import</scope>
-            <type>pom</type>
-        </dependency>
-    </dependencies>
-</dependencyManagement>
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.jenkins.tools.bom</groupId>
+				<artifactId>bom-2.164.x</artifactId>
+				<version>4</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
 	
     <!--  Pipeline Step dependencies -->

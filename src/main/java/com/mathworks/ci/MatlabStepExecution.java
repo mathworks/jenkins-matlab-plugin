@@ -18,30 +18,15 @@ import hudson.model.TaskListener;
 public class MatlabStepExecution extends StepExecution implements MatlabBuild {
     private static final long serialVersionUID = 1L;
     private String command;
-    private EnvVars env;
-    private boolean copyScratchFile;
 
 
-    public MatlabStepExecution(StepContext context, String command, boolean copyScratchFile) {
+    public MatlabStepExecution(StepContext context, String command) {
         super(context);
         this.command = command;
-        this.copyScratchFile = copyScratchFile;
     }
 
     private String getCommand() {
-        return this.env == null ? getMatlabCommand() : this.env.expand(getMatlabCommand());
-    }
-
-    private String getMatlabCommand() {
         return this.command;
-    }
-
-    private void setEnv(EnvVars env) {
-        this.env = env;
-    }
-
-    private EnvVars getEnv() {
-        return this.env;
     }
 
     @Override
@@ -50,9 +35,9 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
         FilePath workspace = getContext().get(FilePath.class);
         TaskListener listener = getContext().get(TaskListener.class);
         EnvVars env = getContext().get(EnvVars.class);
-        setEnv(env);
+        
 
-        int res = execMatlabCommand(workspace, launcher, listener, getEnv());
+        int res = execMatlabCommand(workspace, launcher, listener, env);
         if (res == 0) {
             getContext().setResult(Result.SUCCESS);
         } else {
@@ -75,14 +60,8 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    getCommand(), uniqueTmpFldrName);
+                    envVars.expand(getCommand()), uniqueTmpFldrName);
             
-            // Copy MATLAB scratch file into the workspace if required.
-            if(this.copyScratchFile) {
-                FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-                copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                        MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
-            }
                      
             return matlabLauncher.join();
         } catch (Exception e) {

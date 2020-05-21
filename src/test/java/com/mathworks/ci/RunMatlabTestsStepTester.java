@@ -1,7 +1,10 @@
 package com.mathworks.ci;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *  
  */
 
@@ -33,8 +36,14 @@ public class RunMatlabTestsStepTester extends RunMatlabTestsStep {
     
     @Override
     public StepExecution start(StepContext context) throws Exception {
+        Launcher launcher = context.get(Launcher.class);
+        FilePath workspace = context.get(FilePath.class);
         
-        return new TestStepExecution(context,constructCommandForTest(getInputArgs()), true);
+        //Copy Scratch file needed to run MATLAB tests in workspace
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+        copyScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
+                MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+        return new TestStepExecution(context,constructCommandForTest(getInputArgs()));
     }
     
     @Extension
@@ -53,11 +62,21 @@ public class RunMatlabTestsStepTester extends RunMatlabTestsStep {
     }
     
     public String getInputArgs() {
-        List<String> args = Arrays.asList(getTestResultsPdf(), getTestResultsTAP(),
+        List<String> args = Arrays.asList(getTestResultsPDF(), getTestResultsTAP(),
                 getTestResultsJUnit(), getTestResultsSimulinkTest(), getCodeCoverageCobertura(),
                 getModelCoverageCobertura());
 
         return String.join(",", args);
+    }
+    
+    private void copyScratchFileInWorkspace(String sourceFile, String targetFile, FilePath targetWorkspace)
+            throws IOException, InterruptedException {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        FilePath targetFilePath = new FilePath(targetWorkspace, targetFile);
+        InputStream in = classLoader.getResourceAsStream(sourceFile);
+        targetFilePath.copyFrom(in);
+        // set executable permission
+        targetFilePath.chmod(0755);
     }
 
 }

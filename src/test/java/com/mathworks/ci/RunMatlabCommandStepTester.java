@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *  
  */
 
@@ -20,14 +20,14 @@ import hudson.model.TaskListener;
 
 public class RunMatlabCommandStepTester extends RunMatlabCommandStep {
     @DataBoundConstructor
-    public RunMatlabCommandStepTester(String matlabCommand) {
-        super(matlabCommand);
+    public RunMatlabCommandStepTester(String command) {
+        super(command);
     }
     
     @Override
     public StepExecution start(StepContext context) throws Exception {
         
-        return new TestStepExecution(context,this.getMatlabCommand(), false);
+        return new TestStepExecution(context,this.getCommand());
     }
     
     @Extension

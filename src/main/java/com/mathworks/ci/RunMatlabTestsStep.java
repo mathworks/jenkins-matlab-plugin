@@ -1,7 +1,10 @@
 package com.mathworks.ci;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *  
  */
 
@@ -27,7 +30,7 @@ import hudson.model.TaskListener;
 
 public class RunMatlabTestsStep extends Step {
     
-    private String testResultsPdf;
+    private String testResultsPDF;
     private String testResultsTAP;
     private String testResultsJUnit;
     private String codeCoverageCobertura;
@@ -39,7 +42,6 @@ public class RunMatlabTestsStep extends Step {
     private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
     private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
     private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
-    private static boolean COPY_SCRATCH_FILE = true;
 
     @DataBoundConstructor
     public RunMatlabTestsStep() {
@@ -55,13 +57,13 @@ public class RunMatlabTestsStep extends Step {
         this.testResultsTAP = testResultsTAP;
     }
     
-    public String getTestResultsPdf() {
-        return testResultsPdf;
+    public String getTestResultsPDF() {
+        return testResultsPDF;
     }
 
     @DataBoundSetter
-    public void setTestResultsPdf(String testResultsPdf) {
-        this.testResultsPdf = testResultsPdf;
+    public void setTestResultsPDF(String testResultsPDF) {
+        this.testResultsPDF = testResultsPDF;
     }
 
     public String getTestResultsJUnit() {
@@ -104,8 +106,14 @@ public class RunMatlabTestsStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-       
-        return new MatlabStepExecution(context,constructCommandForTest(getInputArgs()), COPY_SCRATCH_FILE);
+        Launcher launcher = context.get(Launcher.class);
+        FilePath workspace = context.get(FilePath.class);
+        
+        //Copy Scratch file needed to run MATLAB tests in workspace
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+        copyScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
+                MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+        return new MatlabStepExecution(context,constructCommandForTest(getInputArgs()));
     }
     
     @Extension
@@ -150,12 +158,31 @@ public class RunMatlabTestsStep extends Step {
     
     private Map<String, String> getMatlabArgs() {
         final Map<String, String> args = new HashMap<String, String>();
-        args.put(PDF_REPORT_PATH, getTestResultsPdf());
-        args.put(TAP_RESULTS_PATH, getTestResultsTAP());
-        args.put(JUNIT_RESULTS_PATH, getTestResultsJUnit());
-        args.put(STM_RESULTS_PATH, getTestResultsSimulinkTest());
-        args.put(COBERTURA_CODE_COVERAGE_PATH, getCodeCoverageCobertura());
-        args.put(COBERTURA_MODEL_COVERAGE_PATH, getModelCoverageCobertura());
+        args.put(PDF_REPORT_PATH,
+                getTestResultsPDF() == null ? null : getTestResultsPDF().replaceAll("'", "''"));
+        args.put(TAP_RESULTS_PATH,
+                getTestResultsTAP() == null ? null : getTestResultsTAP().replaceAll("'", "''"));
+        args.put(JUNIT_RESULTS_PATH,
+                getTestResultsJUnit() == null ? null : getTestResultsJUnit().replaceAll("'", "''"));
+        args.put(STM_RESULTS_PATH, getTestResultsSimulinkTest() == null ? null
+                : getTestResultsSimulinkTest().replaceAll("'", "''"));
+        args.put(COBERTURA_CODE_COVERAGE_PATH, getCodeCoverageCobertura() == null ? null
+                : getCodeCoverageCobertura().replaceAll("'", "''"));
+        args.put(COBERTURA_MODEL_COVERAGE_PATH, getModelCoverageCobertura() == null ? null
+                : getModelCoverageCobertura().replaceAll("'", "''"));
         return args;
+    }
+    
+    /*
+     * Method to copy given file from source to target node specific workspace.
+     */
+    private void copyScratchFileInWorkspace(String sourceFile, String targetFile, FilePath targetWorkspace)
+            throws IOException, InterruptedException {
+        final ClassLoader classLoader = getClass().getClassLoader();
+        FilePath targetFilePath = new FilePath(targetWorkspace, targetFile);
+        InputStream in = classLoader.getResourceAsStream(sourceFile);
+        targetFilePath.copyFrom(in);
+        // set executable permission
+        targetFilePath.chmod(0755);
     }
 }

@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *  
  */
 
@@ -34,7 +34,7 @@ public class RunMatlabTestsStepTest {
     @Test
     public void verifyMATLABPathNotSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
-                "node {runMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
+                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("MATLAB_ROOT", build);
     }
@@ -47,7 +47,7 @@ public class RunMatlabTestsStepTest {
     @Test
     public void verifyMATLABPathSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
-                "node {testMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
+                "node {testMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("tester_started", build);
     }
@@ -60,7 +60,7 @@ public class RunMatlabTestsStepTest {
     public void verifyOnslave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(new CpsFlowDefinition(
-                "node('!master') {testMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
+                "node('!master') {testMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertBuildStatusSuccess(build);
@@ -73,7 +73,7 @@ public class RunMatlabTestsStepTest {
     @Test
     public void verifyArtifactPath() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
-                "node {runMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
+                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("'PDFReportPath','myresult/result.pdf'", build);
     }
@@ -85,7 +85,7 @@ public class RunMatlabTestsStepTest {
     @Test
     public void verifyArtifactParameters() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
-                "node {runMATLABTests(testResultsPdf:'myresult/result.pdf')}", true));
+                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("'PDFReportPath','myresult/result.pdf'", build);
         j.assertLogNotContains("TAPResultsPath", build);
