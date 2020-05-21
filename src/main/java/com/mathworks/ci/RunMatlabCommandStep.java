@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *  
  */
 
@@ -22,22 +22,21 @@ import hudson.model.TaskListener;
 public class RunMatlabCommandStep extends Step {
 
     private EnvVars env;
-    private String matlabCommand;
-    private static boolean COPY_SCRATCH_FILE = false;
+    private String command;
 
     @DataBoundConstructor
-    public RunMatlabCommandStep(String matlabCommand) {
-        this.matlabCommand = matlabCommand;
+    public RunMatlabCommandStep(String command) {
+        this.command = command;
 
     }
 
 
-    public String getMatlabCommand() {
-        return this.matlabCommand;
+    public String getCommand() {
+        return this.command;
     }
 
-    private String getCommand() {
-        return this.env == null ? getMatlabCommand() : this.env.expand(getMatlabCommand());
+    private String getMatlabCommand() {
+        return this.env == null ? getCommand() : this.env.expand(getCommand());
     }
 
     public void setEnv(EnvVars env) {
@@ -50,7 +49,7 @@ public class RunMatlabCommandStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabStepExecution(context, getCommand(), COPY_SCRATCH_FILE);
+        return new MatlabStepExecution(context, getMatlabCommand());
     }
 
     @Extension

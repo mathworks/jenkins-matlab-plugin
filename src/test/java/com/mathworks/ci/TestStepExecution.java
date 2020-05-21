@@ -1,6 +1,6 @@
 package com.mathworks.ci;
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  * 
  */
 
@@ -14,8 +14,8 @@ import hudson.model.TaskListener;
 
 public class TestStepExecution extends MatlabStepExecution {
 
-    public TestStepExecution(StepContext context, String command, boolean copyScratchFile) {
-        super(context, command, copyScratchFile);
+    public TestStepExecution(StepContext context, String command) {
+        super(context, command);
 
     }
 
