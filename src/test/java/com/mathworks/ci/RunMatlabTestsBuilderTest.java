@@ -274,7 +274,7 @@ public class RunMatlabTestsBuilderTest {
         WebAssert.assertTextPresent(page,"matlabTestArtifacts/testreport.pdf");
         WebAssert.assertTextPresent(page,"matlabTestArtifacts/simulinktestresults.mldatx");
         WebAssert.assertTextPresent(page,"matlabTestArtifacts/cobertura.xml");
-        WebAssert.assertTextPresent(page,"matlabTestArtifacts/modelcoverage.xml");
+        WebAssert.assertTextPresent(page,"matlabTestArtifacts/coberturamodelcoverage.xml");
     }
     
     /*
