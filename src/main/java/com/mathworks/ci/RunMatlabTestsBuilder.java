@@ -179,7 +179,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
         if (modelCoverageChkBx) {
             this.modelCoverageArtifact =
-                    new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.pdf");
+                    new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.xml");
         }
         return this;
     }
