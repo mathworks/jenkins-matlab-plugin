@@ -35,21 +35,9 @@ public class RunMatlabCommandStep extends Step {
         return this.command;
     }
 
-    private String getMatlabCommand() {
-        return this.env == null ? getCommand() : this.env.expand(getCommand());
-    }
-
-    public void setEnv(EnvVars env) {
-        this.env = env;
-    }
-
-    public EnvVars getEnv() {
-        return this.env;
-    }
-
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabStepExecution(context, getMatlabCommand());
+        return new MatlabStepExecution(context, getCommand());
     }
 
     @Extension
