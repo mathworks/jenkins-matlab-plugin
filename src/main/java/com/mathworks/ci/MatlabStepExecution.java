@@ -16,7 +16,9 @@ import hudson.model.Result;
 import hudson.model.TaskListener;
 
 public class MatlabStepExecution extends StepExecution implements MatlabBuild {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = 6704588180717665100L;
+    
     private String command;
 
 
@@ -31,18 +33,15 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
 
     @Override
     public boolean start() throws Exception {
-        Launcher launcher = getContext().get(Launcher.class);
-        FilePath workspace = getContext().get(FilePath.class);
-        TaskListener listener = getContext().get(TaskListener.class);
-        EnvVars env = getContext().get(EnvVars.class);
+        final Launcher launcher = getContext().get(Launcher.class);
+        final FilePath workspace = getContext().get(FilePath.class);
+        final TaskListener listener = getContext().get(TaskListener.class);
+        final EnvVars env = getContext().get(EnvVars.class);
         
-
         int res = execMatlabCommand(workspace, launcher, listener, env);
-        if (res == 0) {
-            getContext().setResult(Result.SUCCESS);
-        } else {
-            getContext().setResult(Result.FAILURE);
-        }
+
+        getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
+        
         getContext().onSuccess(true);
         
         //return false represents the asynchronous run. 
@@ -56,10 +55,9 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-        final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
-        ProcStarter matlabLauncher;
+        final String uniqueTmpFldrName = getUniqueNameForRunnerFile();  
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+            ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                     envVars.expand(getCommand()), uniqueTmpFldrName);
             
                      
@@ -69,7 +67,7 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
             return 1;
         } finally {
             // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript =
+            final FilePath matlabRunnerScript =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
             if (matlabRunnerScript.exists()) {
                 matlabRunnerScript.deleteRecursive();
