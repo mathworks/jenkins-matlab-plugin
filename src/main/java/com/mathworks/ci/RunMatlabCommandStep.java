@@ -21,13 +21,12 @@ import hudson.model.TaskListener;
 
 public class RunMatlabCommandStep extends Step {
 
-    private EnvVars env;
+    
     private String command;
 
     @DataBoundConstructor
     public RunMatlabCommandStep(String command) {
         this.command = command;
-
     }
 
 

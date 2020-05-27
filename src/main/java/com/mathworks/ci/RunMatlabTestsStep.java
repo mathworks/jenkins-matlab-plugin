@@ -39,12 +39,7 @@ public class RunMatlabTestsStep extends Step {
     private String codeCoverageCobertura;
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
-    private static final String PDF_REPORT_PATH = "PDFReportPath";
-    private static final String TAP_RESULTS_PATH = "TAPResultsPath";
-    private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
-    private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
-    private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
-    private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+  
 
     @DataBoundConstructor
     public RunMatlabTestsStep() {
@@ -120,7 +115,7 @@ public class RunMatlabTestsStep extends Step {
     }
     
     @Extension
-    public static class CommandStepDescriptor extends StepDescriptor {
+    public static class RunTestsStepDescriptor extends StepDescriptor {
 
         @Override
         public Set<? extends Class<?>> getRequiredContext() {
@@ -161,12 +156,12 @@ public class RunMatlabTestsStep extends Step {
     
     private Map<String, String> getMatlabArgs() {
         final Map<String, String> args = new HashMap<String, String>();
-        args.put(PDF_REPORT_PATH,getTestResultsPDF());
-        args.put(TAP_RESULTS_PATH,getTestResultsTAP());
-        args.put(JUNIT_RESULTS_PATH,getTestResultsJUnit());
-        args.put(STM_RESULTS_PATH, getTestResultsSimulinkTest());
-        args.put(COBERTURA_CODE_COVERAGE_PATH, getCodeCoverageCobertura());
-        args.put(COBERTURA_MODEL_COVERAGE_PATH, getModelCoverageCobertura());
+        args.put("PDFReportPath", getTestResultsPDF());
+        args.put("TAPResultsPath", getTestResultsTAP());
+        args.put("JUnitResultsPath", getTestResultsJUnit());
+        args.put("SimulinkTestResultsPath", getTestResultsSimulinkTest());
+        args.put("CoberturaCodeCoveragePath", getCodeCoverageCobertura());
+        args.put("CoberturaModelCoveragePath", getModelCoverageCobertura());
         return args;
     }
     
