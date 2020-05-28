@@ -38,6 +38,10 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
         final TaskListener listener = getContext().get(TaskListener.class);
         final EnvVars env = getContext().get(EnvVars.class);
         
+        //Make sure the Workspace exists before run
+        
+        workspace.mkdirs();
+        
         int res = execMatlabCommand(workspace, launcher, listener, env);
 
         getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
