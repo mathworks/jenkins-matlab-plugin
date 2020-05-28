@@ -38,8 +38,7 @@ public class RunMatlabCommandStepTest {
     @Test
     public void verifyMATLABPathNotSet() throws Exception {
         project.setDefinition(
-                new CpsFlowDefinition("node { writeFile text: 'worksapce', file: 'test.txt'\n"
-                        + "runMATLABCommand(command: 'pwd')}", true));
+                new CpsFlowDefinition("node { runMATLABCommand(command: 'pwd')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("MATLAB_ROOT", build);
     }
@@ -52,8 +51,7 @@ public class RunMatlabCommandStepTest {
     @Test
     public void verifyMATLABPathSet() throws Exception {
         project.setDefinition(
-                new CpsFlowDefinition("node { writeFile text: 'worksapce', file: 'test.txt'\n"
-                        + "testMATLABCommand(command: 'pwd')}", true));
+                new CpsFlowDefinition("node { testMATLABCommand(command: 'pwd')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("tester_started", build);
     }
@@ -67,8 +65,7 @@ public class RunMatlabCommandStepTest {
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(new CpsFlowDefinition(
-                "node('!master') { writeFile text: 'worksapce', file: 'test.txt'\n"
-                        + "testMATLABCommand(command: 'pwd')}",
+                "node('!master') { testMATLABCommand(command: 'pwd')}",
                 true));
 
         s.getWorkspaceFor(project);
@@ -85,8 +82,7 @@ public class RunMatlabCommandStepTest {
     @Test
     public void verifyCommandSameAsScript() throws Exception {
         project.setDefinition(
-                new CpsFlowDefinition("node { writeFile text: 'worksapce', file: 'test.txt'\n"
-                        + "runMATLABCommand(command: 'pwd')}", true));
+                new CpsFlowDefinition("node { runMATLABCommand(command: 'pwd')}", true));
 
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("pwd", build);
@@ -99,11 +95,10 @@ public class RunMatlabCommandStepTest {
 
     @Test
     public void verifyMatrixBuild() throws Exception {
-        project.setDefinition(
-                new CpsFlowDefinition("node { writeFile text: 'worksapce', file: 'test.txt'\n"
-                        + "matrix {\n" + "agent any\n" + "axes {\n" + "axis {\n" + "name: 'CMD'\n"
-                        + "values: 'pwd','ver'\n }}\n"
-                        + "runMATLABCommand(command: '${CMD}')}}", true));
+        project.setDefinition(new CpsFlowDefinition(
+                "node { matrix {\n" + "agent any\n" + "axes {\n" + "axis {\n" + "name: 'CMD'\n"
+                        + "values: 'pwd','ver'\n }}\n" + "runMATLABCommand(command: '${CMD}')}}",
+                true));
 
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("pwd", build);
