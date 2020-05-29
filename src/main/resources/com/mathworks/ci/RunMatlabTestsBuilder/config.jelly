@@ -37,7 +37,7 @@
    
    <f:optionalBlock name="modelCoverageArtifact" field="modelCoverageArtifact" title="Cobertura model coverage" checked="${instance.modelCoverageArtifact.selected}">
   	  <f:entry field="modelCoverageFilePath" title="File path: ">
-  	  <f:textbox default="matlabTestArtifacts/modelcoverage.xml"/>
+  	  <f:textbox default="matlabTestArtifacts/coberturamodelcoverage.xml"/>
   	  </f:entry>
    </f:optionalBlock>
 </f:section>

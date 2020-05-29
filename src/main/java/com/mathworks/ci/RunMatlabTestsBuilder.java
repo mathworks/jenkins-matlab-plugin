@@ -39,6 +39,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
+    
+    // Make all old values transient which protects them writing back on disk.
+    private transient boolean tapChkBx;
+    private transient boolean junitChkBx;
+    private transient boolean coberturaChkBx;
+    private transient boolean stmResultsChkBx;
+    private transient boolean modelCoverageChkBx;
+    private transient boolean pdfReportChkBx;
+    
     private Artifact tapArtifact = new NullArtifact();
     private Artifact junitArtifact = new NullArtifact();
     private Artifact coberturaArtifact = new NullArtifact();
@@ -140,7 +149,42 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private EnvVars getEnv() {
         return this.env;
     }
+    
+    // To retain Backward compatibility
+    protected Object readResolve() {
+        // Assign default values to new elements.
+        this.pdfReportArtifact = new NullArtifact();
+        this.tapArtifact = new NullArtifact();
+        this.junitArtifact = new NullArtifact();
+        this.coberturaArtifact = new NullArtifact();
+        this.stmResultsArtifact = new NullArtifact();
+        this.modelCoverageArtifact = new NullArtifact();
 
+        // Assign appropriate artifact type if it was selected earlier.
+        if (pdfReportChkBx) {
+            this.pdfReportArtifact = new PdfArtifact("matlabTestArtifacts/testreport.pdf");
+        }
+        if (tapChkBx) {
+            this.tapArtifact = new TapArtifact("matlabTestArtifacts/taptestresults.tap");
+        }
+        if (junitChkBx) {
+            this.junitArtifact = new JunitArtifact("matlabTestArtifacts/junittestresults.xml");
+        }
+        if (coberturaChkBx) {
+            this.coberturaArtifact = new CoberturaArtifact("matlabTestArtifacts/cobertura.xml");
+        }
+        if (stmResultsChkBx) {
+            this.stmResultsArtifact =
+                    new StmResultsArtifact("matlabTestArtifacts/simulinktestresults.mldatx");
+        }
+        if (modelCoverageChkBx) {
+            this.modelCoverageArtifact =
+                    new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.xml");
+        }
+        return this;
+    }
+    
+    
     @Symbol("RunMatlabTests")
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
