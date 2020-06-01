@@ -135,7 +135,7 @@ public class RunMATLABCommandInteg {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("pwd", build);
+        jenkins.assertLogContains(TestData.getPropValues("matlab.command"), build);
     }
 
     /*
