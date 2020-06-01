@@ -37,7 +37,7 @@ public class RunMATLABTestsInteg {
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
     private static String FileSeperator;
-    private TestData values;
+    //private TestData values;
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
     private static URL url;
 
@@ -107,7 +107,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyInvalidMATLABRootError() throws Exception{
-        //this.buildWrapper.setMatlabRootFolder(values.getPropValues("matlab.root.path"));
+        //this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.root.path"));
+        System.out.println("from property file:"+TestData.getPropValues("matlab.root.path"));
         this.buildWrapper.setMatlabRootFolder("/Applications/MATLAB_R2015b.app");
         project.getBuildWrappersList().add(this.buildWrapper);
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");

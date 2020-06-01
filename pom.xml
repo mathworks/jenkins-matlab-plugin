@@ -151,6 +151,7 @@
 						<configuration>
 							<includes>
 								<include>**/*Integ.java</include>
+								<include>**/*Data.java</include>
 							</includes>
 							<skipTests>${skip.integration.tests}</skipTests>
 						</configuration>

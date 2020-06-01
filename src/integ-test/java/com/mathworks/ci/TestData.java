@@ -5,27 +5,25 @@ import java.util.ResourceBundle;
 
 public class TestData {
 
-    String value="";
-    InputStream inputStream;
+    static String value="";
+    static InputStream inputStream;
 
-    public String getPropValues(String key) throws IOException{
+    public static String getPropValues(String key){
         try{
             Properties prop=new Properties();
-            String propFileName="resources/testdataconfig.properties";
-            inputStream=getClass().getClassLoader().getResourceAsStream(propFileName);
+
+            inputStream=TestData.class.getClassLoader().getResourceAsStream("testdataconfig.properties");
             if(inputStream!=null){
                 prop.load(inputStream);
             } else {
-                throw new FileNotFoundException("PROPERTY FILE '"+propFileName+"' not found in classpath");
+                System.out.println("NOT ABLE TO FIND FILE");
             }
             value=prop.getProperty(key);
         }
         catch(Exception e){
             System.out.println(e);
         }
-        finally {
-           inputStream.close();
-        }
+
         return value;
     }
 
