@@ -102,7 +102,7 @@ public class RunMATLABCommandInteg {
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilderTester tester =
                 new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
-        tester.setMatlabCommand("pp");
+        tester.setMatlabCommand(TestData.getPropValues("matlab.invalid.command"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
@@ -116,7 +116,7 @@ public class RunMATLABCommandInteg {
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilderTester tester =
                 new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positive");
-        tester.setMatlabCommand("pp");
+        tester.setMatlabCommand(TestData.getPropValues("matlab.command"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
@@ -131,7 +131,7 @@ public class RunMATLABCommandInteg {
     public void verifyBuildPicksTheCorretCommandBatch() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
+        scriptBuilder.setMatlabCommand(TestData.getPropValues("matlab.command"));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
@@ -145,7 +145,7 @@ public class RunMATLABCommandInteg {
     public void verifyMATLABscratchFileNotGenerated() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
+        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
@@ -159,7 +159,7 @@ public class RunMATLABCommandInteg {
     public void verifyMATLABrunnerFileGenerated() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
+        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("MATLAB_ROOT", build);
@@ -176,18 +176,16 @@ public class RunMATLABCommandInteg {
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
-        scriptBuilder.setMatlabCommand("pwd");
+        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
         matrixProject.getBuildersList().add(scriptBuilder);
         Map<String, String> vals = new HashMap<String, String>();
         vals.put("VERSION", "R2018a");
         Combination c1 = new Combination(vals);
         MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-        //jenkins.assertLogContains("MATLAB_ROOT", build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
         vals.put("VERSION", "R2018b");
         Combination c2 = new Combination(vals);
         MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-        //jenkins.assertLogContains("MATLAB_ROOT", build2);
         jenkins.assertBuildStatus(Result.FAILURE, build2);
     }
     /*
@@ -204,7 +202,7 @@ public class RunMATLABCommandInteg {
         RunMatlabCommandBuilderTester tester = new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath,
                 "-positive");
 
-        tester.setMatlabCommand("pwd");
+        tester.setMatlabCommand((TestData.getPropValues("matlab.command")));
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 

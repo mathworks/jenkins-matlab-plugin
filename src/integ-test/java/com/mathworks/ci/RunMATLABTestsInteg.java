@@ -25,6 +25,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
@@ -37,9 +38,9 @@ public class RunMATLABTestsInteg {
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
     private static String FileSeperator;
-    //private TestData values;
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
     private static URL url;
+
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -107,9 +108,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyInvalidMATLABRootError() throws Exception{
-        //this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.root.path"));
-        System.out.println("from property file:"+TestData.getPropValues("matlab.root.path"));
-        this.buildWrapper.setMatlabRootFolder("/Applications/MATLAB_R2015b.app");
+        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.root.path"));
         project.getBuildWrappersList().add(this.buildWrapper);
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
@@ -134,8 +133,7 @@ public class RunMATLABTestsInteg {
     
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        //this.buildWrapper.setMatlabRootFolder(values.getPropValues("matlab.root.path"));
-        this.buildWrapper.setMatlabRootFolder("/Applications/MATLAB_R2015b.app");
+        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.root.path"));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -164,19 +162,6 @@ public class RunMATLABTestsInteg {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
-/*
-    @Test
-    public void verifyRunTestAutomaticallyIsDefault() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        //setAllTestArtifacts(true, testBuilder);
-        project.getBuildersList().add(this.testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("\'PDFReport\',true,\'TAPResults\',true,"
-                + "\'JUnitResults\',true,\'SimulinkTestResults\',true,"
-                + "\'CoberturaCodeCoverage\',true,\'CoberturaModelCoverage\',true", build);
-    }*/
 
     /*
      * Test to verify no parameters are sent in runMatlabTests when no artifacts are selected.
@@ -196,7 +181,6 @@ public class RunMATLABTestsInteg {
     public void verifyMATLABscratchFileGenerated() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
-        //setAllTestArtifacts(false, testBuilder);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
@@ -213,8 +197,7 @@ public class RunMATLABTestsInteg {
         junitChkbx.setChecked(true);
         Thread.sleep(2000);
         HtmlTextInput junitFilePathInput=(HtmlTextInput) page.getElementByName("_.junitReportFilePath");
-        Assert.assertEquals("matlabTestArtifacts/junittestresults.xml",junitFilePathInput.getValueAttribute());
-        //WebAssert.assertTextPresent(page,"");
+        Assert.assertEquals(TestData.getPropValues("junit.file.path"),junitFilePathInput.getValueAttribute());
     }
 
     @Test
@@ -227,7 +210,7 @@ public class RunMATLABTestsInteg {
         tapChkbx.setChecked(true);
         Thread.sleep(2000);
         HtmlTextInput tapFilePathInput=(HtmlTextInput) page.getElementByName("_.tapReportFilePath");
-        Assert.assertEquals("matlabTestArtifacts/taptestresults.tap",tapFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestData.getPropValues("taptestresult.file.path"),tapFilePathInput.getValueAttribute());
 
     }
 
@@ -241,7 +224,7 @@ public class RunMATLABTestsInteg {
         pdfChkbx.setChecked(true);
         Thread.sleep(2000);
         HtmlTextInput PDFFilePathInput=(HtmlTextInput) page.getElementByName("_.pdfReportFilePath");
-        Assert.assertEquals("matlabTestArtifacts/testreport.pdf",PDFFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestData.getPropValues("pdftestreport.file.path"),PDFFilePathInput.getValueAttribute());
 
     }
 
@@ -254,10 +237,8 @@ public class RunMATLABTestsInteg {
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaArtifact");
         coberturaChkBx.setChecked(true);
         Thread.sleep(2000);
-        //WebAssert.assertTextPresent(page,
-                //TestMessage.getValue("Builder.matlab.cobertura.support.warning"));
         HtmlTextInput coberturaCodeCoverageFileInput=(HtmlTextInput) page.getElementByName("_.coberturaReportFilePath");
-        Assert.assertEquals("matlabTestArtifacts/cobertura.xml",coberturaCodeCoverageFileInput.getValueAttribute());
+        Assert.assertEquals(TestData.getPropValues("cobertura.file.path"),coberturaCodeCoverageFileInput.getValueAttribute());
     }
 
 
@@ -270,10 +251,8 @@ public class RunMATLABTestsInteg {
         HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("modelCoverageArtifact");
         modelCoverageChkBx.setChecked(true);
         Thread.sleep(2000);
-        //WebAssert.assertTextPresent(page,
-                //TestMessage.getValue("Builder.matlab.modelcoverage.support.warning"));
         HtmlTextInput coberturaModelCoverageFileInput=(HtmlTextInput) page.getElementByName("_.modelCoverageFilePath");
-        Assert.assertEquals("matlabTestArtifacts/coberturamodelcoverage.xml",coberturaModelCoverageFileInput.getValueAttribute());
+        Assert.assertEquals(TestData.getPropValues("modelcoverage.file.path"),coberturaModelCoverageFileInput.getValueAttribute());
     }
 
 
@@ -286,10 +265,8 @@ public class RunMATLABTestsInteg {
         HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("stmResultsArtifact");
         stmResultsChkBx.setChecked(true);
         Thread.sleep(2000);
-        //WebAssert.assertTextPresent(page,
-                //TestMessage.getValue("Builder.matlab.exportstmresults.support.warning"));
         HtmlTextInput STMRFilePathInput=(HtmlTextInput) page.getElementByName("_.stmResultsFilePath");
-        Assert.assertEquals("matlabTestArtifacts/simulinktestresults.mldatx",STMRFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestData.getPropValues("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
     }
 
     @Test
@@ -331,7 +308,7 @@ public class RunMATLABTestsInteg {
         Combination c1 = new Combination(vals);
         MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
-        //jenkins.assertLogContains("MATLAB_ROOT", build1);
+
         jenkins.assertBuildStatus(Result.FAILURE, build1);
 
         // Check for second Matrix combination
@@ -339,7 +316,6 @@ public class RunMATLABTestsInteg {
         Combination c2 = new Combination(vals);
         MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
 
-        //jenkins.assertLogContains("MATLAB_ROOT", build2);
         jenkins.assertBuildStatus(Result.FAILURE, build2);
     }
 
