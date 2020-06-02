@@ -13,7 +13,7 @@ For a detailed list of releases, see [Change Logs](/CHANGELOG.md).
 To learn how to use the plugin in testing workflows, see [Examples](/examples/). 
 
 ## Contact Us
-If you have any questions or suggestions, please contact MathWorks.
+If you have any questions or suggestions, please contact MathWorks
 
 continuous-integration@mathworks.com
 
