@@ -1,6 +1,7 @@
 <div>
 <br>
-Generate a test report in PDF format, <b>testreport.pdf</b>, and save it in the <b>matlabTestArtifacts</b> folder of the Jenkins workspace.
+Generate a test report in PDF format. By default, MATLAB names the artifact <b>testreport.pdf</b> and stores it in the <b>matlabTestArtifacts</b> folder of the project workspace. 
+To override the default artifact name and location, specify a path relative to the project folder in the <b>File path</b> box. If the text box is empty, MATLAB does not generate an artifact.
 <br><br>
 Due to Jenkins Content Security Policy rules, the generated report might not open properly from within the Jenkins workspace. 
 Consider copying the report to a location outside the workspace and opening it from there. For more information, 
