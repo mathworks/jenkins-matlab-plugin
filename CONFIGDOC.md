@@ -8,7 +8,7 @@ You can use the Jenkins&trade; plugin for MATLAB&reg; in freestyle and multi-con
 -  [Set Up Multi-Configuration Project](#set-up-multi-configuration-project)
 
 ## Use MATLAB for Build
-Once you install the plugin on your Jenkins agent, **Use MATLAB version** appears in the **Build Environment** section of the project configuration window.
+Once you install the plugin, **Use MATLAB version** appears in the **Build Environment** section of the project configuration window.
 
 ![matlab_path](https://user-images.githubusercontent.com/48831250/76883191-1c528b00-6852-11ea-9242-7d143f8a5c46.png)
 
