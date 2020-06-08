@@ -18,30 +18,14 @@
 			<email>nbhoski@mathworks.com</email>
 		</developer>
 	</developers>
-	
+
 	<properties>
 		<jenkins.version>2.7.3</jenkins.version>
 		<java.level>8</java.level>
-		<skip.unit.tests>false</skip.unit.tests>
-		<skip.integration.tests>true</skip.integration.tests>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-		</profile>
-		<profile>
-			<id>integration-test</id>
-			<properties>
-				<skip.integration.tests>false</skip.integration.tests>
-				<skip.unit.tests>true</skip.unit.tests>
-			</properties>
-		</profile>
-	</profiles>
-	
+
+
 	<name>MATLAB Plugin</name>
 	<description>Jenkins plugin for MATLAB</description>
 	<url>https://github.com/jenkinsci/matlab-plugin</url>
@@ -68,8 +52,8 @@
 		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/matlab-plugin.git</developerConnection>
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/matrix-project -->
@@ -82,7 +66,7 @@
 
 	<build>
 		<plugins>
-			<!-- Plugin to download the matlab run scripts and keep it under class 
+			<!-- Plugin to download the matlab run scripts and keep it under class
 				resource folder -->
 			<plugin>
 				<groupId>com.googlecode.maven-download-plugin</groupId>
@@ -152,7 +136,6 @@
 							<includes>
 								<include>**/*Integ.java</include>
 							</includes>
-							<skipTests>${skip.integration.tests}</skipTests>
 						</configuration>
 					</execution>
 				</executions>
@@ -166,7 +149,6 @@
 						<include>**/*Test.java</include>
 						<include>**/*Tester.java</include>
 					</includes>
-					<skipTests>${skip.unit.tests}</skipTests>
 				</configuration>
 			</plugin>
 		</plugins>
