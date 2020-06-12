@@ -56,7 +56,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         this.env = env;
     }
 
-    @Symbol("Matlab")
+    
     @Extension
     public static final class UseMatlabVersionDescriptor extends BuildWrapperDescriptor {
 
