@@ -185,7 +185,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
     
     
-    @Symbol("RunMatlabTests")
+    
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
 
