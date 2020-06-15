@@ -61,7 +61,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         return this.env;
     }
 
-    
+    @Symbol("RunMatlabCommand")
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
 
