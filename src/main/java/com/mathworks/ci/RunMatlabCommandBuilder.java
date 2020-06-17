@@ -6,8 +6,10 @@ package com.mathworks.ci;
  * 
  */
 
+import java.io.File;
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -101,6 +103,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
+        
 
         buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
@@ -112,20 +115,29 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
+        final String uniqueCommandFile = "command_"+getUniqueNameForRunnerFile().replaceAll("-", "_");
+        
+        // Get unique temporary folder filepath 
+        final FilePath uniqeTmpFolderPath = getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+        //Create a new command runner script in the temp folder.
+        final FilePath matlabCommandFile = new FilePath(uniqeTmpFolderPath,uniqueCommandFile + ".m");
+        final String matlabCommandFileContent = "cd '" + workspace.getRemote() + "';\n" + getCommand();
+        matlabCommandFile.write(matlabCommandFileContent, null);
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    getCommand(), uniqueTmpFldrName);
-            return matlabLauncher.join();
+            launcher = getDecoratedLauncherForWindows(launcher);
+            //Start the launcher from temp folder
+            matlabLauncher = launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
+            return getProcessToRunMatlabCommand(matlabLauncher,workspace, launcher, listener,
+                    uniqueCommandFile, uniqueTmpFldrName).join();
+            
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
-            // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript =
-                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-            if (matlabRunnerScript.exists()) {
-                matlabRunnerScript.deleteRecursive();
+            // Cleanup the runner File from tmp directory         
+            if (uniqeTmpFolderPath.exists()) {
+                uniqeTmpFolderPath.deleteRecursive();
             }
         }
 
