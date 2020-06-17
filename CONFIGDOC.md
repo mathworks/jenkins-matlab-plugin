@@ -1,8 +1,8 @@
-When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipeline/), wether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#setting-environment-variables), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models on Jenkins. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
+When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipeline/), whether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#setting-environment-variables), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models on Jenkins. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
 
 
 -  [Configure Plugin in Web UI](#configure-plugin-in-web-ui)
-      -  [Use MATLAB for Build](#use-matlab-for-build)
+      -  [Use MATLAB in Build](#use-matlab-in-build)
       -  [Specify Build Steps](#specify-build-steps)
          - [Run MATLAB Command](#run-matlab-command)
          - [Run MATLAB Tests](#run-matlab-tests)
@@ -12,12 +12,12 @@ When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipe
    -  [Add MATLAB to System Path](#add-matlab-to-system-path)
    -  [Use `RunMATLABCommand` Step](#use-runmatlabcommand-step)
    -  [Use `RunMATLABTests` Step](#use-runmatlabtests-step) 
-   -  [Use MATLAB for Matrix Build](#use-matlab-for-matrix-build)
+   -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
 
 ## Configure Plugin in Web UI
-You can use the web UI provided by Jenkins to configure the plugin in freestyle and multi-confiuraton projects. To run MATLAB or Simulink in a Pipeline project, see [Set Up Pipeline Project](#set-up-pipeline-project).
+You can use the web UI provided by Jenkins to configure the plugin in freestyle and multi-configuration projects. To run MATLAB or Simulink in a Pipeline project, see [Set Up Pipeline Project](#set-up-pipeline-project).
 
-### Use MATLAB for Build
+### Use MATLAB in Build
 Once you install the plugin, **Use MATLAB version** appears in the **Build Environment** section of the project configuration window.
 
 ![matlab_path](https://user-images.githubusercontent.com/48831250/76883191-1c528b00-6852-11ea-9242-7d143f8a5c46.png)
@@ -109,7 +109,7 @@ You can define several axes in the **Configuration Matrix** section. For example
 * A multi-configuration project creates a separate workspace for each user-defined axis value. If you specify the full paths to where MATLAB is installed as axis values, Jenkins fails to create separate workspaces and fails the build.
 
 ## Set Up Pipeline Project
-When you define your Pipeline with a `Jenkinsfile`, the plugin provides you with a step to run MATLAB scripts, functions, and statements. The plugin also provides a step to run MATLAB and Simulink tests. (These steps are common to both Declarative and Scripted Pipeline.) 
+When you define your Pipeline with a `Jenkinsfile`, the plugin provides you with a step to run MATLAB scripts, functions, and statements. The plugin also provides a step to run MATLAB and Simulink tests. (These steps are common to both Declarative and Scripted Pipelines.) 
 
 To configure the plugin for a Pipeline project:
 1) Define your Pipeline in a `Jenkinsfile` in the root of your repository.
@@ -120,9 +120,9 @@ To configure the plugin for a Pipeline project:
 You also can define your Pipeline directly in the project configuration window. If you select **Pipeline script** from the **Definition** drop-down menu, you can author your Pipeline code in the **Script** box. When you define your Pipeline this way, your Pipeline must include an additional stage to check out MATLAB code from source control.
 
 ### Add MATLAB to System Path
-When Jenkins executes your Pipeline, it invokes the first MATLAB instance on the system path. If the PATH environment variable of the build agent does not inculde any MATLAB instances, you must update the variable with the MATLAB root folder that should be used for the build.
+When Jenkins executes MATLAB-related steps in your Pipeline, it uses the first MATLAB instance on the system path. If the PATH environment variable of the build agent does not include any MATLAB instances, you must update the variable with the MATLAB root folder that should be used for the build.
 
-To update the system PATH environment variable using Declarative Pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2019a to the system PATH enviroment variable and use it to run your command.
+To update the system PATH environment variable using Declarative Pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2019a to the system PATH environment variable and use it to run your command.
 
 ```groovy
 pipeline {
@@ -154,7 +154,7 @@ node {
 ``` 
 
 ### Use `runMATLABCommand` Step
-Use the `runMATLABCommand` step in your Pipeline to run MATLAB scripts, functions, and statements tailored to your specific needs. You can use this task to flexibly customize your test run or add a build step to your pipeline.
+Use the `runMATLABCommand` step in your Pipeline to run MATLAB scripts, functions, and statements tailored to your specific needs. You can use this task to flexibly customize your test run or run any MATLAB commands.
 
 You must provide `runMATLABCommand` with a string that specifies the command you want to execute. If the command is the name of a MATLAB script or function, do not specify the file extension. If you specify more than one MATLAB command, use a comma or semicolon to separate the commands.
 
@@ -219,7 +219,7 @@ node {
 }
 ``` 
 
- To generate artifacts using the `runMATLABTests` step, provide the step with one or more name-value pair arguments to specify the artifacts and the locations to save them. Use a colon to Separate names and values.
+ To generate artifacts using the `runMATLABTests` step, provide the step with one or more name-value pair arguments to specify the artifacts and the locations to save them. Use a colon to separate names and values.
 
  For example, define a Declarative Pipeline to run the tests in your MATLAB project automatically, and then generate a JUnit test results report and a Cobertura code coverage report at specified locations on the build agent.
 
@@ -262,8 +262,8 @@ node {
 | modelCoverageCobertura  	| Path to write model coverage report in Cobertura XML format (requires Simulink Coverage™ license and is supported in MATLAB R2018b or later).<br/>**Example:** `'model-coverage/coverage.xml'`   	|
 
 
-## Use MATLAB for Matrix Build
-Similar to multi-configuration projects, you can use the plugin to perform [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) builds in Pipeline projects. For example, you can define a Declarative Pipeline to run your test suite on different platforms or against different versions of MATLAB. (Matrix build is not supproted in Scripted Pipelines.)
+## Use MATLAB in Matrix Build
+Similar to multi-configuration projects, you can use MATLAB as part of a [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) build in Pipeline projects. For example, you can define a Declarative Pipeline to run your test suite on different platforms or against different versions of MATLAB. (Matrix build is not supported in Scripted Pipelines.)
 
 Your Pipeline must have a `matrix` section to define the possible name-value combinations that should run in parallel. This example shows how to define a Pipeline to run your MATLAB code and generate test artifacts using MATLAB R2018b, R2019a, and R2020a.
 
@@ -275,11 +275,11 @@ pipeline {
             matrix {
                 agent any
                 environment {
-                    PATH = "C:\\Program Files\\MATLAB\\${VERSION}\\bin;${PATH}"   // Windows agent
+                    PATH = "C:\\Program Files\\MATLAB\\${MATLAB_VERSION}\\bin;${PATH}"   // Windows agent
                 }
                 axes {
                     axis {
-                        name 'VERSION'
+                        name 'MATLAB_VERSION'
                         values 'R2018b', 'R2019a', 'R2019b'
                     }
                 }
