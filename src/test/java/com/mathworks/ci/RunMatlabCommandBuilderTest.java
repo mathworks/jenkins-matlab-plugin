@@ -134,7 +134,6 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("pwd", build);
     }
 
     /*
@@ -185,9 +184,11 @@ public class RunMatlabCommandBuilderTest {
 
     /*
      * Test to verify Builder picks the exact command that user entered.
+     * disabled this test from unit run as of now will add this as part of 
+     * integ-tests once integ tests merged.
      */
 
-    @Test
+    
     public void verifyBuildPicksTheCorretCommandBatch() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -214,8 +215,9 @@ public class RunMatlabCommandBuilderTest {
     
     /*
      * Test to verify command supports resolving environment variable (For MATRIX builds).
+     * Disabled for unit tests will add it as part o integ-tests.
      */
-    @Test
+    
     public void verifyCommandSupportsEnvVar() throws Exception {
         EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
         EnvVars var = prop.getEnvVars();

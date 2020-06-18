@@ -8,6 +8,7 @@ package com.mathworks.ci;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
@@ -115,27 +116,31 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
-        final String uniqueCommandFile = "command_"+getUniqueNameForRunnerFile().replaceAll("-", "_");
-        
-        // Get unique temporary folder filepath 
-        final FilePath uniqeTmpFolderPath = getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-        //Create a new command runner script in the temp folder.
-        final FilePath matlabCommandFile = new FilePath(uniqeTmpFolderPath,uniqueCommandFile + ".m");
-        final String matlabCommandFileContent = "cd '" + workspace.getRemote() + "';\n" + getCommand();
-        matlabCommandFile.write(matlabCommandFileContent, null);
+        final String uniqueCommandFile =
+                "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
+
+        // Get unique temporary folder filepath
+        final FilePath uniqeTmpFolderPath =
+                getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+        // Create a new command runner script in the temp folder.
+        final FilePath matlabCommandFile =
+                new FilePath(uniqeTmpFolderPath, uniqueCommandFile + ".m");
+        final String matlabCommandFileContent =
+                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
+        matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
         ProcStarter matlabLauncher;
         try {
             launcher = getDecoratedLauncherForWindows(launcher);
-            //Start the launcher from temp folder
+            // Start the launcher from temp folder
             matlabLauncher = launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
-            return getProcessToRunMatlabCommand(matlabLauncher,workspace, launcher, listener,
+            return getProcessToRunMatlabCommand(matlabLauncher, workspace, launcher, listener,
                     uniqueCommandFile, uniqueTmpFldrName).join();
-            
+
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
-            // Cleanup the runner File from tmp directory         
+            // Cleanup the tmp directory
             if (uniqeTmpFolderPath.exists()) {
                 uniqeTmpFolderPath.deleteRecursive();
             }
