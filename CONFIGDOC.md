@@ -125,6 +125,7 @@ When Jenkins executes MATLAB-related steps in your Pipeline, it uses the first M
 To update the system PATH environment variable using Declarative Pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2019a to the system PATH environment variable and use it to run your command.
 
 ```groovy
+// Declarative Pipeline
 pipeline {
    agent any
    environment {
@@ -145,6 +146,7 @@ pipeline {
 If you define your Pipeline using scripted syntax, set the PATH environment variable in the `node` block. For example: 
 
 ```groovy
+// Scripted Pipeline
 node {
         env.PATH = "C:\\Program Files\\MATLAB\\R2019a\\bin;${env.PATH}"   //Windows agent
      // env.PATH = "/usr/local/MATLAB/R2019a/bin:${env.PATH}"   //Linux agent
@@ -165,6 +167,7 @@ For example, in your `Jenkinsfile`, define a Declarative Pipeline to run the com
 
 
 ```groovy
+// Declarative Pipeline
 pipeline {
     agent any
     stages{
@@ -181,6 +184,7 @@ pipeline {
 You also can use `runMATLABCommand` in a Scripted Pipeline.
 
 ```groovy
+// Scripted Pipeline
 node {
     runMATLABCommand 'myscript'  
 }
@@ -198,6 +202,7 @@ For example, in your `Jenkinsfile`, define a Declarative Pipeline to run the tes
 
 
 ```groovy
+// Declarative Pipeline
 pipeline {
     agent any
     stages{
@@ -214,6 +219,7 @@ pipeline {
  Use the `runMATLABTests` step in a Scripted Pipeline to run the tests in your project.
 
 ```groovy
+// Scripted Pipeline
 node {
     runMATLABTests()  
 }
@@ -225,6 +231,7 @@ node {
 
 
 ```groovy
+// Declarative Pipeline
 pipeline {
     agent any
     stages{
@@ -242,6 +249,7 @@ pipeline {
 Define a Scripted Pipeline to run your tests and generate artifacts.
 
 ```groovy
+// Scripted Pipeline
 node {
     runMATLABTests(testResultsJUnit: 'test-results/results.xml',
                    codeCoverageCobertura: 'code-coverage/coverage.xml') 
@@ -268,6 +276,7 @@ Similar to multi-configuration projects, you can use MATLAB as part of a [matrix
 Your Pipeline must have a `matrix` section to define the possible name-value combinations that should run in parallel. This example shows how to define a Pipeline to run your MATLAB code and generate test artifacts using MATLAB R2018b, R2019a, and R2020a.
 
 ```groovy
+// Declarative Pipeline
 pipeline {
     agent any
     stages {
