@@ -184,11 +184,10 @@ public class RunMatlabCommandBuilderTest {
 
     /*
      * Test to verify Builder picks the exact command that user entered.
-     * disabled this test from unit run as of now will add this as part of 
-     * integ-tests once integ tests merged.
+     * 
      */
 
-    
+    @Test
     public void verifyBuildPicksTheCorretCommandBatch() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -196,6 +195,7 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
         jenkins.assertLogContains("pwd", build);
     }
 
@@ -215,9 +215,9 @@ public class RunMatlabCommandBuilderTest {
     
     /*
      * Test to verify command supports resolving environment variable (For MATRIX builds).
-     * Disabled for unit tests will add it as part o integ-tests.
+     * 
      */
-    
+    @Test
     public void verifyCommandSupportsEnvVar() throws Exception {
         EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
         EnvVars var = prop.getEnvVars();
@@ -293,4 +293,26 @@ public class RunMatlabCommandBuilderTest {
 		jenkins.assertLogContains("R2018b completed", build);
 		jenkins.assertBuildStatus(Result.SUCCESS, build);
 	}
+	
+	/*
+     * Test to verify if command parses succesfully when multiple combinations of 
+     * characters are passed. (candidate for integ-tests once integrated)
+     */
+
+    
+    public void verifyMultispecialChar() throws Exception {
+        final String actualCommand =
+                "!\"\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        final String expectedCommand =
+                "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("disp(" + actualCommand + ")");
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
+        jenkins.assertLogContains(expectedCommand, build);
+    }
 }
