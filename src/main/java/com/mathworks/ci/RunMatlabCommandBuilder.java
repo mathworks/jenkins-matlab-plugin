@@ -127,12 +127,18 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 new FilePath(uniqeTmpFolderPath, uniqueCommandFile + ".m");
         final String matlabCommandFileContent =
                 "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
+
+        // Display the commands on console output for users reference
+        listener.getLogger()
+                .println("Generating MATLAB script with content:\n" + getCommand() + "\n");
+
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
-        ProcStarter matlabLauncher;
         try {
             launcher = getDecoratedLauncherForWindows(launcher);
             // Start the launcher from temp folder
-            matlabLauncher = launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
+            ProcStarter matlabLauncher = launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
+            listener.getLogger()
+                    .println("#################### Starting command output ####################");
             return getProcessToRunMatlabCommand(matlabLauncher, workspace, launcher, listener,
                     uniqueCommandFile, uniqueTmpFldrName).join();
 
