@@ -151,6 +151,5 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 uniqeTmpFolderPath.deleteRecursive();
             }
         }
-
     }
 }
