@@ -6,11 +6,8 @@ package com.mathworks.ci;
  * 
  */
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import javax.annotation.Nonnull;
-import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -120,17 +117,18 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
         final FilePath uniqeTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-        
+
         // Create MATLAB script
-        createMatlabScriptByName(uniqeTmpFolderPath,uniqueCommandFile,workspace,listener);
+        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener);
+        ProcStarter matlabLauncher;
 
         try {
-            // Start the launcher from temp folder
-            ProcStarter matlabLauncher = launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+                    uniqueCommandFile, uniqueTmpFldrName);
+            launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
-            return getProcessToRunMatlabCommand(matlabLauncher, workspace, launcher, listener,
-                    uniqueCommandFile, uniqueTmpFldrName).join();
+            return matlabLauncher.pwd(uniqeTmpFolderPath).join();
 
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());

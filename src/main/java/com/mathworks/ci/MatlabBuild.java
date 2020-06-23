@@ -22,21 +22,23 @@ public interface MatlabBuild {
      * This Method decorates the launcher with MATLAB command provided and returns the Process
      * object to launch MATLAB with appropriate startup options like -r or -batch
      * 
-     * @param matlabLauncher current build launcher
      * @param workspace Current build workspace
      * @param launcher Current build launcher
      * @param listener Current build listener
+     * @param envVars Environment variables of the current build
      * @param matlabCommand MATLAB command to execute on shell
      * @return matlabLauncher returns the process launcher to run MATLAB commands
      */
-    default ProcStarter getProcessToRunMatlabCommand(ProcStarter matlabLauncher, FilePath workspace,
-            Launcher launcher, TaskListener listener, String matlabCommand, String uniqueName)
+    default ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
+            Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
         String tmpDir = getNodeSpecificTmpFolderPath(workspace);
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
+        ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
             final String runnerScriptName = uniqueName + "/run_matlab_command.sh";
+            matlabLauncher = launcher.launch().envs(envVars);
             matlabLauncher.cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
@@ -44,7 +46,9 @@ public interface MatlabBuild {
                     targetWorkspace);
         } else {
             final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
-            matlabLauncher.cmds("cmd.exe","/C",tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+            launcher = launcher.decorateByPrefix("cmd.exe", "/C");
+            matlabLauncher = launcher.launch().envs(envVars);
+            matlabLauncher.cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,
