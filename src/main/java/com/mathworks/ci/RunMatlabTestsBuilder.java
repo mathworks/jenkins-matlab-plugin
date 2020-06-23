@@ -238,11 +238,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
-            // Get decorated launcher for Windows
-            launcher = getDecoratedLauncherForWindows(launcher);
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars);
-
-
+            
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,

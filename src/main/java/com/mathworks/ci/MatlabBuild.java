@@ -44,7 +44,7 @@ public interface MatlabBuild {
                     targetWorkspace);
         } else {
             final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
-            matlabLauncher.cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+            matlabLauncher.cmds("cmd.exe","/C",tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,
@@ -86,13 +86,5 @@ public interface MatlabBuild {
 
     default String getUniqueNameForRunnerFile() {
         return UUID.randomUUID().toString();
-    }
-    
-    default Launcher getDecoratedLauncherForWindows(Launcher launcher) {
-      //decorate the launcher if its on windows 
-        if(!launcher.isUnix()) {
-            launcher = launcher.decorateByPrefix("cmd.exe", "/C");
-        }
-        return launcher;
     }
 }

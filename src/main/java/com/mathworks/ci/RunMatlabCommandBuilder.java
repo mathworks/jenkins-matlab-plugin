@@ -118,23 +118,13 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
-
-        // Get unique temporary folder filepath
         final FilePath uniqeTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-        // Create a new command runner script in the temp folder.
-        final FilePath matlabCommandFile =
-                new FilePath(uniqeTmpFolderPath, uniqueCommandFile + ".m");
-        final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
+        
+        // Create MATLAB script
+        createMatlabScriptByName(uniqeTmpFolderPath,uniqueCommandFile,workspace,listener);
 
-        // Display the commands on console output for users reference
-        listener.getLogger()
-                .println("Generating MATLAB script with content:\n" + getCommand() + "\n");
-
-        matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
         try {
-            launcher = getDecoratedLauncherForWindows(launcher);
             // Start the launcher from temp folder
             ProcStarter matlabLauncher = launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
             listener.getLogger()
@@ -151,5 +141,20 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 uniqeTmpFolderPath.deleteRecursive();
             }
         }
+    }
+    
+    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+     
+        // Create a new command runner script in the temp folder.
+        final FilePath matlabCommandFile =
+                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+        final String matlabCommandFileContent =
+                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
+
+        // Display the commands on console output for users reference
+        listener.getLogger()
+                .println("Generating MATLAB script with content:\n" + getCommand() + "\n");
+
+        matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }
 }
