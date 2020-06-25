@@ -24,7 +24,7 @@ Once you install the plugin, **Use MATLAB version** appears in the **Build Envir
 
 Select **Use MATLAB version** to specify the full path to the MATLAB root folder that should be used for the build. The information in the **MATLAB root** box enables the plugin to prepend MATLAB to the system PATH environment variable of the build agent. 
 
-If the build agent already has your desired MATLAB on the path, then you are not required to select **Use MATLAB version**. The plugin uses the first MATLAB instance it encounters on the system path. The build fails if the operating system cannot find MATLAB on the path.
+If the build agent already has your desired MATLAB on the path, then you are not required to select **Use MATLAB version**. The plugin uses the first MATLAB version it encounters on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
 **Note:** The [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabroot.html) function returns the full path to the MATLAB root folder, which depends on the platform, MATLAB version, and installation location. This table shows examples of the root folder path on different platforms. 
 
@@ -120,7 +120,7 @@ To configure the plugin for a Pipeline project:
 You also can define your Pipeline directly in the project configuration window. If you select **Pipeline script** from the **Definition** drop-down menu, you can author your Pipeline code in the **Script** box. When you define your Pipeline this way, your Pipeline must include an additional stage to check out MATLAB code from source control.
 
 ### Add MATLAB to System Path
-When Jenkins executes MATLAB-related steps in your Pipeline, it uses the first MATLAB instance on the system path. If the PATH environment variable of the build agent does not include any MATLAB instances, you must update the variable with the MATLAB root folder that should be used for the build.
+When Jenkins executes MATLAB-related steps in your Pipeline, it uses the first MATLAB version on the system path. If the PATH environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
 
 To update the system PATH environment variable using Declarative Pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2019a to the system PATH environment variable and use it to run your command.
 
