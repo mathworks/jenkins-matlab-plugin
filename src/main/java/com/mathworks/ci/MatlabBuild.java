@@ -29,8 +29,8 @@ public interface MatlabBuild {
      * @param matlabCommand MATLAB command to execute on shell
      * @return matlabLauncher returns the process launcher to run MATLAB commands
      */
-    default ProcStarter getProcessToRunMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
+    default ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
+            Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
         String tmpDir = getNodeSpecificTmpFolderPath(workspace);
@@ -38,8 +38,8 @@ public interface MatlabBuild {
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
             final String runnerScriptName = uniqueName + "/run_matlab_command.sh";
-            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
-                    .cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
+            matlabLauncher = launcher.launch().envs(envVars);
+            matlabLauncher.cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName,
@@ -47,8 +47,8 @@ public interface MatlabBuild {
         } else {
             final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
-            matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
-                    .cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+            matlabLauncher = launcher.launch().envs(envVars);
+            matlabLauncher.cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,

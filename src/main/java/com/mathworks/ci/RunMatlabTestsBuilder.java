@@ -240,12 +240,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                     constructCommandForTest(getInputArguments()), uniqueTmpFldrName);
-
+            
             // Copy MATLAB scratch file into the workspace.
             FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
             copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
                     MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
-            return matlabLauncher.join();
+
+            return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;

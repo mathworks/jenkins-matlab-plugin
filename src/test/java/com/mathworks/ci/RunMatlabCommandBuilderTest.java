@@ -134,7 +134,6 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("pwd", build);
     }
 
     /*
@@ -185,6 +184,7 @@ public class RunMatlabCommandBuilderTest {
 
     /*
      * Test to verify Builder picks the exact command that user entered.
+     * 
      */
 
     @Test
@@ -195,6 +195,7 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
         jenkins.assertLogContains("pwd", build);
     }
 
@@ -214,6 +215,7 @@ public class RunMatlabCommandBuilderTest {
     
     /*
      * Test to verify command supports resolving environment variable (For MATRIX builds).
+     * 
      */
     @Test
     public void verifyCommandSupportsEnvVar() throws Exception {
@@ -291,4 +293,26 @@ public class RunMatlabCommandBuilderTest {
 		jenkins.assertLogContains("R2018b completed", build);
 		jenkins.assertBuildStatus(Result.SUCCESS, build);
 	}
+	
+	/*
+     * Test to verify if command parses succesfully when multiple combinations of 
+     * characters are passed. (candidate for integ-tests once integrated)
+     */
+
+    
+    public void verifyMultispecialChar() throws Exception {
+        final String actualCommand =
+                "!\"\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        final String expectedCommand =
+                "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("disp(" + actualCommand + ")");
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
+        jenkins.assertLogContains(expectedCommand, build);
+    }
 }
