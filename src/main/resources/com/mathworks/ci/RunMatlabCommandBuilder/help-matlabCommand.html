@@ -1,13 +1,10 @@
 <div>
- Enter the command you want to run in MATLAB. If the command represents a MATLAB function or script, do not specify the file extension.<br>
- <b>Examples:</b><br>
- <b>Run commands:</b> results = runtests(‘IncludingSubfolders’,true); assert(all(~[results.Failed]))<br>
- <b>Run a script:</b> runMyScript<br>
+ Insert the MATLAB commands you want to execute in the <b>Command</b> box. If you need to specify more than one command, use a comma or semicolon to separate the commands.<br>
+ <b>Example: </b>results = runtests, assertSuccess(results);<br><br>
+ If you need to specify several MATLAB commands, consider writing a MATLAB script or function and executing this script or function instead. (To run a script or function, do not specify the file extension.)<br>
+ <b>Example: </b>myscript<br>
  <br>&nbsp;</br>
- <b>Recommendation:</b><ul><li>If you require a number of MATLAB commands to execute your build, consider writing a MATLAB script and executing the script file instead.<br>
- </li>
- <li>Input text box supports commands only in ASCII format. For locale specific commands, Write a MATLAB script using the supported chracater encoding and execute the script file.</li>
+ <b>Note:</b><ul><li>The build fails if the execution of any command results in an error.</li>
+ <li>If the build uses a MATLAB version prior to R2020a, MATLAB might display non-ASCII characters, specified in the <b>Command</b> box, as garbled text. If you specify non-ASCII characters in your commands, consider running your commands as a <b>.m</b> file created in the same locale that MATLAB uses on the build agent</li>
  </ul>
- <b>Note:</b> The build will fail if the execution of any MATLAB command causes an error.
- <br>
 </div>
