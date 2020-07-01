@@ -12,7 +12,7 @@ import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.model.TaskListener;
 
-public class TestStepExecution extends MatlabStepExecution {
+public class TestStepExecution extends MatlabRunTestsStepExecution {
 
     public TestStepExecution(StepContext context, String command) {
         super(context, command);

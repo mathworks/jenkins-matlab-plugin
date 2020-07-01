@@ -15,14 +15,14 @@ import hudson.Launcher.ProcStarter;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 
-public class MatlabStepExecution extends StepExecution implements MatlabBuild {
+public class MatlabRunTestsStepExecution extends StepExecution implements MatlabBuild {
 
     private static final long serialVersionUID = 6704588180717665100L;
     
     private String command;
 
 
-    public MatlabStepExecution(StepContext context, String command) {
+    public MatlabRunTestsStepExecution(StepContext context, String command) {
         super(context);
         this.command = command;
     }
@@ -65,7 +65,7 @@ public class MatlabStepExecution extends StepExecution implements MatlabBuild {
                     envVars.expand(getCommand()), uniqueTmpFldrName);
             
                      
-            return matlabLauncher.join();
+            return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;

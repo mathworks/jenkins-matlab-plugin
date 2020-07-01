@@ -36,7 +36,7 @@ public class RunMatlabCommandStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabStepExecution(context, getCommand());
+        return new MatlabCommandStepExecution(context, getCommand());
     }
 
     @Extension
@@ -51,6 +51,11 @@ public class RunMatlabCommandStep extends Step {
         @Override
         public String getFunctionName() {
             return Message.getValue("matlab.command.build.step.name");
+        }
+        
+        @Override
+        public String getDisplayName() {
+            return Message.getValue("matlab.command.step.display.name");
         }
     }
 }

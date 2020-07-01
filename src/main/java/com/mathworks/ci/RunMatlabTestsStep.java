@@ -111,7 +111,7 @@ public class RunMatlabTestsStep extends Step {
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
         copyScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
                 MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
-        return new MatlabStepExecution(context,constructCommandForTest(getInputArgs()));
+        return new MatlabRunTestsStepExecution(context,constructCommandForTest(getInputArgs()));
     }
     
     @Extension
@@ -126,6 +126,11 @@ public class RunMatlabTestsStep extends Step {
         @Override
         public String getFunctionName() {
             return Message.getValue("matlab.tests.build.step.name");
+        }
+        
+        @Override
+        public String getDisplayName() {
+            return Message.getValue("matlab.tests.step.display.name");
         }
     }
     
