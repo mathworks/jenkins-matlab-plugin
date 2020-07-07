@@ -1,4 +1,4 @@
-When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipeline/), whether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/#setting-environment-variables), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models on Jenkins. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
+When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipeline/), whether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models on Jenkins. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
 
 
 -  [Configure Plugin in Web UI](#configure-plugin-in-web-ui)
@@ -40,7 +40,7 @@ When you set up the **Build** section of the project configuration window, the p
 If you use a source code management (SCM) system such as Git&trade;, then your project should include the appropriate SCM configuration to check out the code before it can invoke the plugin. If you do not use any SCM systems to manage your code, then an additional build step might be required to ensure that the code is available in the Jenkins workspace before the build starts.
 
 #### Run MATLAB Command
-The **Run MATLAB Command** build step enables you to specify MATLAB commands tailored to your specific needs. For example, you can use this build step to customize your test run or add a different build step to your pipeline.
+The **Run MATLAB Command** build step enables you to specify MATLAB commands tailored to your specific needs. For example, you can use this build step to customize your test run or add a different build step to your Pipeline.
 
 If you specify more than one MATLAB command, use a comma or semicolon to separate the commands. The build fails if the execution of any command results in an error.
 
