@@ -10,8 +10,8 @@ When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipe
 -  [Set Up Multi-Configuration Project](#set-up-multi-configuration-project)
 -  [Set Up Pipeline Project](#set-up-pipeline-project)
    -  [Add MATLAB to System Path](#add-matlab-to-system-path)
-   -  [Use `RunMATLABCommand` Step](#use-runmatlabcommand-step)
-   -  [Use `RunMATLABTests` Step](#use-runmatlabtests-step) 
+   -  [Use `runMATLABCommand` Step](#use-runmatlabcommand-step)
+   -  [Use `runMATLABTests` Step](#use-runmatlabtests-step) 
    -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
 
 ## Configure Plugin in Web UI
@@ -79,7 +79,7 @@ To configure the plugin for a freestyle project, specify the location where MATL
    *   If you add the [**Run MATLAB Command**](#run-matlab-command) build step, enter your commands in the **Command** box. 
 
 ## Set Up Multi-Configuration Project
-The plugin supports [multi-configuration (matrix) projects](https://wiki.jenkins.io/display/JENKINS/Building+a+matrix+project). Multi-configuration projects are useful when builds include similar steps. For example:
+The plugin supports [multi-configuration (matrix) projects](https://plugins.jenkins.io/matrix-project/). Multi-configuration projects are useful when builds include similar steps. For example:
 * The same test suite is run on different platforms (Windows, Linux, and macOS).
 * The same test suite is run against different versions of MATLAB.
 
@@ -93,7 +93,7 @@ You can define several axes in the **Configuration Matrix** section. For example
 
 ![axis_version_testtag](https://user-images.githubusercontent.com/48831250/76800736-aa733680-67aa-11ea-86a7-a984d5795e11.png)
 
-2) In the **Build Environment** section, select **Use MATLAB version** and then specify the locations where MATLAB is installed using the user-defined axis name. In this example, **$VERSION** in the **MATLAB root** box will be replaced by one axis value per build iteration. 
+2) In the **Build Environment** section, select **Use MATLAB version** and then specify the locations where MATLAB is installed using the user-defined axis name. In this example, **$VERSION** in the **MATLAB root** box is replaced by one axis value per build iteration. 
 
 ![build_environment_matrix](https://user-images.githubusercontent.com/48831250/76800665-87488700-67aa-11ea-9dbd-3c3ab518afa7.png)
 
@@ -143,7 +143,7 @@ pipeline {
     } 
 }
 ``` 
-If you define your Pipeline using scripted syntax, set the PATH environment variable in the `node` block. For example: 
+If you define your Pipeline using Scripted Pipeline syntax, set the PATH environment variable in the `node` block. For example: 
 
 ```groovy
 // Scripted Pipeline
@@ -196,7 +196,7 @@ When you use the `runMATLABCommand` step, all of the required files must be on t
 
 ### Use `runMATLABTests` Step
 
-Use the `runMATLABTests` step in your Pipeline to run all tests in your MATLAB project and generate artifacts. MATLAB includes any files in your project that have a `Test` label. If your Pipeline does not leverage a MATLAB project or uses a MATLAB release before R2019a, then MATLAB includes all tests in the the root of your repository including its subfolders.
+Use the `runMATLABTests` step in your Pipeline to run all tests in your MATLAB project and generate artifacts. MATLAB includes any files in your project that have a `Test` label. If your Pipeline does not leverage a MATLAB project or uses a MATLAB release before R2019a, then MATLAB includes all tests in the the root of your repository, including its subfolders.
 
 For example, in your `Jenkinsfile`, define a Declarative Pipeline to run the tests in your project and fail the build if any of the tests fails.
 
@@ -227,7 +227,7 @@ node {
 
  To generate artifacts using the `runMATLABTests` step, provide the step with one or more name-value pair arguments to specify the artifacts and the locations to save them. Use a colon to separate names and values.
 
- For example, define a Declarative Pipeline to run the tests in your MATLAB project automatically, and then generate a JUnit test results report and a Cobertura code coverage report at specified locations on the build agent.
+ For example, define a Declarative Pipeline to run the tests in your MATLAB project, and then generate a JUnit test results report and a Cobertura code coverage report at specified locations on the build agent.
 
 
 ```groovy
@@ -265,7 +265,7 @@ node {
 | testResultsPDF          	| Path to write test results report in PDF format (currently not supported on macOS platforms).<br/>**Example:** `'test-results/results.pdf'`                  	|
 | testResultsTAP          	| Path to write test results report in TAP format.<br/>**Example:** `'test-results/results.tap'`                  	|
 | testResultsJUnit        	| Path to write test results report in JUnit XML format.<br/>**Example:** `'test-results/results.xml'`            	|
-| testResultsSimulinkTest 	| Path to export Simulink Test&trade; Manager results in MLDATX format (requires Simulink Test license and is supported in MATLAB R2019a or later).<br/>**Example:** `'test-results/results.mldatx'` 	|
+| testResultsSimulinkTest 	| Path to export Simulink Test Manager results in MLDATX format (requires Simulink Test license and is supported in MATLAB R2019a or later).<br/>**Example:** `'test-results/results.mldatx'` 	|
 | codeCoverageCobertura   	| Path to write code coverage report in Cobertura XML format.<br/>**Example:** `'code-coverage/coverage.xml'`     	|
 | modelCoverageCobertura  	| Path to write model coverage report in Cobertura XML format (requires Simulink Coverage™ license and is supported in MATLAB R2018b or later).<br/>**Example:** `'model-coverage/coverage.xml'`   	|
 
