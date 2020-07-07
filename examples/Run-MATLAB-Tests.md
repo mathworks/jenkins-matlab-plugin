@@ -45,8 +45,7 @@ Create a new project and configure it by following these steps:
 
 6. In the **Build** section of Jenkins, select **Add build step > Run MATLAB Tests**. Then, select your desired test artifacts to be generated in the project workspace. The plugin in this example is configured to generate Cobertura code coverage and JUnit test result reports. For more information on how to configure the plugin, see [Plugin Configuration Guide](../CONFIGDOC.md).
 
-![run_matlab_tests](https://user-images.githubusercontent.com/48831250/83893537-11efb100-a71e-11ea-8bb6-9c6f450ad8a7.png)
-
+![run_matlab_tests](https://user-images.githubusercontent.com/48831250/84545885-17c13580-acce-11ea-8a29-b78386a7f0ef.png)
 
 7. In the **Post-build Actions** section of Jenkins, add two post-build actions to publish the Cobertura code coverage and JUnit test result reports. For each report, provide the path to the report file.
 
