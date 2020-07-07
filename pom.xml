@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>3.4</version>
+		<version>3.57</version>
 		<relativePath />
 	</parent>
 	<artifactId>matlab</artifactId>
@@ -20,7 +20,7 @@
 	</developers>
 	
 	<properties>
-		<jenkins.version>2.7.3</jenkins.version>
+		<jenkins.version>2.164.3</jenkins.version>
 		<java.level>8</java.level>
 	</properties>
 	
@@ -52,14 +52,57 @@
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
 	  <tag>HEAD</tag>
   </scm>
-
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>io.jenkins.tools.bom</groupId>
+				<artifactId>bom-2.164.x</artifactId>
+				<version>4</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/matrix-project -->
-		<dependency>
-			<groupId>org.jenkins-ci.plugins</groupId>
-			<artifactId>matrix-project</artifactId>
-			<version>1.14</version>
-		</dependency>
+	
+    <!--  Pipeline Step dependencies -->
+    
+	<dependency>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>matrix-project</artifactId>
+	</dependency>
+
+	<dependency>
+		<groupId>org.jenkins-ci.plugins.workflow</groupId>
+		<artifactId>workflow-step-api</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.jenkins-ci.plugins.workflow</groupId>
+		<artifactId>workflow-api</artifactId>
+	</dependency>
+	
+	<!--  Jenkins workflow test dependencies -->
+	
+	<dependency>
+		<groupId>org.jenkins-ci.plugins.workflow</groupId>
+		<artifactId>workflow-basic-steps</artifactId>	
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.jenkins-ci.plugins.workflow</groupId>
+		<artifactId>workflow-cps</artifactId>	
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.jenkins-ci.plugins.workflow</groupId>
+		<artifactId>workflow-durable-task-step</artifactId>
+		<scope>test</scope>
+	</dependency>
+	<dependency>
+		<groupId>org.jenkins-ci.plugins.workflow</groupId>
+		<artifactId>workflow-job</artifactId>	
+		<scope>test</scope>
+	</dependency>
 	</dependencies>
 
 	<build>
