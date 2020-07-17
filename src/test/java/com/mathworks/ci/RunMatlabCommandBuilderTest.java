@@ -137,6 +137,22 @@ public class RunMatlabCommandBuilderTest {
     }
 
     /*
+     * Test To verify MATLAB is launched always from build workspace.
+     * 
+     */
+
+    @Test
+    public void verifyMATLABlaunchedfromWorkspace() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String workspace = build.getWorkspace().getName();
+        jenkins.assertLogContains(workspace, build);
+    }
+
+    /*
      * Test to verify if job fails when invalid MATLAB path is provided and Exception is thrown
      */
 

@@ -42,7 +42,25 @@ public class RunMatlabCommandStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("MATLAB_ROOT", build);
     }
+    
+    /*
+     * Verify MATLAB gets invoked from workspace.
+     */
 
+    @Test
+    public void verifyMATLABstartsInWorkspace() throws Exception {
+        DumbSlave s = j.createOnlineSlave();
+        project.setDefinition(new CpsFlowDefinition(
+                "node('!master') { runMATLABCommand(command: 'pwd')}",
+                true));
+
+        FilePath workspace = s.getWorkspaceFor(project);
+        String workspaceName = workspace.getName();
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        
+        j.assertLogContains(workspaceName, build);
+    }
+    
     /*
      * Verify MATLAB is invoked when valid MATLAB is in PATH.
      *
