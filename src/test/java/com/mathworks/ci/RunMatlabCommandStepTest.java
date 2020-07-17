@@ -57,7 +57,7 @@ public class RunMatlabCommandStepTest {
         String workspaceName = workspace.getName();
         WorkflowRun build = project.scheduleBuild2(0).get();
 
-        j.assertLogContains("[" + workspaceName + "]", build);
+        j.assertLogContains(workspaceName, build);
     }
 
     /*
