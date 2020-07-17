@@ -149,7 +149,7 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String workspace = build.getWorkspace().getName();
-        jenkins.assertLogContains(workspace, build);
+        jenkins.assertLogContains("[" + workspace + "]", build);
     }
 
     /*
