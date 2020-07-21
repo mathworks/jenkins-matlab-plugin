@@ -124,11 +124,11 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    uniqueCommandFile, uniqueTmpFldrName);
-            launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
+                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, uniqueTmpFldrName);
+            
             listener.getLogger()
                     .println("#################### Starting command output ####################");
-            return matlabLauncher.pwd(uniqeTmpFolderPath).join();
+            return matlabLauncher.pwd(workspace).join();
 
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());

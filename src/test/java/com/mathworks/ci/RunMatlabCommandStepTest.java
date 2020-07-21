@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 /**
  * Copyright 2020 The MathWorks, Inc.
- *  
+ * 
  */
 
 import java.io.IOException;
@@ -44,6 +44,23 @@ public class RunMatlabCommandStepTest {
     }
 
     /*
+     * Verify MATLAB gets invoked from workspace.
+     */
+
+    @Test
+    public void verifyMATLABstartsInWorkspace() throws Exception {
+        DumbSlave s = j.createOnlineSlave();
+        project.setDefinition(
+                new CpsFlowDefinition("node('!master') { runMATLABCommand(command: 'pwd')}", true));
+
+        FilePath workspace = s.getWorkspaceFor(project);
+        String workspaceName = workspace.getName();
+        WorkflowRun build = project.scheduleBuild2(0).get();
+
+        j.assertLogContains(workspaceName, build);
+    }
+
+    /*
      * Verify MATLAB is invoked when valid MATLAB is in PATH.
      *
      */
@@ -65,12 +82,11 @@ public class RunMatlabCommandStepTest {
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(new CpsFlowDefinition(
-                "node('!master') { testMATLABCommand(command: 'pwd')}",
-                true));
+                "node('!master') { testMATLABCommand(command: 'pwd')}", true));
 
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
-        
+
         j.assertBuildStatusSuccess(build);
     }
 

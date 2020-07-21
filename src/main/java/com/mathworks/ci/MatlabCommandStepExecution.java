@@ -63,28 +63,27 @@ public class MatlabCommandStepExecution extends StepExecution implements MatlabB
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
-        final FilePath uniqeTmpFolderPath =
+        final FilePath uniqueTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, workspace, listener);
         ProcStarter matlabLauncher;
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    uniqueCommandFile, uniqueTmpFldrName);
-            launcher.launch().pwd(uniqeTmpFolderPath).envs(envVars);
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueCommandFile, uniqueTmpFldrName);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
-            return matlabLauncher.pwd(uniqeTmpFolderPath).join();
+            return matlabLauncher.pwd(workspace).join();
 
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
             // Cleanup the tmp directory
-            if (uniqeTmpFolderPath.exists()) {
-                uniqeTmpFolderPath.deleteRecursive();
+            if (uniqueTmpFolderPath.exists()) {
+                uniqueTmpFolderPath.deleteRecursive();
             }
         }
     }
