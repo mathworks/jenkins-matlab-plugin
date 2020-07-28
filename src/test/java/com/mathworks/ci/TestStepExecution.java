@@ -35,6 +35,9 @@ public class TestStepExecution extends MatlabRunTestsStepExecution {
             // Copy runner .sh for linux platform in workspace.
             copyFileInWorkspace("run_matlab_command_test.sh", runnerScriptName, targetWorkspace);
         } else {
+            if (tmpDir.charAt(tmpDir.length() - 1) == '\\'){
+                tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
+            }
             final String runnerScriptName = uniqueName + "\\run_matlab_command_test.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
