@@ -33,7 +33,7 @@ public interface MatlabBuild {
             Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace, launcher);
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
@@ -75,23 +75,29 @@ public interface MatlabBuild {
         /*Use of Computer is not recommended as jenkins hygeine for pipeline support
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace, launcher);
-        return new FilePath(launcher.getChannel(), tmpDir+"/"+uniqueName);
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
+        String fileSeperator = "/";
+
+        // Handle Java Temp Path discrepancy for Windows.
+        if (!launcher.isUnix()){
+            fileSeperator = "\\";
+            System.out.println("In Windows check;");
+            if (tmpDir.charAt(tmpDir.length() - 1) == '\\'){
+                System.out.println("tmpdir = " + tmpDir);
+                tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
+                System.out.println("tmpdirAfter = " + tmpDir);
+            }
+        }
+
+        return new FilePath(launcher.getChannel(), tmpDir + fileSeperator + uniqueName);
     }
 
-    default String getNodeSpecificTmpFolderPath(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
+    default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
         Computer cmp = workspace.toComputer();
         if (cmp == null) {
             throw new IOException(Message.getValue("build.workspace.computer.not.found"));
         }
         String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
-
-        // Handle Java Temp Path discrepancy for Windows.
-        if (!launcher.isUnix()){
-            if (tmpDir.charAt(tmpDir.length() - 1) == '\\'){
-                tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
-            }
-        }
         return tmpDir;
     }
 
