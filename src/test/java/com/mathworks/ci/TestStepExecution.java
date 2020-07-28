@@ -24,7 +24,7 @@ public class TestStepExecution extends MatlabRunTestsStepExecution {
             TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace, launcher);
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
