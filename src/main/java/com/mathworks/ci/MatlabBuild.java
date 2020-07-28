@@ -45,6 +45,9 @@ public interface MatlabBuild {
             copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName,
                     targetWorkspace);
         } else {
+            if (tmpDir.charAt(tmpDir.length() - 1) == '\\'){
+                tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
+            }
             final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().envs(envVars);
@@ -81,11 +84,8 @@ public interface MatlabBuild {
         // Handle Java Temp Path discrepancy for Windows.
         if (!launcher.isUnix()){
             fileSeperator = "\\";
-            System.out.println("In Windows check;");
             if (tmpDir.charAt(tmpDir.length() - 1) == '\\'){
-                System.out.println("tmpdir = " + tmpDir);
                 tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
-                System.out.println("tmpdirAfter = " + tmpDir);
             }
         }
 
