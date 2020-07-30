@@ -8,6 +8,7 @@ package com.mathworks.ci;
 import java.io.IOException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
+import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -15,7 +16,7 @@ import hudson.Launcher.ProcStarter;
 import hudson.model.Result;
 import hudson.model.TaskListener;
 
-public class MatlabRunTestsStepExecution extends StepExecution implements MatlabBuild {
+public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecution<Void> implements MatlabBuild {
 
     private static final long serialVersionUID = 6704588180717665100L;
     
@@ -32,7 +33,7 @@ public class MatlabRunTestsStepExecution extends StepExecution implements Matlab
     }
 
     @Override
-    public boolean start() throws Exception {
+    public Void run() throws Exception {
         final Launcher launcher = getContext().get(Launcher.class);
         final FilePath workspace = getContext().get(FilePath.class);
         final TaskListener listener = getContext().get(TaskListener.class);
@@ -46,10 +47,8 @@ public class MatlabRunTestsStepExecution extends StepExecution implements Matlab
 
         getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
         
-        getContext().onSuccess(true);
-        
         //return false represents the asynchronous run. 
-        return false;
+        return null;
     }
 
     @Override
