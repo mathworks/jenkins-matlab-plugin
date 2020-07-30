@@ -46,7 +46,6 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
 
         getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
         
-        //return false represents the asynchronous run. 
         return null;
     }
 

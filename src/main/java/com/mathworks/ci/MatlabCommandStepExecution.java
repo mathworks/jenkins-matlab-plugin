@@ -47,7 +47,6 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
 
         getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
         
-        //return false represents the asynchronous run. 
         return null;
     }
 
