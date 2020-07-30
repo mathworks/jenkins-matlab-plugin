@@ -7,7 +7,6 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
-import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import hudson.EnvVars;
 import hudson.FilePath;
