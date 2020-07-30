@@ -8,6 +8,7 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.File;
 import java.util.UUID;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -33,7 +34,7 @@ public interface MatlabBuild {
             Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace, launcher);
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
@@ -75,7 +76,7 @@ public interface MatlabBuild {
         /*Use of Computer is not recommended as jenkins hygeine for pipeline support
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace, launcher);
+        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
         String fileSeperator = "/";
 
         if (!launcher.isUnix()){
@@ -85,19 +86,17 @@ public interface MatlabBuild {
         return new FilePath(launcher.getChannel(), tmpDir + fileSeperator + uniqueName);
     }
 
-    default String getNodeSpecificTmpFolderPath(FilePath workspace, Launcher launcher) throws IOException, InterruptedException {
+    default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
         Computer cmp = workspace.toComputer();
         if (cmp == null) {
             throw new IOException(Message.getValue("build.workspace.computer.not.found"));
         }
-        String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
+        
+        String tmpDirPath = (String) cmp.getSystemProperties().get("java.io.tmpdir");
 
-        // Handle Java temp folder path discrepancy for Windows.
-        if (!launcher.isUnix() && tmpDir.charAt(tmpDir.length() - 1) == '\\'){
-            tmpDir = tmpDir.substring(0, tmpDir.length() - 1);
-        }
-
-        return tmpDir;
+        // Invoke FilePath.normalize for clean file path.
+        FilePath tmpDir = new FilePath(new File(tmpDirPath));
+        return tmpDir.getRemote();
     }
 
     default String getUniqueNameForRunnerFile() {
