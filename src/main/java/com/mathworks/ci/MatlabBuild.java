@@ -8,7 +8,6 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.File;
 import java.util.UUID;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -77,13 +76,8 @@ public interface MatlabBuild {
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
         String tmpDir = getNodeSpecificTmpFolderPath(workspace);
-        String fileSeperator = "/";
 
-        if (!launcher.isUnix()){
-            fileSeperator = "\\";
-        }
-
-        return new FilePath(launcher.getChannel(), tmpDir + fileSeperator + uniqueName);
+        return new FilePath(launcher.getChannel(), tmpDir + "/" + uniqueName);
     }
 
     default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
@@ -94,8 +88,8 @@ public interface MatlabBuild {
         
         String tmpDirPath = (String) cmp.getSystemProperties().get("java.io.tmpdir");
 
-        // Invoke FilePath.normalize for clean file path.
-        FilePath tmpDir = new FilePath(new File(tmpDirPath));
+        // Invoke FilePath.normalize for clean file path on any channel.
+        FilePath tmpDir = new FilePath(cmp.getChannel(), tmpDirPath);
         return tmpDir.getRemote();
     }
 
