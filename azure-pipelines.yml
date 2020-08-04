@@ -27,5 +27,6 @@ steps:
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       codeCoverageToolOption: 'cobertura'
       goals: 'verify'
+      failTaskOnFailedTests: true
     displayName: 'Build $(imageName)'
       
