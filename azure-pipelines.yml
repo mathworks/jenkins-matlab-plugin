@@ -17,6 +17,7 @@ pool:
 
 trigger:
   - master
+  - feature/*
 
 steps:
   - task: Maven@3
