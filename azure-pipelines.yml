@@ -26,8 +26,7 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       codeCoverageToolOption: 'cobertura'
-      options: '-Djenkins.version=2.10'
-      goals: 'verify'
+      goals: 'package'
 
     displayName: 'Build $(imageName)'
       
