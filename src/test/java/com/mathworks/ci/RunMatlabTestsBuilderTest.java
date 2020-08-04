@@ -334,9 +334,6 @@ public class RunMatlabTestsBuilderTest {
     
     /*
      * Test to verify if appropriate MATALB runner file is copied in workspace.
-     * 
-     * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
-     *
      */
     @Test
     public void verifyMATLABrunnerFileGeneratedForAutomaticOption() throws Exception {
@@ -349,9 +346,6 @@ public class RunMatlabTestsBuilderTest {
     
 	/*
 	 * Test to verify if Matrix build fails when MATLAB is not available.
-     * 
-     * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
-     *
 	 */
 	@Test
 	public void verifyMatrixBuildFails() throws Exception {
