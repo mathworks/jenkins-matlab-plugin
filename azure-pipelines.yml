@@ -17,7 +17,6 @@ pool:
 
 trigger:
   - master
-  - feature/*
 
 steps:
   - task: Maven@3
@@ -26,6 +25,8 @@ steps:
       mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
+      codeCoverageToolOption: 'cobertura'
+      options: '-Djenkins.version=2.10'
       goals: 'verify'
 
     displayName: 'Build $(imageName)'
