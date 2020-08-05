@@ -25,9 +25,8 @@ steps:
       mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      codeCoverageToolOption: 'cobertura'
+      codeCoverageToolOption: 'JaCoCo'
       goals: 'package'
-      options: '-DskipTests'
 
     displayName: 'Build $(imageName)'
       
