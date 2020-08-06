@@ -77,6 +77,19 @@ public class RunMatlabTestsStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("'PDFReportPath','myresult/result.pdf'", build);
     }
+    
+    /*
+    * Verify default command options for test run.
+    */
+
+   @Test
+   public void verifyCmdOptions() throws Exception {
+       project.setDefinition(new CpsFlowDefinition(
+               "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
+       WorkflowRun build = project.scheduleBuild2(0).get();
+       j.assertLogContains("addpath(genpath", build);
+       j.assertLogContains("runMatlabTests", build);
+   }
 
     /*
      * Verify Artifact is not sent as parameter if not selected in script.

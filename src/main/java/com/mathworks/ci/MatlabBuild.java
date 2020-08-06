@@ -96,4 +96,16 @@ public interface MatlabBuild {
     default String getUniqueNameForRunnerFile() {
         return UUID.randomUUID().toString();
     }
+    
+    // This method prepares the temp folder by coping all helper files in it.
+    default void prepareTmpFldr(FilePath tmpFldr) throws IOException, InterruptedException {
+        // copy genscript package
+        copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
+                MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
+        FilePath zipFileLocation =
+                new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
+
+        // Unzip the file in temp folder.
+        zipFileLocation.unzip(tmpFldr);
+    }
 }

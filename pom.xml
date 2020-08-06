@@ -126,6 +126,18 @@
 							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
 						</configuration>
 					</execution>
+					<execution>
+						<id>get-matlab-gen-script</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://ssd.mathworks.com/supportfiles/ci/matlab-script-generator/v0/matlab-script-generator.zip</url>
+							<unpack>false</unpack>
+							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 		</plugins>
@@ -186,6 +198,7 @@
 											<include>**/*.bat</include>
 											<include>**/*.sh</include>
 											<include>**/*.txt</include>
+											<include>**/*.zip</include>
 										</includes>
 										<followSymlinks>false</followSymlinks>
 									</fileset>

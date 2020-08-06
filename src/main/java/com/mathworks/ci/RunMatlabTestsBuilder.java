@@ -238,13 +238,19 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
+            FilePath genScriptLocation =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments()), uniqueTmpFldrName);
+                    constructCommandForTest(getInputArguments(), genScriptLocation.getRemote()),
+                    uniqueTmpFldrName);
             
-            // Copy MATLAB scratch file into the workspace.
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
+            // Copy MATLAB scratch file into the workspace.      
             copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, workspace);
+            
+            // copy genscript package in temp folder
+            prepareTmpFldr(genScriptLocation);
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -259,11 +265,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             }
         }
     }
-
-    public String constructCommandForTest(String inputArguments) {
+    
+    public String constructCommandForTest(String inputArguments, String scriptPath) {
         final String matlabFunctionName =
                 FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
-        final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
+        final String runCommand = "addpath(genpath('"+scriptPath+"')); " + matlabFunctionName + "(" + inputArguments + ")";
         return runCommand;
     }
 

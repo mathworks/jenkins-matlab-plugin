@@ -28,4 +28,7 @@ public class MatlabBuilderConstants {
     // Matlab Runner files 
     static final String BAT_RUNNER_SCRIPT = "run_matlab_command.bat";
     static final String SHELL_RUNNER_SCRIPT = "run_matlab_command.sh";
+    
+    //Matlab Script generator package 
+    static final String MATLAB_SCRIPT_GENERATOR = "matlab-script-generator.zip";
 }

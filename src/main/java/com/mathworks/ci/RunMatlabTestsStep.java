@@ -137,7 +137,7 @@ public class RunMatlabTestsStep extends Step {
     public String constructCommandForTest(String inputArguments) {
         final String matlabFunctionName =
                 FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
-        final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
+        final String runCommand = matlabFunctionName + "(" + inputArguments + ")";
         return runCommand;
     }
 

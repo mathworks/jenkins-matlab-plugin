@@ -142,7 +142,8 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests", build);
+        jenkins.assertLogContains("runMatlabTests", build);
+        jenkins.assertLogContains("addpath(genpath", build);
     }
 
     /*
@@ -157,7 +158,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests", build);
+        jenkins.assertLogContains("runMatlabTests", build);
     }
 
     /*
@@ -328,7 +329,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests())", build);
+        jenkins.assertLogContains("runMatlabTests()", build);
     }
 
     

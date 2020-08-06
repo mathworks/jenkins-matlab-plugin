@@ -58,10 +58,16 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();  
         try {
-            ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    envVars.expand(getCommand()), uniqueTmpFldrName);
+            FilePath genScriptLocation =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+            final String cmdPrefix = "addpath(genpath('" + genScriptLocation.getRemote() + "')); ";
+
+            ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener,
+                    envVars, cmdPrefix + envVars.expand(getCommand()), uniqueTmpFldrName);
             
-                     
+            //prepare temp folder by coping genscript package.
+            prepareTmpFldr(genScriptLocation);
+                               
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
