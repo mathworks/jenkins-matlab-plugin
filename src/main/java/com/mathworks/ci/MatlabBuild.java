@@ -76,7 +76,8 @@ public interface MatlabBuild {
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
         String tmpDir = getNodeSpecificTmpFolderPath(workspace);
-        return new FilePath(launcher.getChannel(), tmpDir+"/"+uniqueName);
+
+        return new FilePath(launcher.getChannel(), tmpDir + "/" + uniqueName);
     }
 
     default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
@@ -84,8 +85,12 @@ public interface MatlabBuild {
         if (cmp == null) {
             throw new IOException(Message.getValue("build.workspace.computer.not.found"));
         }
-        String tmpDir = (String) cmp.getSystemProperties().get("java.io.tmpdir");
-        return tmpDir;
+        
+        String tmpDirPath = (String) cmp.getSystemProperties().get("java.io.tmpdir");
+
+        // Invoke FilePath.normalize for clean file path on any channel.
+        FilePath tmpDir = new FilePath(cmp.getChannel(), tmpDirPath);
+        return tmpDir.getRemote();
     }
 
     default String getUniqueNameForRunnerFile() {
