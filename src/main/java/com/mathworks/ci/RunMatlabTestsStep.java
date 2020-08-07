@@ -3,13 +3,6 @@ package com.mathworks.ci;
  * Copyright 2020 The MathWorks, Inc.
  *  
  */
-import java.io.IOException;
-import java.io.InputStream;
-
-/**
- * Copyright 2020 The MathWorks, Inc.
- *  
- */
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -104,16 +97,9 @@ public class RunMatlabTestsStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        Launcher launcher = context.get(Launcher.class);
-        FilePath workspace = context.get(FilePath.class);
-        
-        //Copy Scratch file needed to run MATLAB tests in workspace
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-        copyScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
-        return new MatlabRunTestsStepExecution(context,constructCommandForTest(getInputArgs()));
+        return new MatlabRunTestsStepExecution(context, constructCommandForTest(getInputArgs()));
     }
-    
+
     @Extension
     public static class RunTestsStepDescriptor extends StepDescriptor {
 
@@ -168,18 +154,5 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoveragePath", getCodeCoverageCobertura());
         args.put("CoberturaModelCoveragePath", getModelCoverageCobertura());
         return args;
-    }
-    
-    /*
-     * Method to copy given file from source to target node specific workspace.
-     */
-    private void copyScratchFileInWorkspace(String sourceFile, String targetFile, FilePath targetWorkspace)
-            throws IOException, InterruptedException {
-        final ClassLoader classLoader = getClass().getClassLoader();
-        FilePath targetFilePath = new FilePath(targetWorkspace, targetFile);
-        InputStream in = classLoader.getResourceAsStream(sourceFile);
-        targetFilePath.copyFrom(in);
-        // set executable permission
-        targetFilePath.chmod(0755);
     }
 }

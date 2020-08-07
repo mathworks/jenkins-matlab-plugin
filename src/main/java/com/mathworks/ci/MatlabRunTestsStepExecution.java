@@ -65,6 +65,10 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
             ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener,
                     envVars, cmdPrefix + envVars.expand(getCommand()), uniqueTmpFldrName);
             
+            //Copy Scratch file needed to run MATLAB tests in workspace
+            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
+                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, workspace);
+            
             //prepare temp folder by coping genscript package.
             prepareTmpFldr(genScriptLocation);
                                
