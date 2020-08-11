@@ -31,4 +31,7 @@ public class MatlabBuilderConstants {
     
     //Matlab Script generator package 
     static final String MATLAB_SCRIPT_GENERATOR = "matlab-script-generator.zip";
+    
+    //Test runner file prefix 
+    static final String MATLAB_TEST_RUNNER_FILE_PREFIX = "test_runner_";
 }

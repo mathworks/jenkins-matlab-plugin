@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.io.FilenameUtils;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -242,12 +239,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments(), genScriptLocation.getRemote()),
+                    constructCommandForTest(getInputArguments(), genScriptLocation),
                     uniqueTmpFldrName);
-            
-            // Copy MATLAB scratch file into the workspace.      
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, workspace);
             
             // copy genscript package in temp folder
             prepareTmpFldr(genScriptLocation);
@@ -266,10 +259,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
     
-    public String constructCommandForTest(String inputArguments, String scriptPath) {
-        final String matlabFunctionName =
-                FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
-        final String runCommand = "addpath(genpath('"+scriptPath+"')); " + matlabFunctionName + "(" + inputArguments + ")";
+    public String constructCommandForTest(String inputArguments, FilePath scriptPath) {
+        final String matlabFunctionName = MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
+                + scriptPath.getBaseName().replaceAll("-", "_");
+        final String runCommand = "addpath(genpath('" + scriptPath.getRemote() + "')); "
+                + matlabFunctionName + "(" + inputArguments + ")";
         return runCommand;
     }
 

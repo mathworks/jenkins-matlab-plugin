@@ -34,7 +34,7 @@ public class RunMatlabTestsStepTester extends RunMatlabTestsStep {
         FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
         copyScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
                 MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
-        return new TestStepExecution(context, constructCommandForTest(getInputArgs()));
+        return new TestStepExecution(context, getInputArgs());
     }
 
     private void copyScratchFileInWorkspace(String sourceFile, String targetFile,

@@ -88,7 +88,7 @@ public class RunMatlabTestsStepTest {
                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
        WorkflowRun build = project.scheduleBuild2(0).get();
        j.assertLogContains("addpath(genpath", build);
-       j.assertLogContains("runMatlabTests", build);
+       j.assertLogContains("test_runner", build);
    }
 
     /*
@@ -117,7 +117,7 @@ public class RunMatlabTestsStepTest {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests()}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("runMatlabTests()", build);
+        j.assertLogContains("test_runner", build);
         j.assertLogNotContains("PDFReportPath", build);
         j.assertLogNotContains("TAPResultsPath", build);
         j.assertLogNotContains("JUnitResultsPath", build);

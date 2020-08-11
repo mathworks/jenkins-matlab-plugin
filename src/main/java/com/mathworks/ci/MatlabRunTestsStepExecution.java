@@ -61,13 +61,11 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
             final String cmdPrefix = "addpath(genpath('" + genScriptLocation.getRemote() + "')); ";
+            final String matlabFunctionName = MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
+                    + genScriptLocation.getBaseName().replaceAll("-", "_");
 
             ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener,
-                    envVars, cmdPrefix + envVars.expand(getCommand()), uniqueTmpFldrName);
-            
-            //Copy Scratch file needed to run MATLAB tests in workspace
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, workspace);
+                    envVars, cmdPrefix + matlabFunctionName+ "("+envVars.expand(getCommand()+")"), uniqueTmpFldrName);
             
             //prepare temp folder by coping genscript package.
             prepareTmpFldr(genScriptLocation);

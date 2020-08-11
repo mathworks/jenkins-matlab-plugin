@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.codehaus.groovy.vmplugin.v5.JUnit4Utils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +25,6 @@ import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
 import com.mathworks.ci.RunMatlabTestsBuilder.CoberturaArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.JunitArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.ModelCovArtifact;
@@ -142,7 +140,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("runMatlabTests", build);
+        jenkins.assertLogContains("test_runner", build);
         jenkins.assertLogContains("addpath(genpath", build);
     }
 
@@ -158,7 +156,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("runMatlabTests", build);
+        jenkins.assertLogContains("test_runner", build);
     }
 
     /*
@@ -319,7 +317,7 @@ public class RunMatlabTestsBuilderTest {
     }
     
     /*
-     * Test to verify no parameters are sent in runMatlabTests when no artifacts are selected.
+     * Test to verify no parameters are sent in test_runner when no artifacts are selected.
      */
 
     @Test
@@ -329,7 +327,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("runMatlabTests()", build);
+        jenkins.assertLogContains("test_runner", build);
     }
 
     
@@ -407,7 +405,7 @@ public class RunMatlabTestsBuilderTest {
 	}
 	
 	 /*
-     * Test to verify if MATALB scratch file is generated in workspace.
+     * Test to verify if MATALB scratch file is not in workspace.
      */
     @Test
     public void verifyMATLABscratchFileGenerated() throws Exception {
@@ -416,6 +414,6 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertTrue(matlabRunner.exists());
+        Assert.assertFalse(matlabRunner.exists());
     }
 }

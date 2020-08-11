@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.apache.commons.io.FilenameUtils;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -97,7 +96,7 @@ public class RunMatlabTestsStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabRunTestsStepExecution(context, constructCommandForTest(getInputArgs()));
+        return new MatlabRunTestsStepExecution(context, getInputArgs());
     }
 
     @Extension
@@ -119,14 +118,6 @@ public class RunMatlabTestsStep extends Step {
             return Message.getValue("matlab.tests.step.display.name");
         }
     }
-    
-    public String constructCommandForTest(String inputArguments) {
-        final String matlabFunctionName =
-                FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
-        final String runCommand = matlabFunctionName + "(" + inputArguments + ")";
-        return runCommand;
-    }
-
     
     private String getInputArgs() {
         final List<String> inputArgs = new ArrayList<>();
