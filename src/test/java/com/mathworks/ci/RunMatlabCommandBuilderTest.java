@@ -195,9 +195,8 @@ public class RunMatlabCommandBuilderTest {
         tester.setMatlabCommand("pwd");
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        //Inducing Test Failure to see if Azure Build fails when unit test fails
         jenkins.assertBuildStatus(Result.FAILURE, build);
-        //jenkins.assertBuildStatus(Result.SUCCESS, build);
+
     }
 
     /*
