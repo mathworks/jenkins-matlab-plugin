@@ -124,6 +124,8 @@
 							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v0/run-matlab-command.zip</url>
 							<unpack>true</unpack>
 							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
+							<skipCache>true</skipCache>
+                            <overwrite>true</overwrite>
 						</configuration>
 					</execution>
 					<execution>
@@ -136,6 +138,8 @@
 							<url>https://ssd.mathworks.com/supportfiles/ci/matlab-script-generator/v0/matlab-script-generator.zip</url>
 							<unpack>false</unpack>
 							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
+							<skipCache>true</skipCache>
+                            <overwrite>true</overwrite>
 						</configuration>
 					</execution>
 				</executions>

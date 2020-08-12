@@ -60,7 +60,8 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
         try {
             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-            final String cmdPrefix = "addpath(genpath('" + genScriptLocation.getRemote() + "')); ";
+            final String cmdPrefix =
+                    "addpath('" + genScriptLocation.getRemote().replaceAll("'", "''") + "'); ";
             final String matlabFunctionName = MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                     + genScriptLocation.getBaseName().replaceAll("-", "_");
 
