@@ -187,7 +187,7 @@ public class RunMatlabCommandBuilderTest {
      */
 
     @Test
-    public void verifyBuildFailureWhenMatlabCommandPasses() throws Exception {
+    public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilderTester tester =
@@ -196,6 +196,7 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+
     }
 
     /*
@@ -249,6 +250,9 @@ public class RunMatlabCommandBuilderTest {
     
     /*
      * Test to verify if appropriate MATALB runner file is copied in workspace.
+     * 
+     * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
+     * 
      */
     @Test
     public void verifyMATLABrunnerFileGenerated() throws Exception {
@@ -262,6 +266,9 @@ public class RunMatlabCommandBuilderTest {
     
 	/*
 	 * Test to verify if Matrix build fails when MATLAB is not available.
+     * 
+     * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
+     * 
 	 */
 	@Test
 	public void verifyMatrixBuildFails() throws Exception {
