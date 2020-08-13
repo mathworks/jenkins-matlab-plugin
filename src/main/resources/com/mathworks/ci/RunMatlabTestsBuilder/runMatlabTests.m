@@ -2,6 +2,13 @@
 
 function runMatlabTests(varargin)
 
+addpath(pwd);
+
+%Back to the workspace folder
+workspace = getenv('WORKSPACE');
+cd(workspace);
+
+
 p = inputParser;
 validationFcn = @(c)ischar(c) && (isempty(c) || isrow(c));
 
@@ -21,16 +28,13 @@ stmReportPath            = p.Results.SimulinkTestResultsPath;
 coberturaReportPath      = p.Results.CoberturaCodeCoveragePath;
 modelCoveragePath        = p.Results.CoberturaModelCoveragePath;
 
-srcFldr = getenv('WORKSPACE');
-
 testScript = genscript('Test',...
    'PDFTestReport',pdfReportPath,...
    'TAPTestResults',tapReportPath,...
    'JUnitTestResults',junitReportPath,...
    'SimulinkTestResults',stmReportPath,...
    'CoberturaCodeCoverage',coberturaReportPath,...
-   'CoberturaModelCoverage',modelCoveragePath,...
-   'SourceFolder',srcFldr);
+   'CoberturaModelCoverage',modelCoveragePath);
 
 disp('Running MATLAB script with content:\n');
 disp(strtrim(testScript.writeToText()));

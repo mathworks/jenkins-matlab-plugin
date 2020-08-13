@@ -141,7 +141,7 @@ public class RunMatlabTestsBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
         jenkins.assertLogContains("test_runner", build);
-        jenkins.assertLogContains("addpath(", build);
+        jenkins.assertLogContains("cd(", build);
     }
 
     /*
