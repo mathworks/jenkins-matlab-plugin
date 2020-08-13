@@ -87,7 +87,7 @@ public class RunMatlabTestsStepTest {
        project.setDefinition(new CpsFlowDefinition(
                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
        WorkflowRun build = project.scheduleBuild2(0).get();
-       j.assertLogContains("cd(", build);
+       j.assertLogContains("addpath(", build);
        j.assertLogContains("test_runner", build);
    }
 

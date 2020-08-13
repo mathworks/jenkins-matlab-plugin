@@ -2,13 +2,6 @@
 
 function runMatlabTests(varargin)
 
-addpath(pwd);
-
-%Back to the workspace folder
-workspace = getenv('WORKSPACE');
-cd(workspace);
-
-
 p = inputParser;
 validationFcn = @(c)ischar(c) && (isempty(c) || isrow(c));
 
