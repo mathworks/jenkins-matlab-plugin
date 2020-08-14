@@ -15,9 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nonnull;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.io.FilenameUtils;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -238,13 +235,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
+            FilePath genScriptLocation =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments()), uniqueTmpFldrName);
+                    constructCommandForTest(getInputArguments(), genScriptLocation),
+                    uniqueTmpFldrName);
             
-            // Copy MATLAB scratch file into the workspace.
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+            // copy genscript package in temp folder
+            prepareTmpFldr(genScriptLocation);
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -259,11 +258,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             }
         }
     }
-
-    public String constructCommandForTest(String inputArguments) {
-        final String matlabFunctionName =
-                FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
-        final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
+    
+    public String constructCommandForTest(String inputArguments, FilePath scriptPath) {
+        final String matlabFunctionName = MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
+                + scriptPath.getBaseName().replaceAll("-", "_");
+        final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''") + "'); "
+                + matlabFunctionName + "(" + inputArguments + ")";
         return runCommand;
     }
 
