@@ -152,15 +152,27 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     // To retain Backward compatibility
     protected Object readResolve() {
-        // Assign default values to new elements.
-        this.pdfReportArtifact = new NullArtifact();
-        this.tapArtifact = new NullArtifact();
-        this.junitArtifact = new NullArtifact();
-        this.coberturaArtifact = new NullArtifact();
-        this.stmResultsArtifact = new NullArtifact();
-        this.modelCoverageArtifact = new NullArtifact();
+        // Assign default values to new elements if not already deserialized from config.
+        if (this.pdfReportArtifact == null) {
+            this.pdfReportArtifact = new NullArtifact();
+        }
+        if (this.tapArtifact == null) {
+            this.tapArtifact = new NullArtifact();
+        }
+        if (this.junitArtifact == null) {
+            this.junitArtifact = new NullArtifact();
+        }
+        if (this.coberturaArtifact == null) {
+            this.coberturaArtifact = new NullArtifact();
+        }
+        if (this.stmResultsArtifact == null) {
+            this.stmResultsArtifact = new NullArtifact();
+        }
+        if (this.modelCoverageArtifact == null) {
+            this.modelCoverageArtifact = new NullArtifact();
+        }
 
-        // Assign appropriate artifact type if it was selected earlier.
+        // Assign appropriate artifact type if it was selected in release 2.0.0 or earlier.
         if (pdfReportChkBx) {
             this.pdfReportArtifact = new PdfArtifact("matlabTestArtifacts/testreport.pdf");
         }
