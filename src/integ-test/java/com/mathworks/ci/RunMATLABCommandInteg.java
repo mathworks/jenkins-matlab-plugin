@@ -124,47 +124,6 @@ public class RunMATLABCommandInteg {
 
 
     /*
-     * Test to verify Builder picks the exact command that user entered.
-     */
-
-    @Test
-    public void verifyBuildPicksTheCorretCommandBatch() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand(TestData.getPropValues("matlab.command"));
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains(TestData.getPropValues("matlab.command"), build);
-    }
-
-    /*
-     * Test to verify if MATALB scratch file is not generated in workspace for this builder.
-     */
-    @Test
-    public void verifyMATLABscratchFileNotGenerated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertFalse(matlabRunner.exists());
-    }
-
-    /*
-     * Test to verify if appropriate MATALB runner file is copied in workspace.
-     */
-    @Test
-    public void verifyMATLABrunnerFileGenerated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
-        project.getBuildersList().add(scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("MATLAB_ROOT", build);
-    }
-    /*
      * Test to verify if Matrix build fails when MATLAB is not available.
      */
     @Test

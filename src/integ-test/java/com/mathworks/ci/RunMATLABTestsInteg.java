@@ -141,51 +141,9 @@ public class RunMATLABTestsInteg {
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 
-    @Test
-    public void verifyBuildFailureWhenMatlabException() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilderTester tester =
-                new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
-        project.getBuildersList().add(tester);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertBuildStatus(Result.FAILURE, build);
-    }
 
-    @Test
-    public void verifyBuildPassWhenTestPass() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilderTester tester =
-                new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positive");
-        project.getBuildersList().add(tester);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertBuildStatus(Result.SUCCESS, build);
-    }
 
-    /*
-     * Test to verify no parameters are sent in runMatlabTests when no artifacts are selected.
-     */
 
-    @Test
-    public void veriyEmptyParameters() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(this.testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests())", build);
-    }
-
-    @Test
-    public void verifyMATLABscratchFileGenerated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertTrue(matlabRunner.exists());
-    }
 
     @Test
     public void verifyJUnitFilePathInput() throws Exception{
@@ -267,22 +225,6 @@ public class RunMATLABTestsInteg {
         Thread.sleep(2000);
         HtmlTextInput STMRFilePathInput=(HtmlTextInput) page.getElementByName("_.stmResultsFilePath");
         Assert.assertEquals(TestData.getPropValues("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
-    }
-
-    @Test
-    public void verifyCoberturaError() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("/fake/path"));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(this.testBuilder);
-        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaArtifact");
-        coberturaChkBx.setChecked(true);
-        Thread.sleep(2000);
-        String pageText = page.asText();
-        String filteredPageText = pageText
-                .replaceFirst(TestMessage.getValue("Builder.invalid.matlab.root.warning"), "");
-        //Assert.assertTrue(filteredPageText
-                //.contains(TestMessage.getValue("Builder.invalid.matlab.root.warning")));
     }
 
 
