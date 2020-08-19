@@ -9,11 +9,7 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import javax.annotation.Nonnull;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -137,7 +133,16 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     public String getPdfReportFilePath() {
         return this.getPdfReportArtifact().getFilePath();
-    }  
+    }
+
+    private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
+        // If previously checked assign valid artifact object else NullArtifact.
+        if (isChecked){
+            return returnVal;
+        }else{
+            return new NullArtifact();
+        }
+    }
     
     private void setEnv(EnvVars env) {
         this.env = env;
@@ -149,47 +154,35 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     // To retain Backward compatibility
     protected Object readResolve() {
-        // Assign default values to new elements if not already deserialized from config.
-        if (this.pdfReportArtifact == null) {
-            this.pdfReportArtifact = new NullArtifact();
-        }
-        if (this.tapArtifact == null) {
-            this.tapArtifact = new NullArtifact();
-        }
-        if (this.junitArtifact == null) {
-            this.junitArtifact = new NullArtifact();
-        }
-        if (this.coberturaArtifact == null) {
-            this.coberturaArtifact = new NullArtifact();
-        }
-        if (this.stmResultsArtifact == null) {
-            this.stmResultsArtifact = new NullArtifact();
-        }
-        if (this.modelCoverageArtifact == null) {
-            this.modelCoverageArtifact = new NullArtifact();
-        }
 
-        // Assign appropriate artifact type if it was selected in release 2.0.0 or earlier.
-        if (pdfReportChkBx) {
-            this.pdfReportArtifact = new PdfArtifact("matlabTestArtifacts/testreport.pdf");
-        }
-        if (tapChkBx) {
-            this.tapArtifact = new TapArtifact("matlabTestArtifacts/taptestresults.tap");
-        }
-        if (junitChkBx) {
-            this.junitArtifact = new JunitArtifact("matlabTestArtifacts/junittestresults.xml");
-        }
-        if (coberturaChkBx) {
-            this.coberturaArtifact = new CoberturaArtifact("matlabTestArtifacts/cobertura.xml");
-        }
-        if (stmResultsChkBx) {
-            this.stmResultsArtifact =
-                    new StmResultsArtifact("matlabTestArtifacts/simulinktestresults.mldatx");
-        }
-        if (modelCoverageChkBx) {
-            this.modelCoverageArtifact =
-                    new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.xml");
-        }
+        /*
+        * Assign appropriate artifact objects if it was selected in release 2.0.0 or earlier.
+        * If using a later plugin release, check if artifact objects were previously serialized.
+        * */
+        this.pdfReportArtifact = Optional.ofNullable(this.pdfReportArtifact).orElseGet(() ->
+                this.getArtifactObject(pdfReportChkBx, new PdfArtifact("matlabTestArtifacts/testreport.pdf"))
+        );
+
+        this.tapArtifact = Optional.ofNullable(this.tapArtifact).orElseGet(() ->
+                this.getArtifactObject(tapChkBx, new TapArtifact("matlabTestArtifacts/taptestresults.tap"))
+        );
+
+        this.junitArtifact = Optional.ofNullable(this.junitArtifact).orElseGet(() ->
+                this.getArtifactObject(junitChkBx, new JunitArtifact("matlabTestArtifacts/junittestresults.xml"))
+        );
+
+        this.coberturaArtifact = Optional.ofNullable(this.coberturaArtifact).orElseGet(() ->
+                this.getArtifactObject(coberturaChkBx, new CoberturaArtifact("matlabTestArtifacts/cobertura.xml"))
+        );
+
+        this.stmResultsArtifact = Optional.ofNullable(this.stmResultsArtifact).orElseGet(() ->
+                this.getArtifactObject(stmResultsChkBx, new StmResultsArtifact("matlabTestArtifacts/simulinktestresults.mldatx"))
+        );
+
+        this.modelCoverageArtifact = Optional.ofNullable(this.modelCoverageArtifact).orElseGet(() ->
+                this.getArtifactObject(modelCoverageChkBx, new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.xml"))
+        );
+
         return this;
     }
     
