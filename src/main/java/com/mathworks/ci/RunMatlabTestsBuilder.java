@@ -140,11 +140,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
         // If previously checked assign valid artifact object else NullArtifact.
-        if (isChecked){
-            return returnVal;
-        }else{
-            return new NullArtifact();
-        }
+        return (isChecked) ? returnVal : new NullArtifact();
     }
     
     private void setEnv(EnvVars env) {
