@@ -98,12 +98,15 @@ public interface MatlabBuild {
     }
     
     // This method prepares the temp folder by coping all helper files in it.
-    default void prepareTmpFldr(FilePath tmpFldr) throws IOException, InterruptedException {
+    default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
         // Copy MATLAB scratch file in temp.
-        copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
+       /* copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
                 MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                         + tmpFldr.getBaseName().replaceAll("-", "_") + ".m",
-                tmpFldr);
+                tmpFldr);*/
+        FilePath scriptFile = new FilePath(tmpFldr,MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
+                        + tmpFldr.getBaseName().replaceAll("-", "_") + ".m");
+        scriptFile.write(runnerScript, "UTF-8");
         // copy genscript package
         copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
                 MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);

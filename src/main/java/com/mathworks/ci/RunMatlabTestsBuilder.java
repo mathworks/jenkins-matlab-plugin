@@ -239,11 +239,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments(), genScriptLocation),
+                    constructCommandForTest(genScriptLocation),
                     uniqueTmpFldrName);
             
             // copy genscript package in temp folder
-            prepareTmpFldr(genScriptLocation);
+            prepareTmpFldr(genScriptLocation, getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, getInputArguments()));
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -254,21 +254,21 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             FilePath matlabRunnerScript =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
             if (matlabRunnerScript.exists()) {
-                matlabRunnerScript.deleteRecursive();
+                //matlabRunnerScript.deleteRecursive();
             }
         }
     }
     
-    public String constructCommandForTest(String inputArguments, FilePath scriptPath) {
+    public String constructCommandForTest(FilePath scriptPath) {
         final String matlabFunctionName = MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + scriptPath.getBaseName().replaceAll("-", "_");
         final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''") + "'); "
-                + matlabFunctionName + "(" + inputArguments + ")";
+                + matlabFunctionName;
         return runCommand;
     }
 
     // Concatenate the input arguments
-    private String getInputArguments() {
+    private Map<String, String> getInputArguments() {
 
         final List<String> inputArgsList = new ArrayList<String>();
         final Map<String,String> args = new HashMap<String,String>();
@@ -282,9 +282,16 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             artifact.addFilePathArgTo(args);
         }
 
-        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
-
-        return String.join(",", inputArgsList);
+        return args;
+    }
+    
+    //Replace the MAP values in the script and return the new string 
+    
+    private String getRunnerScript(String script,Map<String,String> values) {
+        for (Map.Entry<String, String> entry : values.entrySet()) {
+            script = script.replace("${"+entry.getKey()+"}", entry.getValue());
+        }
+        return script;
     }
 
     

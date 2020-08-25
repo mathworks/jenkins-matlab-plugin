@@ -5,6 +5,7 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+import java.util.Map;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -14,10 +15,11 @@ import hudson.model.TaskListener;
 
 public class TestStepExecution extends MatlabRunTestsStepExecution {
 
-    public TestStepExecution(StepContext context, String command) {
+    public TestStepExecution(StepContext context, Map<String,String> command) {
         super(context, command);
 
     }
+    
 
     @Override
     public ProcStarter getProcessToRunMatlabCommand(FilePath workspace, Launcher launcher,
