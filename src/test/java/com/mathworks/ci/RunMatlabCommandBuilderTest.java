@@ -187,7 +187,7 @@ public class RunMatlabCommandBuilderTest {
      */
 
     @Test
-    public void verifyBuildFailureWhenMatlabCommandPasses() throws Exception {
+    public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilderTester tester =
@@ -196,6 +196,7 @@ public class RunMatlabCommandBuilderTest {
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+
     }
 
     /*
