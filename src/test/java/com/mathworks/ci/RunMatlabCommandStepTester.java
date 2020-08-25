@@ -27,7 +27,7 @@ public class RunMatlabCommandStepTester extends RunMatlabCommandStep {
     @Override
     public StepExecution start(StepContext context) throws Exception {
         
-        return new TestCommandExecution(context,this.getCommand());
+        return new TestStepExecution(context,this.getCommand());
     }
     
     @Extension

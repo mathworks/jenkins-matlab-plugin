@@ -5,7 +5,6 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.util.Map;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import hudson.EnvVars;
 import hudson.FilePath;
