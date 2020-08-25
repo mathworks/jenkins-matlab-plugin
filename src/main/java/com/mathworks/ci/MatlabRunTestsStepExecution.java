@@ -20,15 +20,15 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
 
     private static final long serialVersionUID = 6704588180717665100L;
     
-    private Map<String,String> command;
+    private String command;
 
 
-    public MatlabRunTestsStepExecution(StepContext context, Map<String,String> command) {
+    public MatlabRunTestsStepExecution(StepContext context, String command) {
         super(context);
         this.command = command;
     }
 
-    private Map<String,String> getCommand() {
+    private String getCommand() {
         return this.command;
     }
 
@@ -67,10 +67,11 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
                     + genScriptLocation.getBaseName().replaceAll("-", "_");
 
             ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener,
-                    envVars, cmdPrefix + matlabFunctionName+ "("+envVars.expand(getCommand()+")"), uniqueTmpFldrName);
-            
-            //prepare temp folder by coping genscript package.
-            prepareTmpFldr(genScriptLocation,getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT,getCommand()));
+                    envVars, cmdPrefix + matlabFunctionName, uniqueTmpFldrName);
+
+            // prepare temp folder by coping genscript package.
+            prepareTmpFldr(genScriptLocation,
+                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, getCommand()));
                                
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -85,13 +86,5 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
             }
         }
 
-    }
-  //Replace the MAP values in the script and return the new string 
-    
-    private String getRunnerScript(String script,Map<String,String> values) {
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            script = script.replace("${"+entry.getKey()+"}", entry.getValue());
-        }
-        return script;
     }
 }

@@ -15,7 +15,7 @@ import hudson.model.TaskListener;
 
 public class TestStepExecution extends MatlabRunTestsStepExecution {
 
-    public TestStepExecution(StepContext context, Map<String,String> command) {
+    public TestStepExecution(StepContext context, String command) {
         super(context, command);
 
     }

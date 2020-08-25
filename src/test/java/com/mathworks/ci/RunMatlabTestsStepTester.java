@@ -3,9 +3,7 @@ package com.mathworks.ci;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -64,14 +62,11 @@ public class RunMatlabTestsStepTester extends RunMatlabTestsStep {
         }
     }
 
-    public Map<String,String> getInputArgs() {
-        final Map<String, String> args = new HashMap<String, String>();
-        args.put("PDFReportPath", getTestResultsPDF());
-        args.put("TAPResultsPath", getTestResultsTAP());
-        args.put("JUnitResultsPath", getTestResultsJUnit());
-        args.put("SimulinkTestResultsPath", getTestResultsSimulinkTest());
-        args.put("CoberturaCodeCoveragePath", getCodeCoverageCobertura());
-        args.put("CoberturaModelCoveragePath", getModelCoverageCobertura());
-        return args;
+    public String getInputArgs() {
+        List<String> args = Arrays.asList(getTestResultsPDF(), getTestResultsTAP(),
+                getTestResultsJUnit(), getTestResultsSimulinkTest(), getCodeCoverageCobertura(),
+                getModelCoverageCobertura());
+
+        return String.join(",", args);
     }
 }

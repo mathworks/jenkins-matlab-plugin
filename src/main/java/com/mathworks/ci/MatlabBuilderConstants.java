@@ -36,13 +36,7 @@ public class MatlabBuilderConstants {
     static final String MATLAB_TEST_RUNNER_FILE_PREFIX = "test_runner_";
     
     //MATLAB runner script 
-    static final String TEST_RUNNER_SCRIPT = "testScript = genscript('Test',...\n" + 
-            "   'PDFTestReport',${PDFReportPath},...\n" + 
-            "   'TAPTestResults',${TAPResultsPath},...\n" + 
-            "   'JUnitTestResults',${JUnitResultsPath},...\n" + 
-            "   'SimulinkTestResults',${CoberturaCodeCoveragePath},...\n" + 
-            "   'CoberturaCodeCoverage',${SimulinkTestResultsPath},...\n" + 
-            "   'CoberturaModelCoverage',${CoberturaModelCoveragePath});\n" + 
+    static final String TEST_RUNNER_SCRIPT = "testScript = genscript(${PARAMS});\n" + 
             "\n" + 
             "disp('Running MATLAB script with content:\\n');\n" + 
             "disp(strtrim(testScript.writeToText()));\n" + 

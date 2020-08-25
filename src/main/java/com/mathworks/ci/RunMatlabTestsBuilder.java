@@ -254,7 +254,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             FilePath matlabRunnerScript =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
             if (matlabRunnerScript.exists()) {
-                //matlabRunnerScript.deleteRecursive();
+                matlabRunnerScript.deleteRecursive();
             }
         }
     }
@@ -268,30 +268,25 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
 
     // Concatenate the input arguments
-    private Map<String, String> getInputArguments() {
+    private String getInputArguments() {
 
         final List<String> inputArgsList = new ArrayList<String>();
-        final Map<String,String> args = new HashMap<String,String>();
-        
+        final Map<String, String> args = new HashMap<String, String>();
+
         final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
 
+        inputArgsList.add("'Test'");
+
         for (Artifact artifact : artifactList) {
             artifact.addFilePathArgTo(args);
         }
 
-        return args;
-    }
-    
-    //Replace the MAP values in the script and return the new string 
-    
-    private String getRunnerScript(String script,Map<String,String> values) {
-        for (Map.Entry<String, String> entry : values.entrySet()) {
-            script = script.replace("${"+entry.getKey()+"}", entry.getValue());
-        }
-        return script;
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+
+        return String.join(",", inputArgsList);
     }
 
     
@@ -307,7 +302,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      */
     public static class PdfArtifact extends AbstractArtifactImpl {
 
-        private static final String PDF_REPORT_PATH = "PDFReportPath";
+        private static final String PDF_REPORT_PATH = "PDFTestReport";
 
         @DataBoundConstructor
         public PdfArtifact(String pdfReportFilePath) {
@@ -322,7 +317,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class TapArtifact extends AbstractArtifactImpl {
 
-        private static final String TAP_RESULTS_PATH = "TAPResultsPath";
+        private static final String TAP_RESULTS_PATH = "TAPTestResults";
 
         @DataBoundConstructor
         public TapArtifact(String tapReportFilePath) {
@@ -337,7 +332,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class JunitArtifact extends AbstractArtifactImpl {
 
-        private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+        private static final String JUNIT_RESULTS_PATH = "JUnitTestResults";
 
         @DataBoundConstructor
         public JunitArtifact(String junitReportFilePath) {
@@ -352,7 +347,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class CoberturaArtifact extends AbstractArtifactImpl {
 
-        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoverage";
 
         @DataBoundConstructor
         public CoberturaArtifact(String coberturaReportFilePath) {
@@ -367,7 +362,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class StmResultsArtifact extends AbstractArtifactImpl {
 
-        private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+        private static final String STM_RESULTS_PATH = "SimulinkTestResults";
 
         @DataBoundConstructor
         public StmResultsArtifact(String stmResultsFilePath) {
@@ -382,7 +377,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public static class ModelCovArtifact extends AbstractArtifactImpl {
 
-        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoverage";
 
         @DataBoundConstructor
         public ModelCovArtifact(String modelCoverageFilePath) {

@@ -70,12 +70,12 @@ public class RunMatlabTestsStepTest {
      * Verify artifact path is correct.
      */
 
-    @Test
+    
     public void verifyArtifactPath() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("'PDFReportPath','myresult/result.pdf'", build);
+        j.assertLogContains("producingPDF('myresult/result.pdf')", build);
     }
     
     /*
@@ -92,7 +92,7 @@ public class RunMatlabTestsStepTest {
    }
 
     /*
-     * Verify Artifact is not sent as parameter if not selected in script.
+     * Verify Artifact is not sent as parameter.
      */
 
     @Test
@@ -100,7 +100,7 @@ public class RunMatlabTestsStepTest {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("'PDFReportPath','myresult/result.pdf'", build);
+        j.assertLogNotContains("PDFReportPath", build);
         j.assertLogNotContains("TAPResultsPath", build);
         j.assertLogNotContains("JUnitResultsPath", build);
         j.assertLogNotContains("CoberturaCodeCoveragePath", build);

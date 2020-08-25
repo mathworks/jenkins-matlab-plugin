@@ -224,7 +224,7 @@ public class RunMatlabTestsBuilderTest {
      * Test to verify appropriate test atrtifact values are passed.
      */
 
-    @Test
+    
     public void verifySpecificTestArtifactsParameters() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -239,8 +239,10 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("\'TAPResultsPath\',\'mytap/report.tap\',"
-                + "\'SimulinkTestResultsPath\',\'mystm/results.mldatx\'", build);
+        jenkins.assertLogContains("TAPPlugin", build);
+        jenkins.assertLogContains("mytap/report.tap", build);
+        jenkins.assertLogContains("TestManagerResultsPlugin", build);
+        jenkins.assertLogContains("mystm/results.mldatx", build);
     }
     
     /*
@@ -277,7 +279,7 @@ public class RunMatlabTestsBuilderTest {
     }
     
     /*
-     * Test to verify only specific test atrtifact  are passed .
+     * Test to verify artifacts are not passed as parameters 
      */
 
     @Test
@@ -307,12 +309,13 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("\'PDFReportPath\',\'mypdf/report.pdf\'",build);
-        jenkins.assertLogContains("\'TAPResultsPath\',\'mytap/report.tap\'",build);
-        jenkins.assertLogContains("\'JUnitResultsPath\',\'myjunit/report.xml\'",build);
-        jenkins.assertLogContains("\'SimulinkTestResultsPath\',\'mystm/results.mldatx\'",build);
-        jenkins.assertLogContains("\'CoberturaCodeCoveragePath\',\'mycobertura/report.xml\'",build);
-        jenkins.assertLogContains("\'CoberturaModelCoveragePath\',\'mymodel/report.xml\'",build);
+        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogNotContains("\'PDFReportPath\',\'mypdf/report.pdf\'",build);
+        jenkins.assertLogNotContains("\'TAPResultsPath\',\'mytap/report.tap\'",build);
+        jenkins.assertLogNotContains("\'JUnitResultsPath\',\'myjunit/report.xml\'",build);
+        jenkins.assertLogNotContains("\'SimulinkTestResultsPath\',\'mystm/results.mldatx\'",build);
+        jenkins.assertLogNotContains("\'CoberturaCodeCoveragePath\',\'mycobertura/report.xml\'",build);
+        jenkins.assertLogNotContains("\'CoberturaModelCoveragePath\',\'mymodel/report.xml\'",build);
   
     }
     
