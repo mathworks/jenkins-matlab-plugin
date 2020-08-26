@@ -121,7 +121,9 @@ public class RunMatlabTestsStep extends Step {
     
     private String getInputArgs() {
         final List<String> inputArgs = new ArrayList<>();
-        final Map<String, String> args = getMatlabArgs();
+        final Map<String, String> args = getGenscriptArgs();
+        
+        inputArgs.add("'Test'");
 
         args.forEach((key, val) -> {
             if (val != null) {
@@ -136,14 +138,14 @@ public class RunMatlabTestsStep extends Step {
         return String.join(",", inputArgs);
     }
     
-    private Map<String, String> getMatlabArgs() {
+    private Map<String, String> getGenscriptArgs() {
         final Map<String, String> args = new HashMap<String, String>();
-        args.put("PDFReportPath", getTestResultsPDF());
-        args.put("TAPResultsPath", getTestResultsTAP());
-        args.put("JUnitResultsPath", getTestResultsJUnit());
-        args.put("SimulinkTestResultsPath", getTestResultsSimulinkTest());
-        args.put("CoberturaCodeCoveragePath", getCodeCoverageCobertura());
-        args.put("CoberturaModelCoveragePath", getModelCoverageCobertura());
+        args.put("PDFTestReport", getTestResultsPDF());
+        args.put("TAPTestResults", getTestResultsTAP());
+        args.put("JUnitTestResults", getTestResultsJUnit());
+        args.put("SimulinkTestResults", getTestResultsSimulinkTest());
+        args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
+        args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         return args;
     }
 }

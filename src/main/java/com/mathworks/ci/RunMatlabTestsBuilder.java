@@ -240,11 +240,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments(), genScriptLocation),
-                    uniqueTmpFldrName);
+                    constructCommandForTest(genScriptLocation), uniqueTmpFldrName);
             
-            // copy genscript package in temp folder
-            prepareTmpFldr(genScriptLocation);
+            // copy genscript package in temp folder and write a runner script.
+            prepareTmpFldr(genScriptLocation, getRunnerScript(
+                    MatlabBuilderConstants.TEST_RUNNER_SCRIPT, getInputArguments()));
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -260,11 +260,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
     
-    public String constructCommandForTest(String inputArguments, FilePath scriptPath) {
+    public String constructCommandForTest(FilePath scriptPath) {
         final String matlabFunctionName = MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + scriptPath.getBaseName().replaceAll("-", "_");
-        final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''") + "'); "
-                + matlabFunctionName + "(" + inputArguments + ")";
+        final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''")
+                + "'); " + matlabFunctionName;
         return runCommand;
     }
 
@@ -278,6 +278,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
+        
+        inputArgsList.add("'Test'");
 
         for (Artifact artifact : artifactList) {
             artifact.addFilePathArgTo(args);
@@ -301,7 +303,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      */
     public static class PdfArtifact extends AbstractArtifactImpl {
 
-        private static final String PDF_REPORT_PATH = "PDFReportPath";
+        private static final String PDF_TEST_REPORT = "PDFTestReport";
 
         @DataBoundConstructor
         public PdfArtifact(String pdfReportFilePath) {
@@ -310,13 +312,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(PDF_REPORT_PATH, getFilePath());
+            inputArgs.put(PDF_TEST_REPORT, getFilePath());
         }
     }
 
     public static class TapArtifact extends AbstractArtifactImpl {
 
-        private static final String TAP_RESULTS_PATH = "TAPResultsPath";
+        private static final String TAP_TEST_RESULTS = "TAPTestResults";
 
         @DataBoundConstructor
         public TapArtifact(String tapReportFilePath) {
@@ -325,13 +327,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(TAP_RESULTS_PATH, getFilePath());
+            inputArgs.put(TAP_TEST_RESULTS, getFilePath());
         }
     }
 
     public static class JunitArtifact extends AbstractArtifactImpl {
 
-        private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+        private static final String JUNIT_TEST_RESULTS = "JUnitTestResults";
 
         @DataBoundConstructor
         public JunitArtifact(String junitReportFilePath) {
@@ -340,13 +342,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(JUNIT_RESULTS_PATH, getFilePath());
+            inputArgs.put(JUNIT_TEST_RESULTS, getFilePath());
         }
     }
 
     public static class CoberturaArtifact extends AbstractArtifactImpl {
 
-        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+        private static final String COBERTURA_CODE_COVERAGE = "CoberturaCodeCoverage";
 
         @DataBoundConstructor
         public CoberturaArtifact(String coberturaReportFilePath) {
@@ -355,13 +357,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(COBERTURA_CODE_COVERAGE_PATH, getFilePath());
+            inputArgs.put(COBERTURA_CODE_COVERAGE, getFilePath());
         }
     }
 
     public static class StmResultsArtifact extends AbstractArtifactImpl {
 
-        private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+        private static final String STM_RESULTS = "SimulinkTestResults";
 
         @DataBoundConstructor
         public StmResultsArtifact(String stmResultsFilePath) {
@@ -370,13 +372,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(STM_RESULTS_PATH, getFilePath());
+            inputArgs.put(STM_RESULTS, getFilePath());
         }
     }
 
     public static class ModelCovArtifact extends AbstractArtifactImpl {
 
-        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+        private static final String COBERTURA_MODEL_COVERAGE = "CoberturaModelCoverage";
 
         @DataBoundConstructor
         public ModelCovArtifact(String modelCoverageFilePath) {
@@ -385,7 +387,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(COBERTURA_MODEL_COVERAGE_PATH, getFilePath());
+            inputArgs.put(COBERTURA_MODEL_COVERAGE, getFilePath());
         }
     }
 

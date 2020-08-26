@@ -1,7 +1,5 @@
 package com.mathworks.ci;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
@@ -27,25 +25,10 @@ public class RunMatlabTestsStepTester extends RunMatlabTestsStep {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        Launcher launcher = context.get(Launcher.class);
-        FilePath workspace = context.get(FilePath.class);
-
-        // Copy Scratch file needed to run MATLAB tests in workspace
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-        copyScratchFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+        
         return new TestStepExecution(context, getInputArgs());
     }
 
-    private void copyScratchFileInWorkspace(String sourceFile, String targetFile,
-            FilePath targetWorkspace) throws IOException, InterruptedException {
-        final ClassLoader classLoader = getClass().getClassLoader();
-        FilePath targetFilePath = new FilePath(targetWorkspace, targetFile);
-        InputStream in = classLoader.getResourceAsStream(sourceFile);
-        targetFilePath.copyFrom(in);
-        // set executable permission
-        targetFilePath.chmod(0755);
-    }
 
     @Extension
     public static class CommandStepTestDescriptor extends StepDescriptor {
