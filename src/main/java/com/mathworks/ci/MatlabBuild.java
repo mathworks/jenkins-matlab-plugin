@@ -101,8 +101,7 @@ public interface MatlabBuild {
     default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
         // Write MATLAB scratch file in temp folder.
         FilePath scriptFile =
-                new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
-                        + tmpFldr.getBaseName().replaceAll("-", "_") + ".m");
+                new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
         scriptFile.write(runnerScript, "UTF-8");
         // copy genscript package
         copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
@@ -117,5 +116,10 @@ public interface MatlabBuild {
     default String getRunnerScript(String script, String params) {
         script = script.replace("${PARAMS}", params);
         return script;
+    }
+    
+    default String getValidMatlabFileName(String actualName) {
+        return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
+                + actualName.replaceAll("-", "_");
     }
 }

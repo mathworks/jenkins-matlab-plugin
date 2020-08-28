@@ -131,10 +131,6 @@ public class RunMatlabTestsStep extends Step {
             }
         });
 
-        if (inputArgs.isEmpty()) {
-            return "";
-        }
-
         return String.join(",", inputArgs);
     }
     
