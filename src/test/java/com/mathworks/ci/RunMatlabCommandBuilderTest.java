@@ -264,6 +264,19 @@ public class RunMatlabCommandBuilderTest {
         jenkins.assertLogContains("run_matlab_command", build);
     }
     
+    /*
+     * Verify default MATLAB is not picked if invalid MATLAB path is provided
+     */
+    @Test
+    public void verifyDefaultMatlabNotPicked() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2020b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        project.getBuildersList().add(scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("MatlabNotFoundError", build);
+    }
+    
 	/*
 	 * Test to verify if Matrix build fails when MATLAB is not available.
      * 
@@ -273,7 +286,7 @@ public class RunMatlabCommandBuilderTest {
 	@Test
 	public void verifyMatrixBuildFails() throws Exception {
 		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
 		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
@@ -287,10 +300,10 @@ public class RunMatlabCommandBuilderTest {
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
 		jenkins.assertLogContains("run_matlab_command", build);
 		jenkins.assertBuildStatus(Result.FAILURE, build);
-		vals.put("VERSION", "R2018b");
+		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-		jenkins.assertLogContains("run_matlab_command", build2);
+		jenkins.assertLogContains("MatlabNotFoundError", build2);
 		jenkins.assertBuildStatus(Result.FAILURE, build2);
 	}
 

@@ -346,6 +346,18 @@ public class RunMatlabTestsBuilderTest {
         jenkins.assertLogContains("run_matlab_command", build);
     }
     
+    /*
+     * Verify default MATLAB is not picked if invalid MATLAB path is provided
+     */
+    @Test
+    public void verifyDefaultMatlabNotPicked() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2020b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("MatlabNotFoundError", build);
+    }
+    
 	/*
 	 * Test to verify if Matrix build fails when MATLAB is not available.
      * 
@@ -375,9 +387,8 @@ public class RunMatlabTestsBuilderTest {
 
 		// Check for second Matrix combination
         
-		Map<String, String> val = new HashMap<String, String>();
-        val.put("VERSION", "R2015b");
-		Combination c2 = new Combination(val);
+		vals.put("VERSION", "R2015b");
+		Combination c2 = new Combination(vals);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
 
 		jenkins.assertLogContains("MatlabNotFoundError", build2);

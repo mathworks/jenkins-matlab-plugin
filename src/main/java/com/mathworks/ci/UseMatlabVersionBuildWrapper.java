@@ -148,10 +148,6 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     }
     
     private String getNodeSpecificExecutable(Launcher launcher) {
-        if (launcher.isUnix()) {
-            return "matlab";
-        } else {
-            return "matlab.exe";
-        }
+        return (launcher.isUnix()) ? "matlab" : "matlab.exe";
     }
 }
