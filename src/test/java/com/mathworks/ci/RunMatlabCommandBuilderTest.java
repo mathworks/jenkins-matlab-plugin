@@ -261,7 +261,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("MATLAB_ROOT", build);
+        jenkins.assertLogContains("run_matlab_command", build);
     }
     
 	/*
@@ -285,12 +285,12 @@ public class RunMatlabCommandBuilderTest {
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("MATLAB_ROOT", build);
+		jenkins.assertLogContains("run_matlab_command", build);
 		jenkins.assertBuildStatus(Result.FAILURE, build);
 		vals.put("VERSION", "R2018b");
 		Combination c2 = new Combination(vals);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-		jenkins.assertLogContains("MATLAB_ROOT", build2);
+		jenkins.assertLogContains("run_matlab_command", build2);
 		jenkins.assertBuildStatus(Result.FAILURE, build2);
 	}
 
