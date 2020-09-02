@@ -343,7 +343,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("MATLAB_ROOT", build);
+        jenkins.assertLogContains("run_matlab_command", build);
     }
     
 	/*
@@ -355,7 +355,7 @@ public class RunMatlabTestsBuilderTest {
 	@Test
 	public void verifyMatrixBuildFails() throws Exception {
 		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
 		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
@@ -370,15 +370,17 @@ public class RunMatlabTestsBuilderTest {
 		Combination c1 = new Combination(vals);
 		MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
-		jenkins.assertLogContains("MATLAB_ROOT", build1);
+		jenkins.assertLogContains("run_matlab_command", build1);
 		jenkins.assertBuildStatus(Result.FAILURE, build1);
 
 		// Check for second Matrix combination
-
-		Combination c2 = new Combination(vals);
+        
+		Map<String, String> val = new HashMap<String, String>();
+        val.put("VERSION", "R2015b");
+		Combination c2 = new Combination(val);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
 
-		jenkins.assertLogContains("MATLAB_ROOT", build2);
+		jenkins.assertLogContains("MatlabNotFoundError", build2);
 		jenkins.assertBuildStatus(Result.FAILURE, build2);
 	}
 
