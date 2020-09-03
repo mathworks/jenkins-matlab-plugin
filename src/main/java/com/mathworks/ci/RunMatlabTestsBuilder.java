@@ -244,7 +244,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             
             // copy genscript package in temp folder and write a runner script.
             prepareTmpFldr(genScriptLocation, getRunnerScript(
-                    MatlabBuilderConstants.TEST_RUNNER_SCRIPT, getInputArguments()));
+                    MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getInputArguments())));
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {

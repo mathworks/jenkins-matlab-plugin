@@ -69,7 +69,7 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
             
             // prepare temp folder by coping genscript package and writing runner script.
             prepareTmpFldr(genScriptLocation,
-                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, getCommandArgs()));
+                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs())));
                                
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
