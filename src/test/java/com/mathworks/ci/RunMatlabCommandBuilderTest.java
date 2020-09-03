@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 import hudson.EnvVars;
 import hudson.matrix.Axis;
@@ -47,6 +48,9 @@ public class RunMatlabCommandBuilderTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
+    
+    @Rule
+    public Timeout globalTimeout = Timeout.seconds(500); 
 
     @BeforeClass
     public static void classSetup() throws URISyntaxException, IOException {
