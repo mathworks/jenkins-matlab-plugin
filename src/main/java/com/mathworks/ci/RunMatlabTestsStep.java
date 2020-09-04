@@ -22,6 +22,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.Util;
 
 public class RunMatlabTestsStep extends Step {
     
@@ -31,6 +32,7 @@ public class RunMatlabTestsStep extends Step {
     private String codeCoverageCobertura;
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
+    private List<String> sourceFolder;
   
 
     @DataBoundConstructor
@@ -93,6 +95,15 @@ public class RunMatlabTestsStep extends Step {
         this.modelCoverageCobertura = modelCoverageCobertura;
     }
 
+    public List<String> getSourceFolder() {
+        return sourceFolder;
+    }
+
+    @DataBoundSetter
+    public void setSourceFolder(List<String> sourceFolder) {
+        this.sourceFolder = Util.fixNull(sourceFolder);
+    }
+
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
@@ -142,6 +153,10 @@ public class RunMatlabTestsStep extends Step {
         args.put("SimulinkTestResults", getTestResultsSimulinkTest());
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
+
+        String sourceStr = String.join(";", getSourceFolder());
+        args.put("SourceFolder", sourceStr);
+
         return args;
     }
 }
