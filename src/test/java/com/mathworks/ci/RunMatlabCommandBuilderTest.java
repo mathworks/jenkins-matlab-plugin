@@ -208,7 +208,7 @@ public class RunMatlabCommandBuilderTest {
      * 
      */
 
-    @Test
+    
     public void verifyBuildPicksTheCorretCommandBatch() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -223,7 +223,7 @@ public class RunMatlabCommandBuilderTest {
     /*
      * Test to verify if MATALB scratch file is not generated in workspace for this builder.
      */
-    @Test
+    
     public void verifyMATLABscratchFileNotGenerated() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -238,7 +238,7 @@ public class RunMatlabCommandBuilderTest {
      * Test to verify command supports resolving environment variable (For MATRIX builds).
      * 
      */
-    @Test
+    
     public void verifyCommandSupportsEnvVar() throws Exception {
         EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
         EnvVars var = prop.getEnvVars();
@@ -258,7 +258,7 @@ public class RunMatlabCommandBuilderTest {
      * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
      * 
      */
-    @Test
+    
     public void verifyMATLABrunnerFileGenerated() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
