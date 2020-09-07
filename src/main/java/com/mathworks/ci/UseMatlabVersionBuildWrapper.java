@@ -133,18 +133,20 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Set Environment variable
 
         setEnv(initialEnvironment);
-        String nodeSpecificFileSep = getNodeSpecificFileSeperator(launcher);
+        
+        FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
+                getLocalMatlab() + "/bin/" + getNodeSpecificExecutable(launcher));
+
+        if (!matlabExecutablePath.exists()) {
+            throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
+        }
         // Add "matlabroot" without bin as env variable which will be available across the build.
         context.env("matlabroot", getLocalMatlab());
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", getLocalMatlab() + nodeSpecificFileSep + "bin");     
+        context.env("PATH+matlabroot", getLocalMatlab() + "/bin");     
     }
 
-    private String getNodeSpecificFileSeperator(Launcher launcher) {
-        if (launcher.isUnix()) {
-            return "/";
-        } else {
-            return "\\";
-        }
+    private String getNodeSpecificExecutable(Launcher launcher) {
+        return (launcher.isUnix()) ? "matlab" : "matlab.exe";
     }
 }
