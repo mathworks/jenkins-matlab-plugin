@@ -153,9 +153,10 @@ public class RunMatlabTestsStep extends Step {
         args.put("SimulinkTestResults", getTestResultsSimulinkTest());
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
-
-        String sourceStr = String.join(";", getSourceFolder());
-        args.put("SourceFolder", sourceStr);
+        if(getSourceFolder() != null && getSourceFolder().size() != 0){
+            String sourceStr = String.join(";", getSourceFolder());
+            args.put("SourceFolder", sourceStr);
+        }
 
         return args;
     }

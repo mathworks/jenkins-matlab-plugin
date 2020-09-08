@@ -11,18 +11,12 @@ package com.mathworks.ci;
 import java.io.IOException;
 import java.util.*;
 import javax.annotation.Nonnull;
+import hudson.*;
+import hudson.model.*;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
-import hudson.EnvVars;
-import hudson.Extension;
-import hudson.FilePath;
-import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
-import hudson.model.AbstractProject;
-import hudson.model.Result;
-import hudson.model.Run;
-import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
@@ -47,15 +41,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private Artifact stmResultsArtifact = new NullArtifact();
     private Artifact modelCoverageArtifact = new NullArtifact();
     private Artifact pdfReportArtifact = new NullArtifact();
-   
+    private SourceFolder sourceFolder;
+
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
     }
 
-
     // Getter and Setters to access local members
-
 
     @DataBoundSetter
     public void setTapArtifact(TapArtifact tapArtifact) {
@@ -86,7 +79,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
     }
-    
+
+    @DataBoundSetter
+    public void setSourceFolder(SourceFolder sourceFolder) {
+        this.sourceFolder = sourceFolder;
+    }
+
+
     public String getTapReportFilePath() {
         return this.getTapArtifact().getFilePath();
     }      
@@ -133,6 +132,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     public String getPdfReportFilePath() {
         return this.getPdfReportArtifact().getFilePath();
+    }
+
+    public SourceFolder getSourceFolder() {
+        return this.sourceFolder;
     }
 
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
@@ -284,6 +287,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             artifact.addFilePathArgTo(args);
         }
 
+        // Add source folder options to argument
+        SourceFolder sf = getSourceFolder();
+        if(sf != null && sf.getSourceFolderPaths().size() != 0){
+            sf.addFilePathArgTo(args);
+        }
+
         args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
 
         return String.join(",", inputArgsList);
@@ -300,6 +309,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
+
     public static class PdfArtifact extends AbstractArtifactImpl {
 
         private static final String PDF_TEST_REPORT = "PDFTestReport";

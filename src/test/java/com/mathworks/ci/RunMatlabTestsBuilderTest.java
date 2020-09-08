@@ -6,15 +6,13 @@ package com.mathworks.ci;
  * 
  */
 
-import static org.junit.Assert.assertFalse;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+
+import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,6 +40,8 @@ import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.tasks.Builder;
+
+import static org.junit.Assert.*;
 
 public class RunMatlabTestsBuilderTest {
 
@@ -85,7 +85,6 @@ public class RunMatlabTestsBuilderTest {
 
     @Before
     public void testSetup() throws IOException {
-
         this.project = jenkins.createFreeStyleProject();
         this.testBuilder = new RunMatlabTestsBuilder();
         this.buildWrapper = new UseMatlabVersionBuildWrapper();
@@ -110,6 +109,8 @@ public class RunMatlabTestsBuilderTest {
     private URL getResource(String resource) {
         return RunMatlabTestsBuilderTest.class.getClassLoader().getResource(resource);
     }
+
+
 
     /*
      * Test Case to verify if Build step contains "Run MATLAB Tests" option.
@@ -278,7 +279,24 @@ public class RunMatlabTestsBuilderTest {
         WebAssert.assertTextPresent(page,"matlabTestArtifacts/cobertura.xml");
         WebAssert.assertTextPresent(page,"matlabTestArtifacts/coberturamodelcoverage.xml");
     }
-    
+
+    /*
+    * Test to verify text box shows up on sourceFolder option click and text is empty.
+    */
+
+    @Test
+    public void verifySourceFolderDefaultState() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput sourceFolder = page.getElementByName("_.sourceFolder");
+        sourceFolder.click();
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.srcFolderPath\"]");
+        HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
+        assertEquals("", srcFolderPath.getTextContent());
+    }
+
     /*
      * Test to verify  only specific test atrtifact  are passed.
      */
@@ -317,7 +335,7 @@ public class RunMatlabTestsBuilderTest {
         jenkins.assertLogNotContains("\'SimulinkTestResults\',\'mystm/results.mldatx\'",build);
         jenkins.assertLogNotContains("\'CoberturaCodeCoverage\',\'mycobertura/report.xml\'",build);
         jenkins.assertLogNotContains("\'CoberturaModelCoverage\',\'mymodel/report.xml\'",build);
-  
+
     }
     
     /*
