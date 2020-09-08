@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {
 
     private List<SourceFolderPaths> sourceFolderPaths = new ArrayList<>();
-    private transient final String SOURCE_FOLDER = "SourceFolder";
+    private static final String SOURCE_FOLDER = "SourceFolder";
 
     @DataBoundConstructor
     public SourceFolder() {
