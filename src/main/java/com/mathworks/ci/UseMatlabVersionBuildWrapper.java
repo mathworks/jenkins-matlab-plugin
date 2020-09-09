@@ -144,7 +144,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Add "matlabroot" without bin as env variable which will be available across the build.
         context.env("matlabroot", getLocalMatlab());
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", getLocalMatlab() + "/bin"); 
+        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote()); 
     }
     
     private String getNodeSpecificExecutable(Launcher launcher) {
