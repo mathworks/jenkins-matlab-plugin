@@ -26,6 +26,6 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       codeCoverageToolOption: 'JaCoCo'
-      goals: 'verify'
+      goals: '-Dtest=RunMatlabCommandBuilderTest test'
     displayName: 'Build $(imageName)'
       
