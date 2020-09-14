@@ -8,6 +8,7 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -121,5 +122,10 @@ public interface MatlabBuild {
     default String getValidMatlabFileName(String actualName) {
         return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + actualName.replaceAll("-", "_");
+    }
+
+    default String getCellArrayFrmList(List<String> listOfStr){
+        listOfStr.replaceAll(val -> "'" + val.replaceAll("'", "''") + "'");
+        return "{" + String.join(",", listOfStr) + "}";
     }
 }

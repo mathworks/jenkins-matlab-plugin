@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *
  * Describable class for Repeatable Source Folder text boxes in Source Folder option
  * in RunMATLABTest Build step.

@@ -24,7 +24,7 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.Util;
 
-public class RunMatlabTestsStep extends Step {
+public class RunMatlabTestsStep extends Step implements MatlabBuild{
     
     private String testResultsPDF;
     private String testResultsTAP;
@@ -32,8 +32,7 @@ public class RunMatlabTestsStep extends Step {
     private String codeCoverageCobertura;
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
-    private List<String> sourceFolder;
-  
+    private List<String> sourceFolder = new ArrayList<>();
 
     @DataBoundConstructor
     public RunMatlabTestsStep() {
@@ -104,7 +103,6 @@ public class RunMatlabTestsStep extends Step {
         this.sourceFolder = Util.fixNull(sourceFolder);
     }
 
-
     @Override
     public StepExecution start(StepContext context) throws Exception {
         return new MatlabRunTestsStepExecution(context, getInputArgs());
@@ -137,7 +135,9 @@ public class RunMatlabTestsStep extends Step {
         inputArgs.add("'Test'");
 
         args.forEach((key, val) -> {
-            if (val != null) {
+            if(key.equals("SourceFolder") && val != null){
+                inputArgs.add("'" + key + "'" + "," + val);
+            }else if(val != null){
                 inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
             }
         });
@@ -153,11 +153,9 @@ public class RunMatlabTestsStep extends Step {
         args.put("SimulinkTestResults", getTestResultsSimulinkTest());
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
-        if(getSourceFolder() != null && getSourceFolder().size() != 0){
-            String sourceStr = String.join(";", getSourceFolder());
-            args.put("SourceFolder", sourceStr);
+        if(!getSourceFolder().isEmpty()){
+            args.put("SourceFolder", getCellArrayFrmList(getSourceFolder()));
         }
-
         return args;
     }
 }

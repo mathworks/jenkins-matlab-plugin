@@ -1,6 +1,6 @@
 package com.mathworks.ci;
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *
  * Test class for RunMatlabTestsBuilder Persistence
  *
@@ -101,8 +101,7 @@ public class RunMatlabTestBuilderPersistenceTest {
 
             FreeStyleProject project = r.createFreeStyleProject();
             RunMatlabTestsBuilder testBuilder = new RunMatlabTestsBuilder();
-            SourceFolder sf = new SourceFolder();
-            sf.setSourceFolderPaths(paths);
+            SourceFolder sf = new SourceFolder(paths);
             testBuilder.setSourceFolder(sf);
             project.getBuildersList().add(testBuilder);
             project.save();

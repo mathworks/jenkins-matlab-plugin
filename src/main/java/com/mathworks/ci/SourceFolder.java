@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2020 The MathWorks, Inc.
  *
  * Describable class for Source Folder Option in RunMATLABTest Build step.
  *
@@ -12,24 +12,16 @@ import hudson.Util;
 import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {
+public class SourceFolder extends AbstractDescribableImpl<SourceFolder> implements MatlabBuild {
 
-    private List<SourceFolderPaths> sourceFolderPaths = new ArrayList<>();
-    private static final String SOURCE_FOLDER = "SourceFolder";
+    private List<SourceFolderPaths> sourceFolderPaths;
 
     @DataBoundConstructor
-    public SourceFolder() {
-
-    }
-
-    @DataBoundSetter
-    public void setSourceFolderPaths(List<SourceFolderPaths> sourceFolderPaths) {
+    public SourceFolder(List<SourceFolderPaths> sourceFolderPaths) {
         this.sourceFolderPaths = Util.fixNull(sourceFolderPaths);
     }
 
@@ -37,11 +29,11 @@ public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {
         return this.sourceFolderPaths;
     }
 
-    public  void addFilePathArgTo(Map<String, String> inputArgs) {
-        // Concatenate all source folders to a single ";" separated string
-        inputArgs.put(SOURCE_FOLDER, this.sourceFolderPaths.stream()
+    public  void addFilePathArgTo(String sourceKeyVal, Map<String, String> inputArgs) {
+        // Concatenate all source folders to MATLAB cell array string.
+        inputArgs.put(sourceKeyVal, getCellArrayFrmList(this.sourceFolderPaths.stream()
                 .map(SourceFolderPaths::getSrcFolderPath)
-                .collect(Collectors.joining(";")));
+                .collect(Collectors.toList())));
     }
 
     @Extension public static class DescriptorImpl extends Descriptor<SourceFolder> {

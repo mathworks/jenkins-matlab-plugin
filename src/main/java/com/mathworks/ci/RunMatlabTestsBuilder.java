@@ -9,10 +9,21 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Arrays;
 import javax.annotation.Nonnull;
-import hudson.*;
-import hudson.model.*;
+import hudson.EnvVars;
+import hudson.Extension;
+import hudson.FilePath;
+import hudson.Launcher;
+import hudson.model.AbstractProject;
+import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -26,7 +37,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    
+    private static final String SOURCE_FOLDER = "SourceFolder";
+
     // Make all old values transient which protects them writing back on disk.
     private transient boolean tapChkBx;
     private transient boolean junitChkBx;
@@ -289,11 +301,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         // Add source folder options to argument
         SourceFolder sf = getSourceFolder();
-        if(sf != null && sf.getSourceFolderPaths().size() != 0){
-            sf.addFilePathArgTo(args);
+        if(sf != null && !sf.getSourceFolderPaths().isEmpty()){
+            sf.addFilePathArgTo(SOURCE_FOLDER, args);
         }
 
-        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+        args.forEach((key, val) -> {
+            if(key.equals(SOURCE_FOLDER)){
+                inputArgsList.add("'" + key + "'" + "," + val);
+            }else{
+                inputArgsList.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
+            }
+        });
 
         return String.join(",", inputArgsList);
     }
