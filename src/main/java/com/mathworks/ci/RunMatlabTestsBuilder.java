@@ -309,7 +309,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             if(key.equals(SOURCE_FOLDER)){
                 inputArgsList.add("'" + key + "'" + "," + val);
             }else{
-                inputArgsList.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
+                inputArgsList.add("'" + key + "'" + "," + "'" + val + "'");
             }
         });
 
