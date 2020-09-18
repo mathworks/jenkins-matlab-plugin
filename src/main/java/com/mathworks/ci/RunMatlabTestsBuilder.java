@@ -284,7 +284,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             artifact.addFilePathArgTo(args);
         }
 
-        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'"));
 
         return String.join(",", inputArgsList);
     }
