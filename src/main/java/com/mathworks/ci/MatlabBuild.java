@@ -123,9 +123,4 @@ public interface MatlabBuild {
         return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + actualName.replaceAll("-", "_");
     }
-
-    default String getCellArrayFrmList(List<String> listOfStr){
-        listOfStr.replaceAll(val -> "'" + val.replaceAll("'", "''") + "'");
-        return "{" + String.join(",", listOfStr) + "}";
-    }
 }

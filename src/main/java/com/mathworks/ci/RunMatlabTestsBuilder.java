@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Arrays;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -37,7 +39,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    private static final String SOURCE_FOLDER = "SourceFolder";
 
     // Make all old values transient which protects them writing back on disk.
     private transient boolean tapChkBx;
@@ -282,6 +283,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return runCommand;
     }
 
+    private String getCellArrayFrmList(List<String> listOfStr){
+        // Ignore empty string values in the list
+        Predicate<String> isEmpty = String::isEmpty;
+        Predicate<String> isNotEmpty = isEmpty.negate();
+        List<String> filteredListOfStr = listOfStr.stream().filter(isNotEmpty).collect(Collectors.toList());
+        filteredListOfStr.replaceAll(val -> "'" + val.replaceAll("'", "''") + "'");
+        return "{" + String.join(",", filteredListOfStr) + "}";
+    }
+
     // Concatenate the input arguments
     private String getInputArguments() {
 
@@ -299,19 +309,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             artifact.addFilePathArgTo(args);
         }
 
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+
         // Add source folder options to argument
         SourceFolder sf = getSourceFolder();
         if(sf != null && !sf.getSourceFolderPaths().isEmpty()){
-            sf.addFilePathArgTo(SOURCE_FOLDER, args);
+            sf.addSourceToInputArgs(inputArgsList, getCellArrayFrmList(sf.getSourceFolderPaths().stream()
+                    .map(SourceFolderPaths::getSrcFolderPath)
+                    .collect(Collectors.toList())));
         }
-
-        args.forEach((key, val) -> {
-            if(key.equals(SOURCE_FOLDER)){
-                inputArgsList.add("'" + key + "'" + "," + val);
-            }else{
-                inputArgsList.add("'" + key + "'" + "," + "'" + val + "'");
-            }
-        });
 
         return String.join(",", inputArgsList);
     }

@@ -16,9 +16,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class SourceFolder extends AbstractDescribableImpl<SourceFolder> implements MatlabBuild {
+public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {
 
     private List<SourceFolderPaths> sourceFolderPaths;
+    private static final String SOURCE_FOLDER = "SourceFolder";
 
     @DataBoundConstructor
     public SourceFolder(List<SourceFolderPaths> sourceFolderPaths) {
@@ -29,11 +30,9 @@ public class SourceFolder extends AbstractDescribableImpl<SourceFolder> implemen
         return this.sourceFolderPaths;
     }
 
-    public  void addFilePathArgTo(String sourceKeyVal, Map<String, String> inputArgs) {
+    public  void addSourceToInputArgs(List<String> inputArgsList, String cellArraySourceVal) {
         // Concatenate all source folders to MATLAB cell array string.
-        inputArgs.put(sourceKeyVal, getCellArrayFrmList(this.sourceFolderPaths.stream()
-                .map(SourceFolderPaths::getSrcFolderPath)
-                .collect(Collectors.toList())));
+        inputArgsList.add("'" + SOURCE_FOLDER + "'" + "," + cellArraySourceVal);
     }
 
     @Extension public static class DescriptorImpl extends Descriptor<SourceFolder> {
