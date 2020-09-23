@@ -9,9 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
@@ -157,17 +154,8 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         if(!getSourceFolder().isEmpty()){
-            args.put("SourceFolder", getCellArrayFrmList(getSourceFolder()));
+            args.put("SourceFolder", Utilities.getCellArrayFrmList(getSourceFolder()));
         }
         return args;
-    }
-
-    private String getCellArrayFrmList(List<String> listOfStr){
-        // Ignore empty string values in the list
-        Predicate<String> isEmpty = String::isEmpty;
-        Predicate<String> isNotEmpty = isEmpty.negate();
-        List<String> filteredListOfStr = listOfStr.stream().filter(isNotEmpty).collect(Collectors.toList());
-        filteredListOfStr.replaceAll(val -> "'" + val.replaceAll("'", "''") + "'");
-        return "{" + String.join(",", filteredListOfStr) + "}";
     }
 }

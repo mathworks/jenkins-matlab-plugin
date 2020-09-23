@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Arrays;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import hudson.EnvVars;
@@ -283,15 +282,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return runCommand;
     }
 
-    private String getCellArrayFrmList(List<String> listOfStr){
-        // Ignore empty string values in the list
-        Predicate<String> isEmpty = String::isEmpty;
-        Predicate<String> isNotEmpty = isEmpty.negate();
-        List<String> filteredListOfStr = listOfStr.stream().filter(isNotEmpty).collect(Collectors.toList());
-        filteredListOfStr.replaceAll(val -> "'" + val.replaceAll("'", "''") + "'");
-        return "{" + String.join(",", filteredListOfStr) + "}";
-    }
-
     // Concatenate the input arguments
     private String getInputArguments() {
 
@@ -311,10 +301,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
 
-        // Add source folder options to argument
+        /*
+        * Add source folder options to argument.
+        * For source folder we create a MATLAB cell array and add it to input argument list.
+        * */
         SourceFolder sf = getSourceFolder();
         if(sf != null && !sf.getSourceFolderPaths().isEmpty()){
-            sf.addSourceToInputArgs(inputArgsList, getCellArrayFrmList(sf.getSourceFolderPaths().stream()
+            sf.addSourceToInputArgs(inputArgsList, Utilities.getCellArrayFrmList(sf.getSourceFolderPaths().stream()
                     .map(SourceFolderPaths::getSrcFolderPath)
                     .collect(Collectors.toList())));
         }
