@@ -22,6 +22,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.Util;
 
 public class RunMatlabTestsStep extends Step {
     
@@ -31,7 +32,7 @@ public class RunMatlabTestsStep extends Step {
     private String codeCoverageCobertura;
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
-  
+    private List<String> sourceFolder = new ArrayList<>();
 
     @DataBoundConstructor
     public RunMatlabTestsStep() {
@@ -93,6 +94,14 @@ public class RunMatlabTestsStep extends Step {
         this.modelCoverageCobertura = modelCoverageCobertura;
     }
 
+    public List<String> getSourceFolder() {
+        return sourceFolder;
+    }
+
+    @DataBoundSetter
+    public void setSourceFolder(List<String> sourceFolder) {
+        this.sourceFolder = Util.fixNull(sourceFolder);
+    }
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
@@ -126,7 +135,9 @@ public class RunMatlabTestsStep extends Step {
         inputArgs.add("'Test'");
 
         args.forEach((key, val) -> {
-            if (val != null) {
+            if(key.equals("SourceFolder") && val != null){
+                inputArgs.add("'" + key + "'" + "," + val);
+            }else if(val != null){
                 inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
             }
         });
@@ -142,6 +153,9 @@ public class RunMatlabTestsStep extends Step {
         args.put("SimulinkTestResults", getTestResultsSimulinkTest());
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
+        if(!getSourceFolder().isEmpty()){
+            args.put("SourceFolder", Utilities.getCellArrayFrmList(getSourceFolder()));
+        }
         return args;
     }
 }

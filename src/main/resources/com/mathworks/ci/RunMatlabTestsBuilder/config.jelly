@@ -1,7 +1,14 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-    
-<f:section title="Generate Test Artifacts">
+
+<f:block>
+    <br></br>
+    <f:optionalProperty field="sourceFolder" title="Source Folder" />
+</f:block>
+
+<f:block>
+    <br></br>
+    <b>Generate Test Artifacts</b>
     <f:optionalBlock name="pdfReportArtifact" field="pdfReportArtifact" title="PDF test report" checked="${instance.pdfReportArtifact.selected}">
   	 <f:entry field="pdfReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
@@ -26,9 +33,11 @@
      </f:entry>   
    </f:optionalBlock>
   
-</f:section>
+</f:block>
 
-<f:section title="Generate Coverage Artifacts">
+<f:block>
+    <br></br>
+    <b>Generate Coverage Artifacts</b>
    <f:optionalBlock name="coberturaArtifact" field="coberturaArtifact" title="Cobertura code coverage" checked="${instance.coberturaArtifact.selected}">
 	 <f:entry field="coberturaReportFilePath" title="File path: ">
     	<f:textbox default="matlabTestArtifacts/cobertura.xml"/>
@@ -40,5 +49,5 @@
   	  <f:textbox default="matlabTestArtifacts/coberturamodelcoverage.xml"/>
   	  </f:entry>
    </f:optionalBlock>
-</f:section>
+</f:block>
 </j:jelly>
