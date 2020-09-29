@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='matlab' version='2.1.4-SNAPSHOT'><l:dependency name='MATLAB Plugin' groupId='org.jenkins-ci.plugins' artifactId='matlab' version='2.1.4-SNAPSHOT' url='https://github.com/jenkinsci/matlab-plugin'><l:description>Jenkins plugin for MATLAB</l:description><l:license name='MIT License' url='https://opensource.org/licenses/MIT'/></l:dependency></l:dependencies>

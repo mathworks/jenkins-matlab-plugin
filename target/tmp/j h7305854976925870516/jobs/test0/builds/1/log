@@ -1,0 +1,7 @@
+Legacy code started this job.  No cause information is available
+Building in workspace C:\Users\hrastega\Jenkins-matlab-plugin\target\tmp\j h7305854976925870516\workspace\test0
+Generating MATLAB script with content:
+pwd
+
+#################### Starting command output ####################
+[test0] $ cmd.exe /C C:\Users\hrastega\Jenkins-matlab-plugin\target/tmp\a45370a4-0238-49de-9a0e-358ff00e5e86\run_matlab_command.bat "cd('C:\Users\hrastega\Jenkins-matlab-plugin\target/tmp/a45370a4-0238-49de-9a0e-358ff00e5e86');command_5368a08f_66df_4285_8564_400926ed2286"

@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------------
+Test set: com.mathworks.ci.RunMatlabCommandBuilderTest
+-------------------------------------------------------------------------------
+Tests run: 14, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 409.596 s <<< FAILURE! - in com.mathworks.ci.RunMatlabCommandBuilderTest
+com.mathworks.ci.RunMatlabCommandBuilderTest.verifyBuildPicksTheCorretCommandBatch  Time elapsed: 180.115 s  <<< ERROR!
+org.junit.runners.model.TestTimedOutException: test timed out after 180 seconds
+	at sun.misc.Unsafe.park(Native Method)
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.FutureTask.awaitDone(FutureTask.java:426)
+	at java.util.concurrent.FutureTask.get(FutureTask.java:204)
+	at org.junit.internal.runners.statements.FailOnTimeout.getResult(FailOnTimeout.java:156)
+	at org.junit.internal.runners.statements.FailOnTimeout.evaluate(FailOnTimeout.java:129)
+	at org.jvnet.hudson.test.JenkinsRule$1.evaluate(JenkinsRule.java:597)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.lang.Thread.run(Thread.java:748)
+

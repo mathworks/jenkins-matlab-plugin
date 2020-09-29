@@ -1,0 +1,45 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<build>
+  <actions>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-LegacyCodeCause>
+            <stackTrace>
+              <trace>hudson.model.Cause$LegacyCodeCause.&lt;init&gt;(Cause.java:135)</trace>
+              <trace>hudson.model.AbstractProject.scheduleBuild2(AbstractProject.java:839)</trace>
+              <trace>com.mathworks.ci.RunMatlabCommandBuilderTest.verifyMATLABlaunchedfromWorkspace(RunMatlabCommandBuilderTest.java:154)</trace>
+              <trace>sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</trace>
+              <trace>sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</trace>
+              <trace>sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</trace>
+              <trace>java.lang.reflect.Method.invoke(Method.java:498)</trace>
+              <trace>org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)</trace>
+              <trace>org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)</trace>
+              <trace>org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)</trace>
+              <trace>org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)</trace>
+              <trace>org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)</trace>
+              <trace>org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)</trace>
+              <trace>org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)</trace>
+              <trace>org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)</trace>
+              <trace>java.util.concurrent.FutureTask.run(FutureTask.java:266)</trace>
+              <trace>java.lang.Thread.run(Thread.java:748)</trace>
+            </stackTrace>
+          </hudson.model.Cause_-LegacyCodeCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+  </actions>
+  <queueId>28</queueId>
+  <timestamp>1601302618297</timestamp>
+  <startTime>1601302618303</startTime>
+  <result>FAILURE</result>
+  <duration>221056</duration>
+  <charset>windows-1252</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>C:\Users\hrastega\Jenkins-matlab-plugin\target\tmp\j h618546876084234465\workspace\test0</workspace>
+  <hudsonVersion>2.164.3</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</build>

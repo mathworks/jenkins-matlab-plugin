@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Built-By: hrastega
+Created-By: Apache Maven
+Build-Jdk: 1.8.0_202
+Extension-Name: matlab
+Specification-Title: Jenkins plugin for MATLAB
+Implementation-Title: matlab
+Implementation-Version: 2.1.4-SNAPSHOT
+Group-Id: org.jenkins-ci.plugins
+Short-Name: matlab
+Long-Name: MATLAB Plugin
+Url: https://github.com/jenkinsci/matlab-plugin
+Minimum-Java-Version: 1.8
+Plugin-Version: 2.1.4-SNAPSHOT (private-92ec27f6-hrastega)
+Hudson-Version: 2.164.3
+Jenkins-Version: 2.164.3
+Plugin-Dependencies: workflow-api:2.37,workflow-step-api:2.20,matrix-p
+ roject:1.14
+Plugin-Developers: MathWorks:mathworks_ci_team:nbhoski@mathworks.com
+Plugin-License-Name: MIT License
+Plugin-License-Url: https://opensource.org/licenses/MIT
+Plugin-ScmUrl: http://github.com/jenkinsci/matlab-plugin
+

@@ -25,50 +25,54 @@ Running the tests in this example requires you to interface Jenkins with MATLAB 
 Create a new project and configure it by following these steps:
 1. In your Jenkins interface, select **New Item** on the left. A new page opens where you can choose the type of your project. Enter a project name, then click **Freestyle project**. To confirm your choices, click **OK**.
 
-![create_project](https://user-images.githubusercontent.com/48831250/71735513-a7f47800-2e1c-11ea-878b-db53c059c4c7.png)
+![create_project](https://user-images.githubusercontent.com/48831250/94477040-50aee880-019f-11eb-9484-1d4ecf60ed92.png)
 
 2. In the configuration window of your Jenkins project, navigate to the **Source Code Management** section and click **Git**. This option enables Jenkins to interface with a remote repository.
 
-![git](https://user-images.githubusercontent.com/48831250/71736215-809eaa80-2e1e-11ea-9ff5-6eea39622d3e.png)
+![git](https://user-images.githubusercontent.com/48831250/94477376-cb780380-019f-11eb-8297-1c3a4874fe0e.png)
 
-3. Navigate to the main page of the GitHub repository that hosts your tests. Click **Clone or download** and copy the web URL to your clipboard.
 
-![clipboard](https://user-images.githubusercontent.com/48831250/71736069-1980f600-2e1e-11ea-9672-1af6c958d77d.png)
+3. Navigate to the main page of the GitHub repository that hosts your tests. Click **Code** and copy the web URL to your clipboard.
 
-4. In the Jenkins interface, paste the URL into the **Repository URL** box of the **Source Code Management** section. (You also can specify the branch to build in the **Branch Specifier** box.)
+![clipboard](https://user-images.githubusercontent.com/48831250/94478137-dd0ddb00-01a0-11eb-9e55-d8004863c5e7.png)
 
-![source_control](https://user-images.githubusercontent.com/48831250/71735877-965fa000-2e1d-11ea-95c4-8b9259308e75.png)
+
+4. In the Jenkins interface, paste the URL into the **Repository URL** box of the **Source Code Management** section. You also can specify the branch to build in the **Branch Specifier** box.
+
+![source_control](https://user-images.githubusercontent.com/48831250/94478391-37a73700-01a1-11eb-9f89-a5a71413baf0.png)
+
 
 5. In the **Build Environment** section of Jenkins, select **Use MATLAB Version**. Then, enter the full path to the MATLAB root folder in the **MATLAB root** box. Jenkins uses MATLAB at the specified location to run the tests. 
 
-![build_environment](https://user-images.githubusercontent.com/48831250/76796506-f53c8080-67a1-11ea-860f-0cca3748c723.png)
+![build_environment](https://user-images.githubusercontent.com/48831250/94478737-ad130780-01a1-11eb-89d8-1ef43c34fab0.png)
 
-6. In the **Build** section of Jenkins, select **Add build step > Run MATLAB Tests**. Then, select your desired test artifacts to be generated in the project workspace. The plugin in this example is configured to generate Cobertura code coverage and JUnit test result reports. For more information on how to configure the plugin, see [Plugin Configuration Guide](../CONFIGDOC.md).
+6. In the **Build** section of Jenkins, select **Add build step > Run MATLAB Tests**. Then, select your desired test artifacts to be generated in the project workspace. The plugin in this example is configured to generate Cobertura code coverage and JUnit test result reports. Furthermore, the coverage report is generated only for the code in the `source` folder located in the root of your repository. For more information on how to configure the plugin, see [Plugin Configuration Guide](../CONFIGDOC.md).
 
-![run_matlab_tests](https://user-images.githubusercontent.com/48831250/84545885-17c13580-acce-11ea-8a29-b78386a7f0ef.png)
+![run_matlab_tests](https://user-images.githubusercontent.com/48831250/94479048-2f9bc700-01a2-11eb-9ff6-4ab1df99d1b9.png)
 
 7. In the **Post-build Actions** section of Jenkins, add two post-build actions to publish the Cobertura code coverage and JUnit test result reports. For each report, provide the path to the report file.
 
-![post_build](https://user-images.githubusercontent.com/48831250/76796543-0f765e80-67a2-11ea-98f6-8180ff85d4a0.png)
+![post_build](https://user-images.githubusercontent.com/48831250/94479293-96b97b80-01a2-11eb-97ff-44a321bce0e9.png)
+
 
 8. Click **Save** to save the project configuration settings. You can access and modify your settings at a later stage by selecting **Configure** in the project interface.
 
 ## Run Tests and Inspect Test Artifacts
 To build your Jenkins project and run the tests specified in the repository, click **Build Now** in the project interface, which displays the project name at the top-left of the page. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build passes because all of the tests specified in the Times Table App project pass.
 
-![build_1](https://user-images.githubusercontent.com/48831250/76796848-b0fdb000-67a2-11ea-8cec-753cf1eb27b2.png)
+![build_1](https://user-images.githubusercontent.com/48831250/94481160-4db6f680-01a5-11eb-83eb-75027a009321.png)
 
 Navigate to the project workspace by clicking the **Workspace** icon in the project interface. In this example, the generated test artifacts are in the `matlabTestArtifacts` folder of the workspace.
 
-![workspace](https://user-images.githubusercontent.com/48831250/76797316-a0016e80-67a3-11ea-9166-e95b5a4ac97d.png)
+![workspace](https://user-images.githubusercontent.com/48831250/94481319-88209380-01a5-11eb-8681-440ea84b59d9.png)
 
 Access the published Cobertura code coverage report by opening the **Coverage Report** link in the project interface.
 
-![cobertura_report](https://user-images.githubusercontent.com/48831250/76797272-85c79080-67a3-11ea-8a93-c9f92c66de5c.png)
+![cobertura_report](https://user-images.githubusercontent.com/48831250/94481556-e2b9ef80-01a5-11eb-86f2-1679ae63f407.png)
 
 To view the published JUnit test results, open the **Latest Test Result** link in the project interface. In the new page, open the link in the **All Tests** table. The table expands and lists information for each of the test classes within the Times Table App project.  
 
-![junit_report](https://user-images.githubusercontent.com/48831250/76797445-e1921980-67a3-11ea-8ed4-157f7fd8bf77.png)
+![junit_report](https://user-images.githubusercontent.com/48831250/94481735-33c9e380-01a6-11eb-9106-d96cfd7676ae.png)
 
 ## See Also
 [MathWorks Blogs: Developer Zone – Continuous Integration](https://blogs.mathworks.com/developer/category/continuous-integration/)<br/>

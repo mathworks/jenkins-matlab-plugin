@@ -1,0 +1,24 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<project>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <com.mathworks.ci.RunMatlabCommandBuilder>
+      <buildResult>0</buildResult>
+      <matlabCommand>pwd</matlabCommand>
+    </com.mathworks.ci.RunMatlabCommandBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <com.mathworks.ci.UseMatlabVersionBuildWrapper>
+      <matlabRootFolder>C:\Users\hrastega\Jenkins-matlab-plugin\target\test-classes\versioninfo\R2017a</matlabRootFolder>
+    </com.mathworks.ci.UseMatlabVersionBuildWrapper>
+  </buildWrappers>
+</project>

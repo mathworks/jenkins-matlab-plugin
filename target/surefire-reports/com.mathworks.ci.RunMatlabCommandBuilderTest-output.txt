@@ -1,0 +1,826 @@
+=== Starting verifyBuildFailureWhenMatlabCommandFails(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.011 [id=1881]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59065/jenkins/
+   0.039 [id=1894]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.041 [id=1908]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.122 [id=1894]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.125 [id=1896]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.126 [id=1908]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   1.186 [id=1905]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   1.200 [id=1915]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   1.718 [id=1918]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+   1.739 [id=1881]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   1.818 [id=1881]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyBuildPicksTheCorretCommandBatch(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.010 [id=1940]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59084/jenkins/
+   0.037 [id=1953]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.040 [id=1966]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.142 [id=1956]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.146 [id=1968]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.148 [id=1975]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.412 [id=1957]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.429 [id=1952]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+ 180.021 [id=1]	WARNING	o.j.hudson.test.JenkinsRule$2#evaluate: Test timed out (after 180 seconds).
+ 180.085 [id=1940]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+"cmd.exe /C C:\Users\hrastega\jenkins-matlab-plugin\target/tmp\58b3eb3d-b278-4bed-b7a4-484e3bf8b7fb\run_matlab_command.bat "cd('C:\Users\hrastega\jenkins-matlab-plugin\target/tmp/58b3eb3d-b278-4bed-b7a4-484e3bf8b7fb');command_441de6c7_4003_4b40_9d04_259e67617d6f": stdout copier" Id=1992 Group=FailOnTimeoutGroup RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:255)
+	at java.io.BufferedInputStream.read1(BufferedInputStream.java:284)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:345)
+	-  locked java.io.BufferedInputStream@3a22bad6
+	at java.io.FilterInputStream.read(FilterInputStream.java:107)
+	at hudson.util.StreamCopyThread.run(StreamCopyThread.java:60)
+
+
+"Executing verifyBuildPicksTheCorretCommandBatch(com.mathworks.ci.RunMatlabCommandBuilderTest)" Id=1940 Group=FailOnTimeoutGroup TIMED_WAITING on java.util.concurrent.CountDownLatch$Sync@5555ffcf
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.CountDownLatch$Sync@5555ffcf
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.doAcquireSharedNanos(AbstractQueuedSynchronizer.java:1037)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer.tryAcquireSharedNanos(AbstractQueuedSynchronizer.java:1328)
+	at java.util.concurrent.CountDownLatch.await(CountDownLatch.java:277)
+	at org.eclipse.jetty.server.AbstractConnector.doStop(AbstractConnector.java:370)
+	at org.eclipse.jetty.server.AbstractNetworkConnector.doStop(AbstractNetworkConnector.java:88)
+	at org.eclipse.jetty.server.ServerConnector.doStop(ServerConnector.java:243)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.stop(AbstractLifeCycle.java:93)
+	-  locked java.lang.Object@4f6b687e
+	at org.eclipse.jetty.server.Server.doStop(Server.java:443)
+	at org.eclipse.jetty.util.component.AbstractLifeCycle.stop(AbstractLifeCycle.java:93)
+	-  locked java.lang.Object@28cb3a25
+	at org.jvnet.hudson.test.JenkinsRule._stopJenkins(JenkinsRule.java:541)
+	at org.jvnet.hudson.test.JenkinsRule.after(JenkinsRule.java:507)
+	at org.jvnet.hudson.test.JenkinsRule$1.evaluate(JenkinsRule.java:613)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Executor #0 for master : executing test0 #1" Id=1976 Group=FailOnTimeoutGroup RUNNABLE (in native)
+	at java.lang.ProcessImpl.waitForInterruptibly(Native Method)
+	at java.lang.ProcessImpl.waitFor(ProcessImpl.java:449)
+	at hudson.Proc$LocalProc.join(Proc.java:324)
+	at hudson.Launcher$ProcStarter.join(Launcher.java:480)
+	at com.mathworks.ci.RunMatlabCommandBuilder.execMatlabCommand(RunMatlabCommandBuilder.java:131)
+	-  locked com.mathworks.ci.RunMatlabCommandBuilder@1d8c90aa
+	at com.mathworks.ci.RunMatlabCommandBuilder.perform(RunMatlabCommandBuilder.java:106)
+	at hudson.tasks.BuildStepCompatibilityLayer.perform(BuildStepCompatibilityLayer.java:81)
+	at hudson.tasks.BuildStepMonitor$1.perform(BuildStepMonitor.java:20)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.perform(AbstractBuild.java:744)
+	at hudson.model.Build$BuildExecution.build(Build.java:206)
+	at hudson.model.Build$BuildExecution.doRun(Build.java:163)
+	at hudson.model.AbstractBuild$AbstractBuildExecution.run(AbstractBuild.java:504)
+	at hudson.model.Run.execute(Run.java:1816)
+	at hudson.model.FreeStyleBuild.run(FreeStyleBuild.java:43)
+	at hudson.model.ResourceController.execute(ResourceController.java:97)
+	at hudson.model.Executor.run(Executor.java:429)
+
+
+"Jenkins cron thread" Id=1950 Group=FailOnTimeoutGroup WAITING on java.util.TaskQueue@5f172d4a
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.util.TaskQueue@5f172d4a
+	at java.lang.Object.wait(Object.java:502)
+	at java.util.TimerThread.mainLoop(Timer.java:526)
+	at java.util.TimerThread.run(Timer.java:505)
+
+
+"jenkins.util.Timer [#10]" Id=1987 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#1]" Id=1951 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#2]" Id=1979 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#3]" Id=1980 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#4]" Id=1981 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#5]" Id=1982 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#6]" Id=1983 Group=FailOnTimeoutGroup TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#7]" Id=1984 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#8]" Id=1985 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"jenkins.util.Timer [#9]" Id=1986 Group=FailOnTimeoutGroup WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@70cccd8f
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1088)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"TCP agent listener port=0" Id=1988 Group=FailOnTimeoutGroup RUNNABLE (in native)
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:422)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:250)
+	-  locked java.lang.Object@64fe9da7
+	at hudson.TcpSlaveAgentListener.run(TcpSlaveAgentListener.java:160)
+
+
+"Time-limited test" Id=1990 Group=FailOnTimeoutGroup WAITING on hudson.model.queue.FutureImpl@56afdf9a
+	at java.lang.Object.wait(Native Method)
+	-  waiting on hudson.model.queue.FutureImpl@56afdf9a
+	at java.lang.Object.wait(Object.java:502)
+	at hudson.remoting.AsyncFutureImpl.get(AsyncFutureImpl.java:75)
+	at com.mathworks.ci.RunMatlabCommandBuilderTest.verifyBuildPicksTheCorretCommandBatch(RunMatlabCommandBuilderTest.java:217)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)
+	at org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:288)
+	at org.junit.internal.runners.statements.FailOnTimeout$CallableStatement.call(FailOnTimeout.java:282)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:266)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-64" Id=64 Group=main RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@6dbcf214
+	-  locked java.util.Collections$UnmodifiableSet@496a31da
+	-  locked sun.nio.ch.WindowsSelectorImpl@7c251f90
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-65" Id=65 Group=main RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@45404d5
+	-  locked java.util.Collections$UnmodifiableSet@29138d3a
+	-  locked sun.nio.ch.WindowsSelectorImpl@5cbe2654
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-66" Id=66 Group=main RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@3f725306
+	-  locked java.util.Collections$UnmodifiableSet@3c69362a
+	-  locked sun.nio.ch.WindowsSelectorImpl@2412a42b
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-67" Id=67 Group=main RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@6ecdbab8
+	-  locked java.util.Collections$UnmodifiableSet@3dd4a6fa
+	-  locked sun.nio.ch.WindowsSelectorImpl@19f7222e
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-68" Id=68 Group=main RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@71945bc0
+	-  locked java.util.Collections$UnmodifiableSet@22a0d4ea
+	-  locked sun.nio.ch.WindowsSelectorImpl@49ede9c7
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-69" Id=69 Group=main RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@73d4066e
+	-  locked java.util.Collections$UnmodifiableSet@25d2f66
+	-  locked sun.nio.ch.WindowsSelectorImpl@5a2fa51f
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-70-acceptor-0@23d2d8cb-ServerConnector@423e4cbb{HTTP/1.1,[http/1.1]}{0.0.0.0:58388}" Id=70 Group=main RUNNABLE (in native)
+	at sun.nio.ch.ServerSocketChannelImpl.accept0(Native Method)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:422)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:250)
+	-  locked java.lang.Object@73fb1d7f
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:385)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:701)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JavaNetReverseProxy)-71" Id=71 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@9aa2002
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@9aa2002
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at org.eclipse.jetty.util.BlockingArrayQueue.poll(BlockingArrayQueue.java:382)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.idleJobPoll(QueuedThreadPool.java:875)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:925)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"main" Id=1 Group=main RUNNABLE
+	at sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:454)
+	at hudson.Functions.getThreadInfos(Functions.java:1242)
+	at org.jvnet.hudson.test.JenkinsRule.dumpThreads(JenkinsRule.java:446)
+	at org.jvnet.hudson.test.JenkinsRule.access$100(JenkinsRule.java:263)
+	at org.jvnet.hudson.test.JenkinsRule$2.evaluate(JenkinsRule.java:633)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)
+	at org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)
+	at org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:365)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:273)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:159)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:377)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:138)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:465)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:451)
+
+
+"Session-HouseKeeper-743cb8e0-1" Id=72 Group=main TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@78c1372d
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@78c1372d
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"surefire-forkedjvm-command-thread" Id=11 Group=main RUNNABLE (in native)
+	at java.io.FileInputStream.readBytes(Native Method)
+	at java.io.FileInputStream.read(FileInputStream.java:255)
+	at java.io.BufferedInputStream.fill(BufferedInputStream.java:246)
+	at java.io.BufferedInputStream.read(BufferedInputStream.java:265)
+	-  locked java.io.BufferedInputStream@51841ac6
+	at java.io.DataInputStream.readInt(DataInputStream.java:387)
+	at org.apache.maven.surefire.booter.MasterProcessCommand.decode(MasterProcessCommand.java:113)
+	at org.apache.maven.surefire.booter.CommandReader$CommandRunnable.run(CommandReader.java:383)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Timeout.interruptions [#1]" Id=78 Group=main WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6cfd9a54
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@6cfd9a54
+	at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1081)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Attach Listener" Id=5 Group=system RUNNABLE
+
+
+"Finalizer" Id=3 Group=system WAITING on java.lang.ref.ReferenceQueue$Lock@5ba26eb0
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.ReferenceQueue$Lock@5ba26eb0
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:144)
+	at java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:165)
+	at java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:216)
+
+
+"Reference Handler" Id=2 Group=system WAITING on java.lang.ref.Reference$Lock@435e60ff
+	at java.lang.Object.wait(Native Method)
+	-  waiting on java.lang.ref.Reference$Lock@435e60ff
+	at java.lang.Object.wait(Object.java:502)
+	at java.lang.ref.Reference.tryHandlePending(Reference.java:191)
+	at java.lang.ref.Reference$ReferenceHandler.run(Reference.java:153)
+
+
+"Signal Dispatcher" Id=4 Group=system RUNNABLE
+
+
+"Jetty (JenkinsRule)-1941" Id=1941 Group=? RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@51a6cc2a
+	-  locked java.util.Collections$UnmodifiableSet@10fda3d0
+	-  locked sun.nio.ch.WindowsSelectorImpl@2123064f
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1942" Id=1942 Group=? RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@5a237731
+	-  locked java.util.Collections$UnmodifiableSet@7d2998d8
+	-  locked sun.nio.ch.WindowsSelectorImpl@6a0094c9
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1943" Id=1943 Group=? RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@3062f9f4
+	-  locked java.util.Collections$UnmodifiableSet@2016f509
+	-  locked sun.nio.ch.WindowsSelectorImpl@6f1a80fb
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1944" Id=1944 Group=? RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@34d4860f
+	-  locked java.util.Collections$UnmodifiableSet@665522c2
+	-  locked sun.nio.ch.WindowsSelectorImpl@41fe8e5f
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1945" Id=1945 Group=? RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@245ec1a6
+	-  locked java.util.Collections$UnmodifiableSet@782be4eb
+	-  locked sun.nio.ch.WindowsSelectorImpl@38792286
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1946" Id=1946 Group=? RUNNABLE (in native)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll0(Native Method)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.poll(WindowsSelectorImpl.java:296)
+	at sun.nio.ch.WindowsSelectorImpl$SubSelector.access$400(WindowsSelectorImpl.java:278)
+	at sun.nio.ch.WindowsSelectorImpl.doSelect(WindowsSelectorImpl.java:159)
+	at sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:86)
+	-  locked sun.nio.ch.Util$3@36bf84e
+	-  locked java.util.Collections$UnmodifiableSet@1a0b5323
+	-  locked sun.nio.ch.WindowsSelectorImpl@25b52284
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:97)
+	at sun.nio.ch.SelectorImpl.select(SelectorImpl.java:101)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.select(ManagedSelector.java:472)
+	at org.eclipse.jetty.io.ManagedSelector$SelectorProducer.produce(ManagedSelector.java:409)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produceTask(EatWhatYouKill.java:360)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.doProduce(EatWhatYouKill.java:184)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.tryProduce(EatWhatYouKill.java:171)
+	at org.eclipse.jetty.util.thread.strategy.EatWhatYouKill.produce(EatWhatYouKill.java:135)
+	at org.eclipse.jetty.io.ManagedSelector$$Lambda$25/1792227359.run(Unknown Source)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1947" Id=1947 Group=? RUNNABLE
+	at java.lang.Throwable.fillInStackTrace(Native Method)
+	at java.lang.Throwable.fillInStackTrace(Throwable.java:783)
+	-  locked java.nio.channels.AsynchronousCloseException@71d9cb05
+	at java.lang.Throwable.<init>(Throwable.java:250)
+	at java.lang.Exception.<init>(Exception.java:54)
+	at java.io.IOException.<init>(IOException.java:47)
+	at java.nio.channels.ClosedChannelException.<init>(ClosedChannelException.java:52)
+	at java.nio.channels.AsynchronousCloseException.<init>(AsynchronousCloseException.java:50)
+	at java.nio.channels.spi.AbstractInterruptibleChannel.end(AbstractInterruptibleChannel.java:205)
+	at sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:257)
+	-  locked java.lang.Object@17c2d509
+	at org.eclipse.jetty.server.ServerConnector.accept(ServerConnector.java:385)
+	at org.eclipse.jetty.server.AbstractConnector$Acceptor.run(AbstractConnector.java:701)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool.runJob(QueuedThreadPool.java:806)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:938)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Jetty (JenkinsRule)-1948" Id=1948 Group=? TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@67efd2c2
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@67efd2c2
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at org.eclipse.jetty.util.BlockingArrayQueue.poll(BlockingArrayQueue.java:382)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.idleJobPoll(QueuedThreadPool.java:875)
+	at org.eclipse.jetty.util.thread.QueuedThreadPool$Runner.run(QueuedThreadPool.java:925)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+"Session-HouseKeeper-5c077c5e-1" Id=1949 Group=? TIMED_WAITING on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@77ec6a3d
+	at sun.misc.Unsafe.park(Native Method)
+	-  waiting on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@77ec6a3d
+	at java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:215)
+	at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:2078)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1093)
+	at java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:809)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1074)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1134)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:624)
+	at java.lang.Thread.run(Thread.java:748)
+
+
+=== Starting verifyMatrixBuildFails(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.054 [id=2004]	WARNING	o.jvnet.hudson.test.JenkinsRule#before: Jenkins.theInstance was not cleared by a previous test, doing that now
+   0.058 [id=1940]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+   0.077 [id=2004]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59113/jenkins/
+   0.102 [id=2017]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.104 [id=2031]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.195 [id=2031]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.197 [id=2026]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.198 [id=2026]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   1.275 [id=2023]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   1.291 [id=2039]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+  23.485 [id=2040]	INFO	hudson.model.Run#execute: test1/VERSION=R2018a #1 main build action completed: FAILURE
+  24.043 [id=2056]	INFO	hudson.model.Run#execute: test1 #1 main build action completed: FAILURE
+  24.897 [id=2061]	INFO	hudson.model.Run#execute: test1/VERSION=R2018a #2 main build action completed: FAILURE
+  25.534 [id=2078]	INFO	hudson.model.Run#execute: test1 #2 main build action completed: FAILURE
+  25.559 [id=2004]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+  25.634 [id=2004]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyDefaultMatlabNotPicked(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.010 [id=2091]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59144/jenkins/
+   0.037 [id=2104]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.040 [id=2118]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.146 [id=2122]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.149 [id=2122]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.150 [id=2116]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.879 [id=2116]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.896 [id=2124]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   0.990 [id=2091]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   1.057 [id=2091]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyMATLABlaunchedfromWorkspace(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.015 [id=2148]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59163/jenkins/
+   0.041 [id=2161]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.044 [id=2175]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.115 [id=2160]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.117 [id=2160]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.118 [id=2182]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.488 [id=2174]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.503 [id=2170]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+  93.821 [id=1976]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+  94.463 [id=2184]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+  94.497 [id=2148]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+  94.589 [id=2148]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyMATLABrunnerFileGenerated(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.011 [id=2216]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59184/jenkins/
+   0.033 [id=2229]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.035 [id=2243]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.114 [id=2238]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.118 [id=2248]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.119 [id=2232]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   1.207 [id=2242]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   1.228 [id=2244]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+  49.629 [id=2253]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+  49.650 [id=2216]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+  49.733 [id=2216]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyBuildStepWithRunMatlab(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.018 [id=2287]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59209/jenkins/
+   0.058 [id=2300]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.061 [id=2314]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.151 [id=2307]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.153 [id=2307]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.153 [id=2307]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.478 [id=2304]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.497 [id=2321]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   0.549 [id=2287]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   0.629 [id=2287]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyBuilderFailsForInvalidMATLABPath(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.010 [id=2341]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59228/jenkins/
+   0.037 [id=2354]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.039 [id=2367]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.144 [id=2365]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.147 [id=2365]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.148 [id=2359]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.711 [id=2362]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.732 [id=2353]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   0.826 [id=2341]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   0.890 [id=2341]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyMATLABlaunchedWithDefaultArguments(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.019 [id=2398]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59247/jenkins/
+   0.041 [id=2411]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.044 [id=2425]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.121 [id=2416]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.124 [id=2428]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.124 [id=2428]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.540 [id=2414]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.559 [id=2425]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   3.157 [id=2435]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+   3.180 [id=2398]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   3.264 [id=2398]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyMatrixBuildPasses(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.021 [id=2457]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59266/jenkins/
+   0.050 [id=2470]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.053 [id=2483]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.172 [id=2475]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.174 [id=2488]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.176 [id=2483]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.580 [id=2478]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.602 [id=2472]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   1.197 [id=2493]	INFO	hudson.model.Run#execute: test1/VERSION=R2018a #1 main build action completed: SUCCESS
+   1.210 [id=2494]	INFO	hudson.model.Run#execute: test1/VERSION=R2018b #1 main build action completed: SUCCESS
+   2.157 [id=2509]	INFO	hudson.model.Run#execute: test1 #1 main build action completed: SUCCESS
+   2.177 [id=2457]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   2.257 [id=2457]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyCommandSupportsEnvVar(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.011 [id=2525]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59285/jenkins/
+   0.044 [id=2538]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.047 [id=2552]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.128 [id=2542]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.130 [id=2553]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.132 [id=2543]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.947 [id=2543]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.965 [id=2557]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+  25.238 [id=2562]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+  25.261 [id=2525]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+  25.322 [id=2525]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyBuildPassesWhenMatlabCommandPasses(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.011 [id=2590]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59309/jenkins/
+   0.037 [id=2603]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.039 [id=2617]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.124 [id=2611]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.128 [id=2604]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.130 [id=2603]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.377 [id=2616]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.398 [id=2622]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   0.908 [id=2627]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: SUCCESS
+   0.938 [id=2590]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   1.021 [id=2590]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyMATLABscratchFileNotGenerated(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.011 [id=2649]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59328/jenkins/
+   0.038 [id=2662]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.041 [id=2676]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.126 [id=2670]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.130 [id=2671]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.131 [id=2671]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.424 [id=2677]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.445 [id=2677]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+   5.164 [id=2686]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+   5.188 [id=2649]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+   5.271 [id=2649]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped
+=== Starting verifyBuildPicksTheCorretCommandBatch(com.mathworks.ci.RunMatlabCommandBuilderTest)
+   0.010 [id=2708]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:59347/jenkins/
+   0.042 [id=2721]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.045 [id=2736]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.138 [id=2731]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.140 [id=2731]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.141 [id=2739]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   0.566 [id=2736]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   0.587 [id=2742]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization
+  15.584 [id=2745]	INFO	hudson.model.Run#execute: test0 #1 main build action completed: FAILURE
+  15.610 [id=2708]	INFO	jenkins.model.Jenkins#cleanUp: Stopping Jenkins
+  15.705 [id=2708]	INFO	jenkins.model.Jenkins#cleanUp: Jenkins stopped

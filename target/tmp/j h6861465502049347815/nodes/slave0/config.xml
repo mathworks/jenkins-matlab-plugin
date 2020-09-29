@@ -1,0 +1,15 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<slave>
+  <name>slave0</name>
+  <description>dummy</description>
+  <remoteFS>C:\Users\hrastega\jenkins-matlab-plugin\target\tmp\j h6821852798807472314</remoteFS>
+  <numExecutors>1</numExecutors>
+  <mode>NORMAL</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$NoOp"/>
+  <launcher class="org.jvnet.hudson.test.SimpleCommandLauncher">
+    <cmd>&quot;C:\Program Files\Java\jdk1.8.0_202\jre/bin/java&quot;  -Djava.awt.headless=true -jar &quot;C:\Users\hrastega\jenkins-matlab-plugin\target\jenkins-for-test\WEB-INF\lib\remoting-3.29.jar&quot;</cmd>
+  </launcher>
+  <label></label>
+  <nodeProperties/>
+  <userId>SYSTEM</userId>
+</slave>
