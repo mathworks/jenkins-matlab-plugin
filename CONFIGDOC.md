@@ -273,7 +273,7 @@ node {
 ## Use MATLAB in Matrix Build
 Similar to multi-configuration projects, you can use MATLAB as part of a [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) build in Pipeline projects. For example, you can define a Pipeline to run your test suite on different platforms or against different versions of MATLAB.
 
-This example shows how to define a Declarative Pipeline to run your MATLAB code and generate test artifacts using MATLAB R2018b, R2019a, and R2020a. The Pipeline has a `matrix` section to define the possible name-value combinations that should run in parallel. 
+This example shows how to define a Declarative Pipeline to run your MATLAB code and generate test artifacts using MATLAB R2018b, R2019a, and R2020b. The Pipeline has a `matrix` section to define the possible name-value combinations that should run in parallel. 
 
 ```groovy
 // Declarative Pipeline
@@ -289,7 +289,7 @@ pipeline {
                 axes {
                     axis {
                         name 'MATLAB_VERSION'
-                        values 'R2018b', 'R2019a', 'R2020a'
+                        values 'R2018b', 'R2019a', 'R2020b'
                     }
                 }
                 stages {
