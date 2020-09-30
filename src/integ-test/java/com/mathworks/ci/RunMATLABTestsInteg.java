@@ -34,12 +34,8 @@ import java.util.*;
 public class RunMATLABTestsInteg {
 
     private FreeStyleProject project;
-    private static String matlabExecutorAbsolutePath;
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
-    private static String FileSeperator;
-    private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
-    private static URL url;
 
 
     @Rule
@@ -52,27 +48,6 @@ public class RunMATLABTestsInteg {
         this.testBuilder = new RunMatlabTestsBuilder();
         this.buildWrapper = new UseMatlabVersionBuildWrapper();
     }
-    @BeforeClass
-   public static void classSetup() throws URISyntaxException, IOException {
-        ClassLoader classLoader = MatlabBuilderTest.class.getClassLoader();
-        if (!System.getProperty("os.name").startsWith("Win")) {
-            FileSeperator = "/";
-            url = classLoader.getResource("com/mathworks/ci/linux/bin/matlab.sh");
-            try {
-                matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
-                ProcessBuilder pb = new ProcessBuilder("chmod", "755", matlabExecutorAbsolutePath);
-                pb.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            FileSeperator = "\\";
-            url = classLoader.getResource("com/mathworks/ci/win/bin/matlab.bat");
-            matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
-        }
-    }
 
     @After
     public void testTearDown() {
@@ -80,21 +55,13 @@ public class RunMATLABTestsInteg {
         this.testBuilder = null;
     }
 
-    private String getMatlabroot(String version) throws URISyntaxException {
-        String defaultVersionInfo = "versioninfo/R2017a/" + VERSION_INFO_XML_FILE;
-        String userVersionInfo = "versioninfo/" + version + "/" + VERSION_INFO_XML_FILE;
-        URL matlabRootURL = Optional.ofNullable(getResource(userVersionInfo))
-                .orElseGet(() -> getResource(defaultVersionInfo));
-        File matlabRoot = new File(matlabRootURL.toURI());
-        return matlabRoot.getAbsolutePath().replace(FileSeperator + VERSION_INFO_XML_FILE, "")
-                .replace("R2017a", version);
+    private String getMatlabroot() throws URISyntaxException {
+        String ML_version = TestData.getPropValues("matlab.version");
+        String installed_path = TestData.getPropValues("matlab.installed.path");
+        String MATLAB_ROOT = installed_path +"\\"+ ML_version;
+        return MATLAB_ROOT;
+
     }
-
-    private URL getResource(String resource) {
-        return RunMatlabTestsBuilderTest.class.getClassLoader().getResource(resource);
-    }
-
-
 
     @Test
     public void verifyMATLABEmptyRootError() throws Exception{
@@ -108,7 +75,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyInvalidMATLABRootError() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.root.path"));
+        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.invalid.root.path"));
         project.getBuildWrappersList().add(this.buildWrapper);
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
@@ -133,21 +100,20 @@ public class RunMATLABTestsInteg {
     
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.root.path"));
+        this.buildWrapper.setMatlabRootFolder("fake");
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
+        RunMatlabCommandBuilder tester =
+                new RunMatlabCommandBuilder();
+        project.getBuildersList().add(tester);
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 
-
-
-
-
     @Test
     public void verifyJUnitFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2015a"));
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -160,7 +126,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyTAPTestFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2013b"));
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -174,7 +140,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyPDFReportFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -188,7 +154,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyCoberturaFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -202,7 +168,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyModelCoverageFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018a"));
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -216,7 +182,7 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifySTMResultsFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -226,41 +192,7 @@ public class RunMATLABTestsInteg {
         HtmlTextInput STMRFilePathInput=(HtmlTextInput) page.getElementByName("_.stmResultsFilePath");
         Assert.assertEquals(TestData.getPropValues("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
     }
-
-
-    /*
-     * Test to verify if Matrix build fails when MATLAB is not available.
-     */
-    @Test
-    public void verifyMatrixBuildFails() throws Exception {
-        MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2018a", "R2018b");
-        matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
-        matrixProject.getBuildWrappersList().add(this.buildWrapper);
-
-
-        matrixProject.getBuildersList().add(testBuilder);
-
-        // Check for first matrix combination.
-
-        Map<String, String> vals = new HashMap<String, String>();
-        vals.put("VERSION", "R2018a");
-        Combination c1 = new Combination(vals);
-        MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
-
-
-        jenkins.assertBuildStatus(Result.FAILURE, build1);
-
-        // Check for second Matrix combination
-
-        Combination c2 = new Combination(vals);
-        MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-
-        jenkins.assertBuildStatus(Result.FAILURE, build2);
-    }
-
+    
     /*
      * Test to verify if Matrix build passes (mock MATLAB).
      */
@@ -269,10 +201,10 @@ public class RunMATLABTestsInteg {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot("R2018b");
+        String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabTestsBuilderTester tester = new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positive");
+        RunMatlabTestsBuilder tester = new RunMatlabTestsBuilder();
 
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
@@ -282,8 +214,6 @@ public class RunMATLABTestsInteg {
         jenkins.assertLogContains("R2018b completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
-
-
 
 
 }

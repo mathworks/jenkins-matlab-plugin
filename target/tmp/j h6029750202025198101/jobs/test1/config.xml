@@ -1,0 +1,36 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<matrix-project>
+  <keepDependencies>false</keepDependencies>
+  <properties/>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <axis>
+      <name>VERSION</name>
+      <values>
+        <string>R2018a</string>
+        <string>R2018b</string>
+      </values>
+    </axis>
+  </axes>
+  <builders>
+    <com.mathworks.ci.RunMatlabCommandBuilder>
+      <buildResult>0</buildResult>
+      <matlabCommand>pwd</matlabCommand>
+    </com.mathworks.ci.RunMatlabCommandBuilder>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <com.mathworks.ci.UseMatlabVersionBuildWrapper>
+      <matlabRootFolder>C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\test-classes\versioninfo\$VERSION</matlabRootFolder>
+    </com.mathworks.ci.UseMatlabVersionBuildWrapper>
+  </buildWrappers>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

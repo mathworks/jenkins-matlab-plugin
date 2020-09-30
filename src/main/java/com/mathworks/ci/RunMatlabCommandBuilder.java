@@ -61,7 +61,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         return this.env;
     }
 
-    @Symbol("RunMatlabCommand")
+    
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
 
@@ -101,6 +101,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
+        
 
         buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
@@ -112,22 +113,46 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
+        final String uniqueCommandFile =
+                "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
+        final FilePath uniqeTmpFolderPath =
+                getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+
+        // Create MATLAB script
+        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener);
         ProcStarter matlabLauncher;
+
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    getCommand(), uniqueTmpFldrName);
-            return matlabLauncher.join();
+                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, uniqueTmpFldrName);
+            
+            listener.getLogger()
+                    .println("#################### Starting command output ####################");
+            return matlabLauncher.pwd(workspace).join();
+
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
-            // Cleanup the runner File from tmp directory
-            FilePath matlabRunnerScript =
-                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-            if (matlabRunnerScript.exists()) {
-                matlabRunnerScript.deleteRecursive();
+            // Cleanup the tmp directory
+            if (uniqeTmpFolderPath.exists()) {
+                uniqeTmpFolderPath.deleteRecursive();
             }
         }
+    }
+    
+    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+     
+        // Create a new command runner script in the temp folder.
+        final FilePath matlabCommandFile =
+                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+        final String matlabCommandFileContent =
+                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
 
+        // Display the commands on console output for users reference
+        listener.getLogger()
+                .println("Generating MATLAB script with content:\n" + getCommand() + "\n");
+
+        matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }
 }

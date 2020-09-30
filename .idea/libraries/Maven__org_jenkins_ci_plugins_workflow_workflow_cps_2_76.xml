@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jenkins-ci.plugins.workflow:workflow-cps:2.76">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/plugins/workflow/workflow-cps/2.76/workflow-cps-2.76.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/plugins/workflow/workflow-cps/2.76/workflow-cps-2.76-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/plugins/workflow/workflow-cps/2.76/workflow-cps-2.76-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

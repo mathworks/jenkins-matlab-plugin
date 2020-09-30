@@ -33,12 +33,8 @@ import java.util.*;
 public class RunMATLABCommandInteg {
 
     private FreeStyleProject project;
-    private static String matlabExecutorAbsolutePath;
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabCommandBuilder scriptBuilder;
-    private static String FileSeperator;
-    private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
-    private static URL url;
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -50,28 +46,6 @@ public class RunMATLABCommandInteg {
         this.scriptBuilder = new RunMatlabCommandBuilder();
         this.buildWrapper = new UseMatlabVersionBuildWrapper();
     }
-    @BeforeClass
-    public static void classSetup() throws URISyntaxException, IOException {
-        ClassLoader classLoader = MatlabBuilderTest.class.getClassLoader();
-        if (!System.getProperty("os.name").startsWith("Win")) {
-            FileSeperator = "/";
-            url = classLoader.getResource("com/mathworks/ci/linux/bin/matlab.sh");
-            try {
-                matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
-
-                ProcessBuilder pb = new ProcessBuilder("chmod", "755", matlabExecutorAbsolutePath);
-                pb.start();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
-        } else {
-            FileSeperator = "\\";
-            url = classLoader.getResource("com/mathworks/ci/win/bin/matlab.bat");
-            matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
-        }
-    }
 
     @After
     public void testTearDown() {
@@ -79,74 +53,50 @@ public class RunMATLABCommandInteg {
         this.scriptBuilder = null;
     }
 
-    private String getMatlabroot(String version) throws URISyntaxException {
-        String defaultVersionInfo = "versioninfo/R2017a/" + VERSION_INFO_XML_FILE;
-        String userVersionInfo = "versioninfo/" + version + "/" + VERSION_INFO_XML_FILE;
-        URL matlabRootURL = Optional.ofNullable(getResource(userVersionInfo))
-                .orElseGet(() -> getResource(defaultVersionInfo));
-        File matlabRoot = new File(matlabRootURL.toURI());
-        return matlabRoot.getAbsolutePath().replace(FileSeperator + VERSION_INFO_XML_FILE, "")
-                .replace("R2017a", version);
+    private String getMatlabroot() throws URISyntaxException {
+        String ML_version = TestData.getPropValues("matlab.version");
+        String installed_path = TestData.getPropValues("matlab.installed.path");
+        String MATLAB_ROOT = installed_path +"\\"+ ML_version;
+        return MATLAB_ROOT;
     }
 
-    private URL getResource(String resource) {
-        return RunMatlabTestsBuilderTest.class.getClassLoader().getResource(resource);
-    }
     /*
      * Test to verify if Build FAILS when matlab command fails
      */
 
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        String matlabRoot = getMatlabroot();
+        System.out.println(matlabRoot);
+        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabCommandBuilderTester tester =
-                new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
+        RunMatlabCommandBuilder tester =
+                new RunMatlabCommandBuilder();
         tester.setMatlabCommand(TestData.getPropValues("matlab.invalid.command"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
+
 
     /* Test To Verify if Build passes when matlab command passes
     */
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        String matlabRoot = getMatlabroot();
+        System.out.println(matlabRoot);
+        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabCommandBuilderTester tester =
-                new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positive");
+        RunMatlabCommandBuilder tester =
+                new RunMatlabCommandBuilder();
         tester.setMatlabCommand(TestData.getPropValues("matlab.command"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
-
-    /*
-     * Test to verify if Matrix build fails when MATLAB is not available.
-     */
-    @Test
-    public void verifyMatrixBuildFails() throws Exception {
-        MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2018a", "R2018b");
-        matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
-        matrixProject.getBuildWrappersList().add(this.buildWrapper);
-
-        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
-        matrixProject.getBuildersList().add(scriptBuilder);
-        Map<String, String> vals = new HashMap<String, String>();
-        vals.put("VERSION", "R2018a");
-        Combination c1 = new Combination(vals);
-        MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-        jenkins.assertBuildStatus(Result.FAILURE, build);
-        vals.put("VERSION", "R2018b");
-        Combination c2 = new Combination(vals);
-        MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-        jenkins.assertBuildStatus(Result.FAILURE, build2);
-    }
     /*
      * Test to verify if Matrix build passes (mock MATLAB).
      */
@@ -155,18 +105,20 @@ public class RunMATLABCommandInteg {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        String matlabRoot = getMatlabroot();
+        System.out.println(matlabRoot);
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
-        RunMatlabCommandBuilderTester tester = new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath,
-                "-positive");
+        RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
 
         tester.setMatlabCommand((TestData.getPropValues("matlab.command")));
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
 
         jenkins.assertLogContains("R2018a completed", build);
         jenkins.assertLogContains("R2018b completed", build);
+        
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 }

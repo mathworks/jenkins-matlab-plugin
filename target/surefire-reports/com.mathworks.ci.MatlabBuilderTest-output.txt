@@ -1,0 +1,10 @@
+Test timeout disabled.
+=== Starting verifyEmptyMatlabRootError(com.mathworks.ci.MatlabBuilderTest)
+   0.015 [id=1]	INFO	o.jvnet.hudson.test.JenkinsRule#createWebServer: Running on http://localhost:56729/jenkins/
+   0.036 [id=98]	INFO	jenkins.InitReactorRunner$1#onAttained: Started initialization
+   0.040 [id=112]	INFO	jenkins.InitReactorRunner$1#onAttained: Listed all plugins
+   0.146 [id=110]	INFO	jenkins.InitReactorRunner$1#onAttained: Prepared all plugins
+   0.148 [id=110]	INFO	jenkins.InitReactorRunner$1#onAttained: Started all plugins
+   0.149 [id=110]	INFO	jenkins.InitReactorRunner$1#onAttained: Augmented all extensions
+   1.147 [id=106]	INFO	jenkins.InitReactorRunner$1#onAttained: Loaded all jobs
+   1.169 [id=118]	INFO	jenkins.InitReactorRunner$1#onAttained: Completed initialization

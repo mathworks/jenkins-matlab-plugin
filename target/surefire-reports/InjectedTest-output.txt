@@ -1,0 +1,61 @@
+Running tests for org.jenkins-ci.plugins:matlab:2.1.4-SNAPSHOT
+Sep 29, 2020 12:40:50 PM org.eclipse.jetty.util.log.Log initialized
+INFO: Logging initialized @12388ms to org.eclipse.jetty.util.log.Slf4jLog
+Sep 29, 2020 12:40:51 PM org.jvnet.hudson.test.WarExploder explode
+INFO: Picking up existing exploded jenkins.war at C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\jenkins-for-test
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.handler.ContextHandler setContextPath
+WARNING: Empty contextPath
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.Server doStart
+INFO: jetty-9.4.25.v20191220; built: 2019-12-20T17:00:00.294Z; git: a9729c7e7f33a459d2616a8f9e9ba8a90f432e95; jvm 1.8.0_202-b08
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.webapp.StandardDescriptorProcessor visitServlet
+INFO: NO JSP Support for /, did not find org.eclipse.jetty.jsp.JettyJspServlet
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: DefaultSessionIdManager workerName=node0
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: No SessionScavenger set, using defaults
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.session.HouseKeeper startScavenging
+INFO: node0 Scavenging every 660000ms
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.handler.ContextHandler doStart
+INFO: Started o.e.j.w.WebAppContext@1968a49c{Jenkins v2.164.3,/,file:///C:/Users/vkayithi/jenkins_project/jenkins-matlab-plugin/target/jenkins-for-test/,AVAILABLE}{C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\jenkins-for-test}
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@7bb3a9fe{HTTP/1.1,[http/1.1]}{localhost:56693}
+Sep 29, 2020 12:40:51 PM org.eclipse.jetty.server.Server doStart
+INFO: Started @13702ms
+Sep 29, 2020 12:40:52 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Started initialization
+Sep 29, 2020 12:40:54 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Listed all plugins
+Sep 29, 2020 12:40:55 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Prepared all plugins
+Sep 29, 2020 12:40:55 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Started all plugins
+Sep 29, 2020 12:40:55 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Augmented all extensions
+Sep 29, 2020 12:40:58 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Loaded all jobs
+Sep 29, 2020 12:40:58 PM jenkins.InitReactorRunner$1 onAttained
+INFO: Completed initialization
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.Server doStart
+INFO: jetty-9.4.25.v20191220; built: 2019-12-20T17:00:00.294Z; git: a9729c7e7f33a459d2616a8f9e9ba8a90f432e95; jvm 1.8.0_202-b08
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: DefaultSessionIdManager workerName=node0
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.session.DefaultSessionIdManager doStart
+INFO: No SessionScavenger set, using defaults
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.session.HouseKeeper startScavenging
+INFO: node0 Scavenging every 660000ms
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.handler.ContextHandler doStart
+INFO: Started o.e.j.s.ServletContextHandler@95bb2a2{/,null,AVAILABLE}
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.AbstractConnector doStart
+INFO: Started ServerConnector@363a3d15{HTTP/1.1,[http/1.1]}{0.0.0.0:56710}
+Sep 29, 2020 12:40:58 PM org.eclipse.jetty.server.Server doStart
+INFO: Started @20516ms
+Sep 29, 2020 12:41:01 PM org.eclipse.jetty.server.AbstractConnector doStop
+INFO: Stopped ServerConnector@7bb3a9fe{HTTP/1.1,[http/1.1]}{localhost:0}
+Sep 29, 2020 12:41:01 PM org.eclipse.jetty.server.session.HouseKeeper stopScavenging
+INFO: node0 Stopped scavenging
+Sep 29, 2020 12:41:01 PM org.eclipse.jetty.server.handler.ContextHandler doStop
+INFO: Stopped o.e.j.w.WebAppContext@1968a49c{Jenkins v2.164.3,/,file:///C:/Users/vkayithi/jenkins_project/jenkins-matlab-plugin/target/jenkins-for-test/,UNAVAILABLE}{C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\jenkins-for-test}
+Sep 29, 2020 12:41:01 PM jenkins.model.Jenkins cleanUp
+INFO: Stopping Jenkins
+Sep 29, 2020 12:41:01 PM jenkins.model.Jenkins cleanUp
+INFO: Jenkins stopped

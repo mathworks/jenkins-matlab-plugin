@@ -1,0 +1,72 @@
+<?xml version='1.1' encoding='UTF-8'?>
+<matrix-run>
+  <actions>
+    <hudson.matrix.MatrixConfiguration_-ParentBuildAction>
+      <parentId>test1#1</parentId>
+    </hudson.matrix.MatrixConfiguration_-ParentBuildAction>
+    <hudson.model.CauseAction>
+      <causeBag class="linked-hash-map">
+        <entry>
+          <hudson.model.Cause_-UpstreamCause>
+            <upstreamProject>test1</upstreamProject>
+            <upstreamUrl>job/test1/</upstreamUrl>
+            <upstreamBuild>1</upstreamBuild>
+            <upstreamCauses>
+              <hudson.model.Cause_-LegacyCodeCause>
+                <stackTrace>
+                  <trace>hudson.model.Cause$LegacyCodeCause.&lt;init&gt;(Cause.java:135)</trace>
+                  <trace>hudson.model.AbstractProject.scheduleBuild2(AbstractProject.java:839)</trace>
+                  <trace>com.mathworks.ci.RunMatlabCommandBuilderTest.verifyMatrixBuildFails(RunMatlabCommandBuilderTest.java:287)</trace>
+                  <trace>sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</trace>
+                  <trace>sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</trace>
+                  <trace>sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</trace>
+                  <trace>java.lang.reflect.Method.invoke(Method.java:498)</trace>
+                  <trace>org.junit.runners.model.FrameworkMethod$1.runReflectiveCall(FrameworkMethod.java:59)</trace>
+                  <trace>org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)</trace>
+                  <trace>org.junit.runners.model.FrameworkMethod.invokeExplosively(FrameworkMethod.java:56)</trace>
+                  <trace>org.junit.internal.runners.statements.InvokeMethod.evaluate(InvokeMethod.java:17)</trace>
+                  <trace>org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)</trace>
+                  <trace>org.junit.internal.runners.statements.RunAfters.evaluate(RunAfters.java:27)</trace>
+                  <trace>org.jvnet.hudson.test.JenkinsRule$1.evaluate(JenkinsRule.java:597)</trace>
+                  <trace>org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)</trace>
+                  <trace>org.junit.runners.BlockJUnit4ClassRunner$1.evaluate(BlockJUnit4ClassRunner.java:100)</trace>
+                  <trace>org.junit.runners.ParentRunner.runLeaf(ParentRunner.java:366)</trace>
+                  <trace>org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:103)</trace>
+                  <trace>org.junit.runners.BlockJUnit4ClassRunner.runChild(BlockJUnit4ClassRunner.java:63)</trace>
+                  <trace>org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)</trace>
+                  <trace>org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)</trace>
+                  <trace>org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)</trace>
+                  <trace>org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)</trace>
+                  <trace>org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)</trace>
+                  <trace>org.junit.internal.runners.statements.RunBefores.evaluate(RunBefores.java:26)</trace>
+                  <trace>org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)</trace>
+                  <trace>org.junit.runners.ParentRunner.run(ParentRunner.java:413)</trace>
+                  <trace>org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:367)</trace>
+                  <trace>org.apache.maven.surefire.junit4.JUnit4Provider.executeWithRerun(JUnit4Provider.java:274)</trace>
+                  <trace>org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:238)</trace>
+                  <trace>org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:161)</trace>
+                  <trace>org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:290)</trace>
+                  <trace>org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:242)</trace>
+                  <trace>org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:121)</trace>
+                </stackTrace>
+              </hudson.model.Cause_-LegacyCodeCause>
+            </upstreamCauses>
+          </hudson.model.Cause_-UpstreamCause>
+          <int>1</int>
+        </entry>
+      </causeBag>
+    </hudson.model.CauseAction>
+  </actions>
+  <queueId>23</queueId>
+  <timestamp>1601363170086</timestamp>
+  <startTime>1601363170144</startTime>
+  <result>SUCCESS</result>
+  <duration>11214</duration>
+  <charset>windows-1252</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\tmp\j h6029750202025198101\workspace\test1\VERSION\R2018a</workspace>
+  <hudsonVersion>2.164.3</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</matrix-run>

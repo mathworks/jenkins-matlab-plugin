@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.kohsuke.stapler:stapler-groovy:1.256">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kohsuke/stapler/stapler-groovy/1.256/stapler-groovy-1.256.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kohsuke/stapler/stapler-groovy/1.256/stapler-groovy-1.256-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/kohsuke/stapler/stapler-groovy/1.256/stapler-groovy-1.256-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

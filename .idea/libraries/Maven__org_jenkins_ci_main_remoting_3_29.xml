@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jenkins-ci.main:remoting:3.29">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/main/remoting/3.29/remoting-3.29.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/main/remoting/3.29/remoting-3.29-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/main/remoting/3.29/remoting-3.29-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

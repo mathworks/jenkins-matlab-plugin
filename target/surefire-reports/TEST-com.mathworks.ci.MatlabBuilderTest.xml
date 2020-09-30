@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.mathworks.ci.MatlabBuilderTest" time="208.347" tests="31" errors="0" skipped="0" failures="0">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\bin"/>
+    <property name="java.vm.version" value="25.202-b08"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="maven.multiModuleProjectDirectory" value="C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=";"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.script" value=""/>
+    <property name="user.country" value="US"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value=""/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin"/>
+    <property name="java.runtime.version" value="1.8.0_202-b08"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.Win32GraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\endorsed"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="java.io.tmpdir" value="C:\Users\vkayithi\AppData\Local\Temp\"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.variant" value=""/>
+    <property name="os.name" value="Windows 10"/>
+    <property name="classworlds.conf" value="C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin\..\bin\m2.conf"/>
+    <property name="sun.jnu.encoding" value="Cp1252"/>
+    <property name="java.library.path" value="C:\Program Files\Java\jdk1.8.0_202\bin;C:\WINDOWS\Sun\Java\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\Python27\;C:\Python27\Scripts;C:\Program Files\AdoptOpenJDK\jdk-11.0.5.10-hotspot\bin;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;\\mathworks\hub\share\apps\BuildTools\MKSTK_9.2p3\mksnt;\\mathworks\hub\share\apps\BuildTools\1.3\win32\bin;\\mathworks\hub\share\sbtools\bin\win64;C:\Program Files\MathWorks\DevelTools\bin;C:\Program Files (x86)\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\Intel\Intel(R) Management Engine Components\DAL;C:\Program Files\MATLAB\MATLAB Runtime\v96\runtime\win64;C:\ProgramData\MATLAB\SupportPackages\R2019a\3P.instrset\mingw_w64.instrset\bin;C:\Users\vkayithi\.dnx\bin;C:\Program Files\Microsoft DNX\Dnvm\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;C:\Program Files\Perforce\;C:\Program Files\dotnet\;C:\Program Files (x86)\IncrediBuild;C:\Program Files (x86)\Interactive Intelligence\ININ Trace Initialization\;C:\Program Files (x86)\Interactive Intelligence\ICUserApps\;C:\Program Files\Interactive Intelligence\ICUserApps\;C:\Program Files\Microsoft VS Code\bin;C:\Program Files\Java\jre8\bin;C:\Program Files\Java\jdk8\bin;C:\Program Files\nodejs\;C:\ProgramData\chocolatey\bin;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Program Files\Git\cmd;C:\Program Files (x86)\PuTTY\;C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin;C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin;C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin;C:\Program Files\MATLAB\R2019a;C:\Program Files\MATLAB\R2019a\bin;C:\Users\vkayithi\AppData\Local\Microsoft\WindowsApps;C:\Users\vkayithi\AppData\Roaming\npm;C:\MinGW\bin;;."/>
+    <property name="maven.conf" value="C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin\../conf"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="52.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="10.0"/>
+    <property name="library.jansi.path" value="C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin\..\lib\jansi-native"/>
+    <property name="user.home" value="C:\Users\vkayithi"/>
+    <property name="user.timezone" value="Asia/Calcutta"/>
+    <property name="java.awt.printerjob" value="sun.awt.windows.WPrinterJob"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="file.encoding" value="Cp1252"/>
+    <property name="user.name" value="vkayithi"/>
+    <property name="java.class.path" value="C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin\..\boot\plexus-classworlds-2.6.0.jar"/>
+    <property name="maven.surefire.debug" value="true"/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="C:\Program Files\Java\jdk1.8.0_202\jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher -Dmaven.surefire.debug test"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="sun.awt.windows.WToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.8.0_202"/>
+    <property name="java.ext.dirs" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\ext;C:\WINDOWS\Sun\Java\lib\ext"/>
+    <property name="sun.boot.class.path" value="C:\Program Files\Java\jdk1.8.0_202\jre\lib\resources.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\rt.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\sunrsasign.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jsse.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jce.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\charsets.jar;C:\Program Files\Java\jdk1.8.0_202\jre\lib\jfr.jar;C:\Program Files\Java\jdk1.8.0_202\jre\classes"/>
+    <property name="sun.stderr.encoding" value="cp437"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="C:\Users\vkayithi\Downloads\apache-maven-3.6.3\bin\.."/>
+    <property name="file.separator" value="\"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="sun.stdout.encoding" value="cp437"/>
+    <property name="sun.desktop" value="windows"/>
+    <property name="sun.cpu.isalist" value="amd64"/>
+  </properties>
+  <testcase name="verifyEmptyMatlabRootError" classname="com.mathworks.ci.MatlabBuilderTest" time="18.146"/>
+  <testcase name="verifyMatlabInvokedWithValidExecutable" classname="com.mathworks.ci.MatlabBuilderTest" time="3.09"/>
+  <testcase name="verifyBuildStatusWhenTestFails" classname="com.mathworks.ci.MatlabBuilderTest" time="2.637"/>
+  <testcase name="verifyInvalidMatlabWarningForModelCoverage" classname="com.mathworks.ci.MatlabBuilderTest" time="19.404"/>
+  <testcase name="verifyInvalidMatlabWarningForSTMResults" classname="com.mathworks.ci.MatlabBuilderTest" time="19.929"/>
+  <testcase name="verifyCustomCommandInvokedForBatchMode" classname="com.mathworks.ci.MatlabBuilderTest" time="0.933"/>
+  <testcase name="verifyCustomCommandInvoked" classname="com.mathworks.ci.MatlabBuilderTest" time="1.456"/>
+  <testcase name="verifyCoberturaError" classname="com.mathworks.ci.MatlabBuilderTest" time="19.421"/>
+  <testcase name="verifyEnvVarSupportForCustomCommandField" classname="com.mathworks.ci.MatlabBuilderTest" time="1.052"/>
+  <testcase name="verifyBuildFailureWhenMatlabException" classname="com.mathworks.ci.MatlabBuilderTest" time="2.451"/>
+  <testcase name="verifyMATLABlaunchedWithDefaultArgumentsRLinux" classname="com.mathworks.ci.MatlabBuilderTest" time="1.01"/>
+  <testcase name="verifyRunTestAutomaticallyIsDefault" classname="com.mathworks.ci.MatlabBuilderTest" time="1.381"/>
+  <testcase name="verifyMATLABlaunchedWithDefaultArgumentsRWindows" classname="com.mathworks.ci.MatlabBuilderTest" time="0.734"/>
+  <testcase name="verifyMATLABscratchFileGeneratedForAutomaticOption" classname="com.mathworks.ci.MatlabBuilderTest" time="1.333"/>
+  <testcase name="verifyBuildStepWithMATLABBuilder" classname="com.mathworks.ci.MatlabBuilderTest" time="1.282"/>
+  <testcase name="verifyBuilderFailsForInvalidMATLABPath" classname="com.mathworks.ci.MatlabBuilderTest" time="2.76"/>
+  <testcase name="verifyInvalidMatlabRootDisplaysError" classname="com.mathworks.ci.MatlabBuilderTest" time="17.451"/>
+  <testcase name="verifyCoberturaWarning" classname="com.mathworks.ci.MatlabBuilderTest" time="20.498"/>
+  <testcase name="verifyDefaultValueOfgetBooleanByName" classname="com.mathworks.ci.MatlabBuilderTest" time="1.346"/>
+  <testcase name="verifyMatlabVersionOlderThanR17a" classname="com.mathworks.ci.MatlabBuilderTest" time="0.902"/>
+  <testcase name="verifyDefaultValueOfgetStringByName" classname="com.mathworks.ci.MatlabBuilderTest" time="1.041"/>
+  <testcase name="verifyMATLABlaunchedWithDefaultArgumentsBatch" classname="com.mathworks.ci.MatlabBuilderTest" time="1.342"/>
+  <testcase name="verifyMATLABscratchFileGeneratedForCustomOption" classname="com.mathworks.ci.MatlabBuilderTest" time="2.461"/>
+  <testcase name="verifyMatlabPointsToValidExecutable" classname="com.mathworks.ci.MatlabBuilderTest" time="2.534"/>
+  <testcase name="verifyValidMatlabRootDoesntDisplayError" classname="com.mathworks.ci.MatlabBuilderTest" time="19.721"/>
+  <testcase name="verifyEnvVarSupportForMatlabRoot" classname="com.mathworks.ci.MatlabBuilderTest" time="1.119"/>
+  <testcase name="verifyModelCoverageWarning" classname="com.mathworks.ci.MatlabBuilderTest" time="20.225"/>
+  <testcase name="verifyVerlessThan" classname="com.mathworks.ci.MatlabBuilderTest" time="1.082"/>
+  <testcase name="verifySTMResultsWarning" classname="com.mathworks.ci.MatlabBuilderTest" time="19.804"/>
+  <testcase name="verifyNoAppIconForR2015a" classname="com.mathworks.ci.MatlabBuilderTest" time="1.085"/>
+  <testcase name="verifyNoAppIconForR2015b" classname="com.mathworks.ci.MatlabBuilderTest" time="0.687"/>
+</testsuite>

@@ -1,0 +1,15 @@
+Started by upstream project "[8mha:////4NowDhSizcN8rvQnpNVicO7LP5zwTFcpjYg1/D74RpmTAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLgAzWEgZu/az8JP2S1OISQ30AlkRDx8AAAAA=[0mtest1" build number [8mha:////4H+KgKSP/DpjjI+Y7ZJG8HWKv0Rtocy+SIttQDAFCGfJAAAAlx+LCAAAAAAAAP9b85aBtbiIQTGjNKU4P08vOT+vOD8nVc83PyU1x6OyILUoJzMv2y+/JJUBAhiZGBgqihhk0NSjKDWzXb3RdlLBUSYGJk8GtpzUvPSSDB8G5tKinBIGIZ+sxLJE/ZzEvHT94JKizLx0a6BxUmjGOUNodHsLQIwSBh79rPwk/ZLU4hJDfUMAXdA1M8EAAAA=[0m1
+originally caused by:
+ Legacy code started this job.  No cause information is available
+Building in workspace C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\tmp\j h6029750202025198101\workspace\test1\VERSION\R2018b
+Generating MATLAB script with content:
+pwd
+
+#################### Starting command output ####################
+[R2018b] $ cmd.exe /C C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target/tmp\f8f01bf6-d43e-4ccb-8b14-9f73c6ce475a\run_matlab_command.bat "cd('C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target/tmp/f8f01bf6-d43e-4ccb-8b14-9f73c6ce475a');command_524795a6_1403_445a_88d2_b28b44fea3d9"
+
+ans =
+
+    'C:\Users\vkayithi\jenkins_project\jenkins-matlab-plugin\target\tmp\j h6029750202025198101\workspace\test1\VERSION\R2018b'
+
+Finished: SUCCESS

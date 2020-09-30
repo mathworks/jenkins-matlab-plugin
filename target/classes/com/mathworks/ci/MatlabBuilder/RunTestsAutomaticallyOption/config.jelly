@@ -1,0 +1,31 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    
+<f:section title="Generate Test Artifacts">
+  	 <f:entry field="taPDFReportChkBx">	
+    	<f:checkbox title="PDF test report " name="taPDFReportChkBx" checked="${instance.taPDFReportChkBx}"/>	
+     </f:entry>
+
+	 <f:entry field="tatapChkBx">
+    	<f:checkbox title="TAP test results" name="tatapChkBx" checked="${instance.tatapChkBx}"/>
+     </f:entry>
+     	
+  	  <f:entry field="taJunitChkBx">
+    	<f:checkbox title="JUnit-style test results" name="taJunitChkBx" checked="${instance.taJunitChkBx}"/>
+  	  </f:entry>      
+
+  	 <f:entry field="taSTMResultsChkBx">
+    	<f:checkbox title="Simulink Test Manager results" name="taSTMResultsChkBx" checked="${instance.taSTMResultsChkBx}"/>
+     </f:entry>   
+</f:section>
+
+<f:section title="Generate Coverage Artifacts">
+	 <f:entry field="taCoberturaChkBx">
+    	<f:checkbox title="Cobertura code coverage" name="taCoberturaChkBx" checked="${instance.taCoberturaChkBx}"/>
+     </f:entry>
+     	
+  	  <f:entry field="taModelCoverageChkBx">
+    	<f:checkbox title="Cobertura model coverage" name="taModelCoverageChkBx" checked="${instance.taModelCoverageChkBx}"/>
+  	  </f:entry>  
+</f:section>
+</j:jelly>

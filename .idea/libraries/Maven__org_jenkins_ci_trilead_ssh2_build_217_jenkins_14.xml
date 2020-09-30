@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.jenkins-ci:trilead-ssh2:build-217-jenkins-14">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/trilead-ssh2/build-217-jenkins-14/trilead-ssh2-build-217-jenkins-14.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/trilead-ssh2/build-217-jenkins-14/trilead-ssh2-build-217-jenkins-14-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jenkins-ci/trilead-ssh2/build-217-jenkins-14/trilead-ssh2-build-217-jenkins-14-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
