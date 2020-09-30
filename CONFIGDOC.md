@@ -1,4 +1,4 @@
-When you define a [Jenkins&trade; Pipeline](https://www.jenkins.io/doc/book/pipeline/), whether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models on Jenkins. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
+When you define an automated pipeline of tasks in Jenkins&trade;, whether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
 
 
 -  [Configure Plugin in Web UI](#configure-plugin-in-web-ui)
