@@ -276,7 +276,7 @@ node {
 | testResultsSimulinkTest 	| Path to export Simulink Test Manager results in MLDATX format (requires Simulink Test license and is supported in MATLAB R2019a or later).<br/>**Example:** `'test-results/results.mldatx'` 	|
 | codeCoverageCobertura   	| Path to write code coverage report in Cobertura XML format.<br/>**Example:** `'code-coverage/coverage.xml'`     	|
 | modelCoverageCobertura  	| Path to write model coverage report in Cobertura XML format (requires Simulink Coverage™ license and is supported in MATLAB R2018b or later).<br/>**Example:** `'model-coverage/coverage.xml'`   	|
-| sourceFolder  	| Locations of the folders containing source code, relative to the project root folder. The specified folders and their subfolders are added to the top of the MATLAB search path. To generate a coverage report, MATLAB uses only the source code in the specified folders and their subfolders. <br/>**Example:** `'source'`<br/>**Example:** `["src/folderA", "src/folderB"]`   	|
+| sourceFolder  	| Locations of the folders containing source code, relative to the project root folder. The specified folders and their subfolders are added to the top of the MATLAB search path. To generate a coverage report, MATLAB uses only the source code in the specified folders and their subfolders. <br/>**Example:** `['source']`<br/>**Example:** `['src/folderA', 'src/folderB']`   	|
 
 
 ## Use MATLAB in Matrix Build
