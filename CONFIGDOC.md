@@ -246,7 +246,7 @@ pipeline {
             {
                 runMATLABTests(testResultsJUnit: 'test-results/results.xml',
                                codeCoverageCobertura: 'code-coverage/coverage.xml',
-                               sourceFolder: 'source')
+                               sourceFolder: ['source'])
             }       
         }                
     } 
@@ -260,7 +260,7 @@ Define a Scripted Pipeline to run your tests and generate artifacts.
 node {
     runMATLABTests(testResultsJUnit: 'test-results/results.xml',
                    codeCoverageCobertura: 'code-coverage/coverage.xml',
-                   sourceFolder: 'source') 
+                   sourceFolder: ['source']) 
 }
 ``` 
 
