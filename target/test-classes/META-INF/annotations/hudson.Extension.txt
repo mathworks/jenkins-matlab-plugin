@@ -1,6 +1,0 @@
-# informational; use java -jar sezpoz.jar to see authoritative contents
-com.mathworks.ci.MatlabBuilderTester$Descriptor
-com.mathworks.ci.RunMatlabCommandBuilderTester$Desriptor
-com.mathworks.ci.RunMatlabCommandStepTester$CommandStepTestDescriptor
-com.mathworks.ci.RunMatlabTestsBuilderTester$Descriptor
-com.mathworks.ci.RunMatlabTestsStepTester$CommandStepTestDescriptor

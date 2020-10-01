@@ -1,9 +1,0 @@
-# informational; use java -jar sezpoz.jar to see authoritative contents
-com.mathworks.ci.MatlabBuilder$MatlabDescriptor
-com.mathworks.ci.MatlabBuilder$RunTestsAutomaticallyOption$DescriptorImpl
-com.mathworks.ci.MatlabBuilder$RunTestsWithCustomCommandOption$DescriptorImpl
-com.mathworks.ci.RunMatlabCommandBuilder$RunMatlabCommandDescriptor
-com.mathworks.ci.RunMatlabCommandStep$CommandStepDescriptor
-com.mathworks.ci.RunMatlabTestsBuilder$RunMatlabTestsDescriptor
-com.mathworks.ci.RunMatlabTestsStep$RunTestsStepDescriptor
-com.mathworks.ci.UseMatlabVersionBuildWrapper$UseMatlabVersionDescriptor
