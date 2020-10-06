@@ -163,6 +163,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 
@@ -271,28 +272,28 @@ public class RunMatlabCommandBuilderTest {
      * 
 	 */
 	@Test
-	public void verifyMatrixBuildFails() throws Exception {
-		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
-		matrixProject.setAxes(new AxisList(axes));
-		String matlabRoot = getMatlabroot("R2018b");
-		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
-		matrixProject.getBuildWrappersList().add(this.buildWrapper);
+    public void verifyMatrixBuildFails() throws Exception {
+        MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+        Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+        matrixProject.setAxes(new AxisList(axes));
+        String matlabRoot = getMatlabroot("R2018b");
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
-		scriptBuilder.setMatlabCommand("pwd");
-		matrixProject.getBuildersList().add(scriptBuilder);
-		Map<String, String> vals = new HashMap<String, String>();
-		vals.put("VERSION", "R2018a");
-		Combination c1 = new Combination(vals);
-		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("MATLAB_ROOT", build);
-		jenkins.assertBuildStatus(Result.FAILURE, build);
-		vals.put("VERSION", "R2018b");
-		Combination c2 = new Combination(vals);
-		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-		jenkins.assertLogContains("MATLAB_ROOT", build2);
-		jenkins.assertBuildStatus(Result.FAILURE, build2);
-	}
+        scriptBuilder.setMatlabCommand("pwd");
+        matrixProject.getBuildersList().add(scriptBuilder);
+        Map<String, String> vals = new HashMap<String, String>();
+        vals.put("VERSION", "R2018a");
+        Combination c1 = new Combination(vals);
+        MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
+        jenkins.assertLogContains("MATLAB_ROOT", build);
+        jenkins.assertBuildStatus(Result.FAILURE, build);
+        vals.put("VERSION", "R2018b");
+        Combination c2 = new Combination(vals);
+        MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+        jenkins.assertLogContains("MATLAB_ROOT", build2);
+        jenkins.assertBuildStatus(Result.FAILURE, build2);
+    }
 
 	/*
 	 * Test to verify if Matrix build passes (mock MATLAB).

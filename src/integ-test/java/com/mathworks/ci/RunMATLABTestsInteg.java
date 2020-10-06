@@ -57,10 +57,17 @@ public class RunMATLABTestsInteg {
 
     private String getMatlabroot() throws URISyntaxException {
         String ML_version = TestData.getPropValues("matlab.version");
-        String installed_path = TestData.getPropValues("matlab.installed.path");
-        String MATLAB_ROOT = installed_path +"\\"+ ML_version;
-        return MATLAB_ROOT;
+        String installed_path, MATLAB_ROOT;
 
+        if (System.getProperty("os.name").startsWith("Win")) {
+            installed_path = TestData.getPropValues("matlab.windows.installed.path");
+            MATLAB_ROOT = installed_path + "\\" + ML_version;
+        }
+        else{
+            installed_path = TestData.getPropValues("matlab.linux.installed.path");
+            MATLAB_ROOT = installed_path + "/" + ML_version;
+        }
+        return MATLAB_ROOT;
     }
 
     @Test
@@ -199,10 +206,10 @@ public class RunMATLABTestsInteg {
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+        Axis axes = new Axis("VERSION", "R2020a", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder tester = new RunMatlabTestsBuilder();
 
@@ -210,8 +217,8 @@ public class RunMATLABTestsInteg {
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
         jenkins.assertLogContains("Triggering", build);
-        jenkins.assertLogContains("R2018a completed", build);
-        jenkins.assertLogContains("R2018b completed", build);
+        jenkins.assertLogContains("R2020a completed", build);
+        jenkins.assertLogContains("R2020a completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
