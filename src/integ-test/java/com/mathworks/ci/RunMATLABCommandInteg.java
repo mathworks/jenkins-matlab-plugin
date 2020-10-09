@@ -150,7 +150,7 @@ public class RunMATLABCommandInteg {
         String build_log = jenkins.getLog(build);
 
         jenkins.assertLogContains("R2019b completed", build);
-        jenkins.assertLogContains("R2018b completed", build);
+        jenkins.assertLogContains("R2020a completed", build);
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
