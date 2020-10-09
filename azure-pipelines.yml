@@ -4,8 +4,6 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 pool: Default
-  demands:
-  - Agent.Name -equals 'VahilaLocalPool'
 
 trigger:
   - master
