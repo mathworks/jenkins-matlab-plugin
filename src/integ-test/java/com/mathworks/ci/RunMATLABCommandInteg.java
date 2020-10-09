@@ -106,7 +106,32 @@ public class RunMATLABCommandInteg {
     }
 
     /*
-     * Test to verify if Matrix build passes (mock MATLAB).
+     * Test to verify if Matrix build fails when MATLAB is not available.
+     */
+    @Test
+    public void verifyMatrixBuildFails() throws Exception {
+        MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+        Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+        matrixProject.setAxes(new AxisList(axes));
+        String matlabRoot = getMatlabroot();
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        matrixProject.getBuildWrappersList().add(this.buildWrapper);
+
+        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
+        matrixProject.getBuildersList().add(scriptBuilder);
+        Map<String, String> vals = new HashMap<String, String>();
+        vals.put("VERSION", "R2018a");
+        Combination c1 = new Combination(vals);
+        MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
+        jenkins.assertBuildStatus(Result.FAILURE, build);
+        vals.put("VERSION", "R2018b");
+        Combination c2 = new Combination(vals);
+        MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+        jenkins.assertBuildStatus(Result.FAILURE, build2);
+    }
+
+    /*
+     * Test to verify if Matrix build passes .
      */
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
@@ -125,8 +150,8 @@ public class RunMATLABCommandInteg {
         String build_log = jenkins.getLog(build);
 
         jenkins.assertLogContains("R2019b completed", build);
-        jenkins.assertLogContains("R2020a completed", build);
-        
+        jenkins.assertLogContains("R2018b completed", build);
+
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 }

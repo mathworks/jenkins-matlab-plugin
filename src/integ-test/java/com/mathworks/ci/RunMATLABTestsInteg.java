@@ -199,6 +199,39 @@ public class RunMATLABTestsInteg {
         HtmlTextInput STMRFilePathInput=(HtmlTextInput) page.getElementByName("_.stmResultsFilePath");
         Assert.assertEquals(TestData.getPropValues("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
     }
+
+    /*
+     * Test to verify if Matrix build fails when MATLAB is not available.
+     */
+    @Test
+    public void verifyMatrixBuildFails() throws Exception {
+        MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+        Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+        matrixProject.setAxes(new AxisList(axes));
+        String matlabRoot = getMatlabroot();
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        matrixProject.getBuildWrappersList().add(this.buildWrapper);
+
+
+        matrixProject.getBuildersList().add(testBuilder);
+
+        // Check for first matrix combination.
+
+        Map<String, String> vals = new HashMap<String, String>();
+        vals.put("VERSION", "R2018a");
+        Combination c1 = new Combination(vals);
+        MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
+
+
+        jenkins.assertBuildStatus(Result.FAILURE, build1);
+
+        // Check for second Matrix combination
+
+        Combination c2 = new Combination(vals);
+        MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+
+        jenkins.assertBuildStatus(Result.FAILURE, build2);
+    }
     
     /*
      * Test to verify if Matrix build passes (mock MATLAB).
