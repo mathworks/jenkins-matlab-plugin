@@ -3,7 +3,8 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
-pool: 'VahilaLocalPool'
+pool:
+  name: 'VahilaLocalPool'
 
 trigger:
   - master
@@ -18,4 +19,4 @@ steps:
       codeCoverageToolOption: 'JaCoCo'
       goals: 'verify'
     displayName: 'Build $(imageName)'
-      
+
