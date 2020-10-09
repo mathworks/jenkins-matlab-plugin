@@ -9,7 +9,7 @@ trigger:
 pool:
   name: Deafult
   demands:
-  -agent.name -equals VahilaLocalPool
+  -agent.name -equals 'VahilaLocalPool'
 
 steps:
   - task: Maven@3
