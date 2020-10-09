@@ -6,7 +6,7 @@
 pool:
   name: Deafult
   demands:
-  -Agent.Name -equals 'VahilaLocalPool'
+  -Agent.Name -equals VahilaLocalPool
 
 trigger:
   - master
