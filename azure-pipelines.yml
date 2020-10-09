@@ -3,13 +3,13 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
+trigger:
+  - master
+
 pool:
   name: Deafult
   demands:
   -agent.name -equals VahilaLocalPool
-
-trigger:
-  - master
 
 steps:
   - task: Maven@3
