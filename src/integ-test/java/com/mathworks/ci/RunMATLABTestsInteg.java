@@ -62,10 +62,14 @@ public class RunMATLABTestsInteg {
         if (System.getProperty("os.name").startsWith("Win")) {
             installed_path = TestData.getPropValues("matlab.windows.installed.path");
             MATLAB_ROOT = installed_path + "\\" + ML_version;
+            // Prints the root folder of MATLAB
+            System.out.println(MATLAB_ROOT);
         }
         else{
             installed_path = TestData.getPropValues("matlab.linux.installed.path");
             MATLAB_ROOT = installed_path + "/" + ML_version;
+            // Prints the root folder of MATLAB
+            System.out.println(MATLAB_ROOT);
         }
         return MATLAB_ROOT;
     }

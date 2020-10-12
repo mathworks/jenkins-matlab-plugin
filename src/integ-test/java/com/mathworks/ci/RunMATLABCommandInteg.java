@@ -99,7 +99,7 @@ public class RunMATLABCommandInteg {
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
-        tester.setMatlabCommand(TestData.getPropValues("matlab.command");
+        tester.setMatlabCommand(TestData.getPropValues("matlab.command"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
@@ -122,8 +122,7 @@ public class RunMATLABCommandInteg {
         Map<String, String> vals = new HashMap<String, String>();
         vals.put("VERSION", "R2018a");
         Combination c1 = new Combination(vals);
-        // Prints the root folder of MATLAB
-        System.out.println(buildWrapper.getMatlabRootFolder());
+
         MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
         jenkins.assertBuildStatus(Result.FAILURE, build);
         vals.put("VERSION", "R2018b");
@@ -145,7 +144,7 @@ public class RunMATLABCommandInteg {
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
 
-        tester.setMatlabCommand((TestData.getPropValues("matlab.command")));
+        tester.setMatlabCommand("pwd,version");
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
