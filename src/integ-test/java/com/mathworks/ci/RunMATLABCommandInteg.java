@@ -60,10 +60,14 @@ public class RunMATLABCommandInteg {
         if (System.getProperty("os.name").startsWith("Win")) {
             installed_path = TestData.getPropValues("matlab.windows.installed.path");
             MATLAB_ROOT = installed_path + "\\" + ML_version;
+            // Prints the root folder of MATLAB
+            System.out.println(MATLAB_ROOT);
         }
         else {
             installed_path = TestData.getPropValues("matlab.linux.installed.path");
             MATLAB_ROOT = installed_path + "/" + ML_version;
+            // Prints the root folder of MATLAB
+            System.out.println(MATLAB_ROOT);
         }
         return MATLAB_ROOT;
     }
@@ -75,7 +79,6 @@ public class RunMATLABCommandInteg {
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
         String matlabRoot = getMatlabroot();
-        System.out.println(matlabRoot);
         this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
@@ -83,7 +86,6 @@ public class RunMATLABCommandInteg {
         tester.setMatlabCommand(TestData.getPropValues("matlab.invalid.command"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 
@@ -93,15 +95,13 @@ public class RunMATLABCommandInteg {
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
         String matlabRoot = getMatlabroot();
-        System.out.println(matlabRoot);
         this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
-        tester.setMatlabCommand("version");
+        tester.setMatlabCommand(TestData.getPropValues("matlab.command");
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
@@ -114,7 +114,7 @@ public class RunMATLABCommandInteg {
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
         scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
@@ -122,6 +122,8 @@ public class RunMATLABCommandInteg {
         Map<String, String> vals = new HashMap<String, String>();
         vals.put("VERSION", "R2018a");
         Combination c1 = new Combination(vals);
+        // Prints the root folder of MATLAB
+        System.out.println(buildWrapper.getMatlabRootFolder());
         MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
         jenkins.assertBuildStatus(Result.FAILURE, build);
         vals.put("VERSION", "R2018b");
@@ -139,7 +141,6 @@ public class RunMATLABCommandInteg {
         Axis axes = new Axis("VERSION", "R2019b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        System.out.println(matlabRoot);
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
@@ -147,7 +148,6 @@ public class RunMATLABCommandInteg {
         tester.setMatlabCommand((TestData.getPropValues("matlab.command")));
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
 
         jenkins.assertLogContains("R2019b completed", build);
         jenkins.assertLogContains("R2020a completed", build);
