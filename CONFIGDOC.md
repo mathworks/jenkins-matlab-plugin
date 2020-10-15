@@ -60,7 +60,7 @@ The **Run MATLAB Tests** build step enables you to generate different types of t
 
 If you do not select any of the test artifact check boxes, the tests still run, and test failures fail the build.
 
-The **Run MATLAB Tests** build step produces a MATLAB script file named `runMatlabTests.m` in the project workspace. The plugin uses this file to run the tests and generate the test artifacts. You can review the contents of the script to understand the testing workflow.
+The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the test artifacts. The plugin writes the contents of this file to the build log. You can review the build log in **Console Output** to understand the testing workflow.
  
 **Note:**
 * The plugin does not create the `matlabTestArtifacts` folder if the name of the folder does not appear in any of the displayed **File path** boxes.

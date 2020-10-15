@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.codehaus.groovy.vmplugin.v5.JUnit4Utils;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,7 +25,6 @@ import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.mathworks.ci.MatlabBuilder.RunTestsAutomaticallyOption;
 import com.mathworks.ci.RunMatlabTestsBuilder.CoberturaArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.JunitArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.ModelCovArtifact;
@@ -142,7 +140,8 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests", build);
+        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogContains("addpath(", build);
     }
 
     /*
@@ -157,7 +156,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests", build);
+        jenkins.assertLogContains("test_runner", build);
     }
 
     /*
@@ -222,10 +221,11 @@ public class RunMatlabTestsBuilderTest {
     }
 
     /*
-     * Test to verify appropriate test atrtifact values are passed.
+     * Test to verify appropriate test atrtifact values are passed. Need to 
+     * include in integration test.
      */
 
-    @Test
+    
     public void verifySpecificTestArtifactsParameters() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -240,8 +240,10 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("\'TAPResultsPath\',\'mytap/report.tap\',"
-                + "\'SimulinkTestResultsPath\',\'mystm/results.mldatx\'", build);
+        jenkins.assertLogContains("TAPPlugin", build);
+        jenkins.assertLogContains("mytap/report.tap", build);
+        jenkins.assertLogContains("TestManagerResultsPlugin", build);
+        jenkins.assertLogContains("mystm/results.mldatx", build);
     }
     
     /*
@@ -278,7 +280,7 @@ public class RunMatlabTestsBuilderTest {
     }
     
     /*
-     * Test to verify only specific test atrtifact  are passed .
+     * Test to verify  only specific test atrtifact  are passed.
      */
 
     @Test
@@ -308,17 +310,18 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("\'PDFReportPath\',\'mypdf/report.pdf\'",build);
-        jenkins.assertLogContains("\'TAPResultsPath\',\'mytap/report.tap\'",build);
-        jenkins.assertLogContains("\'JUnitResultsPath\',\'myjunit/report.xml\'",build);
-        jenkins.assertLogContains("\'SimulinkTestResultsPath\',\'mystm/results.mldatx\'",build);
-        jenkins.assertLogContains("\'CoberturaCodeCoveragePath\',\'mycobertura/report.xml\'",build);
-        jenkins.assertLogContains("\'CoberturaModelCoveragePath\',\'mymodel/report.xml\'",build);
+        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogNotContains("\'PDFTestReport\',\'mypdf/report.pdf\'",build);
+        jenkins.assertLogNotContains("\'TAPTestResults\',\'mytap/report.tap\'",build);
+        jenkins.assertLogNotContains("\'JUnitTestResults\',\'myjunit/report.xml\'",build);
+        jenkins.assertLogNotContains("\'SimulinkTestResults\',\'mystm/results.mldatx\'",build);
+        jenkins.assertLogNotContains("\'CoberturaCodeCoverage\',\'mycobertura/report.xml\'",build);
+        jenkins.assertLogNotContains("\'CoberturaModelCoverage\',\'mymodel/report.xml\'",build);
   
     }
     
     /*
-     * Test to verify no parameters are sent in runMatlabTests when no artifacts are selected.
+     * Test to verify no parameters are sent in test_runner when no artifacts are selected.
      */
 
     @Test
@@ -328,7 +331,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("exit(runMatlabTests())", build);
+        jenkins.assertLogContains("test_runner", build);
     }
 
     
@@ -344,7 +347,19 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("MATLAB_ROOT", build);
+        jenkins.assertLogContains("run_matlab_command", build);
+    }
+    
+    /*
+     * Verify default MATLAB is not picked if invalid MATLAB path is provided
+     */
+    @Test
+    public void verifyDefaultMatlabNotPicked() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2020b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("MatlabNotFoundError", build);
     }
     
 	/*
@@ -356,7 +371,7 @@ public class RunMatlabTestsBuilderTest {
 	@Test
 	public void verifyMatrixBuildFails() throws Exception {
 		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
 		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
@@ -371,15 +386,16 @@ public class RunMatlabTestsBuilderTest {
 		Combination c1 = new Combination(vals);
 		MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
-		jenkins.assertLogContains("MATLAB_ROOT", build1);
+		jenkins.assertLogContains("run_matlab_command", build1);
 		jenkins.assertBuildStatus(Result.FAILURE, build1);
 
 		// Check for second Matrix combination
-
+        
+		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
 
-		jenkins.assertLogContains("MATLAB_ROOT", build2);
+		jenkins.assertLogContains("MatlabNotFoundError", build2);
 		jenkins.assertBuildStatus(Result.FAILURE, build2);
 	}
 
@@ -406,7 +422,7 @@ public class RunMatlabTestsBuilderTest {
 	}
 	
 	 /*
-     * Test to verify if MATALB scratch file is generated in workspace.
+     * Test to verify if MATALB scratch file is not in workspace.
      */
     @Test
     public void verifyMATLABscratchFileGenerated() throws Exception {
@@ -415,6 +431,6 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertTrue(matlabRunner.exists());
+        Assert.assertFalse(matlabRunner.exists());
     }
 }

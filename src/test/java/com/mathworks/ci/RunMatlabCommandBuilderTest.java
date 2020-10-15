@@ -21,6 +21,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 import hudson.EnvVars;
 import hudson.matrix.Axis;
@@ -47,6 +48,9 @@ public class RunMatlabCommandBuilderTest {
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
+    
+    @Rule
+    public Timeout globalTimeout = Timeout.seconds(500); 
 
     @BeforeClass
     public static void classSetup() throws URISyntaxException, IOException {
@@ -261,7 +265,20 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("MATLAB_ROOT", build);
+        jenkins.assertLogContains("run_matlab_command", build);
+    }
+    
+    /*
+     * Verify default MATLAB is not picked if invalid MATLAB path is provided
+     */
+    @Test
+    public void verifyDefaultMatlabNotPicked() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2020b"));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        project.getBuildersList().add(scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("MatlabNotFoundError", build);
     }
     
 	/*
@@ -273,7 +290,7 @@ public class RunMatlabCommandBuilderTest {
 	@Test
 	public void verifyMatrixBuildFails() throws Exception {
 		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
 		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
@@ -285,12 +302,12 @@ public class RunMatlabCommandBuilderTest {
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("MATLAB_ROOT", build);
+		jenkins.assertLogContains("run_matlab_command", build);
 		jenkins.assertBuildStatus(Result.FAILURE, build);
-		vals.put("VERSION", "R2018b");
+		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-		jenkins.assertLogContains("MATLAB_ROOT", build2);
+		jenkins.assertLogContains("MatlabNotFoundError", build2);
 		jenkins.assertBuildStatus(Result.FAILURE, build2);
 	}
 

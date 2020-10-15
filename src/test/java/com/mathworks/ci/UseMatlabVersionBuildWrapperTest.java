@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildWrapper;
 
@@ -90,15 +91,30 @@ public class UseMatlabVersionBuildWrapperTest {
     
     /*
      * Verify if given MATLAB root is added in the PATH.
+     * Should be added to integration test.
      */
-    @Test
+    
     public void verifyPATHupdated() throws Exception {
         this.buildWrapper.setMatlabRootFolder("/test/MATLAB/R2019a");
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilderTester buildTester = new RunMatlabTestsBuilderTester("","");
         project.getBuildersList().add(buildTester);
-        project.scheduleBuild2(0).get();
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
         Assert.assertTrue("Build does not have MATLAB build environment", this.buildWrapper.getMatlabRootFolder().equalsIgnoreCase(buildTester.getMatlabRoot()));
+    }
+    
+    /*
+     * Verify if invalid MATLAB path throes error on console.
+     */
+    @Test
+    public void verifyInvalidPATHError() throws Exception {
+        this.buildWrapper.setMatlabRootFolder("/test/MATLAB/R2019a");
+        project.getBuildWrappersList().add(this.buildWrapper);
+        RunMatlabTestsBuilderTester buildTester = new RunMatlabTestsBuilderTester("","");
+        project.getBuildersList().add(buildTester);
+        project.scheduleBuild2(0).get();
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("MatlabNotFoundError", build);
     }
     
     /*
