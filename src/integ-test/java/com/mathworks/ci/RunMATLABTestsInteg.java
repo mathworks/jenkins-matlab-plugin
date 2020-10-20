@@ -92,7 +92,6 @@ public class RunMATLABTestsInteg {
         HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
         matlabver.setChecked(true);
         WebAssert.assertTextPresent(configurePage, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
-
     }
 
     @Test
@@ -160,7 +159,6 @@ public class RunMATLABTestsInteg {
         Thread.sleep(2000);
         HtmlTextInput PDFFilePathInput=(HtmlTextInput) page.getElementByName("_.pdfReportFilePath");
         Assert.assertEquals(TestData.getPropValues("pdftestreport.file.path"),PDFFilePathInput.getValueAttribute());
-
     }
 
     @Test
@@ -204,6 +202,65 @@ public class RunMATLABTestsInteg {
         Assert.assertEquals(TestData.getPropValues("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
     }
 
+    @Test
+    public void verifyPDFReportCustomFilePathInput() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        project.getBuildWrappersList().add(this.buildWrapper);
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz.pdf"));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogContains("abc/xyz", build);
+    }
+
+    @Test
+    public void verifyCustomFilePathInputForArtifacts() throws Exception{
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        project.getBuildWrappersList().add(this.buildWrapper);
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        testingBuilder.setJunitArtifact(new RunMatlabTestsBuilder.JunitArtifact("TestArtifacts/junittestreport.xml"));
+        testingBuilder.setTapArtifact(new RunMatlabTestsBuilder.TapArtifact("TestArtifacts/tapResult.xml"));
+        testingBuilder.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));
+        testingBuilder.setStmResultsArtifact(new RunMatlabTestsBuilder.StmResultsArtifact("TestArtifacts/stmresult.xml"));
+        testingBuilder.setModelCoverageArtifact(new RunMatlabTestsBuilder.ModelCovArtifact("TestArtifacts/mdlCovReport.xml"));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogContains("TestArtifacts/junittestreport.xml", build);
+        jenkins.assertLogContains("TestArtifacts/tapResult.xml", build);
+        jenkins.assertLogContains("TestArtifacts/coberturaresult.xml", build);
+        jenkins.assertLogContains("TestArtifacts/stmresult.xml", build);
+        jenkins.assertLogContains("TestArtifacts/mdlCovReport.xml", build);
+    }
+
+    @Test
+    public void verifyExtForPdfReport() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        project.getBuildWrappersList().add(this.buildWrapper);
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz"));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertBuildStatus(Result.FAILURE, build);
+        jenkins.assertLogContains("Expected '.pdf'", build);
+    }
+
+    @Test
+    public void verifyBuildFailsForInvalidFilename() throws Exception {
+        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        project.getBuildWrappersList().add(this.buildWrapper);
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/?xyz.pdf"));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertBuildStatus(Result.FAILURE, build);
+        jenkins.assertLogContains("Invalid argument", build);
+        jenkins.assertLogContains("Unable to write to file", build);
+    }
+
     /*
      * Test to verify if Matrix build fails when MATLAB is not available.
      */
@@ -227,14 +284,14 @@ public class RunMATLABTestsInteg {
         MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
 
-        jenkins.assertBuildStatus(Result.FAILURE, build1);
+        jenkins.assertBuildStatus(Result.SUCCESS, build1);
 
         // Check for second Matrix combination
 
         Combination c2 = new Combination(vals);
         MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
 
-        jenkins.assertBuildStatus(Result.FAILURE, build2);
+        jenkins.assertBuildStatus(Result.SUCCESS, build2);
     }
     
     /*
@@ -243,7 +300,7 @@ public class RunMATLABTestsInteg {
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2020a", "R2020a");
+        Axis axes = new Axis("VERSION", "R2019b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
@@ -254,7 +311,7 @@ public class RunMATLABTestsInteg {
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
         jenkins.assertLogContains("Triggering", build);
-        jenkins.assertLogContains("R2020a completed", build);
+        jenkins.assertLogContains("R2019b completed", build);
         jenkins.assertLogContains("R2020a completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }

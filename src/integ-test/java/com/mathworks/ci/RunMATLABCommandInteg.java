@@ -106,6 +106,16 @@ public class RunMATLABCommandInteg {
     }
 
     /*
+     * Test to verify if error is displayed when the Matlab Command is empty
+     */
+    @Test
+    public void verifyMatlabCommandEmptyError() throws Exception{
+        project.getBuildersList().add(this.scriptBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertTextPresent(page,"Enter the Matlab command.");
+    }
+
+    /*
      * Test to verify if Matrix build fails when MATLAB is not available.
      */
     @Test
@@ -124,11 +134,11 @@ public class RunMATLABCommandInteg {
         Combination c1 = new Combination(vals);
 
         MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-        jenkins.assertBuildStatus(Result.FAILURE, build);
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
         vals.put("VERSION", "R2018b");
         Combination c2 = new Combination(vals);
         MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-        jenkins.assertBuildStatus(Result.FAILURE, build2);
+        jenkins.assertBuildStatus(Result.SUCCESS, build2);
     }
 
     /*
