@@ -110,9 +110,11 @@ public class RunMATLABCommandInteg {
      */
     @Test
     public void verifyMatlabCommandEmptyError() throws Exception{
-        project.getBuildersList().add(this.scriptBuilder);
+        RunMatlabCommandBuilder tester =
+                new RunMatlabCommandBuilder();
+        project.getBuildersList().add(tester);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        WebAssert.assertTextPresent(page,"Enter the Matlab command.");
+        WebAssert.assertTextPresent(page,"Enter the Matlab command");
     }
 
     /*
@@ -126,8 +128,7 @@ public class RunMATLABCommandInteg {
         String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
-
-        scriptBuilder.setMatlabCommand((TestData.getPropValues("matlab.command")));
+        
         matrixProject.getBuildersList().add(scriptBuilder);
         Map<String, String> vals = new HashMap<String, String>();
         vals.put("VERSION", "R2018a");
