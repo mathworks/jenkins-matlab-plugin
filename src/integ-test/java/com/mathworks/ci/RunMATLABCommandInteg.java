@@ -134,11 +134,11 @@ public class RunMATLABCommandInteg {
         Combination c1 = new Combination(vals);
 
         MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertBuildStatus(Result.FAILURE, build);
         vals.put("VERSION", "R2018b");
         Combination c2 = new Combination(vals);
         MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-        jenkins.assertBuildStatus(Result.SUCCESS, build2);
+        jenkins.assertBuildStatus(Result.FAILURE, build2);
     }
 
     /*

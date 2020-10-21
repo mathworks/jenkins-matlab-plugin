@@ -7,10 +7,16 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
 import javax.annotation.Nonnull;
+
+import hudson.util.FormValidation;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -88,6 +94,20 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         public boolean isApplicable(
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
+        }
+
+        /*
+         * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
+         * these methods are used to perform basic validation on UI elements associated with this
+         * descriptor class.
+         */
+
+
+        public FormValidation doCheckMatlabCommand(@QueryParameter String matlabCommand) {
+            if (matlabCommand.isEmpty()) {
+                return FormValidation.error(Message.getValue("Builder.matlab.command.empty.error"));
+            }
+            return FormValidation.ok();
         }
     }
 

@@ -2,7 +2,7 @@ package com.mathworks.ci;
 
 /*
  * Copyright 2019-2020 The MathWorks, Inc.
- * 
+ *
  * This is Matlab Builder class which describes the build step and its components. Builder displays
  * Build step As "Run MATLAB Tests" under Build steps. Author : Nikhil Bhoski email :
  * nikhil.bhoski@mathworks.in Date : 28/03/2018 (Initial draft)
@@ -80,11 +80,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     public TestRunTypeList getTestRunTypeList() {
         return this.testRunTypeList;
     }
-    
+
     private String getLocalMatlab() {
         return this.env == null ? getMatlabRoot(): this.env.expand(getMatlabRoot());
     }
-    
+
     private String getCustomMatlabCommand() {
         return this.env == null ? this.getTestRunTypeList().getStringByName("customMatlabCommand")
                 : this.env.expand(this.getTestRunTypeList().getStringByName("customMatlabCommand"));
@@ -92,7 +92,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     private void setEnv(EnvVars env) {
         this.env = env;
     }
-    
+
 
     @Extension
     public static class MatlabDescriptor extends BuildStepDescriptor<Builder> {
@@ -110,7 +110,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         // Overridden Method used to show the text under build dropdown
         @Override
         public String getDisplayName() {
-            // No name for this descriptor as its deprecated all the jobs will be 
+            // No name for this descriptor as its deprecated all the jobs will be
             // automatically delegated to the new TestRun or Script builders.
             return "";
         }
@@ -123,9 +123,9 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
         /*
          * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
-         * 
+         *
          * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
-         * 
+         *
          * if it returns true then this build step will be applicable for all project type.
          */
         @Override
@@ -179,7 +179,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             }
             return FormValidation.ok();
         };
-        
+
         Function<String, FormValidation> chkMatlabSupportsRunTests = (String matlabRoot) -> {
             final MatrixPatternResolver resolver = new MatrixPatternResolver(matlabRoot);
             if (!resolver.hasVariablePattern()) {
@@ -202,7 +202,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     /*
      * Below abstract class is a describable class which holds the list of Runtype options available
      * on UI dropdown
-     * 
+     *
      */
 
     public static abstract class TestRunTypeList
@@ -229,12 +229,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
      * Creating type Descriptor class which acts as descriptor for each dropdown items on UI All
      * FormValidation Method related to each dropdown options class should go in this descriptor
      * class.
-     * 
+     *
      */
 
     public static abstract class TestRunTypeDescriptor extends Descriptor<TestRunTypeList> {
         MatlabReleaseInfo rel;
-        
+
         /*
          * Validation for Test artifact generator checkBoxes
          */
@@ -265,11 +265,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
-            
+
 
             return FormValidation.ok();
         };
-        
+
         public FormValidation doCheckTaModelCoverageChkBx(@QueryParameter boolean taModelCoverageChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
@@ -281,7 +281,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
                     .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
-        
+
         Function<String, FormValidation> chkModelCoverageSupport = (String matlabRoot) -> {
             FilePath matlabRootPath = new FilePath(new File(matlabRoot));
             rel = new MatlabReleaseInfo(matlabRootPath);
@@ -296,11 +296,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
-            
-            
+
+
             return FormValidation.ok();
         };
-        
+
         public FormValidation doCheckTaSTMResultsChkBx(@QueryParameter boolean taSTMResultsChkBx) {
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
@@ -312,7 +312,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return Jenkins.getInstance().getDescriptorByType(MatlabDescriptor.class)
                     .getFirstErrorOrWarning(listOfCheckMethods, matlabRoot);
         }
-        
+
         Function<String, FormValidation> chkSTMResultsSupport = (String matlabRoot) -> {
             FilePath matlabRootPath = new FilePath(new File(matlabRoot));
             rel = new MatlabReleaseInfo(matlabRootPath);
@@ -327,8 +327,8 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                     return FormValidation.warning(Message.getValue("Builder.invalid.matlab.root.warning"));
                 }
             }
-            
-            
+
+
             return FormValidation.ok();
         };
 
@@ -337,7 +337,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     /*
      * Create class of type TestRunTypeList each options of dropdown should have associated class
      * created.
-     * 
+     *
      */
 
     public static class RunTestsAutomaticallyOption extends TestRunTypeList {
@@ -367,22 +367,22 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public void setTaCoberturaChkBx(boolean taCoberturaChkBx) {
             this.taCoberturaChkBx = taCoberturaChkBx;
         }
-        
+
         @DataBoundSetter
         public void setTaSTMResultsChkBx(boolean taSTMResultsChkBx) {
             this.taSTMResultsChkBx = taSTMResultsChkBx;
         }
-        
+
         @DataBoundSetter
         public void setTaModelCoverageChkBx(boolean taModelCoverageChkBx) {
             this.taModelCoverageChkBx = taModelCoverageChkBx;
         }
-        
+
         @DataBoundSetter
         public void setTaPDFReportChkBx(boolean taPDFReportChkBx) {
             this.taPDFReportChkBx = taPDFReportChkBx;
         }
-                
+
         public boolean getTatapChkBx() {
             return tatapChkBx;
         }
@@ -398,15 +398,15 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         public boolean getTaSTMResultsChkBx() {
             return taSTMResultsChkBx;
         }
-                
+
         public boolean getTaModelCoverageChkBx() {
             return taModelCoverageChkBx;
         }
-        
+
         public boolean getTaPDFReportChkBx() {
             return taPDFReportChkBx;
         }
-                
+
         @Extension
         public static final class DescriptorImpl extends TestRunTypeDescriptor {
             @Override
@@ -486,14 +486,14 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     @Override
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
-            throws InterruptedException, IOException {        
+            throws InterruptedException, IOException {
         //Set the environment variable specific to the this build
         setEnv(build.getEnvironment(listener));
         //Get node specific matlabroot to get matlab version information
         FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(),getLocalMatlab());
         matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
         nodeSpecificfileSeparator = getNodeSpecificFileSeperator(launcher);
-        
+
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
@@ -516,10 +516,10 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             } else {
                 matlabLauncher = matlabLauncher.cmds(constructMatlabCommandWithBatch()).stdout(listener);
             }
-            
+
             //Check the test run mode option selected by user and identify the target workspace to copy the scratch file.
             final String testRunMode = this.getTestRunTypeList().getDescriptor().getId();
-            
+
             // Copy MATLAB scratch file into the workspace only if Automatic option is selected.
             if (testRunMode.contains(MatlabBuilderConstants.AUTOMATIC_OPTION)) {
                 FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
@@ -549,7 +549,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         matlabDefaultArgs =
                 Arrays.asList(getLocalMatlab() + nodeSpecificfileSeparator + "bin" + nodeSpecificfileSeparator + "matlab",
                         "-batch", runCommand);
-        
+
         return matlabDefaultArgs;
     }
 
@@ -574,7 +574,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
                         "-nodesktop"};
         if(!matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_NO_APP_ICON_SUPPORT)) {
         	preRunnerSwitches =  (String[]) ArrayUtils.add(preRunnerSwitches, "-noAppIcon");
-        } 
+        }
         return preRunnerSwitches;
     }
 
@@ -600,7 +600,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
         final String[] runnerSwitch = {"-r", runCommand};
         return runnerSwitch;
     }
-    
+
     private void copyMatlabScratchFileInWorkspace(String matlabRunnerResourcePath,
             String matlabRunnerTarget, FilePath targetWorkspace)
             throws IOException, InterruptedException {
@@ -611,7 +611,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
         targetFile.copyFrom(in);
     }
-    
+
     private String getNodeSpecificFileSeperator(Launcher launcher) {
         if (launcher.isUnix()) {
             return "/";
@@ -619,7 +619,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
             return "\\";
         }
     }
-    
+
     // Concatenate the input arguments
     private String getInputArguments() {
         String pdfReport = MatlabBuilderConstants.PDF_REPORT + "," + getTestRunTypeList().getBooleanByName("taPDFReportChkBx");
@@ -628,11 +628,11 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
     	String stmResults = MatlabBuilderConstants.STM_RESULTS + "," + getTestRunTypeList().getBooleanByName("taSTMResultsChkBx");
     	String coberturaCodeCoverage = MatlabBuilderConstants.COBERTURA_CODE_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taCoberturaChkBx");
     	String coberturaModelCoverage = MatlabBuilderConstants.COBERTURA_MODEL_COVERAGE + "," + getTestRunTypeList().getBooleanByName("taModelCoverageChkBx");
-        
+
     	String inputArgsToMatlabFcn = pdfReport + "," + tapResults + "," + junitResults + ","
     			+ stmResults + "," + coberturaCodeCoverage + "," + coberturaModelCoverage;
-        
+
         return inputArgsToMatlabFcn;
     }
-    
+
 }

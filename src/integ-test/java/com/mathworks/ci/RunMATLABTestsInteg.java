@@ -270,7 +270,7 @@ public class RunMATLABTestsInteg {
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 
@@ -284,14 +284,14 @@ public class RunMATLABTestsInteg {
         MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
 
-        jenkins.assertBuildStatus(Result.SUCCESS, build1);
+        jenkins.assertBuildStatus(Result.FAILURE, build1);
 
         // Check for second Matrix combination
 
         Combination c2 = new Combination(vals);
         MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
 
-        jenkins.assertBuildStatus(Result.SUCCESS, build2);
+        jenkins.assertBuildStatus(Result.FAILURE, build2);
     }
     
     /*

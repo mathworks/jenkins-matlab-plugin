@@ -34,8 +34,9 @@ public class RunMatlabTestsStepTest {
     @Test
     public void verifyMATLABPathNotSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
-                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
+                "node {runMATLABCommand \"version\"}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
+        String build_log = j.getLog(build);
         j.assertLogContains("MATLAB_ROOT", build);
     }
 
