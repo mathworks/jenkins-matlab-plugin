@@ -8,6 +8,7 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.UUID;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -95,5 +96,31 @@ public interface MatlabBuild {
 
     default String getUniqueNameForRunnerFile() {
         return UUID.randomUUID().toString();
+    }
+    
+    // This method prepares the temp folder by coping all helper files in it.
+    default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
+        // Write MATLAB scratch file in temp folder.
+        FilePath scriptFile =
+                new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
+        scriptFile.write(runnerScript, "UTF-8");
+        // copy genscript package
+        copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
+                MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
+        FilePath zipFileLocation =
+                new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
+
+        // Unzip the file in temp folder.
+        zipFileLocation.unzip(tmpFldr);
+    }
+    
+    default String getRunnerScript(String script, String params) {
+        script = script.replace("${PARAMS}", params);
+        return script;
+    }
+    
+    default String getValidMatlabFileName(String actualName) {
+        return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
+                + actualName.replaceAll("-", "_");
     }
 }

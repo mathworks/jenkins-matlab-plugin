@@ -19,16 +19,16 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
 
     private static final long serialVersionUID = 6704588180717665100L;
     
-    private String command;
+    private String commandArgs;
 
 
-    public MatlabRunTestsStepExecution(StepContext context, String command) {
+    public MatlabRunTestsStepExecution(StepContext context, String commandArgs) {
         super(context);
-        this.command = command;
+        this.commandArgs = commandArgs;
     }
 
-    private String getCommand() {
-        return this.command;
+    private String getCommandArgs() {
+        return this.commandArgs;
     }
 
     @Override
@@ -58,10 +58,19 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();  
         try {
-            ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    envVars.expand(getCommand()), uniqueTmpFldrName);
+            FilePath genScriptLocation =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+            final String cmdPrefix =
+                    "addpath('" + genScriptLocation.getRemote().replaceAll("'", "''") + "'); ";
+            final String matlabScriptName = getValidMatlabFileName(genScriptLocation.getBaseName());
+
+            ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener,
+                    envVars, cmdPrefix + matlabScriptName, uniqueTmpFldrName);
             
-                     
+            // prepare temp folder by coping genscript package and writing runner script.
+            prepareTmpFldr(genScriptLocation,
+                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs())));
+                               
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());

@@ -9,23 +9,26 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Optional;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
-import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.io.FilenameUtils;
-import org.jenkinsci.Symbol;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
-import hudson.Launcher.ProcStarter;
 import hudson.model.AbstractProject;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.StaplerRequest;
+import hudson.Launcher.ProcStarter;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
@@ -35,7 +38,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private int buildResult;
     private EnvVars env;
-    
+
     // Make all old values transient which protects them writing back on disk.
     private transient boolean tapChkBx;
     private transient boolean junitChkBx;
@@ -50,15 +53,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private Artifact stmResultsArtifact = new NullArtifact();
     private Artifact modelCoverageArtifact = new NullArtifact();
     private Artifact pdfReportArtifact = new NullArtifact();
-   
+    private SourceFolder sourceFolder;
+
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
     }
 
-
     // Getter and Setters to access local members
-
 
     @DataBoundSetter
     public void setTapArtifact(TapArtifact tapArtifact) {
@@ -89,7 +91,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
     }
-    
+
+    @DataBoundSetter
+    public void setSourceFolder(SourceFolder sourceFolder) {
+        this.sourceFolder = sourceFolder;
+    }
+
+
     public String getTapReportFilePath() {
         return this.getTapArtifact().getFilePath();
     }      
@@ -136,6 +144,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     public String getPdfReportFilePath() {
         return this.getPdfReportArtifact().getFilePath();
+    }
+
+    public SourceFolder getSourceFolder() {
+        return this.sourceFolder;
     }
 
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
@@ -239,13 +251,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
+            FilePath genScriptLocation =
+                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(getInputArguments()), uniqueTmpFldrName);
+                    constructCommandForTest(genScriptLocation), uniqueTmpFldrName);
             
-            // Copy MATLAB scratch file into the workspace.
-            FilePath targetWorkspace = new FilePath(launcher.getChannel(), workspace.getRemote());
-            copyFileInWorkspace(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_RESOURCE,
-                    MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE, targetWorkspace);
+            // copy genscript package in temp folder and write a runner script.
+            prepareTmpFldr(genScriptLocation, getRunnerScript(
+                    MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getInputArguments())));
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -260,11 +274,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             }
         }
     }
-
-    public String constructCommandForTest(String inputArguments) {
-        final String matlabFunctionName =
-                FilenameUtils.removeExtension(MatlabBuilderConstants.MATLAB_TESTS_RUNNER_TARGET_FILE);
-        final String runCommand = "exit(" + matlabFunctionName + "(" + inputArguments + "))";
+    
+    public String constructCommandForTest(FilePath scriptPath) {
+        final String matlabScriptName = getValidMatlabFileName(scriptPath.getBaseName());
+        final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''")
+                + "'); " + matlabScriptName;
         return runCommand;
     }
 
@@ -278,12 +292,25 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
+        
+        inputArgsList.add("'Test'");
 
         for (Artifact artifact : artifactList) {
             artifact.addFilePathArgTo(args);
         }
 
         args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+
+        /*
+        * Add source folder options to argument.
+        * For source folder we create a MATLAB cell array and add it to input argument list.
+        * */
+        SourceFolder sf = getSourceFolder();
+        if(sf != null && !sf.getSourceFolderPaths().isEmpty()){
+            sf.addSourceToInputArgs(inputArgsList, Utilities.getCellArrayFrmList(sf.getSourceFolderPaths().stream()
+                    .map(SourceFolderPaths::getSrcFolderPath)
+                    .collect(Collectors.toList())));
+        }
 
         return String.join(",", inputArgsList);
     }
@@ -299,9 +326,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
+
     public static class PdfArtifact extends AbstractArtifactImpl {
 
-        private static final String PDF_REPORT_PATH = "PDFReportPath";
+        private static final String PDF_TEST_REPORT = "PDFTestReport";
 
         @DataBoundConstructor
         public PdfArtifact(String pdfReportFilePath) {
@@ -310,13 +338,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(PDF_REPORT_PATH, getFilePath());
+            inputArgs.put(PDF_TEST_REPORT, getFilePath());
         }
     }
 
     public static class TapArtifact extends AbstractArtifactImpl {
 
-        private static final String TAP_RESULTS_PATH = "TAPResultsPath";
+        private static final String TAP_TEST_RESULTS = "TAPTestResults";
 
         @DataBoundConstructor
         public TapArtifact(String tapReportFilePath) {
@@ -325,13 +353,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(TAP_RESULTS_PATH, getFilePath());
+            inputArgs.put(TAP_TEST_RESULTS, getFilePath());
         }
     }
 
     public static class JunitArtifact extends AbstractArtifactImpl {
 
-        private static final String JUNIT_RESULTS_PATH = "JUnitResultsPath";
+        private static final String JUNIT_TEST_RESULTS = "JUnitTestResults";
 
         @DataBoundConstructor
         public JunitArtifact(String junitReportFilePath) {
@@ -340,13 +368,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(JUNIT_RESULTS_PATH, getFilePath());
+            inputArgs.put(JUNIT_TEST_RESULTS, getFilePath());
         }
     }
 
     public static class CoberturaArtifact extends AbstractArtifactImpl {
 
-        private static final String COBERTURA_CODE_COVERAGE_PATH = "CoberturaCodeCoveragePath";
+        private static final String COBERTURA_CODE_COVERAGE = "CoberturaCodeCoverage";
 
         @DataBoundConstructor
         public CoberturaArtifact(String coberturaReportFilePath) {
@@ -355,13 +383,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(COBERTURA_CODE_COVERAGE_PATH, getFilePath());
+            inputArgs.put(COBERTURA_CODE_COVERAGE, getFilePath());
         }
     }
 
     public static class StmResultsArtifact extends AbstractArtifactImpl {
 
-        private static final String STM_RESULTS_PATH = "SimulinkTestResultsPath";
+        private static final String STM_RESULTS = "SimulinkTestResults";
 
         @DataBoundConstructor
         public StmResultsArtifact(String stmResultsFilePath) {
@@ -370,13 +398,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(STM_RESULTS_PATH, getFilePath());
+            inputArgs.put(STM_RESULTS, getFilePath());
         }
     }
 
     public static class ModelCovArtifact extends AbstractArtifactImpl {
 
-        private static final String COBERTURA_MODEL_COVERAGE_PATH = "CoberturaModelCoveragePath";
+        private static final String COBERTURA_MODEL_COVERAGE = "CoberturaModelCoverage";
 
         @DataBoundConstructor
         public ModelCovArtifact(String modelCoverageFilePath) {
@@ -385,7 +413,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Override
         public void addFilePathArgTo(Map<String, String> inputArgs) {
-            inputArgs.put(COBERTURA_MODEL_COVERAGE_PATH, getFilePath());
+            inputArgs.put(COBERTURA_MODEL_COVERAGE, getFilePath());
         }
     }
 
