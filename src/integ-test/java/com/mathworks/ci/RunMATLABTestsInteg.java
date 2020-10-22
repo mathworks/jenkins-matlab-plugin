@@ -113,11 +113,9 @@ public class RunMATLABTestsInteg {
         this.buildWrapper.setMatlabRootFolder("fake");
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
-        RunMatlabCommandBuilder tester =
-                new RunMatlabCommandBuilder();
-        project.getBuildersList().add(tester);
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains(TestMessage.getValue("matlab.not.found.error"), build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 
@@ -210,7 +208,6 @@ public class RunMATLABTestsInteg {
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz.pdf"));
         project.getBuildersList().add(testingBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("abc/xyz", build);
     }
@@ -227,7 +224,6 @@ public class RunMATLABTestsInteg {
         testingBuilder.setModelCoverageArtifact(new RunMatlabTestsBuilder.ModelCovArtifact("TestArtifacts/mdlCovReport.xml"));
         project.getBuildersList().add(testingBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("TestArtifacts/junittestreport.xml", build);
         jenkins.assertLogContains("TestArtifacts/tapResult.xml", build);

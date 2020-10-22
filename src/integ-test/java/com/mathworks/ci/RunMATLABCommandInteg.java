@@ -128,7 +128,7 @@ public class RunMATLABCommandInteg {
         String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
-        
+
         matrixProject.getBuildersList().add(scriptBuilder);
         Map<String, String> vals = new HashMap<String, String>();
         vals.put("VERSION", "R2018a");
