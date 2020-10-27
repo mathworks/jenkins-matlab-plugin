@@ -3,7 +3,7 @@
     <f:entry title="Name: " field="name">
         <f:textbox />
     </f:entry>
-    <f:entry title="Matlab Root: " field="home">
+    <f:entry title="MATLAB root: " field="home">
         <f:textbox />
     </f:entry>
 </j:jelly>
