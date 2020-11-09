@@ -218,17 +218,17 @@ public class RunMATLABTestsInteg {
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setJunitArtifact(new RunMatlabTestsBuilder.JunitArtifact("TestArtifacts/junittestreport.xml"));
-        testingBuilder.setTapArtifact(new RunMatlabTestsBuilder.TapArtifact("TestArtifacts/tapResult.xml"));
+        testingBuilder.setTapArtifact(new RunMatlabTestsBuilder.TapArtifact("TestArtifacts/tapResult.tap"));
         testingBuilder.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));
-        testingBuilder.setStmResultsArtifact(new RunMatlabTestsBuilder.StmResultsArtifact("TestArtifacts/stmresult.xml"));
+        testingBuilder.setStmResultsArtifact(new RunMatlabTestsBuilder.StmResultsArtifact("TestArtifacts/stmresult.mldatx"));
         testingBuilder.setModelCoverageArtifact(new RunMatlabTestsBuilder.ModelCovArtifact("TestArtifacts/mdlCovReport.xml"));
         project.getBuildersList().add(testingBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("TestArtifacts/junittestreport.xml", build);
-        jenkins.assertLogContains("TestArtifacts/tapResult.xml", build);
+        jenkins.assertLogContains("TestArtifacts/tapResult.tap", build);
         jenkins.assertLogContains("TestArtifacts/coberturaresult.xml", build);
-        jenkins.assertLogContains("TestArtifacts/stmresult.xml", build);
+        jenkins.assertLogContains("TestArtifacts/stmresult.mldatx", build);
         jenkins.assertLogContains("TestArtifacts/mdlCovReport.xml", build);
     }
 
