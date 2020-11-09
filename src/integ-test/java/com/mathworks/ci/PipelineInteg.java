@@ -34,13 +34,13 @@ public class PipelineInteg {
                 "pipeline {runMATLABCommand \"version\"}",true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+        String build_log = jenkins.getLog(build);
     }
 
     @Test
     public void verifyBuildFailsWhenMatlabCommandFails() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
-                                    "pipeline {environment {PATH = \"C:\Program Files\MATLAB\R2019a\"\n" +
-                                            " }runMATLABCommand \"apple\"}", true));
+                "pipeline {runMATLABCommand \"version\"}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("apple", build);
         String build_log = jenkins.getLog(build);
