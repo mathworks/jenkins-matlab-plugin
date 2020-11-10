@@ -342,13 +342,13 @@ For example, register MATLAB R2020b as a Jenkins tool on your Windows-based agen
 If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you have specified on the local agent. For example, if you have registered MATLAB R2020b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on the remote agent. To register MATLAB as a Jenkins tool on a remote agent: 
 
 1) Navigate to the **Node Properties** interface of the agent. You can access this interface by selecting **Manage Jenkins > Manage Nodes and Clouds**, clicking the link corresponding to the agent, and then selecting **Configure** on the left.
-2) Select the tool name from the **Name** drop-down list. The list contains the names assigned to the registered MATLAB versions on the local agent.  
+2) Select **Tool Locations**. Then, select the tool name from the **Name** drop-down list. The list contains the names assigned to the registered MATLAB versions on the local agent.  
 3) In the **Home** box, enter the full path to the MATLAB root folder on the remote agent.
 4) Click **Save** to confirm your choices.
 
 For example, on a Linux-based remote agent, register MATLAB R2020b as a tool.
 
-![tool_remote](https://user-images.githubusercontent.com/48831250/98406480-08a3a100-203c-11eb-83f2-678931b62340.PNG)
+![tool_remote](https://user-images.githubusercontent.com/48831250/98685471-67676400-2335-11eb-9db5-bd027bc053f6.PNG)
 
 **Note:** Currently, using MATLAB as a tool is supported only for Pipeline projects.
 
