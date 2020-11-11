@@ -79,86 +79,6 @@ public class PipelineInteg {
         jenkins.assertLogContains("No such DSL method",build);
         jenkins.assertBuildStatus(Result.FAILURE,build);
     }
-    @Test
-    public void verifyMatrixBuildPasses() throws Exception
-    {
-        project.setDefinition(new CpsFlowDefinition(
-                "pipeline {\n" +
-                        "agent any\n" +
-                        "stages {\n" +
-                        "stage('BuildAndTest') {\n" +
-                        "matrix {\n" +
-                        "agent any\n" +
-                        "environment {\n" +
-                        "    PATH = \"C:\\\\Program Files\\\\MATLAB\\\\${VERSION}\\\\bin;${PATH}\"\n" +
-                        "}\n" +
-                        "axes {\n" +
-                        "axis {\n" +
-                        "name 'VERSION'\n" +
-                        "values 'R2019a', 'R2019b'\n" +
-                        "}\n" +
-                        "}\n" +
-                        "stages {\n" +
-                        "\n" +
-                        "stage('Run MATLAB commands') {\n" +
-                        "steps {\n" +
-                        "runMATLABCommand 'version'\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "\n",
-                true));
-
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
-        jenkins.assertLogContains("(R2019a)", build);
-        jenkins.assertLogContains("(R2019b)", build);
-        jenkins.assertBuildStatus(Result.SUCCESS,build);
-    }
-
-    @Test
-    public void verifyMatrixBuildFails() throws Exception
-    {
-        project.setDefinition(new CpsFlowDefinition(
-                "pipeline {\n" +
-                        "agent any\n" +
-                        "stages {\n" +
-                        "stage('BuildAndTest') {\n" +
-                        "matrix {\n" +
-                        "agent any\n" +
-                        "environment {\n" +
-                        "    PATH = \"C:\\\\Program Files\\\\MATLAB\\\\${VERSION}\\\\bin;${PATH}\"\n" +
-                        "}\n" +
-                        "axes {\n" +
-                        "axis {\n" +
-                        "name 'VERSION'\n" +
-                        "values 'R2018a', 'R2014b'\n" +
-                        "}\n" +
-                        "}\n" +
-                        "stages {\n" +
-                        "\n" +
-                        "stage('Run MATLAB commands') {\n" +
-                        "steps {\n" +
-                        "runMATLABCommand 'version'\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "}\n" +
-                        "\n",
-                true));
-
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
-        jenkins.assertLogContains("MATLAB_ROOT", build);
-        jenkins.assertBuildStatus(Result.FAILURE,build);
-    }
 
     @Test
     public void verifyCustomeFilenamesForArtifacts() throws Exception
@@ -173,21 +93,66 @@ public class PipelineInteg {
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
                         "            {\n" +
-                        "              runMATLABTests(testResultsPDF:'test-results1/results.pdf',\n" +
-                        "                             testResultsTAP: 'test-results1/results.tap',\n" +
-                        "                             testResultsJUnit: 'test-results1/results.xml',\n" +
-                        "                             testResultsSimulinkTest: 'test-results1/results.mldatx',\n" +
-                        "                             codeCoverageCobertura: 'code-coverage1/coverage.xml',\n" +
-                        "                             modelCoverageCobertura: 'model-coverage1/coverage.xml')\n" +
+                        "              runMATLABTests(testResultsPDF:'test-results/results.pdf',\n" +
+                        "                             testResultsTAP: 'test-results/results.tap',\n" +
+                        "                             testResultsJUnit: 'test-results/results.xml',\n" +
+                        "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
+                        "                             codeCoverageCobertura: 'code-coverage/coverage.xml',\n" +
+                        "                             modelCoverageCobertura: 'model-coverage/coverage.xml')\n" +
                         "            }\n" +
                         "        }\n" +
                         "    }\n" +
                         "}",true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        String workspaceDir = jenkins.jenkins.getRawWorkspaceDir();
-//        String build_log = jenkins.getLog(build);
-//        jenkins.assertLogContains("No such DSL method",build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    // .pdf extension
+    @Test
+    public void verifyExtForPDF() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "pipeline {\n" +
+                        "  agent any\n" +
+                        "  environment {\n" +
+                        "      PATH = \"C:\\\\Program Files\\\\MATLAB\\\\R2020a\\\\bin;${PATH}\"   \n" +
+                        "  }\n" +
+                        "    stages{\n" +
+                        "        stage('Run MATLAB Command') {\n" +
+                        "            steps\n" +
+                        "            {\n" +
+                        "              runMATLABTests(testResultsPDF:'test-results/results')\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}",true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
+        jenkins.assertLogContains("File extension missing.  Expected '.pdf'", build);
+        jenkins.assertBuildStatus(Result.FAILURE,build);
+    }
+
+    // invalid filename
+    @Test
+    public void verifyInvalidFilename() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "pipeline {\n" +
+                        "  agent any\n" +
+                        "  environment {\n" +
+                        "      PATH = \"C:\\\\Program Files\\\\MATLAB\\\\R2020a\\\\bin;${PATH}\"   \n" +
+                        "  }\n" +
+                        "    stages{\n" +
+                        "        stage('Run MATLAB Command') {\n" +
+                        "            steps\n" +
+                        "            {\n" +
+                        "              runMATLABTests(testResultsPDF:'abc/x?.pdf')\n" +
+                        "            }\n" +
+                        "        }\n" +
+                        "    }\n" +
+                        "}",true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        String build_log = jenkins.getLog(build);
+        jenkins.assertLogContains("Unable to write to file", build);
+        jenkins.assertBuildStatus(Result.FAILURE,build);
     }
 
 }
