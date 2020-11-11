@@ -6,7 +6,10 @@
 #Using a Self-hosted machine
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah
-pool: Default
+pool: 
+name: Default
+demands:
+- Agent.OS -equals Windows
 
 trigger:
   - master
