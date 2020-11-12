@@ -335,7 +335,7 @@ To register MATLAB as a Jenkins tool:
 3) specify the name for your desired MATLAB version in the **MATLAB Name** box, and enter the full path to the MATLAB root folder in the **MATLAB root** box. To register MATLAB as a tool, you are not required to select **Install automatically**. 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register MATLAB R2020b as a Jenkins tool on your Windows-based agent.
+For example, register MATLAB R2020b as a Jenkins tool on your Windows-based local agent.
 
 ![matlab_tool](https://user-images.githubusercontent.com/48831250/98566654-0714eb80-227d-11eb-90b8-4875ab32bf66.png)
 
