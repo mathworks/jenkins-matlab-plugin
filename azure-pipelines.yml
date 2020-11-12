@@ -6,6 +6,7 @@
 #Using a Self-hosted machine
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah
+parameters:
 pool: 
 name: Default
 demands:
