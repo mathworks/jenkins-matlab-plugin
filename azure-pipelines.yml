@@ -7,8 +7,7 @@
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah
 
-
-  pool: Default
+pool: Default
 
 trigger:
   - master
