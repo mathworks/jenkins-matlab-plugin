@@ -7,13 +7,20 @@
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah
 
+strategy:
+  matrix:
+    linux:
+      agentName: 'Vahila-linux-jenkinsci-01-ah'
+    windows:
+      agentName: 'VahilaLocalPool'
+
 trigger:
   - master
   
 pool:
   name: Default
   demands:
-  - agent.os -equals Linux
+  - agent.name -equals $(agentName)
 
 steps:
   - task: Maven@3
