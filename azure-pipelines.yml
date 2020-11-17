@@ -7,10 +7,13 @@
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah
 
-pool: Default
-
 trigger:
   - master
+  
+pool:
+  name: Default
+  demands:
+  - agent.os -equals Linux
 
 steps:
   - task: Maven@3
