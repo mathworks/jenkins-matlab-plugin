@@ -125,4 +125,29 @@ public class RunMatlabTestsStepTest {
         j.assertLogNotContains("SimulinkTestResultsPath", build);
         j.assertLogNotContains("CoberturaModelCoveragePath", build);
     }
+    
+    /*@Integ Test
+     * Verify default command options for test Filter using selectByFolder option 
+     */
+
+    public void verifyTestSelectByFolder () throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(selectByFolder:['mytest1','mytest2'])}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("mytest1", build);
+        j.assertLogContains("mytest2", build);
+        j.assertBuildStatusSuccess(build);
+    }
+    
+    /*@Integ Test
+     * Verify default command options for test Filter using selectByTag option 
+     */
+
+    public void verifyTestSelectByTag () throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(selectByTag: 'myTestTag')}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("myTestTag", build);
+        j.assertBuildStatusSuccess(build);
+    }
 }
