@@ -1,4 +1,3 @@
-# Maven
 # Build your Java project and run tests with Apache Maven.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
@@ -10,7 +9,7 @@
 strategy:
   matrix:
     linux:
-      agentName: 'Vahila-linux-jenkinsci-01-ah'
+      agentName: 'Linux_VM_Agent'
     windows:
       agentName: 'VahilaLocalPool'
 
@@ -22,6 +21,11 @@ pool:
   demands:
   - agent.name -equals $(agentName)
 
+pool:
+  name: Default
+  demands:
+    - agent.name -equals $(agentName)
+
 steps:
   - task: Maven@3
     inputs:
@@ -32,4 +36,3 @@ steps:
       codeCoverageToolOption: 'JaCoCo'
       goals: 'verify'
     displayName: 'Build $(imageName)'
-

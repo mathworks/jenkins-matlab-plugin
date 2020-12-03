@@ -56,18 +56,20 @@ public class RunMATLABTestsInteg {
     }
 
     private String getMatlabroot() throws URISyntaxException {
-        String ML_version = TestData.getPropValues("matlab.version");
-        String installed_path, MATLAB_ROOT;
+        String MATLAB_ROOT;
 
         if (System.getProperty("os.name").startsWith("Win")) {
-            installed_path = TestData.getPropValues("matlab.windows.installed.path");
-            MATLAB_ROOT = installed_path + "\\" + ML_version;
+            MATLAB_ROOT = TestData.getPropValues("matlab.windows.installed.path");
             // Prints the root folder of MATLAB
             System.out.println(MATLAB_ROOT);
         }
-        else{
-            installed_path = TestData.getPropValues("matlab.linux.installed.path");
-            MATLAB_ROOT = installed_path + "/" + ML_version;
+        else if (System.getProperty("os.name").startsWith("Linux")){
+            MATLAB_ROOT = TestData.getPropValues("matlab.linux.installed.path");
+            // Prints the root folder of MATLAB
+            System.out.println(MATLAB_ROOT);
+        }
+        else {
+            MATLAB_ROOT = TestData.getPropValues("matlab.mac.installed.path");
             // Prints the root folder of MATLAB
             System.out.println(MATLAB_ROOT);
         }
@@ -296,7 +298,7 @@ public class RunMATLABTestsInteg {
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2019b", "R2020a");
+        Axis axes = new Axis("VERSION", "R2019a", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
@@ -307,7 +309,7 @@ public class RunMATLABTestsInteg {
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
         jenkins.assertLogContains("Triggering", build);
-        jenkins.assertLogContains("R2019b completed", build);
+        jenkins.assertLogContains("R2019a completed", build);
         jenkins.assertLogContains("R2020a completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
