@@ -307,7 +307,7 @@ public class RunMATLABTestsInteg {
 
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
-
+        String build_log = jenkins.getLog(build);
         jenkins.assertLogContains("Triggering", build);
         jenkins.assertLogContains("R2019a completed", build);
         jenkins.assertLogContains("R2020a completed", build);
