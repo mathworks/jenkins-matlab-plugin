@@ -200,26 +200,21 @@ public class PipelineInteg {
     // invalid filename
     @Test
     public void verifyInvalidFilename() throws Exception {
-//        String environment = getEnvironmentPath();
-//        String s = "pipeline {\n" +
-//                "  agent any\n" +
-//                environment + "\n" +
-//                "    stages{\n" +
-//                "        stage('Run MATLAB Command') {\n" +
-//                "            steps\n" +
-//                "            {\n" +
-//                "              runMATLABTests(testResultsPDF:'abc/x?.pdf')\n" +
-//                "            }\n" +
-//                "        }\n" +
-//                "    }\n" +
-//                "}";
-//        System.out.println(s);
-//        project.setDefinition(new CpsFlowDefinition(
-//                s,true));
+        String environment = getEnvironmentPath();
+        String s = "pipeline {\n" +
+                "  agent any\n" +
+                environment + "\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "              runMATLABTests(testResultsPDF:'abc/x?.pdf')\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
         project.setDefinition(new CpsFlowDefinition(
-                "node { matrix {\n" + "agent any\n" + "axes {\n" + "axis {\n" + "name: 'CMD'\n"
-                        + "values: 'pwd','ver'\n }}\n" + "runMATLABCommand(command: '${CMD}')}}",
-                true));
+                s,true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         String build_log = jenkins.getLog(build);
         jenkins.assertLogContains("Unable to write to file", build);
