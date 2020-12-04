@@ -13,7 +13,7 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Use the runMATLABCommand Step](#use-the-runmatlabcommand-step)
    -  [Use the runMATLABTests Step](#use-the-runmatlabtests-step) 
    -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
--  [Register MATLAB as a Jenkins Tool](#register-matlab-as-a-jenkins-tool)
+-  [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
 
 ## Configure Plugin in Web UI
@@ -323,7 +323,7 @@ pipeline {
 }
 ``` 
 
-## Register MATLAB as a Jenkins Tool
+## Register MATLAB as Jenkins Tool
 To run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins should invoke by providing the path to the desired MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your Pipeline project.
 
 Instead of specifying the path to the MATLAB root folder on a per project basis, you can register MATLAB as a Jenkins tool, which can then be accessed by any project you configure in Jenkins. To register your desired MATLAB version as a tool, you are required to specify its name and location on the build agent. Once you have registered MATLAB as a tool, you no longer need to specify its root folder path within a project. Jenkins only needs the tool name to access MATLAB.
@@ -332,7 +332,7 @@ To register MATLAB as a Jenkins tool:
 
 1) In your Jenkins interface, select **Manage Jenkins > Global Tool Configuration**. A new page opens where you can register different tools with Jenkins.
 2) In the **MATLAB** section of the **Global Tool Configuration** page, locate and click **Add MATLAB**. The section expands and enables you to specify the name and installation location of MATLAB.
-3) specify the name for your desired MATLAB version in the **MATLAB Name** box, and enter the full path to the MATLAB root folder in the **MATLAB root** box. To register MATLAB as a tool, you are not required to select **Install automatically**. 
+3) specify the name for your desired MATLAB version in the **Name** box, and enter the full path to the MATLAB root folder in the **MATLAB root** box. To register MATLAB as a tool, you are not required to select **Install automatically**. 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2020b as a Jenkins tool on your Windows-based local agent.
@@ -374,23 +374,20 @@ pipeline {
 
 ```
 
-If you define your Pipeline using Scripted Pipeline syntax, you need to prepend the path to the `bin` folder of the desired MATLAB version to the PATH environment variable. Use the `tool` keyword following by the name of the tool to retrieve the path to the MATLAB root folder. Then, construct the path to the `bin` folder, and use `withEnv` to prepend it to the PATH environment variable.
+If you define your Pipeline using Scripted Pipeline syntax, use the `tool` keyword followed by the name of the tool to retrieve the path to the MATLAB root folder. Then, prepend the path to the `bin` folder of the desired MATLAB version to the PATH environment variable.
 
 ```groovy
 // Scripted Pipeline
 node {
     def matlabver
     stage('Run MATLAB Command') {
-        // Specify the matlabroot/bin folder for the desired MATLAB version
         matlabver = tool 'R2020b'
         if (isUnix()){
-            matlabver = matlabver + "/bin"   // Linux or macOS agent
+            env.PATH = "${matlabver}/bin:${env.PATH}"   // Linux or macOS agent
         }else{
-            matlabver = matlabver + "\\bin"   // Windows agent
-        }   
-        withEnv(["PATH + MATLAB = $matlabver"]) {   // Prepend matlabroot/bin to the PATH variable
-            runMATLABCommand 'myscript'
-        }
+            env.PATH = "${matlabver}\\bin;${env.PATH}"   // Windows agent
+        }     
+        runMATLABCommand 'myscript'
     }
 }
 ```
