@@ -298,6 +298,14 @@ public class RunMatlabCommandBuilderTest {
 
 		scriptBuilder.setMatlabCommand("pwd");
 		matrixProject.getBuildersList().add(scriptBuilder);
+
+        // For unix based OS set permission to MATLAB executable
+        if (FileSeperator.equals("/")) {
+            ProcessBuilder pb = new ProcessBuilder("chmod", "755",
+                    matlabRoot.replace("R2018b", "R2018a") + "/bin/matlab");
+            pb.start();
+        }
+
 		Map<String, String> vals = new HashMap<String, String>();
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);

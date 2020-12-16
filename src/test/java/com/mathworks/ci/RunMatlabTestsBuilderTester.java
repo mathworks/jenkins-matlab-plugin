@@ -167,6 +167,11 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
 
         if (this.matlabExecutorPath == null || this.matlabExecutorPath.isEmpty()) {
             this.matlabExecutorPath =  nodeSpecificMatlabRoot.getRemote() + "/bin/" + getNodeSpecificExecutable(launcher);
+            // If installation is being used on unix based OS, set correct permissions.
+            if (launcher.isUnix()) {
+                ProcessBuilder pb = new ProcessBuilder("chmod", "755", this.matlabExecutorPath);
+                pb.start();
+            }
         }
 
         buildResult = execCommand(workspace, launcher, listener);

@@ -396,8 +396,14 @@ public class RunMatlabTestsBuilderTest {
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 		matrixProject.getBuildersList().add(testBuilder);
+		// For unix based OS set permission to MATLAB executable
+        if (FileSeperator.equals("/")) {
+            ProcessBuilder pb = new ProcessBuilder("chmod", "755",
+                    matlabRoot.replace("R2018b", "R2018a") + "/bin/matlab");
+            pb.start();
+        }
 
-		// Check for first matrix combination.
+        // Check for first matrix combination.
 
 		Map<String, String> vals = new HashMap<String, String>();
 		vals.put("VERSION", "R2018a");
@@ -416,6 +422,7 @@ public class RunMatlabTestsBuilderTest {
 
 		jenkins.assertLogContains("MatlabNotFoundError", build2);
 		jenkins.assertBuildStatus(Result.FAILURE, build2);
+
 	}
 
 	/*
