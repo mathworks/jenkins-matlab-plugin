@@ -9,13 +9,14 @@ package com.mathworks.ci;
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import org.jenkinsci.Symbol;
+import hudson.matrix.MatrixProject;
+import hudson.model.Computer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -33,9 +34,9 @@ import jenkins.tasks.SimpleBuildWrapper;
 
 public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
-    
 	private String matlabRootFolder;
     private EnvVars env;
+    private String matlabInstName;
 
     @DataBoundConstructor
     public UseMatlabVersionBuildWrapper() {}
@@ -44,13 +45,41 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         return this.matlabRootFolder;
     }
 
-    @DataBoundSetter
+    public String getMatlabInstHome(Computer cmp, TaskListener listener)
+            throws IOException, InterruptedException {
+        return Utilities.getNodeSpecificHome(this.matlabInstName, cmp.getNode(), listener);
+    }
+
+    public String getMatlabInstName() {
+        /* For backward compatibility assign installation name to custom
+         * if matlabRootFolder is not null.
+         * */
+        if(this.matlabInstName!=null && !this.matlabInstName.isEmpty() && this.matlabRootFolder!=null && !this.matlabRootFolder.isEmpty()){
+            this.matlabInstName = Message.getValue("matlab.custom.location");
+        }
+        return matlabInstName;
+    }
+
     public void setMatlabRootFolder(String matlabRootFolder) {
         this.matlabRootFolder = matlabRootFolder;
     }
 
-    private String getLocalMatlab() {
-        return this.env == null ? getMatlabRootFolder() : this.env.expand(getMatlabRootFolder());
+    @DataBoundSetter
+    public void setMatlabBuildWrapperContent(MatlabBuildWrapperContent matlabBuildWrapperContent){
+        if (matlabBuildWrapperContent != null){
+            this.matlabInstName = matlabBuildWrapperContent.getMatlabInstName();
+            this.matlabRootFolder = matlabBuildWrapperContent.getMatlabRootFolder();
+        }
+    }
+
+    private String getLocalMatlab(Computer cmp, TaskListener listener)
+            throws IOException, InterruptedException {
+        String matlabroot = getMatlabRootFolder();
+        if (matlabroot == null || matlabroot.isEmpty()){
+            matlabroot = getMatlabInstHome(cmp, listener);
+        }
+
+        return this.env == null ? matlabroot : this.env.expand(matlabroot);
     }
 
     private void setEnv(EnvVars env) {
@@ -63,6 +92,8 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
         MatlabReleaseInfo rel;
         String matlabRootFolder;
+        private boolean isMatrix;
+        private final String customLocation = Message.getValue("matlab.custom.location");
 
         public String getMatlabRootFolder() {
             return matlabRootFolder;
@@ -74,6 +105,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
         @Override
         public boolean isApplicable(AbstractProject<?, ?> item) {
+            isMatrix = item instanceof MatrixProject;
             return true;
         }
 
@@ -82,6 +114,17 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             return Message.getValue("Buildwrapper.display.name");
         }
 
+        public MatlabInstallation[] getInstallations() {
+            ArrayList<MatlabInstallation> arr;
+            if (isMatrix) {
+                arr = new ArrayList<>();
+            } else {
+                arr = new ArrayList<>(Arrays.asList(MatlabInstallation.getAll()));
+            }
+            arr.add(new MatlabInstallation(customLocation));
+            MatlabInstallation[] temp = new MatlabInstallation[arr.size()];
+            return arr.toArray(temp);
+        }
 
         /*
          * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
@@ -89,8 +132,10 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          * descriptor class.
          */
 
-
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
+            /*
+            * If isMatrix or if empty installations or if selectedOption is specify loc
+            * */
             setMatlabRootFolder(matlabRootFolder);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
@@ -136,13 +181,13 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         setEnv(initialEnvironment);
 
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
-                getLocalMatlab() + "/bin/" + getNodeSpecificExecutable(launcher));
-
+                getLocalMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
+        listener.getLogger().println("\n Using MATLAB : " + matlabExecutablePath.getRemote() + "\n");
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
         // Add "matlabroot" without bin as env variable which will be available across the build.
-        context.env("matlabroot", getLocalMatlab());
+        context.env("matlabroot", getLocalMatlab(Computer.currentComputer(), listener));
         // Add matlab bin to path to invoke MATLAB directly on command line.
         context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote()); 
     }

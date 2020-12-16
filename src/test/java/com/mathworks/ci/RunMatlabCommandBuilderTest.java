@@ -302,8 +302,9 @@ public class RunMatlabCommandBuilderTest {
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
+        // This build passes as there's a dummy executable matlab under versioninfo/<ver>/bin/
 		jenkins.assertLogContains("run_matlab_command", build);
-		jenkins.assertBuildStatus(Result.FAILURE, build);
+		jenkins.assertBuildStatus(Result.SUCCESS, build);
 		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);
 		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);

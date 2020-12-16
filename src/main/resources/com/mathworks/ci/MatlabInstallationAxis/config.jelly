@@ -1,0 +1,9 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
+    <f:entry  help="">
+        <j:forEach var="installation" items="${descriptor.installations}">
+            <f:checkbox name="values" json="${installation.name}" checked="${instance.values.contains(installation.name)}" title="${installation.name}" />
+            <st:nbsp/>
+        </j:forEach>
+    </f:entry>
+</j:jelly>

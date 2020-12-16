@@ -39,8 +39,7 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
     private String matlabroot;
     private String commandParameter;
     private String matlabExecutorPath;
-
-
+    private String matlabVerName = "";
 
     public RunMatlabTestsBuilderTester(String matlabExecutorPath, String customTestPointArgument) {
         super();
@@ -48,6 +47,10 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
+    public RunMatlabTestsBuilderTester(String customTestPointArgument) {
+        super();
+        this.commandParameter = customTestPointArgument;
+    }
 
 
     // Getter and Setters to access local members
@@ -154,8 +157,17 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         setEnv(build.getEnvironment(listener));
 
         this.matlabroot = this.env.get("matlabroot");
+        if (this.matlabroot == null) {
+            this.matlabVerName = this.env.get(Message.getValue("Axis.matlab.key"));
+            this.matlabroot = MatlabInstallation.getInstallation(this.matlabVerName).getHome();
+        }
+
         FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabroot);
         matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
+
+        if (this.matlabExecutorPath == null || this.matlabExecutorPath.isEmpty()) {
+            this.matlabExecutorPath =  nodeSpecificMatlabRoot.getRemote() + "/bin/" + getNodeSpecificExecutable(launcher);
+        }
 
         buildResult = execCommand(workspace, launcher, listener);
         if (buildResult != 0) {
@@ -163,11 +175,13 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         }
     }
 
-    public int execCommand(FilePath workspace, Launcher launcher, TaskListener listener)
+    public synchronized int execCommand(FilePath workspace, Launcher launcher, TaskListener listener)
             throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
+
         try {
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
+
             if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 matlabLauncher = matlabLauncher.cmds(testMatlabCommand()).stderr(outStream);
@@ -187,6 +201,10 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         matlabDefaultArgs.add(this.matlabExecutorPath);
         matlabDefaultArgs.add(this.commandParameter);
         return matlabDefaultArgs;
+    }
+
+    private String getNodeSpecificExecutable(Launcher launcher) {
+        return (launcher.isUnix()) ? "matlab" : "matlab.exe";
     }
 
 
