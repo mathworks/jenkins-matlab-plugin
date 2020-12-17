@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.CheckForNull;
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -26,6 +27,14 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     @DataBoundConstructor
     public MatlabInstallation(String name, @CheckForNull String home, List<? extends ToolProperty<?>> properties) {
         super(Util.fixEmptyAndTrim(name), Util.fixEmptyAndTrim(home), properties);
+    }
+
+    /*
+    * Constructor for Custom object
+    * */
+
+    public MatlabInstallation(String name){
+        super(name, null, null);
     }
 
     @Override public MatlabInstallation forEnvironment(EnvVars envVars) {
@@ -41,6 +50,23 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     public void buildEnvVars(EnvVars env) {
         String pathToExecutable = getHome() + "/bin";
         env.put("PATH+matlabroot", pathToExecutable);
+    }
+
+    public static MatlabInstallation[] getAll () {
+        return Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
+    }
+
+    public static boolean isEmpty() {
+        return getAll().length == 0;
+    }
+
+    public static MatlabInstallation getInstallation(String name) {
+        for (MatlabInstallation _inst : getAll()) {
+            if (!name.isEmpty() && name.equals(_inst.getName())) {
+                return _inst;
+            }
+        }
+        return null;
     }
 
     @Extension @Symbol("matlab")
@@ -71,7 +97,5 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
             this.installations = matlabInstallations;
             save();
         }
-
     }
-
 }
