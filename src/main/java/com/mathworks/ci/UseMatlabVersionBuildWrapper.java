@@ -54,7 +54,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         /* For backward compatibility assign installation name to custom
          * if matlabRootFolder is not null.
          * */
-        if(this.matlabInstName!=null && !this.matlabInstName.isEmpty() && this.matlabRootFolder!=null && !this.matlabRootFolder.isEmpty()){
+        if(this.matlabRootFolder!=null && !this.matlabRootFolder.isEmpty()){
             this.matlabInstName = Message.getValue("matlab.custom.location");
         }
         return matlabInstName;
@@ -62,6 +62,10 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
     public void setMatlabRootFolder(String matlabRootFolder) {
         this.matlabRootFolder = matlabRootFolder;
+    }
+
+    public boolean isInitialized () {
+        return this.matlabRootFolder == null && this.matlabInstName == null;
     }
 
     @DataBoundSetter
@@ -94,6 +98,8 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         String matlabRootFolder;
         private boolean isMatrix;
         private final String customLocation = Message.getValue("matlab.custom.location");
+        private final String matlabAxisWarning = Message.getValue("Use.matlab.version.axis.warning");
+        private AbstractProject<?, ?> project;
 
         public String getMatlabRootFolder() {
             return matlabRootFolder;
@@ -105,6 +111,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
         @Override
         public boolean isApplicable(AbstractProject<?, ?> item) {
+            this.project = item;
             isMatrix = item instanceof MatrixProject;
             return true;
         }
@@ -120,6 +127,25 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             arr.add(new MatlabInstallation(customLocation));
             MatlabInstallation[] temp = new MatlabInstallation[arr.size()];
             return arr.toArray(temp);
+        }
+
+        public String getCustomLocation() {
+            return customLocation;
+        }
+
+        public boolean getIsMatrix() {
+            return isMatrix;
+        }
+
+        public boolean checkAxisAdded() {
+            if (!isMatrix) {
+                return false;
+            }
+            return MatlabItemListener.getMATLABAxisCheckForPrj(project.getFullName()) && !MatlabInstallation.isEmpty();
+        }
+
+        public String getMatlabAxisWarning() {
+            return matlabAxisWarning;
         }
 
         /*
@@ -178,7 +204,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
                 getLocalMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
-        listener.getLogger().println("\n Using MATLAB : " + matlabExecutablePath.getRemote() + "\n");
+        listener.getLogger().println("\n MATLAB executed from : " + matlabExecutablePath.getRemote() + "\n");
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
