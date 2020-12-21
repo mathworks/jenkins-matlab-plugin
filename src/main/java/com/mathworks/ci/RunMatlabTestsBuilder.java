@@ -21,7 +21,10 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
+import hudson.model.AbstractDescribableImpl;
 import hudson.model.AbstractProject;
+import hudson.model.Descriptor;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
@@ -53,13 +56,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private Artifact stmResultsArtifact = new NullArtifact();
     private Artifact modelCoverageArtifact = new NullArtifact();
     private Artifact pdfReportArtifact = new NullArtifact();
+    
     private SourceFolder sourceFolder;
+    private SelectByFolder selectbyFolder;
+    private SelectByTag selectByTag;
+    
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
     }
-
+    
     // Getter and Setters to access local members
 
     @DataBoundSetter
@@ -91,10 +98,20 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
     }
-
+    
+    @DataBoundSetter
+    public void setSelectByTag(SelectByTag selectByTag) {
+        this.selectByTag = selectByTag;
+    }
+    
     @DataBoundSetter
     public void setSourceFolder(SourceFolder sourceFolder) {
         this.sourceFolder = sourceFolder;
+    }
+    
+    @DataBoundSetter
+    public void setSelectbyFolder(SelectByFolder selectbyFolder) {
+    	this.selectbyFolder = selectbyFolder;
     }
 
 
@@ -145,9 +162,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public String getPdfReportFilePath() {
         return this.getPdfReportArtifact().getFilePath();
     }
-
+    public SelectByTag getSelectByTag() {
+    	return this.selectByTag;
+    }
     public SourceFolder getSourceFolder() {
         return this.sourceFolder;
+    }
+    
+    public SelectByFolder getSelectbyFolder(){
+    	return this.selectbyFolder;
     }
 
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
@@ -311,6 +334,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     .map(SourceFolderPaths::getSrcFolderPath)
                     .collect(Collectors.toList())));
         }
+        
+        //Add Test folders
+        if(getSelectbyFolder() != null && !getSelectbyFolder().getTestFolderPaths().isEmpty()) {
+        	getSelectbyFolder().addSourceToInputArgs(inputArgsList, Utilities.getCellArrayFrmList(getSelectbyFolder().getTestFolderPaths().stream()
+        			.map(TestFolders::getTestFolders)
+        			.collect(Collectors.toList())));
+        }
+        
+        //Add Tag to arguments 
+        if(getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
+        	getSelectByTag().addTagToInputArgs(inputArgsList);
+        }
 
         return String.join(",", inputArgsList);
     }
@@ -464,5 +499,27 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath();
 
         public boolean getSelected();
+    }
+    
+    public static final class SelectByTag extends AbstractDescribableImpl<SelectByTag> {
+    	private String testTag;
+    	private static final String SELECT_BY_TAG = "SelectByTag";
+
+    	@DataBoundConstructor
+    	public SelectByTag(String testTag) {
+    		this.testTag = Util.fixNull(testTag);
+    	}
+
+    	public String getTestTag() {
+    		return this.testTag;
+    	}
+
+    	public void addTagToInputArgs(List<String> inputArgsList) {
+    		// Concatenate all source folders to MATLAB cell array string.
+    		//inputArgsList.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'"));
+    		inputArgsList.add("'" + SELECT_BY_TAG + "'" + "," + "'" + getTestTag().replaceAll("'", "''") + "'");
+    	}
+    	
+    	@Extension public static class DescriptorImpl extends Descriptor<SelectByTag> {}
     }
 }
