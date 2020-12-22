@@ -257,6 +257,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        Thread.sleep(4000);
         HtmlCheckBoxInput tapArtifact = page.getElementByName("tapArtifact");
         HtmlCheckBoxInput pdfReportArtifact = page.getElementByName("pdfReportArtifact");
         HtmlCheckBoxInput junitArtifact = page.getElementByName("junitArtifact");
@@ -265,10 +266,15 @@ public class RunMatlabTestsBuilderTest {
         HtmlCheckBoxInput modelCoverageArtifact = page.getElementByName("modelCoverageArtifact");
         
         tapArtifact.click();
+        Thread.sleep(2000);
         pdfReportArtifact.click();
+        Thread.sleep(2000);
         junitArtifact.click();
+        Thread.sleep(2000);
         stmResultsArtifact.click();
+        Thread.sleep(2000);
         coberturaArtifact.click();
+        Thread.sleep(2000);
         modelCoverageArtifact.click();
         Thread.sleep(2000);
         
@@ -290,8 +296,10 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        Thread.sleep(4000);
         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.sourceFolder");
         sourceFolder.click();
+        Thread.sleep(2000);
         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.srcFolderPath\"]");
         HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
         assertEquals("", srcFolderPath.getTextContent());
@@ -307,8 +315,10 @@ public class RunMatlabTestsBuilderTest {
          project.getBuildWrappersList().add(this.buildWrapper);
          project.getBuildersList().add(this.testBuilder);
          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+         Thread.sleep(4000);
          HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectbyFolder");
          sourceFolder.click();
+         Thread.sleep(2000);
          WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testFolders\"]");
          HtmlInput srcFolderPath = page.getElementByName("_.testFolders");
          assertEquals("", srcFolderPath.getTextContent());
@@ -324,8 +334,10 @@ public class RunMatlabTestsBuilderTest {
           project.getBuildWrappersList().add(this.buildWrapper);
           project.getBuildersList().add(this.testBuilder);
           HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+          Thread.sleep(4000);
           HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByTag");
           sourceFolder.click();
+          Thread.sleep(2000);
           WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testTag\"]");
           HtmlInput srcFolderPath = page.getElementByName("_.testTag");
           assertEquals("", srcFolderPath.getTextContent());
