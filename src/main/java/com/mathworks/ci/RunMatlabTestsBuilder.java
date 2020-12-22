@@ -516,7 +516,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     	public void addTagToInputArgs(List<String> inputArgsList) {
     		// Concatenate all source folders to MATLAB cell array string.
-    		//inputArgsList.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'"));
     		inputArgsList.add("'" + SELECT_BY_TAG + "'" + "," + "'" + getTestTag().replaceAll("'", "''") + "'");
     	}
     	
