@@ -91,19 +91,10 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     public static final class UseMatlabVersionDescriptor extends BuildWrapperDescriptor {
 
         MatlabReleaseInfo rel;
-        //String matlabRootFolder;
         private boolean isMatrix;
         private final String customLocation = Message.getValue("matlab.custom.location");
         private final String matlabAxisWarning = Message.getValue("Use.matlab.version.axis.warning");
         private AbstractProject<?, ?> project;
-
-/*        public String getMatlabRootFolder() {
-            return matlabRootFolder;
-        }*/
-
-/*        public void setMatlabRootFolder(String matlabRootFolder) {
-            this.matlabRootFolder = matlabRootFolder;
-        }*/
 
         @Override
         public boolean isApplicable(AbstractProject<?, ?> item) {
@@ -151,10 +142,6 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          */
 
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
-            /*
-            * If isMatrix or if empty installations or if selectedOption is specify loc
-            * */
-            //setMatlabRootFolder(matlabRootFolder);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
