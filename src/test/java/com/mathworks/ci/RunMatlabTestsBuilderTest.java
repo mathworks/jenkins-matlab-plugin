@@ -296,6 +296,40 @@ public class RunMatlabTestsBuilderTest {
         HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
         assertEquals("", srcFolderPath.getTextContent());
     }
+    
+    /*
+     * Test to verify text box shows up on SelectBy option click and text is empty.
+     */
+
+     @Test
+     public void verifySelectByFolderDefaultState() throws Exception {
+         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+         project.getBuildWrappersList().add(this.buildWrapper);
+         project.getBuildersList().add(this.testBuilder);
+         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectbyFolder");
+         sourceFolder.click();
+         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testFolders\"]");
+         HtmlInput srcFolderPath = page.getElementByName("_.testFolders");
+         assertEquals("", srcFolderPath.getTextContent());
+     }
+     
+     /*
+      * Test to verify text box shows up on SelectByTag option click and text is empty.
+      */
+
+      @Test
+      public void verifySelectByTagDefaultState() throws Exception {
+          this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+          project.getBuildWrappersList().add(this.buildWrapper);
+          project.getBuildersList().add(this.testBuilder);
+          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+          HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByTag");
+          sourceFolder.click();
+          WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testTag\"]");
+          HtmlInput srcFolderPath = page.getElementByName("_.testTag");
+          assertEquals("", srcFolderPath.getTextContent());
+      }
 
     /*
      * Test to verify  only specific test atrtifact  are passed.
