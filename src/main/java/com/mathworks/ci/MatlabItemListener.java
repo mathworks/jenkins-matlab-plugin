@@ -1,5 +1,13 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2020 The MathWorks, Inc.
+ *
+ * Item listener class to provide functionality to check UI element states for a
+ * Multi-configuration project.
+ *
+ */
+
 import hudson.Extension;
 import hudson.matrix.MatrixConfiguration;
 import hudson.matrix.MatrixProject;
@@ -12,7 +20,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 @Extension
 public final class MatlabItemListener extends ItemListener {

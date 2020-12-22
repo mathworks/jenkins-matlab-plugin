@@ -1,5 +1,12 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2020 The MathWorks, Inc.
+ *
+ * Class to parse Stapler request for Use MATLAB Version build wrapper.
+ *
+ */
+
 import org.kohsuke.stapler.DataBoundConstructor;
 
 public class MatlabBuildWrapperContent {

@@ -1,5 +1,13 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2020 The MathWorks, Inc.
+ *
+ * Describable class for MATLAB Axis that provides a list of configured MATLAB installation for
+ * generating matrix configurations.
+ *
+ */
+
 import hudson.Extension;
 import hudson.matrix.Axis;
 import hudson.matrix.AxisDescriptor;

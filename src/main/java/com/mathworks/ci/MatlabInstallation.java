@@ -1,5 +1,12 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2020 The MathWorks, Inc.
+ *
+ * Describable class for adding MATLAB installations in Jenkins Global Tool configuration.
+ *
+ */
+
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
