@@ -335,16 +335,16 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     .collect(Collectors.toList())));
         }
         
-        //Add Test folders
-        if(getSelectbyFolder() != null && !getSelectbyFolder().getTestFolderPaths().isEmpty()) {
-        	getSelectbyFolder().addSourceToInputArgs(inputArgsList, Utilities.getCellArrayFrmList(getSelectbyFolder().getTestFolderPaths().stream()
-        			.map(TestFolders::getTestFolders)
-        			.collect(Collectors.toList())));
+        // Add Test folders
+        if (getSelectbyFolder() != null && !getSelectbyFolder().getTestFolderPaths().isEmpty()) {
+            getSelectbyFolder().addSourceToInputArgs(inputArgsList,
+                    Utilities.getCellArrayFrmList(getSelectbyFolder().getTestFolderPaths().stream()
+                            .map(TestFolders::getTestFolders).collect(Collectors.toList())));
         }
-        
-        //Add Tag to arguments 
-        if(getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
-        	getSelectByTag().addTagToInputArgs(inputArgsList);
+
+        // Add Tag to arguments
+        if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
+            getSelectByTag().addTagToInputArgs(inputArgsList);
         }
 
         return String.join(",", inputArgsList);
@@ -502,23 +502,26 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
     
     public static final class SelectByTag extends AbstractDescribableImpl<SelectByTag> {
-    	private String testTag;
-    	private static final String SELECT_BY_TAG = "SelectByTag";
+        private String testTag;
+        private static final String SELECT_BY_TAG = "SelectByTag";
 
-    	@DataBoundConstructor
-    	public SelectByTag(String testTag) {
-    		this.testTag = Util.fixNull(testTag);
-    	}
+        @DataBoundConstructor
+        public SelectByTag(String testTag) {
+            this.testTag = Util.fixNull(testTag);
+        }
 
-    	public String getTestTag() {
-    		return this.testTag;
-    	}
+        public String getTestTag() {
+            return this.testTag;
+        }
 
-    	public void addTagToInputArgs(List<String> inputArgsList) {
-    		// Concatenate all source folders to MATLAB cell array string.
-    		inputArgsList.add("'" + SELECT_BY_TAG + "'" + "," + "'" + getTestTag().replaceAll("'", "''") + "'");
-    	}
-    	
-    	@Extension public static class DescriptorImpl extends Descriptor<SelectByTag> {}
+        public void addTagToInputArgs(List<String> inputArgsList) {
+            // Concatenate all source folders to MATLAB cell array string.
+            inputArgsList.add("'" + SELECT_BY_TAG + "'" + "," + "'"
+                    + getTestTag().replaceAll("'", "''") + "'");
+        }
+
+        @Extension
+        public static class DescriptorImpl extends Descriptor<SelectByTag> {
+        }
     }
 }

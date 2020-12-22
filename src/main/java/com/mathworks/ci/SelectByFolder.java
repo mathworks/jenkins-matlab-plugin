@@ -11,28 +11,28 @@ import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 
 public class SelectByFolder extends AbstractDescribableImpl<SelectByFolder> {
-	private List<TestFolders> testFolderPaths;
-	private static final String SELECT_BY_FOLDER = "SelectByFolder";
+    private List<TestFolders> testFolderPaths;
+    private static final String SELECT_BY_FOLDER = "SelectByFolder";
 
-	@DataBoundConstructor
-	public SelectByFolder(List<TestFolders> testFolderPaths) {
-		this.testFolderPaths = Util.fixNull(testFolderPaths);
-	}
+    @DataBoundConstructor
+    public SelectByFolder(List<TestFolders> testFolderPaths) {
+        this.testFolderPaths = Util.fixNull(testFolderPaths);
+    }
 
-	public List<TestFolders> getTestFolderPaths() {
-		return this.testFolderPaths;
-	}
+    public List<TestFolders> getTestFolderPaths() {
+        return this.testFolderPaths;
+    }
 
-	public void addSourceToInputArgs(List<String> inputArgsList, String cellArraySourceVal) {
-		// Concatenate all source folders to MATLAB cell array string.
-		inputArgsList.add("'" + SELECT_BY_FOLDER + "'" + "," + cellArraySourceVal);
-	}
+    public void addSourceToInputArgs(List<String> inputArgsList, String cellArraySourceVal) {
+        // Concatenate all source folders to MATLAB cell array string.
+        inputArgsList.add("'" + SELECT_BY_FOLDER + "'" + "," + cellArraySourceVal);
+    }
 
-	@Extension
-	public static class DescriptorImpl extends Descriptor<SelectByFolder> {
-		@Override
-		public String getDisplayName() {
-			return "";
-		}
-	}
+    @Extension
+    public static class DescriptorImpl extends Descriptor<SelectByFolder> {
+        @Override
+        public String getDisplayName() {
+            return "";
+        }
+    }
 }

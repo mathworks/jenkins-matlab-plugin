@@ -8,23 +8,23 @@ import hudson.model.Descriptor;
 
 public class TestFolders extends AbstractDescribableImpl<TestFolders> {
 
-	private String testFolders;
+    private String testFolders;
 
-	@DataBoundConstructor
-	public TestFolders(String testFolders) {
-		this.testFolders = testFolders;
-	}
+    @DataBoundConstructor
+    public TestFolders(String testFolders) {
+        this.testFolders = testFolders;
+    }
 
-	public String getTestFolders() {
-		return this.testFolders;
-	}
+    public String getTestFolders() {
+        return this.testFolders;
+    }
 
-	@Extension
-	public static final class DescriptorImpl extends Descriptor<TestFolders> {
+    @Extension
+    public static final class DescriptorImpl extends Descriptor<TestFolders> {
 
-		@Override
-		public String getDisplayName() {
-			return "";
-		}
-	}
+        @Override
+        public String getDisplayName() {
+            return "";
+        }
+    }
 }
