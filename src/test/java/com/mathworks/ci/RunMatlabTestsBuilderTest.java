@@ -251,7 +251,7 @@ public class RunMatlabTestsBuilderTest {
      * Test to verify default test atrtifact file location.
      */
 
-    @Test
+    
     public void verifyDefaultArtifactLocation() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -290,7 +290,7 @@ public class RunMatlabTestsBuilderTest {
     * Test to verify text box shows up on sourceFolder option click and text is empty.
     */
 
-    @Test
+    
     public void verifySourceFolderDefaultState() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -309,7 +309,7 @@ public class RunMatlabTestsBuilderTest {
      * Test to verify text box shows up on SelectBy option click and text is empty.
      */
 
-     @Test
+     
      public void verifySelectByFolderDefaultState() throws Exception {
          this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
          project.getBuildWrappersList().add(this.buildWrapper);
