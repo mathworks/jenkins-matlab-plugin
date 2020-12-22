@@ -117,7 +117,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
          * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
          * matlabroot to env PATH
          * */
-        Utilities.addMatlabToEnvPathFrmAxis(Computer.currentComputer(), listener, getEnv());
+        Utilities.addMatlabToEnvPathFrmAxis(Computer.currentComputer(), listener, envVars);
 
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =

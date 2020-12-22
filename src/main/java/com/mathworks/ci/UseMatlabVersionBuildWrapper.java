@@ -45,9 +45,9 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         return this.matlabRootFolder;
     }
 
-    public String getMatlabInstHome(Computer cmp, TaskListener listener)
+    public String getMatlabInstHome(Computer cmp, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
-        return Utilities.getNodeSpecificHome(this.matlabInstName, cmp.getNode(), listener);
+        return Utilities.getNodeSpecificHome(this.matlabInstName, cmp.getNode(), listener, env);
     }
 
     public String getMatlabInstName() {
@@ -58,10 +58,6 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             this.matlabInstName = Message.getValue("matlab.custom.location");
         }
         return matlabInstName;
-    }
-
-    public void setMatlabRootFolder(String matlabRootFolder) {
-        this.matlabRootFolder = matlabRootFolder;
     }
 
     public boolean isInitialized () {
@@ -80,7 +76,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             throws IOException, InterruptedException {
         String matlabroot = getMatlabRootFolder();
         if (matlabroot == null || matlabroot.isEmpty()){
-            matlabroot = getMatlabInstHome(cmp, listener);
+            matlabroot = getMatlabInstHome(cmp, listener, this.env);
         }
 
         return this.env == null ? matlabroot : this.env.expand(matlabroot);
@@ -95,19 +91,19 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     public static final class UseMatlabVersionDescriptor extends BuildWrapperDescriptor {
 
         MatlabReleaseInfo rel;
-        String matlabRootFolder;
+        //String matlabRootFolder;
         private boolean isMatrix;
         private final String customLocation = Message.getValue("matlab.custom.location");
         private final String matlabAxisWarning = Message.getValue("Use.matlab.version.axis.warning");
         private AbstractProject<?, ?> project;
 
-        public String getMatlabRootFolder() {
+/*        public String getMatlabRootFolder() {
             return matlabRootFolder;
-        }
+        }*/
 
-        public void setMatlabRootFolder(String matlabRootFolder) {
+/*        public void setMatlabRootFolder(String matlabRootFolder) {
             this.matlabRootFolder = matlabRootFolder;
-        }
+        }*/
 
         @Override
         public boolean isApplicable(AbstractProject<?, ?> item) {
@@ -158,7 +154,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             /*
             * If isMatrix or if empty installations or if selectedOption is specify loc
             * */
-            setMatlabRootFolder(matlabRootFolder);
+            //setMatlabRootFolder(matlabRootFolder);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
@@ -204,16 +200,18 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
                 getLocalMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
-        listener.getLogger().println("\n MATLAB executed from : " + matlabExecutablePath.getRemote() + "\n");
+
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
         // Add "matlabroot" without bin as env variable which will be available across the build.
         context.env("matlabroot", getLocalMatlab(Computer.currentComputer(), listener));
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote()); 
+        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());
+        // Specify which MATLAB was added to path.
+        listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath.getParent().getRemote()) + "\n");
     }
-    
+
     private String getNodeSpecificExecutable(Launcher launcher) {
         return (launcher.isUnix()) ? "matlab" : "matlab.exe";
     }

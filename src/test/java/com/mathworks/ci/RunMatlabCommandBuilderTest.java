@@ -132,7 +132,7 @@ public class RunMatlabCommandBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedWithDefaultArguments() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
@@ -147,7 +147,7 @@ public class RunMatlabCommandBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedfromWorkspace() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
@@ -162,7 +162,7 @@ public class RunMatlabCommandBuilderTest {
 
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        this.buildWrapper.setMatlabRootFolder("/fake/matlabroot/that/does/not/exist");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "/fake/matlabroot/that/does/not/exist"));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
@@ -176,7 +176,7 @@ public class RunMatlabCommandBuilderTest {
 
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilderTester tester =
                 new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
@@ -192,7 +192,7 @@ public class RunMatlabCommandBuilderTest {
 
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilderTester tester =
                 new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath, "-positive");
@@ -210,7 +210,7 @@ public class RunMatlabCommandBuilderTest {
 
     @Test
     public void verifyBuildPicksTheCorretCommandBatch() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
@@ -225,7 +225,7 @@ public class RunMatlabCommandBuilderTest {
      */
     @Test
     public void verifyMATLABscratchFileNotGenerated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
@@ -244,7 +244,7 @@ public class RunMatlabCommandBuilderTest {
         EnvVars var = prop.getEnvVars();
         var.put("PWDCMD", "pwd");
         jenkins.jenkins.getGlobalNodeProperties().add(prop);
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("$PWDCMD");
         project.getBuildersList().add(scriptBuilder);
@@ -260,7 +260,7 @@ public class RunMatlabCommandBuilderTest {
      */
     @Test
     public void verifyMATLABrunnerFileGenerated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
@@ -273,7 +273,7 @@ public class RunMatlabCommandBuilderTest {
      */
     @Test
     public void verifyDefaultMatlabNotPicked() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2020b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2020b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
@@ -293,7 +293,7 @@ public class RunMatlabCommandBuilderTest {
 		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
-		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 		scriptBuilder.setMatlabCommand("pwd");
@@ -320,7 +320,7 @@ public class RunMatlabCommandBuilderTest {
 		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
-		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 		RunMatlabCommandBuilderTester tester = new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath,
 				"-positive");
@@ -345,7 +345,7 @@ public class RunMatlabCommandBuilderTest {
                 "!\"\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         final String expectedCommand =
                 "!\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
 
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setMatlabCommand("disp(" + actualCommand + ")");
