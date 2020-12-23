@@ -251,13 +251,12 @@ public class RunMatlabTestsBuilderTest {
      * Test to verify default test atrtifact file location.
      */
 
-    
+    @Test
     public void verifyDefaultArtifactLocation() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        Thread.sleep(4000);
         HtmlCheckBoxInput tapArtifact = page.getElementByName("tapArtifact");
         HtmlCheckBoxInput pdfReportArtifact = page.getElementByName("pdfReportArtifact");
         HtmlCheckBoxInput junitArtifact = page.getElementByName("junitArtifact");
@@ -265,16 +264,11 @@ public class RunMatlabTestsBuilderTest {
         HtmlCheckBoxInput coberturaArtifact = page.getElementByName("coberturaArtifact");
         HtmlCheckBoxInput modelCoverageArtifact = page.getElementByName("modelCoverageArtifact");
         
-        tapArtifact.click();
-        Thread.sleep(2000);
-        pdfReportArtifact.click();
-        Thread.sleep(2000);
-        junitArtifact.click();
-        Thread.sleep(2000);
-        stmResultsArtifact.click();
-        Thread.sleep(2000);
-        coberturaArtifact.click();
-        Thread.sleep(2000);
+        tapArtifact.click();       
+        pdfReportArtifact.click();       
+        junitArtifact.click();      
+        stmResultsArtifact.click();        
+        coberturaArtifact.click();       
         modelCoverageArtifact.click();
         Thread.sleep(2000);
         
@@ -290,16 +284,14 @@ public class RunMatlabTestsBuilderTest {
     * Test to verify text box shows up on sourceFolder option click and text is empty.
     */
 
-    
+    @Test
     public void verifySourceFolderDefaultState() throws Exception {
         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        Thread.sleep(4000);
         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.sourceFolder");
         sourceFolder.click();
-        Thread.sleep(2000);
         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.srcFolderPath\"]");
         HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
         assertEquals("", srcFolderPath.getTextContent());
@@ -309,13 +301,12 @@ public class RunMatlabTestsBuilderTest {
      * Test to verify text box shows up on SelectBy option click and text is empty.
      */
 
-     
+     @Test
      public void verifySelectByFolderDefaultState() throws Exception {
          this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
          project.getBuildWrappersList().add(this.buildWrapper);
          project.getBuildersList().add(this.testBuilder);
          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-         Thread.sleep(4000);
          HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectbyFolder");
          sourceFolder.click();
          Thread.sleep(2000);
@@ -328,13 +319,12 @@ public class RunMatlabTestsBuilderTest {
       * Test to verify text box shows up on SelectByTag option click and text is empty.
       */
 
-      
+      @Test
       public void verifySelectByTagDefaultState() throws Exception {
           this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
           project.getBuildWrappersList().add(this.buildWrapper);
           project.getBuildersList().add(this.testBuilder);
           HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-          Thread.sleep(4000);
           HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByTag");
           sourceFolder.click();
           Thread.sleep(2000);
