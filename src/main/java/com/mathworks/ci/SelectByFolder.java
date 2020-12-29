@@ -28,11 +28,5 @@ public class SelectByFolder extends AbstractDescribableImpl<SelectByFolder> {
         inputArgsList.add("'" + SELECT_BY_FOLDER + "'" + "," + cellArraySourceVal);
     }
 
-    @Extension
-    public static class DescriptorImpl extends Descriptor<SelectByFolder> {
-        @Override
-        public String getDisplayName() {
-            return "";
-        }
-    }
+    @Extension public static class DescriptorImpl extends Descriptor<SelectByFolder> {}
 }

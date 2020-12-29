@@ -19,12 +19,5 @@ public class TestFolders extends AbstractDescribableImpl<TestFolders> {
         return this.testFolders;
     }
 
-    @Extension
-    public static final class DescriptorImpl extends Descriptor<TestFolders> {
-
-        @Override
-        public String getDisplayName() {
-            return "";
-        }
-    }
+    @Extension public static final class DescriptorImpl extends Descriptor<TestFolders> {}
 }
