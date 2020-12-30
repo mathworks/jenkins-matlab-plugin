@@ -58,7 +58,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private Artifact pdfReportArtifact = new NullArtifact();
     
     private SourceFolder sourceFolder;
-    private SelectByFolder selectbyFolder;
+    private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
     
 
@@ -110,8 +110,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
     
     @DataBoundSetter
-    public void setSelectbyFolder(SelectByFolder selectbyFolder) {
-    	this.selectbyFolder = selectbyFolder;
+    public void setSelectByFolder(SelectByFolder selectByFolder) {
+    	this.selectByFolder = selectByFolder;
     }
 
 
@@ -169,8 +169,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return this.sourceFolder;
     }
     
-    public SelectByFolder getSelectbyFolder(){
-    	return this.selectbyFolder;
+    public SelectByFolder getSelectByFolder(){
+    	return this.selectByFolder;
     }
 
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
@@ -336,9 +336,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
         
         // Add Test folders
-        if (getSelectbyFolder() != null && !getSelectbyFolder().getTestFolderPaths().isEmpty()) {
-            getSelectbyFolder().addSourceToInputArgs(inputArgsList,
-                    Utilities.getCellArrayFrmList(getSelectbyFolder().getTestFolderPaths().stream()
+        if (getSelectByFolder() != null && !getSelectByFolder().getTestFolderPaths().isEmpty()) {
+            getSelectByFolder().addSourceToInputArgs(inputArgsList,
+                    Utilities.getCellArrayFrmList(getSelectByFolder().getTestFolderPaths().stream()
                             .map(TestFolders::getTestFolders).collect(Collectors.toList())));
         }
 
@@ -515,7 +515,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
 
         public void addTagToInputArgs(List<String> inputArgsList) {
-            // Concatenate all source folders to MATLAB cell array string.
             inputArgsList.add("'" + SELECT_BY_TAG + "'" + "," + "'"
                     + getTestTag().replaceAll("'", "''") + "'");
         }
