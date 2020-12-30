@@ -11,17 +11,17 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class MatlabBuildWrapperContent {
 
-    private final String matlabInstName;
+    private final String matlabInstallationName;
     private final String matlabRootFolder;
 
     @DataBoundConstructor
-    public MatlabBuildWrapperContent(String matlabInstName, String matlabRootFolder){
-        this.matlabInstName = matlabInstName;
+    public MatlabBuildWrapperContent(String matlabInstallationName, String matlabRootFolder){
+        this.matlabInstallationName = matlabInstallationName;
         this.matlabRootFolder = matlabRootFolder;
     }
 
-    public String getMatlabInstName() {
-        return matlabInstName;
+    public String getMatlabInstallationName() {
+        return matlabInstallationName;
     }
 
     public String getMatlabRootFolder() {

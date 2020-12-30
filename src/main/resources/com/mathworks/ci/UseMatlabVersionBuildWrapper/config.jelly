@@ -11,10 +11,9 @@
 
 	<f:dropdownList name="matlabBuildWrapperContent" title="">
 		<j:forEach var="installation" items="${descriptor.installations}" varStatus="loop">
-			<!-- installation.name == instance.getMatlabInstName() || installation.name == descriptor.setSelectionTo -->
-			<f:dropdownListBlock value="${installation.name}" selected="${(instance.getMatlabInstName() == null)? ((descriptor.isMatrix) ? installation.name == descriptor.customLocation : '') : installation.name == instance.getMatlabInstName()}" title="${installation.name}">
+			<f:dropdownListBlock value="${installation.name}" selected="${(instance.getMatlabInstallationName() == null)? ((descriptor.isMatrix) ? installation.name == descriptor.customLocation : '') : installation.name == instance.getMatlabInstallationName()}" title="${installation.name}">
 				<f:nested>
-					<input type="hidden" name="matlabInstName" value="${installation.name}"/>
+					<input type="hidden" name="matlabInstallationName" value="${installation.name}"/>
 				</f:nested>
 				<j:choose>
 					<j:when test="${loop.last}">

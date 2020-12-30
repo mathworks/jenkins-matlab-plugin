@@ -4,7 +4,7 @@
     <j:choose>
         <j:when test="${descriptor.checkUseMATLABVersion(it)}">
             <f:block>
-                <div class = "warning">${descriptor.useMATLABWarning}</div>
+                <div class = "warning">${descriptor.useMatlabWarning}</div>
             </f:block>
         </j:when>
     </j:choose>

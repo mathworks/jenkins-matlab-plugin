@@ -15,6 +15,7 @@ import hudson.model.Computer;
 import hudson.model.Node;
 import hudson.model.TaskListener;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
@@ -43,37 +44,30 @@ public class Utilities {
             return;
         }
 
-        String matlabExecutablePath = getNodeSpecificHome(name, cmp.getNode(), listener, env) + "/bin";
+        String matlabExecutablePath = getNodeSpecificHome(name,
+               cmp.getNode(), listener, env) + "/bin";
         env.put("PATH+matlabroot", matlabExecutablePath);
         // Specify which MATLAB was added to path.
         listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath) + "\n");
     }
 
-    public static String getNodeSpecificHome(String instName, Node node, TaskListener listener, EnvVars env)
+    public static String getNodeSpecificHome(String instName,Node node, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
         MatlabInstallation inst = MatlabInstallation.getInstallation(instName);
-        if(inst != null) {
-            if (node != null) {
-                inst = inst.forNode(node, listener);
-            }
-            if (env != null) {
-                inst = inst.forEnvironment(env);
-            }
-            String home = Util.fixEmpty(inst.getHome());
-            if (node != null) {
-                FilePath matlabExecutablePath = node.createPath(inst.getHome());
-                // If no MATLAB version is configured for current node, throw error.
-                if (matlabExecutablePath == null || !matlabExecutablePath.exists()) {
-                    throw new MatlabNotFoundError(String.format(Message.getValue("matlab.not.found.error.for.node"), instName, Objects
-                            .requireNonNull(node).getDisplayName()));
-                }
-                return matlabExecutablePath.getRemote();
-            }
-            return home;
+        if (inst == null || node == null) {
+            // Following will error out in BuildWrapper
+            return "";
         }
 
-        // Following will error out in BuildWrapper
-        return "";
-    }
+        // get installation for node and environment.
+        inst = inst.forNode(node, listener).forEnvironment(env);
 
+        FilePath matlabExecutablePath = node.createPath(inst.getHome());
+        // If no MATLAB version is configured for current node, throw error.
+        if (matlabExecutablePath == null || !matlabExecutablePath.exists()) {
+            throw new MatlabNotFoundError(String.format(Message.getValue("matlab.not.found.error.for.node"), instName, Objects
+                    .requireNonNull(node).getDisplayName()));
+        }
+        return matlabExecutablePath.getRemote();
+    }
 }

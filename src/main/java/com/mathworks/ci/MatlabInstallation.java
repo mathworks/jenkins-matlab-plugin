@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
@@ -49,7 +51,7 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     }
 
     @Override
-    public MatlabInstallation forNode(Node node, TaskListener log) throws IOException, InterruptedException {
+    public MatlabInstallation forNode(@Nonnull Node node, TaskListener log) throws IOException, InterruptedException {
         return new MatlabInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
 
@@ -69,7 +71,7 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
 
     public static MatlabInstallation getInstallation(String name) {
         for (MatlabInstallation _inst : getAll()) {
-            if (!name.isEmpty() && name.equals(_inst.getName())) {
+            if (name.equals(_inst.getName())) {
                 return _inst;
             }
         }

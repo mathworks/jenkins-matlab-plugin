@@ -35,7 +35,7 @@ public class MatlabInstallationAxis extends Axis {
 
     @Extension
     public static class DescriptorImpl extends AxisDescriptor{
-        private final String useMATLABWarning = Message.getValue("Axis.use.matlab.warning");
+        private final String useMatlabWarning = Message.getValue("Axis.use.matlab.warning");
         private final String noInstallationError = Message.getValue("Axis.no.installed.matlab.error");
 
         @Override
@@ -56,8 +56,8 @@ public class MatlabInstallationAxis extends Axis {
             return MatlabInstallation.getAll();
         }
 
-        public String getUseMATLABWarning() {
-            return useMATLABWarning;
+        public String getUseMatlabWarning() {
+            return useMatlabWarning;
         }
 
         public boolean checkMatlabInstallationEmpty() {

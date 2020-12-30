@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 import hudson.matrix.MatrixProject;
@@ -36,7 +37,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
 	private String matlabRootFolder;
     private EnvVars env;
-    private String matlabInstName;
+    private String matlabInstallationName;
 
     @DataBoundConstructor
     public UseMatlabVersionBuildWrapper() {}
@@ -45,38 +46,36 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         return this.matlabRootFolder;
     }
 
-    public String getMatlabInstHome(Computer cmp, TaskListener listener, EnvVars env)
+    public String getMatlabInstallationHome(Computer cmp, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
-        return Utilities.getNodeSpecificHome(this.matlabInstName, cmp.getNode(), listener, env);
+        return Utilities.getNodeSpecificHome(this.matlabInstallationName,
+                cmp.getNode(), listener, env);
     }
 
-    public String getMatlabInstName() {
+    public String getMatlabInstallationName() {
         /* For backward compatibility assign installation name to custom
          * if matlabRootFolder is not null.
          * */
         if(this.matlabRootFolder!=null && !this.matlabRootFolder.isEmpty()){
-            this.matlabInstName = Message.getValue("matlab.custom.location");
+            this.matlabInstallationName = Message.getValue("matlab.custom.location");
         }
-        return matlabInstName;
-    }
-
-    public boolean isInitialized () {
-        return this.matlabRootFolder == null && this.matlabInstName == null;
+        return matlabInstallationName;
     }
 
     @DataBoundSetter
     public void setMatlabBuildWrapperContent(MatlabBuildWrapperContent matlabBuildWrapperContent){
         if (matlabBuildWrapperContent != null){
-            this.matlabInstName = matlabBuildWrapperContent.getMatlabInstName();
+            this.matlabInstallationName = matlabBuildWrapperContent.getMatlabInstallationName();
             this.matlabRootFolder = matlabBuildWrapperContent.getMatlabRootFolder();
         }
     }
 
-    private String getLocalMatlab(Computer cmp, TaskListener listener)
+    private String getNodeSpecificMatlab(Computer cmp, TaskListener listener)
             throws IOException, InterruptedException {
         String matlabroot = getMatlabRootFolder();
+        // If matlabroot is null use matlab installation path
         if (matlabroot == null || matlabroot.isEmpty()){
-            matlabroot = getMatlabInstHome(cmp, listener, this.env);
+            matlabroot = getMatlabInstallationHome(cmp, listener, this.env);
         }
 
         return this.env == null ? matlabroot : this.env.expand(matlabroot);
@@ -86,7 +85,6 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         this.env = env;
     }
 
-    
     @Extension
     public static final class UseMatlabVersionDescriptor extends BuildWrapperDescriptor {
 
@@ -182,17 +180,16 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             TaskListener listener, EnvVars initialEnvironment)
             throws IOException, InterruptedException {
         // Set Environment variable
-
         setEnv(initialEnvironment);
 
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
-                getLocalMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
+                getNodeSpecificMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
 
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
         // Add "matlabroot" without bin as env variable which will be available across the build.
-        context.env("matlabroot", getLocalMatlab(Computer.currentComputer(), listener));
+        context.env("matlabroot", getNodeSpecificMatlab(Computer.currentComputer(), listener));
         // Add matlab bin to path to invoke MATLAB directly on command line.
         context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());
         // Specify which MATLAB was added to path.
