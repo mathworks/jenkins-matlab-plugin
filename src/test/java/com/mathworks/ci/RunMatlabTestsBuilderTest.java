@@ -307,7 +307,7 @@ public class RunMatlabTestsBuilderTest {
          project.getBuildWrappersList().add(this.buildWrapper);
          project.getBuildersList().add(this.testBuilder);
          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectbyFolder");
+         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByFolder");
          sourceFolder.click();
          Thread.sleep(2000);
          WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testFolders\"]");
