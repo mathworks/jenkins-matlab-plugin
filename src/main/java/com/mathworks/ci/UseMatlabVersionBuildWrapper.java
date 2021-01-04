@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 
 import hudson.matrix.MatrixProject;
@@ -126,7 +125,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             if (!isMatrix) {
                 return false;
             }
-            return MatlabItemListener.getMATLABAxisCheckForPrj(project.getFullName()) && !MatlabInstallation.isEmpty();
+            return MatlabItemListener.getMatlabAxisCheckForPrj(project.getFullName()) && !MatlabInstallation.isEmpty();
         }
 
         public String getMatlabAxisWarning() {

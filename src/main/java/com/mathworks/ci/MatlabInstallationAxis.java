@@ -45,11 +45,11 @@ public class MatlabInstallationAxis extends Axis {
 
         @Override
         public boolean isInstantiable() {
-            return !checkMatlabInstallationEmpty();
+            return !isMatlabInstallationEmpty();
         }
 
-        public boolean checkUseMATLABVersion(Object it) {
-            return MatlabItemListener.getMATLABBuildWrapperCheckForPrj(((MatrixProject) it).getFullName()) && !checkMatlabInstallationEmpty();
+        public boolean checkUseMatlabVersion(Object it) {
+            return MatlabItemListener.getMatlabBuildWrapperCheckForPrj(((MatrixProject) it).getFullName()) && !isMatlabInstallationEmpty();
         }
 
         public MatlabInstallation[] getInstallations () {
@@ -60,7 +60,7 @@ public class MatlabInstallationAxis extends Axis {
             return useMatlabWarning;
         }
 
-        public boolean checkMatlabInstallationEmpty() {
+        public boolean isMatlabInstallationEmpty() {
             return MatlabInstallation.isEmpty();
         }
 

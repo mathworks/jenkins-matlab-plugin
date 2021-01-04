@@ -23,8 +23,8 @@ import java.util.Map;
 
 @Extension
 public final class MatlabItemListener extends ItemListener {
-    private static final Map<String, Boolean> prjCheckMATLABAxis = new HashMap<>();
-    private static final Map<String, Boolean> prjCheckMATLABBuildWrapper = new HashMap<>();
+    private static final Map<String, Boolean> prjCheckMatlabAxis = new HashMap<>();
+    private static final Map<String, Boolean> prjCheckMatlabBuildWrapper = new HashMap<>();
 
     @Override
     public void onLoaded(){
@@ -52,40 +52,40 @@ public final class MatlabItemListener extends ItemListener {
         check((MatrixProject) item);
     }
 
-    private void check(MatrixProject _prj) {
-        checkForAxis(_prj);
-        checkForBuildWrapper(_prj);
+    private void check(MatrixProject prj) {
+        checkForAxis(prj);
+        checkForBuildWrapper(prj);
     }
 
-    private void checkForAxis(MatrixProject _prj) {
+    private void checkForAxis(MatrixProject prj) {
         boolean checkForAxis = false;
-        Collection<MatrixConfiguration> conf = _prj.getActiveConfigurations();
-        for(MatrixConfiguration _conf : conf){
-            String a = _conf.getCombination().get(Message.getValue("Axis.matlab.key"));
-            if (a != null) {
+        Collection<MatrixConfiguration> configurations = prj.getActiveConfigurations();
+        for(MatrixConfiguration conf : configurations){
+            String matlabAxisValue = conf.getCombination().get(Message.getValue("Axis.matlab.key"));
+            if (matlabAxisValue != null) {
                 checkForAxis = true;
                 break;
             }
         }
-        prjCheckMATLABAxis.put(_prj.getFullName(), checkForAxis);
+        prjCheckMatlabAxis.put(prj.getFullName(), checkForAxis);
     }
 
-    private void checkForBuildWrapper(MatrixProject _prj) {
+    private void checkForBuildWrapper(MatrixProject prj) {
         boolean checkForBuildWrapper = false;
-        for(Object _bWrapper : _prj.getBuildWrappersList().toArray()) {
-            if(_bWrapper instanceof UseMatlabVersionBuildWrapper){
-                checkForBuildWrapper = ((UseMatlabVersionBuildWrapper) _bWrapper).getMatlabInstallationName() != null || ((UseMatlabVersionBuildWrapper) _bWrapper).getMatlabRootFolder() != null;
+        for(Object bWrapper : prj.getBuildWrappersList().toArray()) {
+            if(bWrapper instanceof UseMatlabVersionBuildWrapper){
+                checkForBuildWrapper = ((UseMatlabVersionBuildWrapper) bWrapper).getMatlabInstallationName() != null;
                 break;
             }
         }
-        prjCheckMATLABBuildWrapper.put(_prj.getFullName(), checkForBuildWrapper);
+        prjCheckMatlabBuildWrapper.put(prj.getFullName(), checkForBuildWrapper);
     }
 
-    public static boolean getMATLABAxisCheckForPrj(String prjName) {
-        return prjCheckMATLABAxis.get(prjName) != null && prjCheckMATLABAxis.get(prjName);
+    public static boolean getMatlabAxisCheckForPrj(String prjName) {
+        return prjCheckMatlabAxis.get(prjName) != null && prjCheckMatlabAxis.get(prjName);
     }
 
-    public static boolean getMATLABBuildWrapperCheckForPrj(String prjName) {
-        return prjCheckMATLABBuildWrapper.get(prjName) != null && prjCheckMATLABBuildWrapper.get(prjName);
+    public static boolean getMatlabBuildWrapperCheckForPrj(String prjName) {
+        return prjCheckMatlabBuildWrapper.get(prjName) != null && prjCheckMatlabBuildWrapper.get(prjName);
     }
 }

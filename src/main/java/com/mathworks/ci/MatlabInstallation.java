@@ -70,9 +70,9 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     }
 
     public static MatlabInstallation getInstallation(String name) {
-        for (MatlabInstallation _inst : getAll()) {
-            if (name.equals(_inst.getName())) {
-                return _inst;
+        for (MatlabInstallation inst : getAll()) {
+            if (name.equals(inst.getName())) {
+                return inst;
             }
         }
         return null;
