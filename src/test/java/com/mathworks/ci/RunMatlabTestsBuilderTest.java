@@ -264,11 +264,11 @@ public class RunMatlabTestsBuilderTest {
         HtmlCheckBoxInput coberturaArtifact = page.getElementByName("coberturaArtifact");
         HtmlCheckBoxInput modelCoverageArtifact = page.getElementByName("modelCoverageArtifact");
         
-        tapArtifact.click();
-        pdfReportArtifact.click();
-        junitArtifact.click();
-        stmResultsArtifact.click();
-        coberturaArtifact.click();
+        tapArtifact.click();       
+        pdfReportArtifact.click();       
+        junitArtifact.click();      
+        stmResultsArtifact.click();        
+        coberturaArtifact.click();       
         modelCoverageArtifact.click();
         Thread.sleep(2000);
         
@@ -296,6 +296,42 @@ public class RunMatlabTestsBuilderTest {
         HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
         assertEquals("", srcFolderPath.getTextContent());
     }
+    
+    /*
+     * Test to verify text box shows up on SelectBy option click and text is empty.
+     */
+
+     @Test
+     public void verifySelectByFolderDefaultState() throws Exception {
+         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+         project.getBuildWrappersList().add(this.buildWrapper);
+         project.getBuildersList().add(this.testBuilder);
+         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByFolder");
+         sourceFolder.click();
+         Thread.sleep(2000);
+         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testFolders\"]");
+         HtmlInput srcFolderPath = page.getElementByName("_.testFolders");
+         assertEquals("", srcFolderPath.getTextContent());
+     }
+     
+     /*
+      * Test to verify text box shows up on SelectByTag option click and text is empty.
+      */
+
+      @Test
+      public void verifySelectByTagDefaultState() throws Exception {
+          this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+          project.getBuildWrappersList().add(this.buildWrapper);
+          project.getBuildersList().add(this.testBuilder);
+          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+          HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByTag");
+          sourceFolder.click();
+          Thread.sleep(2000);
+          WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testTag\"]");
+          HtmlInput srcFolderPath = page.getElementByName("_.testTag");
+          assertEquals("", srcFolderPath.getTextContent());
+      }
 
     /*
      * Test to verify  only specific test atrtifact  are passed.
