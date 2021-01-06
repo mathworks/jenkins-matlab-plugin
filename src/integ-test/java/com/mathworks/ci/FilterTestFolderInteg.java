@@ -18,11 +18,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-
 public class FilterTestFolderInteg {
     private WorkflowJob project;
-    private String environment;
+    private String envScripted;
     private String gitRepo;
+    private MatlabRootSetup envSetup;
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -30,30 +30,9 @@ public class FilterTestFolderInteg {
     @Before
     public void testSetup() throws IOException, URISyntaxException {
         this.project = jenkins.createProject(WorkflowJob.class);
-        this.environment = getEnvironmentPath();
+        this.envSetup = new MatlabRootSetup();
+        this.envScripted = envSetup.getEnvironmentScriptedPipeline();
         this.gitRepo = getGitRepo();
-    }
-    /*
-     * This method returns the environment path needed to be set for pipeline scripts
-     */
-    private String getEnvironmentPath() throws URISyntaxException {
-        String installedPath;
-        String binPath = "";
-
-        if (System.getProperty("os.name").startsWith("Win")) {
-            installedPath = TestData.getPropValues("matlab.windows.installed.path");
-            binPath = installedPath +"/bin;";
-        }
-        else if(System.getProperty("os.name").startsWith("Linux")){
-            installedPath = TestData.getPropValues("matlab.linux.installed.path");
-            binPath = installedPath + "/bin:";
-        }
-        else {
-            installedPath = TestData.getPropValues("matlab.mac.installed.path");
-            binPath = installedPath + "/bin:";
-        }
-        environment = "env.PATH =" + '"' + binPath + "${env.PATH}" + '"';
-        return environment;
     }
 
     /*
@@ -74,16 +53,44 @@ public class FilterTestFolderInteg {
     }
 
     /*
-     * Test to verify if tests are filtered
+     * Test to verify if tests are filtered scripted pipeline
      */
     @Test
     public void verifyTestsAreFiltered() throws Exception{
         String script = "node {\n" +
-                            environment + "\n" +
+                            envScripted + "\n" +
                             gitRepo  + "\n" +
                             "runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply'])\n" +
                         "}";
 
+        WorkflowRun build = getBuild(script);
+        jenkins.assertLogContains("testMultiply/testMultiplication",build);
+        jenkins.assertLogNotContains("testSquare/testSquareNum", build);
+        jenkins.assertLogNotContains("testSum/testAddition", build);
+        jenkins.assertLogNotContains("testModel/testModelSim", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    /*
+     * Test to verify if tests are filtered DSL pipeline
+     */
+    @Test
+    public void verifyTestsAreFilteredDSL() throws Exception{
+        String DSLenvironment = MatlabRootSetup.getEnvironmentDSL();
+        String script = "pipeline {\n" +
+                        "agent any" + "\n" +
+                        DSLenvironment + "\n" +
+                            "stages{" + "\n" +
+                                "stage('Run MATLAB Command') {\n" +
+                                    "steps\n" +
+                                    "{"+
+                                        gitRepo  + "\n" +
+                                        "runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply'])\n" +
+                                    "}" + "\n" +
+                                "}" + "\n" +
+                            "}" + "\n" +
+                        "}";
+        System.out.println(script);
         WorkflowRun build = getBuild(script);
         jenkins.assertLogContains("testMultiply/testMultiplication",build);
         jenkins.assertLogNotContains("testSquare/testSquareNum", build);
@@ -98,7 +105,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyNoTestsAreRunForIncorrectTestPath() throws Exception{
         String script = "node {\n" +
-                         environment + "\n" +
+                         envScripted + "\n" +
                          gitRepo + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByFolder:[ 'test/IncorrectFolder'])\n" +
                 "        }";
@@ -114,7 +121,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyIndependentTestsRunWithoutSource() throws Exception{
         String script = "node {\n" +
-                            environment + "\n" +
+                            envScripted + "\n" +
                             gitRepo  + "\n" +
                 "            runMATLABTests(selectByFolder:['test/TestSum'])\n" +
                 "        }";
@@ -129,7 +136,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyAllTestsRunWithNoFilter() throws Exception{
         String script = "node {\n" +
-                            environment + "\n" +
+                            envScripted + "\n" +
                             gitRepo  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'])\n" +
                 "        }";
@@ -148,7 +155,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyTestsAreFilteredByTag() throws Exception{
         String script = "node {\n" +
-                            environment + "\n" +
+                            envScripted + "\n" +
                             gitRepo  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag')\n" +
                 "        }";
@@ -166,7 +173,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyNoTestsRunWithIncorrectTag() throws Exception{
         String script = "node {\n" +
-                        environment + "\n" +
+                        envScripted + "\n" +
                         gitRepo  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'IncorrectTag')\n" +
                 "        }";
@@ -181,7 +188,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyTestsFromFolderWithTagAreRun() throws Exception{
         String script = "node {\n" +
-                        environment + "\n" +
+                        envScripted + "\n" +
                         gitRepo  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag', selectByFolder:['test/TestSum'])\n" +
                 "        }";
@@ -195,9 +202,9 @@ public class FilterTestFolderInteg {
      * Test to verify if tests from folder which are not under 'test' folder are run
      */
     @Test
-    public void verifyTestsFromFolderNotUnderTESTAreRun() throws Exception{
+    public void verifyTestsFromFolderNotUnderTESTAreRun() throws Exception {
         String script = "node {\n" +
-                        environment + "\n" +
+                        envScripted + "\n" +
                         gitRepo  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByFolder:['testing/modelSimTest'])\n" +
                 "        }";
@@ -212,7 +219,7 @@ public class FilterTestFolderInteg {
     @Test
     public void verifyTestFailWhenSrcIsNotAdded() throws Exception{
         String script = "node {\n" +
-                        environment + "\n" +
+                        envScripted + "\n" +
                         gitRepo  + "\n" +
                 "            runMATLABTests(selectByFolder:['test/TestSquare'])\n" +
                 "        }";
@@ -227,12 +234,59 @@ public class FilterTestFolderInteg {
     @Test
     public void verifySrcFolderSelection() throws Exception {
         String script = "node {\n" +
-                        environment + "\n" +
+                        envScripted + "\n" +
                         gitRepo  + "\n" +
                 "            runMATLABTests(sourceFolder:['src/multiplySrc'], selectByFolder:['test/TestMultiply'])\n" +
                 "        }";
         WorkflowRun build = getBuild(script);
         jenkins.assertLogContains("testMultiply/testMultiplication", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    /*
+     * Test to verify source folder is selected in generated MATLAB code
+     */
+    @Test
+    public void verifySourceFolderSelectionInScript() throws Exception {
+        String script = "node {\n" +
+                envScripted + "\n" +
+                gitRepo  + "\n" +
+                "            runMATLABTests(sourceFolder:['src/multiplySrc'], selectByFolder:['test/TestMultiply'])\n" +
+                "        }";
+        WorkflowRun build = getBuild(script);
+        jenkins.assertLogContains("addpath(genpath('src/multiplySrc'));", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    /*
+     * Test to verify multiple tags are not supported
+     */
+    @Test
+    public void verifyMultipleTagsFails() throws  Exception {
+        String script = "node {\n" +
+                envScripted + "\n" +
+                gitRepo  + "\n" +
+                "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag,TestTag1')\n" +
+                "        }";
+        WorkflowRun build = getBuild(script);
+        jenkins.assertLogNotContains("Done setting up", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    /*
+     * Test to verify source folder selection and test folder selection
+     * Is there a way to print the line coverage to the build log
+     * Is this test case sufficient or should there be a way to verify the line coverage is 0 with sumtest
+     */
+    @Test
+    public void verifyCodeCoverage() throws Exception {
+        String script = "node {\n" +
+                envScripted + "\n" +
+                gitRepo  + "\n" +
+                "            runMATLABTests(sourceFolder:['src/multiplySrc'], selectByFolder:['test/TestMultiply'], codeCoverageCobertura: 'code-coverage/coverage.xml')\n" +
+                "            cobertura coberturaReportFile: 'code-coverage/coverage.xml', enableNewApi: true, lineCoverageTargets: '100'" +
+                "        }";
+        WorkflowRun build = getBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 }

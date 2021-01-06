@@ -109,6 +109,20 @@
 			<artifactId>git</artifactId>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.jenkinsci.plugins/pipeline-model-definition -->
+		<dependency>
+			<groupId>org.jenkinsci.plugins</groupId>
+			<artifactId>pipeline-model-definition</artifactId>
+			<version>1.2</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/cobertura -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>cobertura</artifactId>
+			<version>1.10</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
