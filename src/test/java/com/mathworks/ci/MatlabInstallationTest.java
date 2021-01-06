@@ -83,7 +83,8 @@ public class MatlabInstallationTest {
     }
 
     private MatlabInstallation[] getMatlabInstallation(){
-        return matlabInstDescriptor.getInstallations();
+        // static method to return all installations
+        return MatlabInstallation.getAll();
     }
 
     /*
