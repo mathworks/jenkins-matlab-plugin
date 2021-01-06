@@ -28,6 +28,7 @@ import hudson.model.Descriptor;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.model.Computer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -271,6 +272,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+
+        /*
+         * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
+         * matlabroot to env PATH
+         * */
+        Utilities.addMatlabToEnvPathFrmAxis(Computer.currentComputer(), listener, envVars);
+
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {

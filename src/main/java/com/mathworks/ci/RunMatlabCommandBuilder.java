@@ -8,7 +8,6 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import javax.annotation.Nonnull;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -21,6 +20,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
@@ -101,7 +101,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
-        
+
 
         buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
@@ -112,6 +112,13 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+
+        /*
+         * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
+         * matlabroot to env PATH
+         * */
+        Utilities.addMatlabToEnvPathFrmAxis(Computer.currentComputer(), listener, envVars);
+
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");

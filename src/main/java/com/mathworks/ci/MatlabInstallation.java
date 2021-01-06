@@ -1,5 +1,12 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2020 The MathWorks, Inc.
+ *
+ * Describable class for adding MATLAB installations in Jenkins Global Tool configuration.
+ *
+ */
+
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -15,6 +22,9 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import jenkins.model.Jenkins;
 import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -28,12 +38,20 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
         super(Util.fixEmptyAndTrim(name), Util.fixEmptyAndTrim(home), properties);
     }
 
+    /*
+    * Constructor for Custom object
+    * */
+
+    public MatlabInstallation(String name){
+        super(name, null, null);
+    }
+
     @Override public MatlabInstallation forEnvironment(EnvVars envVars) {
         return new MatlabInstallation(getName(), envVars.expand(getHome()), getProperties().toList());
     }
 
     @Override
-    public MatlabInstallation forNode(Node node, TaskListener log) throws IOException, InterruptedException {
+    public MatlabInstallation forNode(@Nonnull Node node, TaskListener log) throws IOException, InterruptedException {
         return new MatlabInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
 
@@ -41,6 +59,23 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     public void buildEnvVars(EnvVars env) {
         String pathToExecutable = getHome() + "/bin";
         env.put("PATH+matlabroot", pathToExecutable);
+    }
+
+    public static MatlabInstallation[] getAll () {
+        return Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
+    }
+
+    public static boolean isEmpty() {
+        return getAll().length == 0;
+    }
+
+    public static MatlabInstallation getInstallation(String name) {
+        for (MatlabInstallation inst : getAll()) {
+            if (name.equals(inst.getName())) {
+                return inst;
+            }
+        }
+        return null;
     }
 
     @Extension @Symbol("matlab")
@@ -71,7 +106,5 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
             this.installations = matlabInstallations;
             save();
         }
-
     }
-
 }
