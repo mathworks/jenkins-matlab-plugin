@@ -6,11 +6,9 @@
 strategy:
   matrix:
     linux:
-      imageName: 'ubuntu-16.04'
-    mac:
-      imageName: 'macOS-10.15'
+      agentName: 'Linux_VM_Agent'
     windows:
-      imageName: 'windows-latest'
+      agentName: 'VahilaLocalPool'
 
 pool:
   vmImage: $(imageName)
