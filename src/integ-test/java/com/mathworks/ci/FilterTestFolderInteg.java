@@ -39,7 +39,7 @@ public class FilterTestFolderInteg {
      * Utility function which returns the git details for pipeline scripts
      */
     private String getGitRepo() {
-        String gitURI = "git branch:" + "'" + TestData.getPropValues("github.branch") + "'" +", url:" +"'" +TestData.getPropValues("github.repo.path")+ "'";
+        String gitURI = "git " + "branch:" + "'" + TestData.getPropValues("github.branch") + "'" +", url:" +"'" +TestData.getPropValues("github.repo.path")+ "'";
         return gitURI;
     }
 
@@ -59,11 +59,12 @@ public class FilterTestFolderInteg {
     public void verifyTestsAreFiltered() throws Exception{
         String script = "node {\n" +
                             envScripted + "\n" +
-                            gitRepo  + "\n" +
+                            gitRepo+"\n" +
                             "runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply'])\n" +
                         "}";
 
         WorkflowRun build = getBuild(script);
+        System.out.println(script);
         jenkins.assertLogContains("testMultiply/testMultiplication",build);
         jenkins.assertLogNotContains("testSquare/testSquareNum", build);
         jenkins.assertLogNotContains("testSum/testAddition", build);
@@ -110,6 +111,7 @@ public class FilterTestFolderInteg {
                 "            runMATLABTests(sourceFolder:['src'], selectByFolder:[ 'test/IncorrectFolder'])\n" +
                 "        }";
         WorkflowRun build = getBuild(script);
+        System.out.println(script);
         jenkins.assertLogNotContains("Done setting up", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
@@ -274,9 +276,7 @@ public class FilterTestFolderInteg {
     }
 
     /*
-     * Test to verify source folder selection and test folder selection
-     * Is there a way to print the line coverage to the build log
-     * Is this test case sufficient or should there be a way to verify the line coverage is 0 with sumtest
+     * Test to verify code coverage can be generated for specified source files based on selected tests
      */
     @Test
     public void verifyCodeCoverage() throws Exception {
