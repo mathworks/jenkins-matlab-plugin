@@ -11,7 +11,9 @@ strategy:
       agentName: 'VahilaLocalPool'
 
 pool:
-  vmImage: $(imageName)
+  name: Default
+  demands:
+    - agent.name -equals $(agentName)
 
 trigger:
   - master
