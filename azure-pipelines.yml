@@ -6,7 +6,7 @@
 strategy:
   matrix:
     linux:
-      agentName: 'Linux_VM_Agent'
+      agentName: 'Linux_Agent'
     windows:
       agentName: 'VahilaLocalPool'
 
