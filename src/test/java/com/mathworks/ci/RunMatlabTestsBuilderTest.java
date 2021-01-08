@@ -303,7 +303,7 @@ public class RunMatlabTestsBuilderTest {
 
      @Test
      public void verifySelectByFolderDefaultState() throws Exception {
-         this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
          project.getBuildWrappersList().add(this.buildWrapper);
          project.getBuildersList().add(this.testBuilder);
          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -321,7 +321,7 @@ public class RunMatlabTestsBuilderTest {
 
       @Test
       public void verifySelectByTagDefaultState() throws Exception {
-          this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+          this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
           project.getBuildWrappersList().add(this.buildWrapper);
           project.getBuildersList().add(this.testBuilder);
           HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
