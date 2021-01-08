@@ -21,11 +21,6 @@ pool:
   demands:
   - agent.name -equals $(agentName)
 
-pool:
-  name: Default
-  demands:
-    - agent.name -equals $(agentName)
-
 steps:
   - task: Maven@3
     inputs:
