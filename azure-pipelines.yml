@@ -9,6 +9,8 @@ strategy:
       agentName: 'Linux_Agent'
     windows:
       agentName: 'VahilaLocalPool'
+    mac:
+      agentName: 'ah-sjayagop-maci'
 
 pool:
   name: Default
