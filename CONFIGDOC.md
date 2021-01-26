@@ -59,7 +59,7 @@ This build step uses a default setting to run tests authored using the MATLAB Un
  
 With the **Run MATLAB Tests** build step, you can customize your test run using the exisiting options in the step configuration panel. For example, you can add folders to the MATLAB search path, have control over which tests to run, and generate different types of artifacts. If you do not select any of the check boxes, the tests still run, and test failures fail the build.
  
- ![run_matlab_tests](https://user-images.githubusercontent.com/48831250/104772192-09923680-5741-11eb-998c-b4549244e877.png)
+![run_matlab_tests](https://user-images.githubusercontent.com/48831250/105909610-c2842b00-5ff5-11eb-9b6a-9530ae7289ff.png)
  
 Select **Source folder** if you want to specify source code folders in your build. When you specify source folder locations relative to the project root folder, the plugin adds the folders and their subfolders to the top of the MATLAB search path. Also, if you specify source code folders and then choose to generate a coverage report, the plugin uses only the code in the specified folders and their subfolders to generate the report. You can specify more than one folder by clicking **Add folder**.
 
@@ -71,7 +71,7 @@ By default, the **Run MATLAB Tests** step creates a test suite from all the test
 
 * Select **By tag** if you want to select test suite elements using a test tag. When you specify a test tag, the plugin creates a test suite using only the test elements with the specified tag.
 
-![run_matlab_tests_filter](https://user-images.githubusercontent.com/48831250/104773344-ec5e6780-5742-11eb-8581-a7019f8019db.png)
+![run_matlab_tests_filter](https://user-images.githubusercontent.com/48831250/105909635-cfa11a00-5ff5-11eb-8642-7fc037dbedf5.png)
 
 Select the appropriate check boxes if you want to generate test or coverage artifacts. To publish the test results, you can use these artifacts with other Jenkins plugins. By default, the plugin assigns a name to each selected artifact and stores it in the `matlabTestArtifacts` folder of the project workspace. You can override the default artifact name and location by specifying a path relative to the project folder in the **File path** box. If you leave the text box empty, the plugin does not generate an artifact.   
 
