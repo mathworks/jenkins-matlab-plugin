@@ -45,7 +45,7 @@ Create a new project and configure it by following these steps:
 
 6. In the **Build** section, select **Add build step > Run MATLAB Tests**. Then, select your desired artifacts to be generated in the project workspace. The plugin in this example is configured to generate Cobertura code coverage and JUnit test result reports. Furthermore, the coverage report is generated only for the code in the `source` folder located in the root of your repository. For more information on how to configure the plugin, see [Plugin Configuration Guide](../CONFIGDOC.md).
 
-![run_matlab_tests](https://user-images.githubusercontent.com/48831250/105081861-c695d300-5a60-11eb-8d80-5fcffdb2364e.png)
+![run_matlab_tests](https://user-images.githubusercontent.com/48831250/105909903-2149a480-5ff6-11eb-81f1-c3b44e9b17d1.png)
 
 7. In the **Post-build Actions** section, add two post-build actions to publish the Cobertura code coverage and JUnit test result reports. For each report, provide the path to the report file.
 
