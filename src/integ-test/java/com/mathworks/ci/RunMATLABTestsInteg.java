@@ -88,7 +88,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyInvalidMATLABRootError() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.invalid.root.path"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), TestData.getPropValues("matlab.invalid.root.path")));
+//        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.invalid.root.path"));
         project.getBuildWrappersList().add(this.buildWrapper);
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
@@ -112,7 +113,9 @@ public class RunMATLABTestsInteg {
     
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        this.buildWrapper.setMatlabRootFolder("fake");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "fake"));
+
+//        this.buildWrapper.setMatlabRootFolder("fake");
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -123,7 +126,9 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyJUnitFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -136,7 +141,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyTAPTestFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -150,7 +156,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyPDFReportFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -163,7 +170,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyCoberturaFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -177,7 +185,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyModelCoverageFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -191,7 +200,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifySTMResultsFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -204,7 +214,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyPDFReportCustomFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz.pdf"));
@@ -216,7 +227,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyCustomFilePathInputForArtifacts() throws Exception{
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setJunitArtifact(new RunMatlabTestsBuilder.JunitArtifact("TestArtifacts/junittestreport.xml"));
@@ -236,7 +248,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyExtForPdfReport() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz"));
@@ -248,7 +261,8 @@ public class RunMATLABTestsInteg {
 
     @Test
     public void verifyBuildFailsForInvalidFilename() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/?xyz.pdf"));
@@ -268,7 +282,8 @@ public class RunMATLABTestsInteg {
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
+//        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 
@@ -301,7 +316,8 @@ public class RunMATLABTestsInteg {
         Axis axes = new Axis("VERSION", "R2019a", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
+//        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder tester = new RunMatlabTestsBuilder();
 
@@ -313,6 +329,4 @@ public class RunMATLABTestsInteg {
         jenkins.assertLogContains("R2020a completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
-
-
 }
