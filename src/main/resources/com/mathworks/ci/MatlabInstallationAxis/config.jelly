@@ -17,7 +17,7 @@
         </j:when>
     </j:choose>
 
-    <f:entry  help="">
+    <f:entry>
         <j:forEach var="installation" items="${descriptor.installations}">
             <f:checkbox name="values" json="${installation.name}" checked="${instance.values.contains(installation.name)}" title="${installation.name}" />
             <st:nbsp/>
