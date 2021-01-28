@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class PipelineInteg {
+public class PipelineIntegTest {
 
     private WorkflowJob project;
 

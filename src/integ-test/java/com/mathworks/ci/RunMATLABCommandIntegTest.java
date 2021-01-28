@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class RunMATLABCommandInteg {
+public class RunMATLABCommandIntegTest {
 
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;

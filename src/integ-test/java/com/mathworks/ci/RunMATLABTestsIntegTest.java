@@ -31,7 +31,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class RunMATLABTestsInteg {
+public class RunMATLABTestsIntegTest {
 
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
