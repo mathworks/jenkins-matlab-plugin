@@ -15,13 +15,13 @@ strategy:
     mac:
       agentName: 'ah-sjayagop-maci'
 
-trigger:
-  - master
-  
 pool:
   name: Default
   demands:
-  - agent.name -equals $(agentName)
+    - agent.name -equals $(agentName)
+
+trigger:
+  - master
 
 steps:
   - task: Maven@3
