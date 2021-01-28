@@ -109,7 +109,7 @@ There are two ways to specify multiple MATLAB versions in a multi-configuration 
 ### Add MATLAB Axis
 If your Jenkins instance includes MATLAB versions registered as a tool, then MATLAB appears as an option when you click **Add axis** in the **Configuration Matrix** section. By adding the MATLAB axis, you can select MATLAB versions and add them as axis values to your matrix configuration. The list includes all MATLAB versions that have been registered as a Jenkins tool. In this example, there are two MATLAB versions registered as a tool. In each build iteration, the plugin prepends one of the selected versions to the PATH environment variable and invokes it to run the build. 
 
-![matlab_axis](https://user-images.githubusercontent.com/48831250/105098778-99551f00-5a78-11eb-8120-15c9b575b844.png)
+![matlab_axis](https://user-images.githubusercontent.com/48831250/106194057-554ed200-617c-11eb-9fa5-7d74a9a8a510.png)
 
 For more information about registering MATLAB as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
 
@@ -126,7 +126,7 @@ Note that a multi-configuration project creates a separate workspace for each us
 
 You can add several axes in the **Configuration Matrix** section. For example, add the MATLAB axis to specify MATLAB versions and the user-defined TEST_TAG axis to specify the test tags for a group of tests.
 
-![axis_matlab_testtag](https://user-images.githubusercontent.com/48831250/105099839-4ed4a200-5a7a-11eb-831c-bd69fb5afcd5.png)
+![axis_matlab_testtag](https://user-images.githubusercontent.com/48831250/106194098-6566b180-617c-11eb-8501-64a192378580.png)
 
 Once you have specified the axes, add the required build steps in the **Build** section:
 
@@ -147,11 +147,11 @@ When you define your Pipeline with a `Jenkinsfile`, the plugin provides you with
 
 To configure the plugin for a Pipeline project:
 1) Define your Pipeline in a `Jenkinsfile` in the root of your repository.
-2) In the **Pipeline** section of the project configuration window, select `Pipeline script from SCM` from the **Definition** list. 
+2) In the **Pipeline** section of the project configuration window, select **Pipeline script from SCM** from the **Definition** list. 
 3) Select your source control system from the **SCM** list.
 4) Paste your repository URL into the **Repository URL** box.
 
-You also can define your Pipeline directly in the project configuration window. If you select `Pipeline script` from the **Definition** list, you can author your Pipeline code in the **Script** box. When you define your Pipeline this way, your Pipeline must include an additional stage to check out MATLAB code from source control.
+You also can define your Pipeline directly in the project configuration window. If you select **Pipeline script** from the **Definition** list, you can author your Pipeline code in the **Script** box. When you define your Pipeline this way, your Pipeline must include an additional stage to check out MATLAB code from source control.
 
 ### Add MATLAB to System Path
 When the plugin executes MATLAB related steps in your Pipeline, it uses the topmost MATLAB version on the system path. If the PATH environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
