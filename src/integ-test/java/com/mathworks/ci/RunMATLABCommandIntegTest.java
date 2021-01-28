@@ -110,18 +110,6 @@ public class RunMATLABCommandIntegTest {
     }
 
     /*
-     * Test to verify if error is displayed when the Matlab Command is empty
-     */
-    @Test
-    public void verifyMatlabCommandEmptyError() throws Exception{
-        RunMatlabCommandBuilder tester =
-                new RunMatlabCommandBuilder();
-        project.getBuildersList().add(tester);
-        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
-        WebAssert.assertTextPresent(page,"Enter the Matlab command");
-    }
-
-    /*
      * Test to verify if Matrix build fails when MATLAB is not available.
      */
     @Test
