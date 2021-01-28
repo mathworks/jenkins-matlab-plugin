@@ -26,12 +26,5 @@ public class SourceFolderPaths extends AbstractDescribableImpl<SourceFolderPaths
         return this.srcFolderPath;
     }
 
-    @Extension
-    public static final class DescriptorImpl extends Descriptor<SourceFolderPaths> {
-
-        @Override
-        public String getDisplayName() {
-            return "";
-        }
-    }
+    @Extension public static final class DescriptorImpl extends Descriptor<SourceFolderPaths> {}
 }

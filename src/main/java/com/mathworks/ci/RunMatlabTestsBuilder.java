@@ -21,10 +21,14 @@ import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
+import hudson.Util;
+import hudson.model.AbstractDescribableImpl;
 import hudson.model.AbstractProject;
+import hudson.model.Descriptor;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.model.Computer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.StaplerRequest;
@@ -53,13 +57,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private Artifact stmResultsArtifact = new NullArtifact();
     private Artifact modelCoverageArtifact = new NullArtifact();
     private Artifact pdfReportArtifact = new NullArtifact();
+    
     private SourceFolder sourceFolder;
+    private SelectByFolder selectByFolder;
+    private SelectByTag selectByTag;
+    
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
     }
-
+    
     // Getter and Setters to access local members
 
     @DataBoundSetter
@@ -91,10 +99,20 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
     }
-
+    
+    @DataBoundSetter
+    public void setSelectByTag(SelectByTag selectByTag) {
+        this.selectByTag = selectByTag;
+    }
+    
     @DataBoundSetter
     public void setSourceFolder(SourceFolder sourceFolder) {
         this.sourceFolder = sourceFolder;
+    }
+    
+    @DataBoundSetter
+    public void setSelectByFolder(SelectByFolder selectByFolder) {
+    	this.selectByFolder = selectByFolder;
     }
 
 
@@ -145,9 +163,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public String getPdfReportFilePath() {
         return this.getPdfReportArtifact().getFilePath();
     }
-
+    public SelectByTag getSelectByTag() {
+    	return this.selectByTag;
+    }
     public SourceFolder getSourceFolder() {
         return this.sourceFolder;
+    }
+    
+    public SelectByFolder getSelectByFolder(){
+    	return this.selectByFolder;
     }
 
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
@@ -248,6 +272,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+
+        /*
+         * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
+         * matlabroot to env PATH
+         * */
+        Utilities.addMatlabToEnvPathFrmAxis(Computer.currentComputer(), listener, envVars);
+
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
@@ -299,7 +330,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             artifact.addFilePathArgTo(args);
         }
 
-        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val + "'"));
+        args.forEach((key, val) -> inputArgsList.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'"));
 
         /*
         * Add source folder options to argument.
@@ -310,6 +341,18 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             sf.addSourceToInputArgs(inputArgsList, Utilities.getCellArrayFrmList(sf.getSourceFolderPaths().stream()
                     .map(SourceFolderPaths::getSrcFolderPath)
                     .collect(Collectors.toList())));
+        }
+        
+        // Add Test folders
+        if (getSelectByFolder() != null && !getSelectByFolder().getTestFolderPaths().isEmpty()) {
+            getSelectByFolder().addSourceToInputArgs(inputArgsList,
+                    Utilities.getCellArrayFrmList(getSelectByFolder().getTestFolderPaths().stream()
+                            .map(TestFolders::getTestFolders).collect(Collectors.toList())));
+        }
+
+        // Add Tag to arguments
+        if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
+            getSelectByTag().addTagToInputArgs(inputArgsList);
         }
 
         return String.join(",", inputArgsList);
@@ -464,5 +507,28 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public String getFilePath();
 
         public boolean getSelected();
+    }
+    
+    public static final class SelectByTag extends AbstractDescribableImpl<SelectByTag> {
+        private String testTag;
+        private static final String SELECT_BY_TAG = "SelectByTag";
+
+        @DataBoundConstructor
+        public SelectByTag(String testTag) {
+            this.testTag = Util.fixNull(testTag);
+        }
+
+        public String getTestTag() {
+            return this.testTag;
+        }
+
+        public void addTagToInputArgs(List<String> inputArgsList) {
+            inputArgsList.add("'" + SELECT_BY_TAG + "'" + "," + "'"
+                    + getTestTag().replaceAll("'", "''") + "'");
+        }
+
+        @Extension
+        public static class DescriptorImpl extends Descriptor<SelectByTag> {
+        }
     }
 }

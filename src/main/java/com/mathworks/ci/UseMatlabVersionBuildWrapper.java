@@ -2,20 +2,21 @@ package com.mathworks.ci;
 
 /**
  * Copyright 2019-2020 The MathWorks, Inc.
- * 
+ *
  * This class is BuildWrapper which accepts the "matlabroot" from user and updates the PATH varible with it.
  * which could be later used across build.
- * 
+ *
  */
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
-import org.jenkinsci.Symbol;
+import hudson.matrix.MatrixProject;
+import hudson.model.Computer;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -33,9 +34,9 @@ import jenkins.tasks.SimpleBuildWrapper;
 
 public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
-    
-	private String matlabRootFolder;
+    private String matlabRootFolder;
     private EnvVars env;
+    private String matlabInstallationName;
 
     @DataBoundConstructor
     public UseMatlabVersionBuildWrapper() {}
@@ -44,36 +45,58 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         return this.matlabRootFolder;
     }
 
-    @DataBoundSetter
-    public void setMatlabRootFolder(String matlabRootFolder) {
-        this.matlabRootFolder = matlabRootFolder;
+    public String getMatlabInstallationHome(Computer cmp, TaskListener listener, EnvVars env)
+            throws IOException, InterruptedException {
+        return Utilities.getNodeSpecificHome(this.matlabInstallationName,
+                cmp.getNode(), listener, env);
     }
 
-    private String getLocalMatlab() {
-        return this.env == null ? getMatlabRootFolder() : this.env.expand(getMatlabRootFolder());
+    public String getMatlabInstallationName() {
+        /* For backward compatibility assign installation name to custom
+         * if matlabRootFolder is not null.
+         * */
+        if(this.matlabRootFolder!=null && !this.matlabRootFolder.isEmpty()){
+            this.matlabInstallationName = Message.getValue("matlab.custom.location");
+        }
+        return matlabInstallationName;
+    }
+
+    @DataBoundSetter
+    public void setMatlabBuildWrapperContent(MatlabBuildWrapperContent matlabBuildWrapperContent){
+        if (matlabBuildWrapperContent != null){
+            this.matlabInstallationName = matlabBuildWrapperContent.getMatlabInstallationName();
+            this.matlabRootFolder = matlabBuildWrapperContent.getMatlabRootFolder();
+        }
+    }
+
+    private String getNodeSpecificMatlab(Computer cmp, TaskListener listener)
+            throws IOException, InterruptedException {
+        String matlabroot = getMatlabRootFolder();
+        // If matlabroot is null use matlab installation path
+        if (matlabroot == null || matlabroot.isEmpty()){
+            matlabroot = getMatlabInstallationHome(cmp, listener, this.env);
+        }
+
+        return this.env == null ? matlabroot : this.env.expand(matlabroot);
     }
 
     private void setEnv(EnvVars env) {
         this.env = env;
     }
 
-    
     @Extension
     public static final class UseMatlabVersionDescriptor extends BuildWrapperDescriptor {
 
         MatlabReleaseInfo rel;
-        String matlabRootFolder;
-
-        public String getMatlabRootFolder() {
-            return matlabRootFolder;
-        }
-
-        public void setMatlabRootFolder(String matlabRootFolder) {
-            this.matlabRootFolder = matlabRootFolder;
-        }
+        private boolean isMatrix;
+        private final String customLocation = Message.getValue("matlab.custom.location");
+        private final String matlabAxisWarning = Message.getValue("Use.matlab.version.axis.warning");
+        private AbstractProject<?, ?> project;
 
         @Override
         public boolean isApplicable(AbstractProject<?, ?> item) {
+            this.project = item;
+            isMatrix = item instanceof MatrixProject;
             return true;
         }
 
@@ -82,6 +105,32 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             return Message.getValue("Buildwrapper.display.name");
         }
 
+        public MatlabInstallation[] getInstallations() {
+            ArrayList<MatlabInstallation> arr;
+            arr = new ArrayList<>(Arrays.asList(MatlabInstallation.getAll()));
+            arr.add(new MatlabInstallation(customLocation));
+            MatlabInstallation[] temp = new MatlabInstallation[arr.size()];
+            return arr.toArray(temp);
+        }
+
+        public String getCustomLocation() {
+            return customLocation;
+        }
+
+        public boolean getIsMatrix() {
+            return isMatrix;
+        }
+
+        public boolean checkAxisAdded() {
+            if (!isMatrix) {
+                return false;
+            }
+            return MatlabItemListener.getMatlabAxisCheckForPrj(project.getFullName()) && !MatlabInstallation.isEmpty();
+        }
+
+        public String getMatlabAxisWarning() {
+            return matlabAxisWarning;
+        }
 
         /*
          * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
@@ -89,9 +138,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          * descriptor class.
          */
 
-
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
-            setMatlabRootFolder(matlabRootFolder);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
@@ -132,21 +179,22 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             TaskListener listener, EnvVars initialEnvironment)
             throws IOException, InterruptedException {
         // Set Environment variable
-
         setEnv(initialEnvironment);
 
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
-                getLocalMatlab() + "/bin/" + getNodeSpecificExecutable(launcher));
+                getNodeSpecificMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
 
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
         // Add "matlabroot" without bin as env variable which will be available across the build.
-        context.env("matlabroot", getLocalMatlab());
+        context.env("matlabroot", getNodeSpecificMatlab(Computer.currentComputer(), listener));
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote()); 
+        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());
+        // Specify which MATLAB was added to path.
+        listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath.getParent().getRemote()) + "\n");
     }
-    
+
     private String getNodeSpecificExecutable(Launcher launcher) {
         return (launcher.isUnix()) ? "matlab" : "matlab.exe";
     }

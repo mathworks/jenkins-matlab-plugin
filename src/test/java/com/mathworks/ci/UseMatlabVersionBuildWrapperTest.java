@@ -77,7 +77,7 @@ public class UseMatlabVersionBuildWrapperTest {
     @Test
     public void verifyBuildEnvForMatlab() throws Exception {
         boolean found = false;
-        this.buildWrapper.setMatlabRootFolder("");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), ""));
         project.getBuildWrappersList().add(this.buildWrapper);
         List<BuildWrapper> bw = project.getBuildWrappersList();    
         for (BuildWrapper b : bw) {
@@ -95,7 +95,7 @@ public class UseMatlabVersionBuildWrapperTest {
      */
     
     public void verifyPATHupdated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder("/test/MATLAB/R2019a");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("/test/MATLAB/R2019a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilderTester buildTester = new RunMatlabTestsBuilderTester("","");
         project.getBuildersList().add(buildTester);
@@ -108,7 +108,7 @@ public class UseMatlabVersionBuildWrapperTest {
      */
     @Test
     public void verifyInvalidPATHError() throws Exception {
-        this.buildWrapper.setMatlabRootFolder("/test/MATLAB/R2019a");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("/test/MATLAB/R2019a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilderTester buildTester = new RunMatlabTestsBuilderTester("","");
         project.getBuildersList().add(buildTester);
@@ -137,7 +137,7 @@ public class UseMatlabVersionBuildWrapperTest {
     @Test
     public void verifyInvalidMatlabRootDisplaysWarnning() throws Exception {
         project.getBuildWrappersList().add(this.buildWrapper);
-        this.buildWrapper.setMatlabRootFolder("/fake/MATLAB/path");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("/fake/MATLAB/path")));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         WebAssert.assertTextPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
@@ -151,7 +151,7 @@ public class UseMatlabVersionBuildWrapperTest {
     @Test
     public void verifyMatriVariableNoErrorOrWarnning() throws Exception {
         project.getBuildWrappersList().add(this.buildWrapper);
-        this.buildWrapper.setMatlabRootFolder("/test/MATLAB/$VERSION");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("/test/MATLAB/$VERSION")));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
@@ -164,7 +164,7 @@ public class UseMatlabVersionBuildWrapperTest {
     @Test
     public void verifyValidMatlabNoWarning() throws Exception {
         project.getBuildWrappersList().add(this.buildWrapper);
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         WebAssert.assertTextNotPresent(page, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }

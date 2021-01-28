@@ -39,6 +39,7 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
     private String matlabroot;
     private String commandParameter;
     private String matlabExecutorPath;
+    private String matlabVerName;
 
 
 
@@ -48,7 +49,10 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
-
+    public RunMatlabTestsBuilderTester(String customTestPointArgument) {
+        super();
+        this.commandParameter = customTestPointArgument;
+    }
 
     // Getter and Setters to access local members
 
@@ -154,8 +158,10 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         setEnv(build.getEnvironment(listener));
 
         this.matlabroot = this.env.get("matlabroot");
-        FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabroot);
-        matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
+        if (this.matlabroot != null) {
+            FilePath nodeSpecificMatlabRoot = new FilePath(launcher.getChannel(), matlabroot);
+            matlabRel = new MatlabReleaseInfo(nodeSpecificMatlabRoot);
+        }
 
         buildResult = execCommand(workspace, launcher, listener);
         if (buildResult != 0) {
@@ -165,10 +171,14 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
 
     public int execCommand(FilePath workspace, Launcher launcher, TaskListener listener)
             throws IOException, InterruptedException {
+        if (this.matlabExecutorPath == null) {
+            this.matlabVerName = this.env.get(Message.getValue("Axis.matlab.key"));
+            this.matlabExecutorPath = MatlabInstallation.getInstallation(this.matlabVerName).getHome();
+        }
         ProcStarter matlabLauncher;
         try {
             matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
-            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
+            if (this.matlabroot != null && matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
                 ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
                 matlabLauncher = matlabLauncher.cmds(testMatlabCommand()).stderr(outStream);
             } else {

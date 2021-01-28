@@ -1,0 +1,26 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
+
+    <j:choose>
+        <j:when test="${descriptor.checkUseMatlabVersion(it)}">
+            <f:block>
+                <div class = "warning">${descriptor.useMatlabWarning}</div>
+            </f:block>
+        </j:when>
+    </j:choose>
+
+    <j:choose>
+        <j:when test="${descriptor.isMatlabInstallationEmpty()}">
+            <f:block>
+                <div class = "error">${descriptor.noInstallationError}</div>
+            </f:block>
+        </j:when>
+    </j:choose>
+
+    <f:entry>
+        <j:forEach var="installation" items="${descriptor.installations}">
+            <f:checkbox name="values" json="${installation.name}" checked="${instance.values.contains(installation.name)}" title="${installation.name}" />
+            <st:nbsp/>
+        </j:forEach>
+    </f:entry>
+</j:jelly>

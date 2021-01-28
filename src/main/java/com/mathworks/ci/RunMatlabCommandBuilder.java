@@ -1,22 +1,15 @@
 package com.mathworks.ci;
 /**
  * Copyright 2019-2020 The MathWorks, Inc.
- * 
+ *
  * Script builder used to run custom MATLAB commands or scripts.
- * 
+ *
  */
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 import javax.annotation.Nonnull;
-
-import hudson.util.FormValidation;
-import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
-import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -27,6 +20,7 @@ import hudson.model.AbstractProject;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.tasks.SimpleBuildStep;
@@ -67,7 +61,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         return this.env;
     }
 
-    
+
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
 
@@ -85,9 +79,9 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
         /*
          * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
-         * 
+         *
          * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
-         * 
+         *
          * if it returns true then this build step will be applicable for all project type.
          */
         @Override
@@ -95,25 +89,11 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
-
-        /*
-         * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
-         * these methods are used to perform basic validation on UI elements associated with this
-         * descriptor class.
-         */
-
-
-        public FormValidation doCheckMatlabCommand(@QueryParameter String matlabCommand) {
-            if (matlabCommand.isEmpty()) {
-                return FormValidation.error(Message.getValue("Builder.matlab.command.empty.error"));
-            }
-            return FormValidation.ok();
-        }
     }
 
     @Override
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
-            @Nonnull Launcher launcher, @Nonnull TaskListener listener)
+                        @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
 
         // Set the environment variable specific to the this build
@@ -121,7 +101,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
-        
+
 
         buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
 
@@ -131,7 +111,14 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     }
 
     private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+                                               TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+
+        /*
+         * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
+         * matlabroot to env PATH
+         * */
+        Utilities.addMatlabToEnvPathFrmAxis(Computer.currentComputer(), listener, envVars);
+
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
@@ -145,7 +132,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                     "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, uniqueTmpFldrName);
-            
+
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();
@@ -160,9 +147,9 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             }
         }
     }
-    
+
     private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
-     
+
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");

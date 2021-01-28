@@ -3,7 +3,15 @@
 
 <f:block>
     <br></br>
-    <f:optionalProperty field="sourceFolder" title="Source Folder" />
+    <f:optionalProperty field="sourceFolder" title="Source folder" />
+</f:block>
+
+<f:block>
+    <br></br>
+   <b>Filter Tests</b>
+   <f:optionalProperty field="selectByFolder" title="By folder name" />  
+   <br></br>
+   <f:optionalProperty field="selectByTag" title="By tag" />  
 </f:block>
 
 <f:block>
@@ -14,7 +22,7 @@
     	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
      </f:entry>
     </f:optionalBlock>
-     
+    
     <f:optionalBlock name="tapArtifact" field="tapArtifact" title="TAP test results" checked="${instance.tapArtifact.selected}">   	
      <f:entry field="tapReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/taptestresults.tap"/>
