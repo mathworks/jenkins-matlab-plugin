@@ -22,7 +22,7 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
 You can use the web UI provided by Jenkins to configure the plugin in freestyle and multi-configuration projects. To run MATLAB or Simulink in a Pipeline project, see [Set Up Pipeline Project](#set-up-pipeline-project).
 
 ### Use MATLAB in Build
-Once you install the plugin, **Use MATLAB version** appears in the **Build Environment** section of the project configuration window. Select **Use MATLAB version** to specify the MATLAB version you want to use in the build. You can select one of the MATLAB versions that have been registered as a Jenkins tool, or you can select **Custom** if you want to specify a different version. For more information about registering MATLAB as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
+Once you install the plugin, **Use MATLAB version** appears in the **Build Environment** section of the project configuration window. Select **Use MATLAB version** to specify the MATLAB version you want to use in the build. You can select one of the MATLAB versions that have been registered as a Jenkins tool, or you can select **Custom** if you want to specify a different version. For more information about registering a MATLAB version as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
 
 In this example, the list includes two registered tools as well as the option for specifying a custom installation. If you select **Custom**, a **MATLAB root** box appears in the UI. You must enter the full path to your desired MATLAB root folder in this box.
 
@@ -111,7 +111,7 @@ If your Jenkins instance includes MATLAB versions registered as a tool, then MAT
 
 ![matlab_axis](https://user-images.githubusercontent.com/48831250/106194057-554ed200-617c-11eb-9fa5-7d74a9a8a510.png)
 
-For more information about registering MATLAB as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
+For more information about registering a MATLAB version as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
 
 ### Add User-Defined Axis
 If you cannot or do not want to specify the MATLAB axis, add a user-defined axis in the **Configuration Matrix** section to specify the MATLAB versions in the build. Enter the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. In this example, two MATLAB versions are specified to run the same set of tests.
@@ -353,24 +353,24 @@ pipeline {
 ``` 
 
 ## Register MATLAB as Jenkins Tool
-To run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins should invoke by providing the path to the desired MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your Pipeline project.
+If it runs MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins should invoke by providing the path to the desired MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your Pipeline project.
 
-Instead of specifying the path to the MATLAB root folder on a per project basis, you can register MATLAB as a Jenkins tool, which can then be accessed by any project you configure in Jenkins. To register your desired MATLAB version as a tool, you are required to specify its name and location on the build agent. Once you have registered MATLAB as a tool, you no longer need to specify its root folder path within a project. Jenkins only needs the tool name to access MATLAB.
+Instead of specifying the path to the MATLAB root folder on a per-project basis, you can register a MATLAB version as a Jenkins tool, which makes it available to any project you configure in Jenkins. To register a MATLAB version as a tool, specify its name and location on the build agent. Once you have registered a MATLAB version as a tool, you no longer need to specify its root folder path within a project. Jenkins only needs the tool name to access the MATLAB version.
 
-To register MATLAB as a Jenkins tool:
+To register a MATLAB version as a Jenkins tool:
 
-1) In your Jenkins interface, select **Manage Jenkins > Global Tool Configuration**. A new page opens where you can register different tools with Jenkins.
-2) In the **MATLAB** section of the **Global Tool Configuration** page, locate and click **Add MATLAB**. The section expands and lets you specify the name and installation location of MATLAB.
-3) Specify the name for your desired MATLAB version in the **Name** box, and enter the full path to the MATLAB root folder in the **MATLAB root** box. To register MATLAB as a tool, you are not required to select **Install automatically**. 
+1) In your Jenkins interface, select **Manage Jenkins > Global Tool Configuration**. The **Global Tool Configuration** page opens where you can register different tools with Jenkins.
+2) In the **MATLAB** section of the **Global Tool Configuration** page, click **Add MATLAB**. The section expands and lets you assign a name to your desired MATLAB version and specify its installation location.
+3) Specify the name you want to assign to the MATLAB version in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. To register the MATLAB version as a tool, do not select **Install automatically**. 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2020b as a Jenkins tool on your Windows local agent.
 
 ![matlab_tool](https://user-images.githubusercontent.com/48831250/98566654-0714eb80-227d-11eb-90b8-4875ab32bf66.png)
 
-If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you have specified on the local agent. For example, if you have registered MATLAB R2020b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register MATLAB as a Jenkins tool on a remote agent: 
+If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you have specified on the local agent. For example, if you have registered MATLAB R2020b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
 
-1) Navigate to the **Node Properties** interface of the agent. You can access this interface by selecting **Manage Jenkins > Manage Nodes and Clouds**, clicking the link corresponding to the agent, and then selecting **Configure** on the left.
+1) Navigate to the **Node Properties** interface of the agent. You can access this interface by selecting **Manage Jenkins > Manage Nodes and Clouds**, following the link corresponding to the agent, and then selecting **Configure** on the left.
 2) Select **Tool Locations**. Then, select the tool name from the **Name** list. The list contains the names assigned to the registered MATLAB versions on the local agent.  
 3) In the **Home** box, enter the full path to the MATLAB root folder on the remote agent.
 4) Click **Save** to confirm your choices.
@@ -401,7 +401,7 @@ pipeline {
 
 ```
 
-If you define your Pipeline using Scripted Pipeline syntax, use the `tool` keyword followed by the name of the tool to retrieve the path to the MATLAB root folder. Then, prepend the path to the `bin` folder of the desired MATLAB version to the PATH environment variable.
+If you define your Pipeline using Scripted Pipeline syntax, use the `tool` keyword followed by the name of the tool to retrieve the path to the MATLAB root folder. Then, prepend the MATLAB `bin` folder to the PATH environment variable.
 
 ```groovy
 // Scripted Pipeline
@@ -418,7 +418,7 @@ node {
     }
 }
 ```
-You also can invoke MATLAB as a Jenkins tool when you perform a matrix build in your Pipeline project. This example shows how to use three MATLAB versions (specified in an `axis` block using their corresponding tool names) to run a set of MATLAB commands and tests. 
+You also can invoke MATLAB as a Jenkins tool when you perform a matrix build in your Pipeline project. This example shows how to use three MATLAB versions (specified in an `axis` block using their tool names) to run a set of MATLAB commands and tests. 
 
 ```groovy
 // Declarative Pipeline
