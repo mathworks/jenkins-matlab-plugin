@@ -39,7 +39,7 @@ Create a new project and configure it by following these steps:
 ![source_control](https://user-images.githubusercontent.com/48831250/94478391-37a73700-01a1-11eb-9f89-a5a71413baf0.png)
 
 
-5. In the **Build Environment** section, select **Use MATLAB version** and specify the MATLAB version you want to use for the build. If your desired MATLAB version is not listed under **Use MATLAB version**, enter the full path to its root folder in the **MATLAB root** box. 
+5. In the **Build Environment** section, select **Use MATLAB version** and specify the MATLAB version you want to use in the build. If your desired MATLAB version is not listed under **Use MATLAB version**, enter the full path to its root folder in the **MATLAB root** box. 
 
 ![build_environment](https://user-images.githubusercontent.com/48831250/105091260-943ea280-5a6d-11eb-8d11-48747df7ec32.png)
 
