@@ -8,7 +8,7 @@
 		<relativePath />
 	</parent>
 	<artifactId>matlab</artifactId>
-	<version>2.3.1-SNAPSHOT</version>
+	<version>2.4.0</version>
 	<packaging>hpi</packaging>
 
 	<developers>
@@ -50,7 +50,7 @@
 		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/matlab-plugin.git</developerConnection>
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
-	  <tag>HEAD</tag>
+	  <tag>matlab-2.4.0</tag>
   </scm>
 	<dependencyManagement>
 		<dependencies>
