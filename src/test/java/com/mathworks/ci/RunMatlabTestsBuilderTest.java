@@ -136,7 +136,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedWithDefaultArgumentsBatch() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -152,7 +152,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyMATLABlaunchedWithDefaultArgumentsRWindows() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -166,7 +166,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        this.buildWrapper.setMatlabRootFolder("/fake/matlabroot/that/does/not/exist");
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "/fake/matlabroot/that/does/not/exist"));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -180,7 +180,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyBuildFailureWhenMatlabException() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilderTester tester =
                 new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
@@ -195,7 +195,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyBuildPassWhenTestPass() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilderTester tester =
                 new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positive");
@@ -228,7 +228,7 @@ public class RunMatlabTestsBuilderTest {
 
     
     public void verifySpecificTestArtifactsParameters() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact("mytap/report.tap");
 
@@ -253,7 +253,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyDefaultArtifactLocation() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -264,11 +264,11 @@ public class RunMatlabTestsBuilderTest {
         HtmlCheckBoxInput coberturaArtifact = page.getElementByName("coberturaArtifact");
         HtmlCheckBoxInput modelCoverageArtifact = page.getElementByName("modelCoverageArtifact");
         
-        tapArtifact.click();
-        pdfReportArtifact.click();
-        junitArtifact.click();
-        stmResultsArtifact.click();
-        coberturaArtifact.click();
+        tapArtifact.click();       
+        pdfReportArtifact.click();       
+        junitArtifact.click();      
+        stmResultsArtifact.click();        
+        coberturaArtifact.click();       
         modelCoverageArtifact.click();
         Thread.sleep(2000);
         
@@ -286,7 +286,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifySourceFolderDefaultState() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2017a"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
@@ -296,6 +296,42 @@ public class RunMatlabTestsBuilderTest {
         HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
         assertEquals("", srcFolderPath.getTextContent());
     }
+    
+    /*
+     * Test to verify text box shows up on SelectBy option click and text is empty.
+     */
+
+     @Test
+     public void verifySelectByFolderDefaultState() throws Exception {
+         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
+         project.getBuildWrappersList().add(this.buildWrapper);
+         project.getBuildersList().add(this.testBuilder);
+         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+         HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByFolder");
+         sourceFolder.click();
+         Thread.sleep(2000);
+         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testFolders\"]");
+         HtmlInput srcFolderPath = page.getElementByName("_.testFolders");
+         assertEquals("", srcFolderPath.getTextContent());
+     }
+     
+     /*
+      * Test to verify text box shows up on SelectByTag option click and text is empty.
+      */
+
+      @Test
+      public void verifySelectByTagDefaultState() throws Exception {
+          this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
+          project.getBuildWrappersList().add(this.buildWrapper);
+          project.getBuildersList().add(this.testBuilder);
+          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+          HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByTag");
+          sourceFolder.click();
+          Thread.sleep(2000);
+          WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testTag\"]");
+          HtmlInput srcFolderPath = page.getElementByName("_.testTag");
+          assertEquals("", srcFolderPath.getTextContent());
+      }
 
     /*
      * Test to verify  only specific test atrtifact  are passed.
@@ -303,7 +339,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void verifyAllTestArtifactsParameters() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder.TapArtifact tap = new TapArtifact("mytap/report.tap");
         
@@ -344,7 +380,7 @@ public class RunMatlabTestsBuilderTest {
 
     @Test
     public void veriyEmptyParameters() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -361,7 +397,7 @@ public class RunMatlabTestsBuilderTest {
      */
     @Test
     public void verifyMATLABrunnerFileGeneratedForAutomaticOption() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -373,7 +409,7 @@ public class RunMatlabTestsBuilderTest {
      */
     @Test
     public void verifyDefaultMatlabNotPicked() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2020b"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2020b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -392,7 +428,7 @@ public class RunMatlabTestsBuilderTest {
 		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
-		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 		matrixProject.getBuildersList().add(testBuilder);
@@ -426,7 +462,7 @@ public class RunMatlabTestsBuilderTest {
 		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
 		matrixProject.setAxes(new AxisList(axes));
 		String matlabRoot = getMatlabroot("R2018b");
-		this.buildWrapper.setMatlabRootFolder(matlabRoot.replace("R2018b", "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 		RunMatlabTestsBuilderTester tester = new RunMatlabTestsBuilderTester(matlabExecutorAbsolutePath, "-positive");
 
@@ -444,7 +480,7 @@ public class RunMatlabTestsBuilderTest {
      */
     @Test
     public void verifyMATLABscratchFileGenerated() throws Exception {
-        this.buildWrapper.setMatlabRootFolder(getMatlabroot("R2018b"));  
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();

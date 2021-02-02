@@ -35,11 +35,6 @@ public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {
         inputArgsList.add("'" + SOURCE_FOLDER + "'" + "," + cellArraySourceVal);
     }
 
-    @Extension public static class DescriptorImpl extends Descriptor<SourceFolder> {
-        @Override
-        public String getDisplayName() {
-            return "";
-        }
-    }
+    @Extension public static class DescriptorImpl extends Descriptor<SourceFolder> {}
 
 }
