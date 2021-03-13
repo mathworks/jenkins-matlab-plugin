@@ -2,6 +2,7 @@ package com.mathworks.ci;
 
 import com.google.common.io.Resources;
 import com.google.common.base.Charsets;
+import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import hudson.model.Result;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.IOUtils;
@@ -17,9 +18,12 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class PipelineIntegTest {
+import static org.jvnet.hudson.test.JenkinsRule.getLog;
 
+public class PipelineIntegTest {
     private WorkflowJob project;
+    private String envScripted;
+    private String envDSL;
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -27,6 +31,8 @@ public class PipelineIntegTest {
     @Before
     public void testSetup() throws IOException {
         this.project = jenkins.createProject(WorkflowJob.class);
+        this.envDSL = MatlabRootSetup.getEnvironmentDSL();
+        this.envScripted = MatlabRootSetup.getEnvironmentScriptedPipeline();
     }
 
     private String getEnvironmentPath() throws URISyntaxException {
@@ -51,12 +57,18 @@ public class PipelineIntegTest {
         return environment;
     }
 
+    /*
+     * Utility function which returns the build of the project
+     */
+    private WorkflowRun getPipelineBuild(String script) throws Exception{
+        project.setDefinition(new CpsFlowDefinition(script,true));
+        return project.scheduleBuild2(0).get();
+    }
+
     @Test
     public void verifyEmptyRootError() throws Exception {
-        String environment ="";
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                           environment + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -66,9 +78,7 @@ public class PipelineIntegTest {
                         "        }\n" +
                         "    }\n" +
                         "}";
-        project.setDefinition(new CpsFlowDefinition(script,true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("MATLAB_ROOT",build);
         jenkins.assertBuildStatus(Result.FAILURE,build);
     }
@@ -86,10 +96,9 @@ public class PipelineIntegTest {
 
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        String environment = getEnvironmentPath();
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                environment + "\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -99,8 +108,7 @@ public class PipelineIntegTest {
                 "        }\n" +
                 "    }\n" +
                 "}";
-        project.setDefinition(new CpsFlowDefinition(script,true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
@@ -119,9 +127,7 @@ public class PipelineIntegTest {
                         "        }\n" +
                         "    }\n" +
                         "}";
-        project.setDefinition(new CpsFlowDefinition(script, true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("apple",build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
@@ -141,9 +147,7 @@ public class PipelineIntegTest {
                         "        }\n" +
                         "    }\n" +
                         "}";
-        project.setDefinition(new CpsFlowDefinition(script,true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("No such DSL method",build);
         jenkins.assertBuildStatus(Result.FAILURE,build);
     }
@@ -168,8 +172,7 @@ public class PipelineIntegTest {
                             "        }\n" +
                             "    }\n" +
                             "}";
-        project.setDefinition(new CpsFlowDefinition(script,true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 
@@ -189,10 +192,7 @@ public class PipelineIntegTest {
                         "        }\n" +
                         "    }\n" +
                         "}";
-        System.out.println(script);
-        project.setDefinition(new CpsFlowDefinition(script, true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("File extension missing.  Expected '.pdf'", build);
         jenkins.assertBuildStatus(Result.FAILURE,build);
     }
@@ -201,7 +201,7 @@ public class PipelineIntegTest {
     @Test
     public void verifyInvalidFilename() throws Exception {
         String environment = getEnvironmentPath();
-        String s = "pipeline {\n" +
+        String script = "pipeline {\n" +
                 "  agent any\n" +
                 environment + "\n" +
                 "    stages{\n" +
@@ -213,12 +213,51 @@ public class PipelineIntegTest {
                 "        }\n" +
                 "    }\n" +
                 "}";
-        project.setDefinition(new CpsFlowDefinition(
-                s,true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
+        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("Unable to write to file", build);
         jenkins.assertBuildStatus(Result.FAILURE,build);
+    }
+
+    // Tool config
+    @Test
+    public void verifyGlobalToolDSLPipeline() throws Exception {
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        String script = "pipeline {\n" +
+                "   agent any\n" +
+                "   tools {\n" +
+                "       matlab 'MATLAB_PATH_1'\n" +
+                "   }\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "               runMATLABCommand 'version'\n" +
+                "            }       \n" +
+                "        }                \n" +
+                "    } \n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+    @Test
+    public void verifyGlobalToolScriptedPipeline() throws Exception {
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        String script = "node {\n" +
+                "    def matlabver\n" +
+                "    stage('Run MATLAB Command') {\n" +
+                "        matlabver = tool 'MATLAB_PATH_1'\n" +
+                "        if (isUnix()){\n" +
+                "            env.PATH = \"${matlabver}/bin:${env.PATH}\"   // Linux or macOS agent\n" +
+                "        }else{\n" +
+                "            env.PATH = \"${matlabver}\\\\bin;${env.PATH}\"   // Windows agent\n" +
+                "        }     \n" +
+                "        runMATLABCommand 'version'\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
 }

@@ -5,6 +5,9 @@ import com.gargoylesoftware.htmlunit.html.*;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.plugins.git.BranchSpec;
+import hudson.plugins.git.GitSCM;
+import hudson.plugins.git.UserRemoteConfig;
 import hudson.tasks.Builder;
 import org.junit.*;
 import hudson.EnvVars;
@@ -29,6 +32,8 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+
+import static org.jvnet.hudson.test.JenkinsRule.NO_PROPERTIES;
 
 
 public class RunMATLABTestsIntegTest {
@@ -74,6 +79,16 @@ public class RunMATLABTestsIntegTest {
             System.out.println(MATLAB_ROOT);
         }
         return MATLAB_ROOT;
+    }
+
+    GitSCM get_GitSCM() {
+        String url = TestData.getPropValues("github.repo.path");
+        List<UserRemoteConfig> remotes = new ArrayList<UserRemoteConfig>();
+        remotes.add(new UserRemoteConfig(url, "origin", "master", null));
+        List<BranchSpec> branches = new ArrayList<BranchSpec>();
+        branches.add(new BranchSpec("test-folder-selection-vahila"));
+        GitSCM scm = new GitSCM(remotes, branches, false, null, null, null, null);
+        return scm;
     }
 
     @Test
@@ -329,4 +344,111 @@ public class RunMATLABTestsIntegTest {
         jenkins.assertLogContains("R2020a completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
+
+    /*
+     * Test to verify if tests are filtered bu tag and by folder path
+     */
+    @Test
+    public void verifyTestsFilterByFolderAndTag() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.setScm(get_GitSCM());
+
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        // Adding list of source folder
+        List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();
+        list.add(new SourceFolderPaths("src"));
+        testingBuilder.setSourceFolder(new SourceFolder(list));
+
+        // Adding list of test folder
+        List<TestFolders> testFolders = new ArrayList<TestFolders>();
+        testFolders.add(new TestFolders("test/TestSquare"));
+        testingBuilder.setSelectByFolder(new SelectByFolder(testFolders));
+
+        //Adding test tag
+        testingBuilder.setSelectByTag(new RunMatlabTestsBuilder.SelectByTag("TestTag"));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log  = build.getLog();
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogContains("addpath(genpath('src'));", build);
+        jenkins.assertLogContains("Done testSquare", build);
+    }
+
+    @Test
+    public void verifyTestFilterWithSourceSelection() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.setScm(get_GitSCM());
+
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        // Adding list of source folder
+        List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();
+        list.add(new SourceFolderPaths("src/multiplySrc"));
+        testingBuilder.setSourceFolder(new SourceFolder(list));
+
+        // Adding list of test folder
+        List<TestFolders> testFolders = new ArrayList<TestFolders>();
+        testFolders.add(new TestFolders("test/TestMultiply"));
+        testingBuilder.setSelectByFolder(new SelectByFolder(testFolders));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log  = build.getLog();
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogContains("addpath(genpath('src'));", build);
+        jenkins.assertLogContains("Done testSquare", build);
+    }
+
+    @Test
+    public void verifyNoTestsAreRunForIncorrectTestFolderPath() throws Exception{
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+
+        //set SCM
+        project.setScm(get_GitSCM());
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+
+        // Adding list of source folder
+        List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();
+        list.add(new SourceFolderPaths("src"));
+        testingBuilder.setSourceFolder(new SourceFolder(list));
+
+        // Adding list of test folder
+        List<TestFolders> testFolders = new ArrayList<TestFolders>();
+        testFolders.add(new TestFolders("test/incorrect/path"));
+        testingBuilder.setSelectByFolder(new SelectByFolder(testFolders));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log  = build.getLog();
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogNotContains("Done", build);
+    }
+
+    @Test
+    public void verifyDependentTestsFail() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.setScm(get_GitSCM());
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+
+        // Adding list of test folder
+        List<TestFolders> testFolders = new ArrayList<TestFolders>();
+        testFolders.add(new TestFolders("test/TestMultiply"));
+        testingBuilder.setSelectByFolder(new SelectByFolder(testFolders));
+        project.getBuildersList().add(testingBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        String build_log  = build.getLog();
+        jenkins.assertBuildStatus(Result.FAILURE, build);
+        jenkins.assertLogContains("testMultiplication",build);
+    }
+
+//    @Test
+//    public void verifyArtifactsContainsFilteredTests() throws Exception{
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
+//        project.setScm(get_GitSCM());
+//        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+//
+//    }
+
 }
