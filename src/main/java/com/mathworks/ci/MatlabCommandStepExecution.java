@@ -43,10 +43,15 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         
         workspace.mkdirs();
         
-        int res = execMatlabCommand(workspace, launcher, listener, env);
+        int exitCode = execMatlabCommand(workspace, launcher, listener, env);
 
-        getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
-        
+        if(exitCode == 0){
+            getContext().setResult(Result.SUCCESS);
+            return null;
+        }
+
+        // throw an exception if return code is non-zero
+        stop(new MatlabExecutionException(exitCode));
         return null;
     }
 
@@ -74,9 +79,6 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();
 
-        } catch (Exception e) {
-            listener.getLogger().println(e.getMessage());
-            return 1;
         } finally {
             // Cleanup the tmp directory
             if (uniqueTmpFolderPath.exists()) {

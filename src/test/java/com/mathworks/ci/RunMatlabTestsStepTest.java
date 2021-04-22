@@ -6,6 +6,8 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+
+import hudson.model.Result;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -124,6 +126,15 @@ public class RunMatlabTestsStepTest {
         j.assertLogNotContains("CoberturaCodeCoveragePath", build);
         j.assertLogNotContains("SimulinkTestResultsPath", build);
         j.assertLogNotContains("CoberturaModelCoveragePath", build);
+    }
+
+    @Test
+    public void verifyExceptionForNonZeroExitCode() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests()}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertBuildStatus(Result.FAILURE, build);
+        j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
     
     /*@Integ Test

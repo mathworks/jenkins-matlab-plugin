@@ -5,6 +5,8 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+
+import hudson.model.Result;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -119,5 +121,34 @@ public class RunMatlabCommandStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("pwd", build);
         j.assertLogContains("ver", build);
+    }
+
+    /*
+    * Test for verifying Run Matlab Command raises exception for non-zero exit code.
+    * */
+    @Test
+    public void verifyExceptionForNonZeroExitCode() throws Exception {
+        // exitMatlab is a mock command for run_matlab_command script to exit with 1.
+        project.setDefinition(
+                new CpsFlowDefinition("node { try {runMATLABCommand(command: 'exitMatlab')}catch(exc){echo exc.getMessage()}}", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
+        j.assertBuildStatusSuccess(build);
+    }
+
+    /*
+     * Test for verifying Run Matlab Command raises exception for non-zero exit code.
+     * */
+    @Test
+    public void verifyExceptionStackTraceForNonZeroExitCode() throws Exception {
+        // exitMatlab is a mock command for run_matlab_command script to exit with 1.
+        project.setDefinition(
+                new CpsFlowDefinition("node { runMATLABCommand(command: 'exitMatlab')}", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertBuildStatus(Result.FAILURE, build);
+        j.assertLogContains("com.mathworks.ci.MatlabExecutionException", build);
+        j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
 }
