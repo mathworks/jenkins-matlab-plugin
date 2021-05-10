@@ -23,7 +23,7 @@ import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
 import static org.jvnet.hudson.test.JenkinsRule.getLog;
 
-public class GlobalToolTest {
+public class GlobalToolIntegTest {
     private FreeStyleProject project;
     private RunMatlabCommandBuilder scriptBuilder;
     private UseMatlabVersionBuildWrapper buildWrapper;
