@@ -69,7 +69,6 @@ public class GlobalToolTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
 
         jenkins.assertLogContains(_inst.getHome(), build);
-        String build_log = jenkins.getLog(build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 

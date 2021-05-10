@@ -9,6 +9,7 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,6 +34,11 @@ public class PipelineIntegTest {
         this.project = jenkins.createProject(WorkflowJob.class);
         this.envDSL = MatlabRootSetup.getEnvironmentDSL();
         this.envScripted = MatlabRootSetup.getEnvironmentScriptedPipeline();
+    }
+
+    @After
+    public void testTearDown() {
+        MatlabRootSetup.matlabInstDescriptor = null;
     }
 
     private String getEnvironmentPath() throws URISyntaxException {

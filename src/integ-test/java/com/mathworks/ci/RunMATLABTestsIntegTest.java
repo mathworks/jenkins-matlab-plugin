@@ -10,31 +10,19 @@ import hudson.plugins.git.GitSCM;
 import hudson.plugins.git.UserRemoteConfig;
 import hudson.tasks.Builder;
 import org.junit.*;
-import hudson.EnvVars;
 import hudson.matrix.Axis;
 import hudson.matrix.AxisList;
 import hudson.matrix.Combination;
 import hudson.matrix.MatrixBuild;
 import hudson.matrix.MatrixProject;
 import hudson.matrix.MatrixRun;
-import hudson.model.FreeStyleBuild;
-import hudson.model.FreeStyleProject;
-import hudson.model.Result;
-import hudson.slaves.EnvironmentVariablesNodeProperty;
-import hudson.tasks.Builder;
 
 
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
-
-import static org.jvnet.hudson.test.JenkinsRule.NO_PROPERTIES;
-
 
 public class RunMATLABTestsIntegTest {
 
@@ -60,7 +48,7 @@ public class RunMATLABTestsIntegTest {
         this.testBuilder = null;
     }
 
-    private String getMatlabroot() throws URISyntaxException {
+    private String getMatlabroot()  {
         String MATLAB_ROOT;
 
         if (System.getProperty("os.name").startsWith("Win")) {
@@ -395,8 +383,8 @@ public class RunMATLABTestsIntegTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String build_log  = build.getLog();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
-        jenkins.assertLogContains("addpath(genpath('src'));", build);
-        jenkins.assertLogContains("Done testSquare", build);
+        jenkins.assertLogContains("addpath(genpath('src/multiplySrc'));", build);
+        jenkins.assertLogContains("Done testMultiply", build);
     }
 
     @Test
