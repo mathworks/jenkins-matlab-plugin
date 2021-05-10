@@ -29,7 +29,7 @@ public class StageFailureException {
     /*
      * Utility function which returns the build of the project
      */
-    private WorkflowRun getBuild(String script) {
+    private WorkflowRun getBuild(String script) throws Exception{
         project.setDefinition(new CpsFlowDefinition(script,true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         return build;

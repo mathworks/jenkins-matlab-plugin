@@ -113,7 +113,7 @@ public class GlobalToolTest {
     public void verifyAllToolsAreAvailable() throws Exception {
         // Adding the Global tools
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace(TestData.getPropValues("matlab.version"), "R2020a"), jenkins);
         jenkins.configRoundtrip();
         // Getting the Web page for UI testing
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
@@ -138,7 +138,7 @@ public class GlobalToolTest {
     @Test
     public void verifyGlobalToolMatrix() throws Exception {
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace(TestData.getPropValues("matlab.version"), "R2020a"), jenkins);
 
         List<String> list= new ArrayList<>(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_2"));
         MatlabInstallationAxis axis = new MatlabInstallationAxis(list);
@@ -162,7 +162,7 @@ public class GlobalToolTest {
     public void verifyToolMatrixPreference() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace(TestData.getPropValues("matlab.version"), "R2020a"), jenkins);
         jenkins.configRoundtrip();
 
         List<String> list= new ArrayList<>(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_2"));

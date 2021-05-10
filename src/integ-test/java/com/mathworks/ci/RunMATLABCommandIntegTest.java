@@ -141,7 +141,7 @@ public class RunMATLABCommandIntegTest {
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2019a", "R2020a");
+        Axis axes = new Axis("VERSION", "R2020b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
@@ -153,7 +153,7 @@ public class RunMATLABCommandIntegTest {
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
         String build_log = jenkins.getLog(build);
-        jenkins.assertLogContains("R2019a completed", build);
+        jenkins.assertLogContains("R2020b completed", build);
         jenkins.assertLogContains("R2020a completed", build);
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);

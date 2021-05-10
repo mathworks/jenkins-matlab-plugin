@@ -1,8 +1,5 @@
 package com.mathworks.ci;
 
-import com.google.common.io.Resources;
-import com.google.common.base.Charsets;
-import com.sun.corba.se.spi.orbutil.threadpool.Work;
 import hudson.model.Result;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.IOUtils;
