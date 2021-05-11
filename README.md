@@ -1,16 +1,14 @@
-# Jenkins MATLAB Plugin
+# Continuous Integration with MATLAB on Jenkins
+This plugin enables you to run MATLAB&reg; scripts, functions, and statements as part of your build. You also can run your MATLAB and Simulink&reg; tests, and generate various test and coverage artifacts such as JUnit-style test results and Cobertura code and model coverage reports.
 
-The Jenkins&trade; plugin for MATLAB&reg; enables you to run your MATLAB and Simulink&reg; tests and generate artifacts such as PDF test reports, JUnit and TAP test results, and Cobertura code or model coverage reports. You also can use the plugin to export your Simulink Test&#8482; Manager results. 
-
-
-## Configuration Steps 
-To configure the plugin, see [Plugin Configuration Guide.](/CONFIGDOC.md)
-
-## Change Log
+## Releases
 For a detailed list of releases, see [Change Logs](/CHANGELOG.md). 
 
+## Configuration Steps 
+To configure the plugin, see [Plugin Configuration Guide](/CONFIGDOC.md).
+
 ## Examples
-To learn how to use the plugin in testing workflows, see [Examples](/examples/). 
+To learn how to use the plugin in testing workflows, see [Examples](/examples/).
 
 ## Contact Us
 If you have any questions or suggestions, please contact MathWorks&reg; at [continuous-integration@mathworks.com](mailto:continuous-integration@mathworks.com).
