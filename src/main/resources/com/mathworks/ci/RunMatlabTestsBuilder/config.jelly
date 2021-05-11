@@ -4,10 +4,16 @@
 <f:block>
     <br></br>
     <f:optionalProperty field="sourceFolder" title="Source folder" />
+    <br></br>
 </f:block>
 
 <f:block>
+    <f:checkbox field="runTestsInParallel" title="Run tests in parallel"/>
     <br></br>
+</f:block>
+
+<f:block>
+   <br></br>
    <b>Filter Tests</b>
    <f:optionalProperty field="selectByFolder" title="By folder name" />  
    <br></br>

@@ -38,4 +38,8 @@
 		<f:textbox/>
 	</f:entry>
 
+	<f:entry field="runTestsInParallel" title="runTestsInParallel: ">
+        <f:textbox/>
+    </f:entry>
+
 </j:jelly>

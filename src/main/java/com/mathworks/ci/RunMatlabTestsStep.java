@@ -33,6 +33,7 @@ public class RunMatlabTestsStep extends Step {
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
     private String selectByTag;
+    private String runTestsInParallel;
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
 
@@ -123,6 +124,15 @@ public class RunMatlabTestsStep extends Step {
         this.selectByFolder = selectByFolder;
     }
 
+    public String getRunTestsInParallel() {
+        return this.runTestsInParallel;
+    }
+
+    @DataBoundSetter
+    public void setRunTestsInParallel(String runTestsInParallel) {
+        this.runTestsInParallel = runTestsInParallel;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
         return new MatlabRunTestsStepExecution(context, getInputArgs());
@@ -155,8 +165,10 @@ public class RunMatlabTestsStep extends Step {
         inputArgs.add("'Test'");
 
         args.forEach((key, val) -> {
-            if(key.equals("SourceFolder") || key.equals("SelectByFolder") && val != null){
+            if(key.equals("SourceFolder") || key.equals("SelectByFolder") && val != null) {
                 inputArgs.add("'" + key + "'" + "," + val);
+            }else if (key.equals("RunInParallel") && val != null){
+                inputArgs.add("'" + key + "'" + "," + Boolean.parseBoolean(val));
             }else if(val != null){
                 inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
             }
@@ -174,11 +186,12 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         args.put("SelectByTag", getSelectByTag());
+        args.put("RunInParallel", getRunTestsInParallel());
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;
     }
-    
+
     private void addFolderArgs(String argName,List<String> value,Map<String,String> args) {
         if(!value.isEmpty()){
             args.put(argName, Utilities.getCellArrayFrmList(value));
