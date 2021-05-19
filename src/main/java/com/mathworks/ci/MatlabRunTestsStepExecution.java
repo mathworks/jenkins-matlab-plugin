@@ -42,10 +42,14 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
         
         workspace.mkdirs();
         
-        int res = execMatlabCommand(workspace, launcher, listener, env);
+        int exitCode = execMatlabCommand(workspace, launcher, listener, env);
 
-        getContext().setResult((res == 0) ? Result.SUCCESS : Result.FAILURE);
-        
+        if(exitCode != 0){
+            // throw an exception if return code is non-zero
+            stop(new MatlabExecutionException(exitCode));
+        }
+
+        getContext().setResult(Result.SUCCESS);
         return null;
     }
 
@@ -72,9 +76,6 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
                     getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs())));
                                
             return matlabLauncher.pwd(workspace).join();
-        } catch (Exception e) {
-            listener.getLogger().println(e.getMessage());
-            return 1;
         } finally {
             // Cleanup the runner File from tmp directory
             final FilePath matlabRunnerScript =
