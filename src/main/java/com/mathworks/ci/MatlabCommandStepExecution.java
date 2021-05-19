@@ -45,13 +45,12 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         
         int exitCode = execMatlabCommand(workspace, launcher, listener, env);
 
-        if(exitCode == 0){
-            getContext().setResult(Result.SUCCESS);
-            return null;
+        if(exitCode != 0){
+            // throw an exception if return code is non-zero
+            stop(new MatlabExecutionException(exitCode));
         }
 
-        // throw an exception if return code is non-zero
-        stop(new MatlabExecutionException(exitCode));
+        getContext().setResult(Result.SUCCESS);
         return null;
     }
 
