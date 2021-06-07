@@ -51,7 +51,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private transient boolean modelCoverageChkBx;
     private transient boolean pdfReportChkBx;
 
-    private boolean runTestsInParallel;
+    private boolean useParallel;
     
     private Artifact tapArtifact = new NullArtifact();
     private Artifact junitArtifact = new NullArtifact();
@@ -103,8 +103,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
 
     @DataBoundSetter
-    public void setRunTestsInParallel(boolean runTestsInParallel) {
-        this.runTestsInParallel = runTestsInParallel;
+    public void setUseParallel(boolean useParallel) {
+        this.useParallel = useParallel;
     }
 
     @DataBoundSetter
@@ -167,8 +167,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return this.pdfReportArtifact;
     }
 
-    public boolean getRunTestsInParallel() {
-        return this.runTestsInParallel;
+    public boolean getUseParallel() {
+        return this.useParallel;
     }
 
     public String getPdfReportFilePath() {
@@ -367,7 +367,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
 
         // Add Run tests in parallel choice
-        inputArgsList.add("'RunInParallel'" + "," + getRunTestsInParallel());
+        inputArgsList.add("'RunInParallel'" + "," + getUseParallel());
 
         return String.join(",", inputArgsList);
     }

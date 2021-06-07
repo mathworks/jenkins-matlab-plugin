@@ -33,7 +33,7 @@ public class RunMatlabTestsStep extends Step {
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
     private String selectByTag;
-    private String runTestsInParallel;
+    private String useParallel;
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
 
@@ -124,13 +124,13 @@ public class RunMatlabTestsStep extends Step {
         this.selectByFolder = selectByFolder;
     }
 
-    public String getRunTestsInParallel() {
-        return this.runTestsInParallel;
+    public String getUseParallel() {
+        return this.useParallel;
     }
 
     @DataBoundSetter
-    public void setRunTestsInParallel(String runTestsInParallel) {
-        this.runTestsInParallel = runTestsInParallel;
+    public void setUseParallel(String useParallel) {
+        this.useParallel = useParallel;
     }
 
     @Override
@@ -186,7 +186,7 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         args.put("SelectByTag", getSelectByTag());
-        args.put("RunInParallel", getRunTestsInParallel());
+        args.put("RunInParallel", getUseParallel());
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;

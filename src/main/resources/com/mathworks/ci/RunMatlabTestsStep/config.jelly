@@ -38,7 +38,7 @@
 		<f:textbox/>
 	</f:entry>
 
-	<f:entry field="runTestsInParallel" title="runTestsInParallel: ">
+	<f:entry field="useParallel" title="useParallel: ">
         <f:textbox/>
     </f:entry>
 

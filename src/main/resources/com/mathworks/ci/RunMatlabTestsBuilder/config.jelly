@@ -8,7 +8,7 @@
 </f:block>
 
 <f:block>
-    <f:checkbox field="runTestsInParallel" title="Run tests in parallel"/>
+    <f:checkbox field="useParallel" title="Use parallel testing if possible"/>
     <br></br>
 </f:block>
 
