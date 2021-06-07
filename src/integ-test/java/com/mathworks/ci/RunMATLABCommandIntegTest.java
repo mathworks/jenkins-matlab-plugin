@@ -86,7 +86,7 @@ public class RunMATLABCommandIntegTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
-        tester.setMatlabCommand(TestData.getPropValues("matlab.invalid.command"));
+        tester.setMatlabCommand(TestData.getPropValues("pwd"));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
@@ -99,14 +99,14 @@ public class RunMATLABCommandIntegTest {
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
         String matlabRoot = getMatlabroot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
-//        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
-        tester.setMatlabCommand(TestData.getPropValues("matlab.command"));
+        tester.setMatlabCommand("version");
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogContains(TestData.getPropValues("matlab.version"), build);
     }
 
     /*
