@@ -1,5 +1,5 @@
 # Continuous Integration with MATLAB on Jenkins
-This plugin enables you to run MATLAB&reg; scripts, functions, and statements as part of your build. You also can run your MATLAB and Simulink&reg; tests, and generate various test and coverage artifacts such as JUnit-style test results and Cobertura code and model coverage reports.
+This plugin enables you to run MATLAB&reg; scripts, functions, and statements as part of your build. You also can run MATLAB and Simulink&reg; tests, and generate test and coverage artifacts such as JUnit-style test results and Cobertura code and model coverage reports.
 
 ## Releases
 For a detailed list of releases, see [Change Logs](/CHANGELOG.md). 
