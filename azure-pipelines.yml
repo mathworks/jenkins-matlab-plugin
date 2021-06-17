@@ -11,7 +11,7 @@ strategy:
     linux:
       agentName: 'Linux_Agent'
     windows:
-      agentName: 'VahilaLocalPool'
+      agentName: 'WINCI'
     mac:
       agentName: 'ah-sjayagop-maci'
 
