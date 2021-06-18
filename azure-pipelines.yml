@@ -5,7 +5,10 @@
 #Using a Self-hosted machine
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah
-
+jobs:
+- job: Test
+  timeoutInMinutes: 60
+  
 strategy:
   matrix:
     linux:
