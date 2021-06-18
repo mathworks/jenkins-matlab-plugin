@@ -4,15 +4,11 @@
 
 #Using a Self-hosted machine
 #Windows: VahilaLocalPool
-#Linux: Vahila-linux-jenkinsci-01-ah
-jobs:
-- job: Test
-  timeoutInMinutes: 60
-  
+#Linux: Vahila-linux-jenkinsci-01-ah  
 strategy:
   matrix:
     linux:
-      agentName: 'Linux_Agent'
+      agentName: 'ubuntu2104-ci'
     windows:
       agentName: 'WINCI'
     mac:
@@ -28,6 +24,7 @@ trigger:
 
 steps:
   - task: Maven@3
+    timeoutInMinutes: 360
     inputs:
       mavenPomFile: 'pom.xml'
       mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
