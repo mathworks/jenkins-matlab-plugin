@@ -58,7 +58,7 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
         getContext().onFailure(cause);
     }
 
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();  
         try {

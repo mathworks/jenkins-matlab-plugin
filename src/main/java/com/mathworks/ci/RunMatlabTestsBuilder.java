@@ -258,19 +258,19 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             throws InterruptedException, IOException {
 
         // Set the environment variable specific to the this build
-        setEnv(build.getEnvironment(listener));
+        //setEnv(build.getEnvironment(listener));
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+        buildResult = execMatlabCommand(workspace, launcher, listener, build.getEnvironment(listener));
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         /*
