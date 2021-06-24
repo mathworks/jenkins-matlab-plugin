@@ -41,7 +41,6 @@ import net.sf.json.JSONObject;
 public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
 
     private int buildResult;
-    private EnvVars env;
 
     // Make all old values transient which protects them writing back on disk.
     private transient boolean tapChkBx;
