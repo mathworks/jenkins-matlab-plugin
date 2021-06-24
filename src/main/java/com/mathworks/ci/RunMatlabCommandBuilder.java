@@ -96,14 +96,14 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
 
-        // Set the environment variable specific to the this build
-        //setEnv(build.getEnvironment(listener));
+        // Get the environment variable specific to the this build
+        final EnvVars env = build.getEnvironment(listener);
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, build.getEnvironment(listener));
+        buildResult = execMatlabCommand(workspace, launcher, listener, env);
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
