@@ -28,7 +28,6 @@ import net.sf.json.JSONObject;
 
 public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
-    private EnvVars env;
     private String matlabCommand;
 
     @DataBoundConstructor
@@ -48,19 +47,6 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     public String getMatlabCommand() {
         return this.matlabCommand;
     }
-
-    private String getCommand() {
-        return this.env == null ? getMatlabCommand() : this.env.expand(getMatlabCommand());
-    }
-
-    private void setEnv(EnvVars env) {
-        this.env = env;
-    }
-
-    private EnvVars getEnv() {
-        return this.env;
-    }
-
     
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {

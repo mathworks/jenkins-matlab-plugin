@@ -15,7 +15,6 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
     private static final long serialVersionUID = 1957239693658914450L;
     
     private String command;
-    private EnvVars env;
 
 
     public MatlabCommandStepExecution(StepContext context, String command) {
@@ -25,10 +24,6 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
 
     private String getCommand() {
         return this.command;
-    }
-    
-    private void setEnv(EnvVars env) {
-        this.env = env;
     }
 
     @Override
