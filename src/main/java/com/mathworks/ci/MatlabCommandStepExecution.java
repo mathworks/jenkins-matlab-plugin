@@ -15,7 +15,6 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
     private static final long serialVersionUID = 1957239693658914450L;
     
     private String command;
-    private EnvVars env;
 
 
     public MatlabCommandStepExecution(StepContext context, String command) {
@@ -24,11 +23,7 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
     }
 
     private String getCommand() {
-        return this.env == null ? this.command : this.env.expand(this.command );
-    }
-    
-    private void setEnv(EnvVars env) {
-        this.env = env;
+        return this.command;
     }
 
     @Override
@@ -37,7 +32,6 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         final FilePath workspace = getContext().get(FilePath.class);
         final TaskListener listener = getContext().get(TaskListener.class);
         final EnvVars env = getContext().get(EnvVars.class);
-        setEnv(env);
         
         //Make sure the Workspace exists before run
         
@@ -59,7 +53,7 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         getContext().onFailure(cause);
     }
     
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
@@ -91,12 +85,13 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+        final String cmd = getContext().get(EnvVars.class).expand(getCommand());
         final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
+                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()
-                .println("Generating MATLAB script with content:\n" + getCommand() + "\n");
+                .println("Generating MATLAB script with content:\n" + cmd + "\n");
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }
