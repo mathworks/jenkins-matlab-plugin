@@ -28,7 +28,6 @@ import net.sf.json.JSONObject;
 
 public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
-    private EnvVars env;
     private String matlabCommand;
 
     @DataBoundConstructor
@@ -48,19 +47,6 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
     public String getMatlabCommand() {
         return this.matlabCommand;
     }
-
-    private String getCommand() {
-        return this.env == null ? getMatlabCommand() : this.env.expand(getMatlabCommand());
-    }
-
-    private void setEnv(EnvVars env) {
-        this.env = env;
-    }
-
-    private EnvVars getEnv() {
-        return this.env;
-    }
-
     
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
@@ -96,21 +82,21 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
 
-        // Set the environment variable specific to the this build
-        setEnv(build.getEnvironment(listener));
+        // Get the environment variable specific to the this build
+        final EnvVars env = build.getEnvironment(listener);
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+        buildResult = execMatlabCommand(workspace, launcher, listener, env);
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         /*
@@ -126,7 +112,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener);
+        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
 
         try {
@@ -148,17 +134,18 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
      
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+        final String cmd = envVars.expand(getMatlabCommand());
         final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + getCommand();
+                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()
-                .println("Generating MATLAB script with content:\n" + getCommand() + "\n");
+                .println("Generating MATLAB script with content:\n" + cmd + "\n");
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }

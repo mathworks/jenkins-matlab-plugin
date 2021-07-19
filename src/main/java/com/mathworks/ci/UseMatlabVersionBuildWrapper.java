@@ -175,7 +175,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     }
 
     @Override
-    public synchronized void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher,
+    public void setUp(Context context, Run<?, ?> build, FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars initialEnvironment)
             throws IOException, InterruptedException {
         // Set Environment variable
