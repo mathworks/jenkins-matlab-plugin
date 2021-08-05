@@ -34,13 +34,14 @@ public interface MatlabBuild {
             Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
+        //String tmpDir = getNodeSpecificTmpFolderPath(workspace);
+        FilePath targetWorkspace = workspace;//new FilePath(launcher.getChannel(), tmpDir);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
             final String runnerScriptName = uniqueName + "/run_matlab_command.sh";
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
+            //matlabLauncher.cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
+            matlabLauncher.cmds(runnerScriptName, matlabCommand).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName,
@@ -49,8 +50,10 @@ public interface MatlabBuild {
             final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
-                    .stdout(listener);
+            //matlabLauncher.cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+                    //.stdout(listener);
+            matlabLauncher.cmds(runnerScriptName, "\"" + matlabCommand + "\"")
+            .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,
                     targetWorkspace);
@@ -76,9 +79,10 @@ public interface MatlabBuild {
         /*Use of Computer is not recommended as jenkins hygeine for pipeline support
          * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
         
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
+        //String tmpDir = getNodeSpecificTmpFolderPath(workspace);
 
-        return new FilePath(launcher.getChannel(), tmpDir + "/" + uniqueName);
+        //return new FilePath(launcher.getChannel(), tmpDir + "/" + uniqueName);
+        return new FilePath(launcher.getChannel(), workspace.getRemote() + "/" + uniqueName);
     }
 
     default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {

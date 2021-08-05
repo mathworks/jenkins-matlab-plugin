@@ -74,9 +74,9 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
 
         } finally {
             // Cleanup the tmp directory
-            if (uniqueTmpFolderPath.exists()) {
-                uniqueTmpFolderPath.deleteRecursive();
-            }
+            //if (uniqueTmpFolderPath.exists()) {
+                //uniqueTmpFolderPath.deleteRecursive();
+            //}
         }
     }
     
