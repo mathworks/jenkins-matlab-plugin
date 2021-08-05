@@ -8,7 +8,7 @@
 strategy:
   matrix:
     linux:
-      agentName: 'batbgl9466glnxa64'
+      agentName: 'BatMachine'
 
 pool:
   name: Default
