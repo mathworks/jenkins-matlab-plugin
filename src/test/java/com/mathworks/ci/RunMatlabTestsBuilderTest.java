@@ -141,7 +141,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogContains("runner", build);
         jenkins.assertLogContains("addpath(", build);
     }
 
@@ -157,7 +157,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogContains("runner", build);
     }
 
     /*
@@ -364,7 +364,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogContains("runner", build);
         jenkins.assertLogNotContains("\'PDFTestReport\',\'mypdf/report.pdf\'",build);
         jenkins.assertLogNotContains("\'TAPTestResults\',\'mytap/report.tap\'",build);
         jenkins.assertLogNotContains("\'JUnitTestResults\',\'myjunit/report.xml\'",build);
@@ -375,7 +375,7 @@ public class RunMatlabTestsBuilderTest {
     }
     
     /*
-     * Test to verify no parameters are sent in test_runner when no artifacts are selected.
+     * Test to verify no parameters are sent in test runner when no artifacts are selected.
      */
 
     @Test
@@ -385,7 +385,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
-        jenkins.assertLogContains("test_runner", build);
+        jenkins.assertLogContains("runner", build);
     }
 
     
@@ -486,5 +486,18 @@ public class RunMatlabTestsBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
         Assert.assertFalse(matlabRunner.exists());
+    }
+    
+    /*
+     * Test to verify if .matlab gets created in workspace.
+     */
+    @Test
+    public void verifyMATLABfolderGenerated() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
+        Assert.assertTrue(matlabRunner.exists());
     }
 }
