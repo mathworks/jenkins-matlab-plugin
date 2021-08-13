@@ -8,13 +8,11 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
-import java.util.UUID;
+import org.apache.commons.lang.RandomStringUtils;
 import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
-import hudson.model.Computer;
 import hudson.model.TaskListener;
 
 public interface MatlabBuild {
@@ -33,14 +31,14 @@ public interface MatlabBuild {
     default ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
             Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
-        // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
+        // Get node specific temp .matlab directory to copy matlab runner script             
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(),
+                workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
             final String runnerScriptName = uniqueName + "/run_matlab_command.sh";
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
+            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerScriptName, matlabCommand).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName,
@@ -49,7 +47,7 @@ public interface MatlabBuild {
             final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
             copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,
@@ -71,31 +69,18 @@ public interface MatlabBuild {
         targetFilePath.chmod(0755);
     }
 
-    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName, FilePath workspace)
-            throws IOException, InterruptedException {
-        /*Use of Computer is not recommended as jenkins hygeine for pipeline support
-         * https://javadoc.jenkins-ci.org/jenkins/tasks/SimpleBuildStep.html */
-        
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
+    default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,
+            FilePath workspace) throws IOException, InterruptedException {
+
+        String tmpDir =
+                workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME;
 
         return new FilePath(launcher.getChannel(), tmpDir + "/" + uniqueName);
     }
 
-    default String getNodeSpecificTmpFolderPath(FilePath workspace) throws IOException, InterruptedException {
-        Computer cmp = workspace.toComputer();
-        if (cmp == null) {
-            throw new IOException(Message.getValue("build.workspace.computer.not.found"));
-        }
-        
-        String tmpDirPath = (String) cmp.getSystemProperties().get("java.io.tmpdir");
-
-        // Invoke FilePath.normalize for clean file path on any channel.
-        FilePath tmpDir = new FilePath(cmp.getChannel(), tmpDirPath);
-        return tmpDir.getRemote();
-    }
-
     default String getUniqueNameForRunnerFile() {
-        return UUID.randomUUID().toString();
+        //Using 8 bit long random alphanumeric string
+        return RandomStringUtils.randomAlphanumeric(8);
     }
     
     // This method prepares the temp folder by coping all helper files in it.
