@@ -5,10 +5,22 @@
 #Using a Self-hosted machine
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah  
+resources:
+  pipelines:
+    - pipeline: azure-pipeline
+      source: test-setup
+      trigger: true
+
+trigger: none 
+
 strategy:
   matrix:
     linux:
-      agentName: 'Windows_CI'
+      imageName: 'Linux_QE'
+    mac:
+      imageName: 'Mac_QE'
+    windows:
+      imageName: 'Windows_QE'
 
 pool:
   name: Default
