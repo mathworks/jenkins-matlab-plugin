@@ -8,7 +8,7 @@
 strategy:
   matrix:
     linux:
-      agentName: 'BatMachine'
+      agentName: 'Windows_CI'
 
 pool:
   name: Default
