@@ -1,0 +1,28 @@
+trigger:
+  - master
+
+pool:
+  vmImage: ubuntu-16.04
+
+steps:
+  - task: NodeTool@0
+    displayName: Install node.js
+    inputs:
+      versionSpec: 10.x
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
