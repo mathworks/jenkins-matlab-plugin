@@ -13,19 +13,19 @@
 
 # trigger: none 
 
-# strategy:
-#   matrix:
-# #     linux:
-# #       imageName: 'Linux_QE'
-# #     mac:
-# #       imageName: 'Mac_QE'
-# #     windows:
-#       imageName: 'win_devpool'
+strategy:
+  matrix:
+    linux:
+      imageName: 'linux_devpool'
+#     mac:
+#       imageName: 'Mac_QE'
+    windows:
+      imageName: 'win_devpool'
 
 pool:
   name: Default
   demands:
-    - agent.name -equals win_devpool
+    - agent.name -equals $(imageName)
 
 trigger:
   - master
