@@ -5,13 +5,13 @@
 #Using a Self-hosted machine
 #Windows: VahilaLocalPool
 #Linux: Vahila-linux-jenkinsci-01-ah  
-resources:
-  pipelines:
-    - pipeline: azure-pipeline
-      source: test-setup
-      trigger: true
+# resources:
+#   pipelines:
+#     - pipeline: azure-pipeline
+#       source: test-setup
+#       trigger: true
 
-trigger: none 
+# trigger: none 
 
 strategy:
   matrix:
