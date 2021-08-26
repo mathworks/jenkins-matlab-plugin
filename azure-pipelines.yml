@@ -15,12 +15,12 @@ trigger: none
 
 strategy:
   matrix:
-    linux:
-      imageName: 'Linux_QE'
-    mac:
-      imageName: 'Mac_QE'
+#     linux:
+#       imageName: 'Linux_QE'
+#     mac:
+#       imageName: 'Mac_QE'
     windows:
-      imageName: 'Windows_QE'
+      imageName: 'win_devpool'
 
 pool:
   name: Default
