@@ -25,7 +25,7 @@
 pool:
   name: Default
   demands:
-    - agent.name -equals 'win_devpool'
+    - agent.name -equals win_devpool
 
 trigger:
   - master
