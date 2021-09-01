@@ -32,7 +32,10 @@ public class MatlabBuilderConstants {
     static final String MATLAB_SCRIPT_GENERATOR = "matlab-script-generator.zip";
     
     //Test runner file prefix 
-    static final String MATLAB_TEST_RUNNER_FILE_PREFIX = "test_runner_";
+    static final String MATLAB_TEST_RUNNER_FILE_PREFIX = "runner_";
+    
+    //Temporary MATLAB folder name in workspace 
+    static final String TEMP_MATLAB_FOLDER_NAME = ".matlab";
     
     // MATLAB runner script
     static final String TEST_RUNNER_SCRIPT = "testScript = genscript(${PARAMS});\n" + "\n"
