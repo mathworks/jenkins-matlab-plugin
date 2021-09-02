@@ -16,11 +16,11 @@
 strategy:
   matrix:
     linux:
-      imageName: 'linux_devpool'
+      imageName: 'linux_bgl_devpool'
 #     mac:
 #       imageName: 'Mac_QE'
-    windows:
-      imageName: 'win_devpool'
+#     windows:
+#       imageName: 'win_devpool'
 
 pool:
   name: Default
