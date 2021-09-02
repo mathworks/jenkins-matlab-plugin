@@ -16,7 +16,7 @@
 strategy:
   matrix:
     linux:
-      imageName: 'linux_bgl_devpool'
+      imageName: 'linux_devpool_AH'
 #     mac:
 #       imageName: 'Mac_QE'
 #     windows:
