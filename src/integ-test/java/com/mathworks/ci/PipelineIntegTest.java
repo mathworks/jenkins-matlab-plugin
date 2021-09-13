@@ -22,6 +22,8 @@ public class PipelineIntegTest {
     private WorkflowJob project;
     private String envScripted;
     private String envDSL;
+    // Test data to run MATLAB Tests
+    private URL zipFile = getClass().getResource("FilterTestData.zip");
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -158,6 +160,7 @@ public class PipelineIntegTest {
     @Test
     public void verifyCustomeFilenamesForArtifacts() throws Exception {
         String environment = getEnvironmentPath();
+
         String script = "pipeline {\n" +
                             "  agent any\n" +
                                environment + "\n" +
@@ -165,6 +168,7 @@ public class PipelineIntegTest {
                             "        stage('Run MATLAB Command') {\n" +
                             "            steps\n" +
                             "            {\n" +
+                            "                unzip '" + zipFile.getPath() + "'" + "\n" +
                             "              runMATLABTests(testResultsPDF:'test-results/results.pdf',\n" +
                             "                             testResultsTAP: 'test-results/results.tap',\n" +
                             "                             testResultsJUnit: 'test-results/results.xml',\n" +
@@ -190,6 +194,7 @@ public class PipelineIntegTest {
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
                         "            {\n" +
+                        "                unzip '" + zipFile.getPath() + "'" + "\n" +
                         "              runMATLABTests(testResultsPDF:'test-results/results')\n" +
                         "            }\n" +
                         "        }\n" +
@@ -211,6 +216,7 @@ public class PipelineIntegTest {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
+                "                unzip '" + zipFile.getPath() + "'" + "\n" +
                 "              runMATLABTests(testResultsPDF:'abc/x?.pdf')\n" +
                 "            }\n" +
                 "        }\n" +

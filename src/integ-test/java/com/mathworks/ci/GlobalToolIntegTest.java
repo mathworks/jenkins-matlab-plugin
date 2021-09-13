@@ -154,14 +154,13 @@ public class GlobalToolIntegTest {
             Assert.assertTrue(matlabName.equalsIgnoreCase("MATLAB_PATH_1") || matlabName.equalsIgnoreCase("MATLAB_PATH_2"));
         }
         jenkins.assertBuildStatus(Result.SUCCESS,build);
-        String build_log = jenkins.getLog(build);
     }
 
     // Verify "Use MATLAB Version" takes precedence over Global tools in Matrix Project
     @Test
     public void verifyToolMatrixPreference() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot().replace(TestData.getPropValues("matlab.version"), "R2019a"), jenkins);
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace(TestData.getPropValues("matlab.version"), "R2020a"), jenkins);
         jenkins.configRoundtrip();
 

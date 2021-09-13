@@ -144,7 +144,7 @@ public class RunMATLABCommandIntegTest {
         Axis axes = new Axis("VERSION", "R2020b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2020b", "$VERSION")));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
@@ -152,7 +152,7 @@ public class RunMATLABCommandIntegTest {
         tester.setMatlabCommand("pwd,version");
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
+
         jenkins.assertLogContains("R2020b completed", build);
         jenkins.assertLogContains("R2020a completed", build);
 

@@ -150,6 +150,14 @@
 			<version>1.16</version>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/pipeline-utility-steps -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>pipeline-utility-steps</artifactId>
+			<version>2.7.1</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -18,6 +18,7 @@ import hudson.matrix.MatrixProject;
 import hudson.matrix.MatrixRun;
 
 
+import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
@@ -340,7 +341,7 @@ public class RunMATLABTestsIntegTest {
     public void verifyTestsFilterByFolderAndTag() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(get_GitSCM());
+        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         // Adding list of source folder
@@ -367,7 +368,7 @@ public class RunMATLABTestsIntegTest {
     public void verifyTestFilterWithSourceSelection() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(get_GitSCM());
+        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         // Adding list of source folder
@@ -393,7 +394,7 @@ public class RunMATLABTestsIntegTest {
         project.getBuildWrappersList().add(this.buildWrapper);
 
         //set SCM
-        project.setScm(get_GitSCM());
+        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
         // Adding list of source folder
@@ -416,7 +417,7 @@ public class RunMATLABTestsIntegTest {
     public void verifyDependentTestsFail() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(get_GitSCM());
+        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
         // Adding list of test folder
