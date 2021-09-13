@@ -152,4 +152,19 @@ public class RunMatlabCommandStepTest {
         j.assertLogContains("com.mathworks.ci.MatlabExecutionException", build);
         j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
+    
+    /*
+     * Verify .matlab folder is generated 
+     *
+     */
+
+    @Test
+    public void verifyMATLABtempFolderGenerated() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node { testMATLABCommand(command: 'pwd')}", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains(".matlab", build);
+        j.assertBuildStatusSuccess(build);
+    }
 }

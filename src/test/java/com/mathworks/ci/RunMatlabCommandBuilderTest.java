@@ -357,4 +357,18 @@ public class RunMatlabCommandBuilderTest {
         jenkins.assertLogContains("Generating MATLAB script with content", build);
         jenkins.assertLogContains(expectedCommand, build);
     }
+    
+    /*
+     * Test to verify if .matlab temp folder generated in workspace.
+     */
+    @Test
+    public void verifyMATLABtmpFolderGenerated() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
+        Assert.assertTrue(matlabRunner.exists());
+    }
 }

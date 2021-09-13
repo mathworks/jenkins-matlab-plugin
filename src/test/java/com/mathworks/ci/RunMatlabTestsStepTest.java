@@ -91,7 +91,7 @@ public class RunMatlabTestsStepTest {
                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
        WorkflowRun build = project.scheduleBuild2(0).get();
        j.assertLogContains("addpath(", build);
-       j.assertLogContains("test_runner", build);
+       j.assertLogContains("runner", build);
    }
 
     /*
@@ -120,7 +120,7 @@ public class RunMatlabTestsStepTest {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests()}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("test_runner", build);
+        j.assertLogContains("runner", build);
         j.assertLogNotContains("PDFReportPath", build);
         j.assertLogNotContains("TAPResultsPath", build);
         j.assertLogNotContains("JUnitResultsPath", build);
@@ -136,6 +136,19 @@ public class RunMatlabTestsStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertBuildStatus(Result.FAILURE, build);
         j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
+    }
+    
+    /*
+     * Verify .matlab folder created 
+     */
+
+    @Test
+    public void verifyMATLABtempFolderGenerated() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {testMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertBuildStatusSuccess(build);
+        j.assertLogContains(".matlab", build);
     }
     
     /*@Integ Test

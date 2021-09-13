@@ -41,7 +41,6 @@ import net.sf.json.JSONObject;
 public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
 
     private int buildResult;
-    private EnvVars env;
 
     // Make all old values transient which protects them writing back on disk.
     private transient boolean tapChkBx;
@@ -179,13 +178,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return (isChecked) ? returnVal : new NullArtifact();
     }
     
-    private void setEnv(EnvVars env) {
-        this.env = env;
-    }
-
-    private EnvVars getEnv() {
-        return this.env;
-    }
     
     // To retain Backward compatibility
     protected Object readResolve() {
@@ -257,20 +249,20 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
 
-        // Set the environment variable specific to the this build
-        setEnv(build.getEnvironment(listener));
+        // Get the environment variable specific to the this build
+        final EnvVars env = build.getEnvironment(listener);
 
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, getEnv());
+        buildResult = execMatlabCommand(workspace, launcher, listener, env);
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
     }
 
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         /*

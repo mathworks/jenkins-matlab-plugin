@@ -44,13 +44,12 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
         
         int exitCode = execMatlabCommand(workspace, launcher, listener, env);
 
-        if(exitCode == 0){
-            getContext().setResult(Result.SUCCESS);
-            return null;
+        if(exitCode != 0){
+            // throw an exception if return code is non-zero
+            stop(new MatlabExecutionException(exitCode));
         }
 
-        // throw an exception if returned exit code is non-zero
-        stop(new MatlabExecutionException(exitCode));
+        getContext().setResult(Result.SUCCESS);
         return null;
     }
 
@@ -59,7 +58,7 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
         getContext().onFailure(cause);
     }
 
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();  
         try {

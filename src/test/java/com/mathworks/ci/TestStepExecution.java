@@ -24,13 +24,14 @@ public class TestStepExecution extends MatlabRunTestsStepExecution {
             TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
-        String tmpDir = getNodeSpecificTmpFolderPath(workspace);
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(), tmpDir);
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(),
+                workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+        
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
             final String runnerScriptName = uniqueName + "/run_matlab_command_test.sh";
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
-                    .cmds(tmpDir + "/" + runnerScriptName, matlabCommand).stdout(listener);
+                    .cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerScriptName, matlabCommand).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
             copyFileInWorkspace("run_matlab_command_test.sh", runnerScriptName, targetWorkspace);
@@ -38,7 +39,7 @@ public class TestStepExecution extends MatlabRunTestsStepExecution {
             final String runnerScriptName = uniqueName + "\\run_matlab_command_test.bat";
             launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().pwd(workspace).envs(envVars)
-                    .cmds(tmpDir + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+                    .cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
             copyFileInWorkspace("run_matlab_command_test.bat", runnerScriptName, targetWorkspace);
