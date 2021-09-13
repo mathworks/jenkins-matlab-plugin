@@ -96,13 +96,8 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         }
     }
 
-<<<<<<< HEAD
-    private synchronized int execMatlabCommand(FilePath workspace, Launcher launcher,
-                                               TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-=======
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
->>>>>>> 2.6.1-SNAPSHOT-Qualification
 
         /*
          * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
@@ -138,15 +133,9 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             }
         }
     }
-<<<<<<< HEAD
-
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
-
-=======
     
     private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-     
->>>>>>> 2.6.1-SNAPSHOT-Qualification
+
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
