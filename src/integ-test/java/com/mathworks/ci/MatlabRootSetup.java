@@ -2,6 +2,11 @@ package com.mathworks.ci;
 
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -83,4 +88,12 @@ public class MatlabRootSetup {
         // static method to return all installations
         return MatlabInstallation.getAll();
     }
+
+    public static URL getRunMATLABTestsData() throws MalformedURLException {
+        File file = new File(System.getProperty("user.dir") + File.separator +"src" + File.separator + "integ-test" + File.separator + "resources" + File.separator + "TestData" + File.separator + "FilterTestData.zip");
+        URL zipfile = file.toURI().toURL();
+        return zipfile;
+    }
+
+
 }
