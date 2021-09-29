@@ -23,9 +23,10 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 
-public class RunMATLABTestsIntegTest {
+public class RunMATLABTestsIT {
 
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
@@ -47,37 +48,6 @@ public class RunMATLABTestsIntegTest {
     public void testTearDown() {
         this.project = null;
         this.testBuilder = null;
-    }
-
-    private String getMatlabroot()  {
-        String MATLAB_ROOT;
-
-        if (System.getProperty("os.name").startsWith("Win")) {
-            MATLAB_ROOT = TestData.getPropValues("matlab.windows.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        else if (System.getProperty("os.name").startsWith("Linux")){
-            MATLAB_ROOT = TestData.getPropValues("matlab.linux.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        else {
-            MATLAB_ROOT = TestData.getPropValues("matlab.mac.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        return MATLAB_ROOT;
-    }
-
-    GitSCM get_GitSCM() {
-        String url = TestData.getPropValues("github.repo.path");
-        List<UserRemoteConfig> remotes = new ArrayList<UserRemoteConfig>();
-        remotes.add(new UserRemoteConfig(url, "origin", "master", null));
-        List<BranchSpec> branches = new ArrayList<BranchSpec>();
-        branches.add(new BranchSpec("test-folder-selection-vahila"));
-        GitSCM scm = new GitSCM(remotes, branches, false, null, null, null, null);
-        return scm;
     }
 
     @Test
@@ -130,7 +100,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyJUnitFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -145,7 +115,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyTAPTestFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
@@ -160,7 +130,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyPDFReportFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
@@ -174,7 +144,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyCoberturaFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
@@ -189,7 +159,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyModelCoverageFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
@@ -204,7 +174,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifySTMResultsFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
@@ -218,7 +188,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyPDFReportCustomFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -226,12 +196,14 @@ public class RunMATLABTestsIntegTest {
         project.getBuildersList().add(testingBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+        String build_log = jenkins.getLog(build);
+        System.out.println();
         jenkins.assertLogContains("abc/xyz", build);
     }
 
     @Test
     public void verifyCustomFilePathInputForArtifacts() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -252,7 +224,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyExtForPdfReport() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -265,7 +237,7 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyBuildFailsForInvalidFilename() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -285,7 +257,7 @@ public class RunMATLABTestsIntegTest {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot();
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
@@ -319,7 +291,7 @@ public class RunMATLABTestsIntegTest {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2020b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot();
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
@@ -339,9 +311,9 @@ public class RunMATLABTestsIntegTest {
      */
     @Test
     public void verifyTestsFilterByFolderAndTag() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         // Adding list of source folder
@@ -366,9 +338,9 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyTestFilterWithSourceSelection() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         // Adding list of source folder
@@ -390,11 +362,11 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyNoTestsAreRunForIncorrectTestFolderPath() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
         //set SCM
-        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
         // Adding list of source folder
@@ -415,9 +387,9 @@ public class RunMATLABTestsIntegTest {
 
     @Test
     public void verifyDependentTestsFail() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
         // Adding list of test folder

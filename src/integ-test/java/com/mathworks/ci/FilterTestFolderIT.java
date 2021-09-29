@@ -16,10 +16,11 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class FilterTestFolderIntegTest {
+public class FilterTestFolderIT {
     private WorkflowJob project;
     private String envScripted;
     private String envDSL;
@@ -37,8 +38,8 @@ public class FilterTestFolderIntegTest {
     /*
      * Utility function to add the required test data for filter tests
      */
-    private String addTestData(){
-        URL zipFile = getClass().getResource("FilterTestData.zip");
+    private String addTestData() throws MalformedURLException {
+        URL zipFile = MatlabRootSetup.getRunMATLABTestsData();
         String path = "  unzip '" + zipFile.getPath() + "'" + "\n";
         return path;
     }
@@ -145,7 +146,6 @@ public class FilterTestFolderIntegTest {
         jenkins.assertLogContains("testMultiply/testMultiplication", build);
         jenkins.assertLogContains("testSquare/testSquareNum", build);
         jenkins.assertLogContains("testSum/testAddition", build);
-        jenkins.assertLogContains("testModel/testModelSim", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 

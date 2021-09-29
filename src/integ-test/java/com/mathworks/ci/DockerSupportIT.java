@@ -33,7 +33,7 @@ import jenkins.model.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DockerSupport extends Thread{
+public class DockerSupportIT extends Thread{
     volatile private FreeStyleProject project;
     volatile MatrixProject matrixProject;
     volatile WorkflowJob pipelineProject;
@@ -58,27 +58,6 @@ public class DockerSupport extends Thread{
         project = null;
         buildWrapper = null;
         pipelineProject = null;
-    }
-
-    private String getMatlabroot() throws URISyntaxException {
-        String  MATLAB_ROOT;
-
-        if (System.getProperty("os.name").startsWith("Win")) {
-            MATLAB_ROOT = TestData.getPropValues("matlab.windows.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        else if (System.getProperty("os.name").startsWith("Linux")){
-            MATLAB_ROOT = TestData.getPropValues("matlab.linux.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        else {
-            MATLAB_ROOT = TestData.getPropValues("matlab.mac.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        return MATLAB_ROOT;
     }
 
     /*
@@ -130,7 +109,6 @@ public class DockerSupport extends Thread{
 
     private  void verifyCommandScriptInvokledPath(FilePath commandScriptFilePath, AbstractBuild<?,?> build) throws Exception {
         jenkins.assertLogContains(".matlab", build);
-        jenkins.assertLogNotContains("tmp", build);
         jenkins.assertLogContains(commandScriptFilePath.getParent().getName(), build);
         // Removing .m extesion
         String commandScriptName = commandScriptFilePath.getName();
@@ -184,6 +162,27 @@ public class DockerSupport extends Thread{
         return sourceFiles.get(sourceFiles.size()-1);
     }
 
+    boolean testFolder(FilePath projectWorkspace){
+        File f1 = new File(projectWorkspace.getRemote() + File.separator + ".matlab");
+        if(f1.exists() == false){
+            return false;
+        }
+        if(f1.list().length == 0){
+            return false;
+        }
+        return  true;
+    }
+
+    private boolean testRunWorkspace(FilePath projectWorkspace) throws IOException, InterruptedException {
+        if(projectWorkspace.listDirectories().size() == 0){
+            return false;
+        }
+        if(projectWorkspace.listDirectories().get(0).listDirectories().size() == 0){
+            return false;
+        }
+        return true;
+    }
+
     /*
      * Test to verify if Build FAILS when matlab command fails
      */
@@ -191,9 +190,7 @@ public class DockerSupport extends Thread{
     @Test
     public void verifyFreeStyleCommandSourceFiles() throws Exception {
         FilePath commandScriptFilePath;
-
-        String matlabRoot = getMatlabroot();
-        buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
+        buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(buildWrapper);
         RunMatlabCommandBuilder tester =
@@ -212,10 +209,14 @@ public class DockerSupport extends Thread{
             }
         };
         thread.start();
-        Thread.sleep(200);
+        FilePath projectWorkspace = jenkins.jenkins.getWorkspaceFor(project);
+        while(!testFolder(projectWorkspace)){
+            Thread.sleep(200);
+        }
+
         thread.suspend();
 
-        FilePath projectWorkspace = project.getWorkspace();
+//        FilePath projectWorkspace = project.getWorkspace();
         verifySourceFilesFolderStructure(projectWorkspace);
         verifyCommandScriptSourceFolder(projectWorkspace);
         commandScriptFilePath = getCommandScriptFilePath(projectWorkspace);
@@ -236,9 +237,9 @@ public class DockerSupport extends Thread{
     @Test
     public void verifyFreeStyleTestsSourceFiles() throws Exception {
         FilePath runnerScriptFilePath;
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"),MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         // Adding list of source folder
@@ -259,11 +260,14 @@ public class DockerSupport extends Thread{
                 }
             }
         };
+        FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(project);
         thread.start();
-        Thread.sleep(1000);
+        while(!testFolder(projectWorkspace)){
+            Thread.sleep(1000);
+        }
         thread.suspend();
 
-        FilePath projectWorkspace = project.getWorkspace();
+
         verifySourceFilesFolderStructure(projectWorkspace);
         verifyTestsScriptFolder(projectWorkspace);
         runnerScriptFilePath = getrunnerScriptFilePath(projectWorkspace);
@@ -281,10 +285,10 @@ public class DockerSupport extends Thread{
     @Test
     public void verifyMatrixCommandSourceFiles() throws Exception {
         matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2020b", "R2020a");
+        Axis axes = new Axis("MATLAB_VERSION", "R2020b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2020b", "$VERSION")));
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2020b", "$MATLAB_VERSION")));
     //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
@@ -295,25 +299,31 @@ public class DockerSupport extends Thread{
             public void run(){
                 try {
                     matrixBuild = matrixProject.scheduleBuild2(0).get();
-                    jenkins.assertBuildStatus(Result.SUCCESS, matrixBuild);
+//                    jenkins.assertBuildStatus(Result.SUCCESS, matrixBuild);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         };
         thread.start();
-        Thread.sleep(500);
+        FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(matrixProject);
+        while(!testRunWorkspace(projectWorkspace)){
+            Thread.sleep(1000);
+        }
+        FilePath firstRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
+        FilePath secondRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(1);
+
+        while(!testFolder(firstRunWorkspace) && !testFolder(secondRunWorkspace)){
+            Thread.sleep(1000);
+        }
         thread.suspend();
 
 
-        FilePath projectWorkspace = matrixProject.getWorkspace();
         // verify folder structure and source files path for first run
-        FilePath firstRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
         verifySourceFilesFolderStructure(firstRunWorkspace);
         verifyCommandScriptSourceFolder(firstRunWorkspace);
 
         // verify folder structure and source files path for second run
-        FilePath secondRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(1);
         verifySourceFilesFolderStructure(secondRunWorkspace);
         verifyCommandScriptSourceFolder(secondRunWorkspace);
 
@@ -337,6 +347,11 @@ public class DockerSupport extends Thread{
 
 
         String build_log = jenkins.getLog(matrixBuild);
+//        List<MatrixRun> runs = matrixBuild.getRuns();
+        for (MatrixRun run : runs) {
+
+            System.out.println(jenkins.getLog(run));
+        }
 
         jenkins.assertLogContains("R2020b completed", matrixBuild);
         jenkins.assertLogContains("R2020a completed", matrixBuild);
@@ -344,16 +359,17 @@ public class DockerSupport extends Thread{
         jenkins.assertBuildStatus(Result.SUCCESS, matrixBuild);
     }
 
+
     @Test
     public void verifyMatrixTestsSourceFiles() throws Exception {
         matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("MATLAB_VERSION", "R2020b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot();
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2020b", "$MATLAB_VERSION")));
         //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
-        matrixProject.setScm(new ExtractResourceSCM(getClass().getResource("FilterTestData.zip")));
+        matrixProject.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         // Adding list of source folder
@@ -373,18 +389,25 @@ public class DockerSupport extends Thread{
             }
         };
         thread.start();
-        Thread.sleep(2000);
+        FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(matrixProject);
+        while(!testRunWorkspace(projectWorkspace)){
+            Thread.sleep(1000);
+        }
+        FilePath firstRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
+        FilePath secondRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(1);
+
+        while(!testFolder(firstRunWorkspace) && !testFolder(secondRunWorkspace)){
+            Thread.sleep(1000);
+        }
         thread.suspend();
 
 
-        FilePath projectWorkspace = matrixProject.getWorkspace();
         // verify folder structure and source files path for first run
-        FilePath firstRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
         verifySourceFilesFolderStructure(firstRunWorkspace);
         verifyTestsScriptFolder(firstRunWorkspace);
 
         // verify folder structure and source files path for second run
-        FilePath secondRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(1);
+
         verifySourceFilesFolderStructure(secondRunWorkspace);
         verifyTestsScriptFolder(secondRunWorkspace);
 
@@ -417,7 +440,7 @@ public class DockerSupport extends Thread{
         Assume.assumeTrue
                 (System.getProperty("os.name").toLowerCase().startsWith("linux"));
         pipelineProject = jenkins.createProject(WorkflowJob.class);
-        URL zipFile = getClass().getResource("FilterTestData.zip");
+        URL zipFile = MatlabRootSetup.getRunMATLABTestsData();
         String script = "pipeline {\n" +
                 "    agent {\n" +
                 "        docker {\n" +
@@ -445,7 +468,7 @@ public class DockerSupport extends Thread{
 //        WorkspaceBrowser w =
         FilePath commandScriptFilePath;
         pipelineProject = jenkins.createProject(WorkflowJob.class);
-        URL zipFile = getClass().getResource("FilterTestData.zip");
+        URL zipFile = MatlabRootSetup.getRunMATLABTestsData();
         String script = "pipeline {\n" +
                 "    agent any\n" +
                 MatlabRootSetup.getEnvironmentDSL() + "\n" +
@@ -468,11 +491,13 @@ public class DockerSupport extends Thread{
                 }
             }
         };
+        FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(pipelineProject);
         thread.start();
-        Thread.sleep(12000);
+        while(!testFolder(projectWorkspace)){
+            Thread.sleep(12000);
+        }
         thread.suspend();
 
-        FilePath projectWorkspace = jenkins.jenkins.getWorkspaceFor(pipelineProject);
         verifySourceFilesFolderStructure(projectWorkspace);
         verifyCommandScriptSourceFolder(projectWorkspace);
         commandScriptFilePath = getCommandScriptFilePath(projectWorkspace);
@@ -487,7 +512,7 @@ public class DockerSupport extends Thread{
     public void verifyPipelineTestsSourceFiles() throws Exception {
         FilePath runnerScriptFilePath;
         pipelineProject = jenkins.createProject(WorkflowJob.class);
-        URL zipFile = getClass().getResource("FilterTestData.zip");
+        URL zipFile = MatlabRootSetup.getRunMATLABTestsData();
         String script = "pipeline {\n" +
                 "    agent any\n" +
                 MatlabRootSetup.getEnvironmentDSL() + "\n" +
@@ -512,11 +537,13 @@ public class DockerSupport extends Thread{
                 }
             }
         };
+        FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(pipelineProject);
         thread.start();
-        Thread.sleep(15000);
+        while(!testFolder(projectWorkspace)){
+            Thread.sleep(12000);
+        }
         thread.suspend();
 
-        FilePath projectWorkspace = jenkins.jenkins.getWorkspaceFor(pipelineProject);
         verifySourceFilesFolderStructure(projectWorkspace);
         verifyTestsScriptFolder(projectWorkspace);
         runnerScriptFilePath = getrunnerScriptFilePath(projectWorkspace);

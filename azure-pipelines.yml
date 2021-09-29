@@ -16,11 +16,11 @@
 strategy:
   matrix:
     linux:
-      imageName: 'linux_devpool_AH'
-#     mac:
-#       imageName: 'Mac_QE'
-#     windows:
-#       imageName: 'win_devpool'
+      imageName: 'vahila_bgl_linux'
+    mac:
+      imageName: 'vahila_mac_bgl'
+    windows:
+      imageName: 'vahila_win_bgl'
 
 pool:
   name: Default
@@ -31,5 +31,5 @@ trigger:
   - master
 
 steps:
-  - script: mw -using bci mvn test
+  - script: mw -using bci mvn failsafe:integration-test
   

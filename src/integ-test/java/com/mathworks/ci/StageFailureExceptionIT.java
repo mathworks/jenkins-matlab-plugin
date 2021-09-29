@@ -11,7 +11,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
 
-public class StageFailureExceptionIntegTest {
+public class StageFailureExceptionIT {
     private WorkflowJob project;
     private String envScripted;
     private String envDSL;

@@ -30,7 +30,7 @@ import java.net.URL;
 import java.util.*;
 
 
-public class RunMATLABCommandIntegTest {
+public class RunMATLABCommandIT {
 
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
@@ -53,35 +53,13 @@ public class RunMATLABCommandIntegTest {
         this.scriptBuilder = null;
     }
 
-    private String getMatlabroot() throws URISyntaxException {
-        String  MATLAB_ROOT;
-
-        if (System.getProperty("os.name").startsWith("Win")) {
-            MATLAB_ROOT = TestData.getPropValues("matlab.windows.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        else if (System.getProperty("os.name").startsWith("Linux")){
-            MATLAB_ROOT = TestData.getPropValues("matlab.linux.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        else {
-            MATLAB_ROOT = TestData.getPropValues("matlab.mac.installed.path");
-            // Prints the root folder of MATLAB
-            System.out.println(MATLAB_ROOT);
-        }
-        return MATLAB_ROOT;
-    }
-
     /*
      * Test to verify if Build FAILS when matlab command fails
      */
 
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
-        String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
@@ -97,8 +75,7 @@ public class RunMATLABCommandIntegTest {
     */
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        String matlabRoot = getMatlabroot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
@@ -117,7 +94,7 @@ public class RunMATLABCommandIntegTest {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot();
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
@@ -143,7 +120,7 @@ public class RunMATLABCommandIntegTest {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2020b", "R2020a");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = getMatlabroot();
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2020b", "$VERSION")));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);

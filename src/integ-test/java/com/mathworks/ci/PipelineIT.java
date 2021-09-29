@@ -18,12 +18,12 @@ import java.net.URL;
 
 import static org.jvnet.hudson.test.JenkinsRule.getLog;
 
-public class PipelineIntegTest {
+public class PipelineIT {
     private WorkflowJob project;
     private String envScripted;
     private String envDSL;
     // Test data to run MATLAB Tests
-    private URL zipFile = getClass().getResource("FilterTestData.zip");
+    private URL zipFile;
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -33,33 +33,12 @@ public class PipelineIntegTest {
         this.project = jenkins.createProject(WorkflowJob.class);
         this.envDSL = MatlabRootSetup.getEnvironmentDSL();
         this.envScripted = MatlabRootSetup.getEnvironmentScriptedPipeline();
+        zipFile = MatlabRootSetup.getRunMATLABTestsData();
     }
 
     @After
     public void testTearDown() {
         MatlabRootSetup.matlabInstDescriptor = null;
-    }
-
-    private String getEnvironmentPath() throws URISyntaxException {
-        String installedPath;
-        String binPath = "";
-
-        if (System.getProperty("os.name").startsWith("Win")) {
-            installedPath = TestData.getPropValues("pipeline.matlab.windows.installed.path");
-            binPath = installedPath +"\\\\bin;";
-        }
-        else if(System.getProperty("os.name").startsWith("Linux")){
-            installedPath = TestData.getPropValues("matlab.linux.installed.path");
-            binPath = installedPath + "/bin:";
-        }
-        else {
-            installedPath = TestData.getPropValues("matlab.mac.installed.path");
-            binPath = installedPath + "/bin:";
-        }
-        String environment = "environment { \n" +
-                                "PATH = " + "\""+  binPath + "${PATH}"+ "\"" + "\n" +
-                             "}";
-        return environment;
     }
 
     /*
@@ -119,10 +98,9 @@ public class PipelineIntegTest {
 
     @Test
     public void verifyBuildFailsWhenMatlabCommandFails() throws Exception {
-        String environment = getEnvironmentPath();
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                           environment + "\n" +
+                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -139,10 +117,9 @@ public class PipelineIntegTest {
 
     @Test
     public void verifyBuildFailsWhenDSLNameFails() throws Exception {
-        String environment = getEnvironmentPath();
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                            environment + "\n" +
+                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -159,17 +136,15 @@ public class PipelineIntegTest {
 
     @Test
     public void verifyCustomeFilenamesForArtifacts() throws Exception {
-        String environment = getEnvironmentPath();
-
         String script = "pipeline {\n" +
                             "  agent any\n" +
-                               environment + "\n" +
+                            envDSL + "\n" +
                             "    stages{\n" +
                             "        stage('Run MATLAB Command') {\n" +
                             "            steps\n" +
                             "            {\n" +
-                            "                unzip '" + zipFile.getPath() + "'" + "\n" +
-                            "              runMATLABTests(testResultsPDF:'test-results/results.pdf',\n" +
+                            "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                            "              runMATLABTests( testResultsPDF:'test-results/results.pdf',\n" +
                             "                             testResultsTAP: 'test-results/results.tap',\n" +
                             "                             testResultsJUnit: 'test-results/results.xml',\n" +
                             "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
@@ -186,15 +161,13 @@ public class PipelineIntegTest {
     // .pdf extension
     @Test
     public void verifyExtForPDF() throws Exception {
-        String environment = getEnvironmentPath();
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                            environment + "\n" +
+                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
                         "            {\n" +
-                        "                unzip '" + zipFile.getPath() + "'" + "\n" +
                         "              runMATLABTests(testResultsPDF:'test-results/results')\n" +
                         "            }\n" +
                         "        }\n" +
@@ -208,15 +181,13 @@ public class PipelineIntegTest {
     // invalid filename
     @Test
     public void verifyInvalidFilename() throws Exception {
-        String environment = getEnvironmentPath();
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                environment + "\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "                unzip '" + zipFile.getPath() + "'" + "\n" +
                 "              runMATLABTests(testResultsPDF:'abc/x?.pdf')\n" +
                 "            }\n" +
                 "        }\n" +
@@ -231,7 +202,7 @@ public class PipelineIntegTest {
     @Test
     public void verifyGlobalToolDSLPipeline() throws Exception {
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace("R2020b", "R2020a"), jenkins);
         String script = "pipeline {\n" +
                 "   agent any\n" +
                 "   tools {\n" +
@@ -252,7 +223,7 @@ public class PipelineIntegTest {
     @Test
     public void verifyGlobalToolScriptedPipeline() throws Exception {
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", "C:\\\\Program Files\\\\MATLAB\\\\R2020a", jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace("R2020b", "R2020a"), jenkins);
         String script = "node {\n" +
                 "    def matlabver\n" +
                 "    stage('Run MATLAB Command') {\n" +

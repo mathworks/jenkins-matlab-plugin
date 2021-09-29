@@ -248,7 +248,7 @@
 						</goals>
 						<configuration>
 							<includes>
-								<include>**/*Integ.java</include>
+								<include>**/*IT.java</include>
 							</includes>
 						</configuration>
 					</execution>
