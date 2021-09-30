@@ -31,9 +31,5 @@ trigger:
   - master
 
 steps:
-<<<<<<< HEAD
   - script: mw -using bci mvn failsafe:integration-test
-=======
-  - script: mw -using bci mvn clean verify
->>>>>>> ab4669edc442cd0c6129865730ee723d4d58deee
   
