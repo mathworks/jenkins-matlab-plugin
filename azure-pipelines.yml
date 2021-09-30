@@ -31,5 +31,5 @@ trigger:
   - master
 
 steps:
-  - script: mw -using bci mvn clean install failsafe:integration-test
+  - script: mw -using bci mvn clean verify
   
