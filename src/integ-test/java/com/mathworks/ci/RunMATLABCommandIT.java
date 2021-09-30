@@ -94,7 +94,7 @@ public class RunMATLABCommandIT {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = MatlabRootSetup.getMatlabRoot();
+        String matlabRoot = TestData.getPropValues("matlab.invalid.root.path") + "VERSION";
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
