@@ -29,7 +29,10 @@ pool:
 
 trigger:
   - master
-
-steps:
-  - script: mw -using bci mvn clean verify
+  
+  
+jobs:
+-job: Running_tests
+ steps:
+ - script: mw -using bci mvn clean verify
   
