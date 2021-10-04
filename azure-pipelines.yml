@@ -32,7 +32,7 @@ trigger:
   
   
 jobs:
--job: Running_tests
+- job: Running_tests
  steps:
  - script: mw -using bci mvn clean verify
   
