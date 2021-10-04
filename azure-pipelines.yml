@@ -37,3 +37,19 @@ jobs:
     steps:
     - script: mw -using bci mvn clean verify
   
+jobs:
+  - job : Test
+    strategy:
+      matrix:
+        linux:
+          imageName: 'linux_vm_vahila'
+        mac:
+          imageName: 'vahila_mac_bgl'
+        windows:
+          imageName: 'vahila_win_bgl'
+    pool:
+      name: Default
+      demands:
+        - agent.name -equals $(imageName)
+    steps:
+      - script: mw -using bci mvn clean verify
