@@ -13,7 +13,13 @@
 
 # trigger: none 
 
+pool:
+  name: Default
+  demands:
+    - agent.name -equals $(imageName)
 
+trigger:
+ - master
   
   
 jobs:
@@ -28,13 +34,6 @@ jobs:
     windows:
       imageName: 'vahila_win_bgl'
 
-   pool:
-    name: Default
-    demands:
-      - agent.name -equals $(imageName)
-
-    trigger:
-      - master
     steps:
     - script: mw -using bci mvn clean verify
   
