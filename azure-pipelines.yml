@@ -17,6 +17,7 @@ trigger:
   
 jobs:
   - job : Test
+    timeoutInMinutes: 120
     strategy:
       matrix:
         linux:
