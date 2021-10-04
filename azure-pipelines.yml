@@ -32,7 +32,8 @@ trigger:
   
   
 jobs:
-- job: Running_tests
- steps:
- - script: mw -using bci mvn clean verify
+- job: Test
+  timeoutInMinutes: 120
+  steps:
+  - script: mw -using bci mvn clean verify
   
