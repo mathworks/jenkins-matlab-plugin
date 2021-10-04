@@ -11,31 +11,9 @@
 #       source: test-setup
 #       trigger: true
 
-# trigger: none 
-
-pool:
-  name: Default
-  demands:
-    - agent.name -equals $(imageName)
-
 trigger:
  - master
-  
-  
-jobs:
-- job: Test
-  timeoutInMinutes: 120
-  strategy:
-  matrix:
-    linux:
-      imageName: 'linux_vm_vahila'
-    mac:
-      imageName: 'vahila_mac_bgl'
-    windows:
-      imageName: 'vahila_win_bgl'
 
-    steps:
-    - script: mw -using bci mvn clean verify
   
 jobs:
   - job : Test
