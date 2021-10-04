@@ -13,7 +13,13 @@
 
 # trigger: none 
 
-strategy:
+
+  
+  
+jobs:
+- job: Test
+  timeoutInMinutes: 120
+  strategy:
   matrix:
     linux:
       imageName: 'linux_vm_vahila'
@@ -22,18 +28,13 @@ strategy:
     windows:
       imageName: 'vahila_win_bgl'
 
-pool:
-  name: Default
-  demands:
-    - agent.name -equals $(imageName)
+   pool:
+    name: Default
+    demands:
+      - agent.name -equals $(imageName)
 
-trigger:
-  - master
-  
-  
-jobs:
-- job: Test
-  timeoutInMinutes: 120
-  steps:
-  - script: mw -using bci mvn clean verify
+    trigger:
+      - master
+    steps:
+    - script: mw -using bci mvn clean verify
   
