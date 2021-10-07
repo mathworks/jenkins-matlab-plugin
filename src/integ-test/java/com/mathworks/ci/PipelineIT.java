@@ -6,10 +6,7 @@ import org.apache.commons.io.IOUtils;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
@@ -144,8 +141,7 @@ public class PipelineIT {
                             "            steps\n" +
                             "            {\n" +
                             "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
-                            "              runMATLABTests( testResultsPDF:'test-results/results.pdf',\n" +
-                            "                             testResultsTAP: 'test-results/results.tap',\n" +
+                            "              runMATLABTests(sourceFolder:['src'], testResultsTAP: 'test-results/results.tap',\n" +
                             "                             testResultsJUnit: 'test-results/results.xml',\n" +
                             "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
                             "                             codeCoverageCobertura: 'code-coverage/coverage.xml',\n" +
@@ -161,6 +157,8 @@ public class PipelineIT {
     // .pdf extension
     @Test
     public void verifyExtForPDF() throws Exception {
+        Assume.assumeFalse
+                (System.getProperty("os.name").toLowerCase().startsWith("mac"));
         String script = "pipeline {\n" +
                         "  agent any\n" +
                         envDSL + "\n" +
@@ -181,6 +179,8 @@ public class PipelineIT {
     // invalid filename
     @Test
     public void verifyInvalidFilename() throws Exception {
+        Assume.assumeTrue
+                (System.getProperty("os.name").toLowerCase().startsWith("windows"));
         String script = "pipeline {\n" +
                 "  agent any\n" +
                 envDSL + "\n" +

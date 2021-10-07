@@ -1,5 +1,6 @@
 package com.mathworks.ci;
 
+import com.sun.akuma.CLibrary;
 import hudson.FilePath;
 import hudson.model.WorkspaceBrowser;
 import hudson.matrix.*;
@@ -7,6 +8,7 @@ import hudson.model.AbstractBuild;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import org.apache.commons.lang.ObjectUtils;
 import org.jenkinsci.plugins.workflow.actions.WorkspaceAction;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.cps.nodes.StepStartNode;
@@ -24,14 +26,12 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+
 import org.apache.commons.lang3.StringUtils;
 import jenkins.model.*;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DockerSupportIT extends Thread{
     volatile private FreeStyleProject project;
@@ -68,17 +68,17 @@ public class DockerSupportIT extends Thread{
         return pipelineProject.scheduleBuild2(0).get();
     }
 
-    private void verifySourceFilesFolderStructure(FilePath projectWorkspace) throws Exception {
-        // assert it has only folder .matlab
-//        assertEquals(projectWorkspace.list().size(), 1);
-        assertEquals(projectWorkspace.listDirectories().get(0).getName(), ".matlab");
-        // Assert it has only one folder inside it
-        assertEquals(projectWorkspace.listDirectories().get(0).list().size(), 1);
-
-        // assert inside .matlab folder there is only one folder of name size 8 and with a.lpha numeric charecters
-        FilePath randomBuildFolderPath = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
-        assertEquals(randomBuildFolderPath.getName().length(), 8);
-        assertTrue(StringUtils.isAlphanumeric(randomBuildFolderPath.getName()));
+    /*
+     * Utility function to check if a directory has a given folder
+     */
+    private boolean verifyFilePathContainsFolder(FilePath projectWorkspace, String folderName) throws Exception {
+        List<FilePath> allFolders = projectWorkspace.listDirectories();
+        for(int i=0;i<allFolders.size();i++){
+            if(allFolders.get(i).getName().equalsIgnoreCase(folderName)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean verifyFolderHasFile(FilePath sourceFilePath, String fileName) throws Exception {
@@ -91,89 +91,143 @@ public class DockerSupportIT extends Thread{
         return false;
     }
 
+    /*
+     * Utility function to get path of a file from folder
+     */
+    private FilePath getFilePathOfFileFromWorkspace(FilePath projectWorkspace, String fileName) throws Exception{
+        FilePath filePathOfFile = null;
+        List<FilePath> allFolders = projectWorkspace.list();
+        for(int i=0;i<allFolders.size();i++){
+            if(allFolders.get(i).getName().contains(fileName)){
+                filePathOfFile = allFolders.get(i);
+                break;
+            }
+        }
+        assertNotNull(filePathOfFile);
+        return filePathOfFile;
+    }
 
+    private void verifySourceFilesFolderStructure(FilePath projectWorkspace) throws Exception {
+        // Project workspace should have a folder .matlab
+        verifyFolderHasFile(projectWorkspace, ".matlab");
+        // Get the path of .matlab folder
+        FilePath dotMATLABPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab");
+
+        // .matlab folder should have only one folder
+        assertEquals(dotMATLABPath.list().size(), 1);
+        // Folder where all the MATLAB scripts from genscript are stored
+        FilePath MATLABScriptsFolderPath = dotMATLABPath.listDirectories().get(0);
+
+        // assert inside .matlab folder there is only one folder of name size 8 and with alpha numeric charecters
+        assertEquals(MATLABScriptsFolderPath.getName().length(), 8);
+        assertTrue(StringUtils.isAlphanumeric(MATLABScriptsFolderPath.getName()));
+    }
     private void verifyCommandScriptSourceFolder(FilePath projectWorkspace) throws Exception {
-        FilePath sourceFilePath = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
+        verifySourceFilesFolderStructure(projectWorkspace);
+        FilePath MATLABScriptsFolderPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab").listDirectories().get(0);
 
-
-        assertTrue(verifyFolderHasFile(sourceFilePath, "command_"));
-        assertTrue(verifyFolderHasFile(sourceFilePath, "run_matlab_command"));
+        assertTrue(verifyFolderHasFile(MATLABScriptsFolderPath, "command_"));
+        assertTrue(verifyFolderHasFile(MATLABScriptsFolderPath, "run_matlab_command"));
     }
 
     private void verifyTestsScriptFolder(FilePath projectWorkspace) throws Exception {
-        FilePath sourceFilePath = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
-        assertTrue(verifyFolderHasFile(sourceFilePath, "runner_"));
-        assertTrue(verifyFolderHasFile(sourceFilePath, "genscript"));
-        assertTrue(verifyFolderHasFile(sourceFilePath, "run_matlab_command"));
+        verifySourceFilesFolderStructure(projectWorkspace);
+        FilePath MATLABScriptsFolderPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab").listDirectories().get(0);
+
+        assertTrue(verifyFolderHasFile(MATLABScriptsFolderPath, "runner_"));
+        assertTrue(verifyFolderHasFile(MATLABScriptsFolderPath, "genscript"));
+        assertTrue(verifyFolderHasFile(MATLABScriptsFolderPath, "run_matlab_command"));
     }
 
-    private  void verifyCommandScriptInvokledPath(FilePath commandScriptFilePath, AbstractBuild<?,?> build) throws Exception {
-        jenkins.assertLogContains(".matlab", build);
-        jenkins.assertLogContains(commandScriptFilePath.getParent().getName(), build);
-        // Removing .m extesion
-        String commandScriptName = commandScriptFilePath.getName();
-        commandScriptName = commandScriptName.substring(0, commandScriptName.length() - 2);
-        jenkins.assertLogContains(commandScriptName, build);
-        // Removing 'command_'
-        assertTrue(StringUtils.isAlphanumeric(commandScriptName.substring(8)));
+    String getFileNameWithoutExt(FilePath scriptFilePath){
+        String fileFullName = scriptFilePath.getName();
+        return fileFullName.substring(0, fileFullName.length()-2);
     }
 
-    private  void verifyCommandScriptInvokledPath(FilePath commandScriptFilePath, WorkflowRun build) throws Exception {
+    /*
+     * Utility function to verify the command/tests script file is invoked from inside ".matlab" folder
+     */
+    private  void verifyScriptInvokledPath(FilePath scriptFilePath, AbstractBuild<?,?> build) throws Exception {
         jenkins.assertLogContains(".matlab", build);
-        jenkins.assertLogNotContains("tmp", build);
-        jenkins.assertLogContains(commandScriptFilePath.getParent().getName(), build);
-        // Removing .m extesion
-        String commandScriptName = commandScriptFilePath.getName();
-        commandScriptName = commandScriptName.substring(0, commandScriptName.length() - 2);
-        jenkins.assertLogContains(commandScriptName, build);
-        // Removing 'command_'
-        assertTrue(StringUtils.isAlphanumeric(commandScriptName.substring(8)));
+        jenkins.assertLogContains(scriptFilePath.getParent().getName(), build);
+        String scriptFileName = getFileNameWithoutExt(scriptFilePath);
+        jenkins.assertLogContains(scriptFileName, build);
+        // Removing 'command_/runner_'
+//        assertTrue(StringUtils.isAlphanumeric(scriptName.substring(8)));
     }
 
-    private  void verifyTestScriptInvokledPath(FilePath runnerScriptFilePath, AbstractBuild<?,?> build) throws Exception {
+    private  void verifyScriptInvokledPath(FilePath scriptFilePath, WorkflowRun build) throws Exception {
         jenkins.assertLogContains(".matlab", build);
-        jenkins.assertLogNotContains("tmp", build);
-        jenkins.assertLogContains(runnerScriptFilePath.getParent().getName(), build);
-        String runnerScriptName = runnerScriptFilePath.getName();
-        runnerScriptName = runnerScriptName.substring(0, runnerScriptName.length() - 2);
-        jenkins.assertLogContains(runnerScriptName, build);
-    }
-    private  void verifyTestScriptInvokledPath(FilePath runnerScriptFilePath, WorkflowRun build) throws Exception {
-        jenkins.assertLogContains(".matlab", build);
-        jenkins.assertLogNotContains("tmp", build);
-        jenkins.assertLogContains(runnerScriptFilePath.getParent().getName(), build);
-        String runnerScriptName = runnerScriptFilePath.getName();
-        runnerScriptName = runnerScriptName.substring(0, runnerScriptName.length() - 2);
-        jenkins.assertLogContains(runnerScriptName, build);
+        jenkins.assertLogContains(scriptFilePath.getParent().getName(), build);
+        String scriptFileName = getFileNameWithoutExt(scriptFilePath);
+        jenkins.assertLogContains(scriptFileName, build);
+        // Removing 'command_/runner_'
+//        assertTrue(StringUtils.isAlphanumeric(scriptName.substring(8)));
     }
 
+    MatrixRun getMatrixRunFromMatrixBuild(MatrixBuild matrixBuild, String axesName, String runName){
+        Map<String, String> vals = new HashMap<String, String>();
+        vals.put(axesName, runName);
+        Combination c = new Combination(vals);
+        return matrixBuild.getRun(c);
+    }
+
+//    private  void verifyTestScriptInvokledPath(FilePath runnerScriptFilePath, AbstractBuild<?,?> build) throws Exception {
+//        jenkins.assertLogContains(".matlab", build);
+//        jenkins.assertLogContains(runnerScriptFilePath.getParent().getName(), build);
+//        String runnerScriptName = runnerScriptFilePath.getName();
+//        runnerScriptName = runnerScriptName.substring(0, runnerScriptName.length() - 2);
+//        jenkins.assertLogContains(runnerScriptName, build);
+//    }
+//    private  void verifyTestScriptInvokledPath(FilePath runnerScriptFilePath, WorkflowRun build) throws Exception {
+//        jenkins.assertLogContains(".matlab", build);
+//        jenkins.assertLogContains(runnerScriptFilePath.getParent().getName(), build);
+//        String runnerScriptName = runnerScriptFilePath.getName();
+//        runnerScriptName = runnerScriptName.substring(0, runnerScriptName.length() - 2);
+//        jenkins.assertLogContains(runnerScriptName, build);
+//    }
+    /*
+     * CHeck after the build, the ".matlab" folder is still present and is empty
+     */
     private void verifyDotMATLABFolderIsEmptyAfterBuild(FilePath projectWorkspace) throws Exception {
-        assertEquals(projectWorkspace.listDirectories().get(0).getName(), ".matlab");
+        assertTrue(verifyFilePathContainsFolder(projectWorkspace, ".matlab"));
         // Assert it has only one folder inside it
         assertEquals(projectWorkspace.listDirectories().get(0).list().size(), 0);
     }
 
-    FilePath getCommandScriptFilePath(FilePath projectWorkspace) throws IOException, InterruptedException {
-        return projectWorkspace.list().get(0).list().get(0).list().get(0);
+    FilePath getMATLABCommandScriptFilePath(FilePath projectWorkspace) throws Exception {
+        FilePath dotMATLABPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab");
+        FilePath MATLABscriptFilePath = getFilePathOfFileFromWorkspace(dotMATLABPath.listDirectories().get(0), "command_");
+        return MATLABscriptFilePath;
     }
 
-    FilePath getrunnerScriptFilePath(FilePath projectWorkspace) throws IOException, InterruptedException {
-        List<FilePath> sourceFiles = projectWorkspace.listDirectories().get(0).listDirectories().get(0).list();
-        return sourceFiles.get(sourceFiles.size()-1);
+    FilePath getMATLABrunnerScriptFilePath(FilePath projectWorkspace) throws Exception {
+        FilePath dotMATLABPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab");
+        FilePath MATLABscriptFilePath = getFilePathOfFileFromWorkspace(dotMATLABPath.listDirectories().get(0), "runner_");
+        return MATLABscriptFilePath;
     }
 
-    boolean testFolder(FilePath projectWorkspace){
-        File f1 = new File(projectWorkspace.getRemote() + File.separator + ".matlab");
-        if(f1.exists() == false){
+    boolean verifyMATLABScriptsFolderIsCreated(FilePath projectWorkspace) throws Exception {
+        File dotMATLABFolder = new File(projectWorkspace.getRemote() + File.separator + ".matlab");
+
+        // Check .matlab folder is generated
+        if(!dotMATLABFolder.exists()){
             return false;
         }
-        if(f1.list().length == 0){
+        FilePath dotMATLABFolderPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab");
+        // Check a folder is created to store the MATLAB scripts
+        if(Objects.requireNonNull(dotMATLABFolder.list()).length == 0){
+            return false;
+        }
+        // Check required MATLAB scripts are created in the folder
+        FilePath MATLABScriptsFolderPath = dotMATLABFolderPath.listDirectories().get(0);
+        if(MATLABScriptsFolderPath.list().size() == 0){
             return false;
         }
         return  true;
     }
 
-    private boolean testRunWorkspace(FilePath projectWorkspace) throws IOException, InterruptedException {
+    private boolean checkMatrixRunWorkspacesAreCreated(FilePath projectWorkspace) throws IOException, InterruptedException {
         if(projectWorkspace.listDirectories().size() == 0){
             return false;
         }
@@ -189,7 +243,6 @@ public class DockerSupportIT extends Thread{
 
     @Test
     public void verifyFreeStyleCommandSourceFiles() throws Exception {
-        FilePath commandScriptFilePath;
         buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(buildWrapper);
@@ -201,7 +254,6 @@ public class DockerSupportIT extends Thread{
             public void run(){
                 try {
                     build = project.scheduleBuild2(0).get();
-
                     jenkins.assertBuildStatus(Result.SUCCESS, build);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -210,28 +262,21 @@ public class DockerSupportIT extends Thread{
         };
         thread.start();
         FilePath projectWorkspace = jenkins.jenkins.getWorkspaceFor(project);
-        while(!testFolder(projectWorkspace)){
-            Thread.sleep(200);
+        assert projectWorkspace != null;
+        while(!verifyMATLABScriptsFolderIsCreated(projectWorkspace)){
+            Thread.sleep(100);
         }
 
         thread.suspend();
 
-//        FilePath projectWorkspace = project.getWorkspace();
-        verifySourceFilesFolderStructure(projectWorkspace);
         verifyCommandScriptSourceFolder(projectWorkspace);
-        commandScriptFilePath = getCommandScriptFilePath(projectWorkspace);
+        FilePath commnadMATLABScriptFilePath = getMATLABCommandScriptFilePath(projectWorkspace);
 
-        // Add check for alpha numeric names
-
-//        thread.suspend();
         thread.resume();
         thread.join();
-        verifyCommandScriptInvokledPath(commandScriptFilePath, build);
+
+        verifyScriptInvokledPath(commnadMATLABScriptFilePath, build);
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
-        String build_log = jenkins.getLog(build);
-
-
-        String build_log1 = jenkins.getLog(build);
     }
 
     @Test
@@ -253,7 +298,6 @@ public class DockerSupportIT extends Thread{
             public void run(){
                 try {
                     build = project.scheduleBuild2(0).get();
-
                     jenkins.assertBuildStatus(Result.SUCCESS, build);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -261,27 +305,23 @@ public class DockerSupportIT extends Thread{
             }
         };
         FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(project);
+
         thread.start();
-        while(!testFolder(projectWorkspace)){
+        while(!verifyMATLABScriptsFolderIsCreated(projectWorkspace)){
             Thread.sleep(1000);
         }
         thread.suspend();
 
-
-        verifySourceFilesFolderStructure(projectWorkspace);
         verifyTestsScriptFolder(projectWorkspace);
-        runnerScriptFilePath = getrunnerScriptFilePath(projectWorkspace);
-
+        FilePath runnerMATLABScriptName = getMATLABrunnerScriptFilePath(projectWorkspace);
 
         thread.resume();
         thread.join();
 
-        verifyTestScriptInvokledPath(runnerScriptFilePath, build);
+        verifyScriptInvokledPath(runnerMATLABScriptName, build);
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
     }
 //
-//    @Test
-//    public void
     @Test
     public void verifyMatrixCommandSourceFiles() throws Exception {
         matrixProject = jenkins.createProject(MatrixProject.class);
@@ -307,51 +347,43 @@ public class DockerSupportIT extends Thread{
         };
         thread.start();
         FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(matrixProject);
-        while(!testRunWorkspace(projectWorkspace)){
+        while(!checkMatrixRunWorkspacesAreCreated(projectWorkspace)){
             Thread.sleep(1000);
         }
-        FilePath firstRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
-        FilePath secondRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(1);
+        projectWorkspace = getFilePathOfFileFromWorkspace(projectWorkspace, "MATLAB_VERSION");
+        FilePath firstRunWorkspace = getFilePathOfFileFromWorkspace(projectWorkspace, "R2020b");
+        FilePath secondRunWorkspace = getFilePathOfFileFromWorkspace(projectWorkspace, "R2020a");
 
-        while(!testFolder(firstRunWorkspace) && !testFolder(secondRunWorkspace)){
+        while(!verifyMATLABScriptsFolderIsCreated(firstRunWorkspace) && !verifyMATLABScriptsFolderIsCreated(secondRunWorkspace)){
             Thread.sleep(1000);
         }
         thread.suspend();
 
 
         // verify folder structure and source files path for first run
-        verifySourceFilesFolderStructure(firstRunWorkspace);
         verifyCommandScriptSourceFolder(firstRunWorkspace);
 
         // verify folder structure and source files path for second run
-        verifySourceFilesFolderStructure(secondRunWorkspace);
         verifyCommandScriptSourceFolder(secondRunWorkspace);
 
         // Command script path for first run
-        FilePath firstRunCommandScriptFilePath = getCommandScriptFilePath(firstRunWorkspace);
+        FilePath firstRunCommandScriptFilePath = getMATLABCommandScriptFilePath(firstRunWorkspace);
 
         // Command script path for second run
-        FilePath secondRunCommandScriptFilePath = getCommandScriptFilePath(secondRunWorkspace);
+        FilePath secondRunCommandScriptFilePath = getMATLABCommandScriptFilePath(secondRunWorkspace);
 
         // Completing the build
         thread.resume();
         thread.join();
 
-        List<MatrixRun> runs = matrixBuild.getRuns();
         // verify source files invoked path for first run
-        verifyCommandScriptInvokledPath(firstRunCommandScriptFilePath, runs.get(0));
+        verifyScriptInvokledPath(firstRunCommandScriptFilePath, getMatrixRunFromMatrixBuild(matrixBuild,"MATLAB_VERSION", "R2020b"));
         verifyDotMATLABFolderIsEmptyAfterBuild(firstRunWorkspace);
+
         // verify source files invoked path for second run
-        verifyCommandScriptInvokledPath(secondRunCommandScriptFilePath, runs.get(1));
+        verifyScriptInvokledPath(secondRunCommandScriptFilePath,  getMatrixRunFromMatrixBuild(matrixBuild,"MATLAB_VERSION", "R2020a"));
         verifyDotMATLABFolderIsEmptyAfterBuild(secondRunWorkspace);
 
-
-        String build_log = jenkins.getLog(matrixBuild);
-//        List<MatrixRun> runs = matrixBuild.getRuns();
-        for (MatrixRun run : runs) {
-
-            System.out.println(jenkins.getLog(run));
-        }
 
         jenkins.assertLogContains("R2020b completed", matrixBuild);
         jenkins.assertLogContains("R2020a completed", matrixBuild);
@@ -390,13 +422,15 @@ public class DockerSupportIT extends Thread{
         };
         thread.start();
         FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(matrixProject);
-        while(!testRunWorkspace(projectWorkspace)){
+        while(!checkMatrixRunWorkspacesAreCreated(projectWorkspace)){
             Thread.sleep(1000);
         }
-        FilePath firstRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(0);
-        FilePath secondRunWorkspace = projectWorkspace.listDirectories().get(0).listDirectories().get(1);
 
-        while(!testFolder(firstRunWorkspace) && !testFolder(secondRunWorkspace)){
+        projectWorkspace = getFilePathOfFileFromWorkspace(projectWorkspace, "MATLAB_VERSION");
+        FilePath firstRunWorkspace = getFilePathOfFileFromWorkspace(projectWorkspace, "R2020b");
+        FilePath secondRunWorkspace = getFilePathOfFileFromWorkspace(projectWorkspace, "R2020a");
+
+        while(!verifyMATLABScriptsFolderIsCreated(firstRunWorkspace) && !verifyMATLABScriptsFolderIsCreated(secondRunWorkspace)){
             Thread.sleep(1000);
         }
         thread.suspend();
@@ -412,21 +446,21 @@ public class DockerSupportIT extends Thread{
         verifyTestsScriptFolder(secondRunWorkspace);
 
         // Command script path for first run
-        FilePath firstRunTestsScriptFilePath = getrunnerScriptFilePath(firstRunWorkspace);
+        FilePath firstRunTestsScriptName = getMATLABrunnerScriptFilePath(firstRunWorkspace);
 
         // Command script path for second run
-        FilePath secondRunTestsScriptFilePath = getrunnerScriptFilePath(secondRunWorkspace);
+        FilePath secondRunTestsScriptName = getMATLABrunnerScriptFilePath(secondRunWorkspace);
 
         // Completing the build
         thread.resume();
         thread.join();
 
-        List<MatrixRun> runs = matrixBuild.getRuns();
         // verify source files invoked path for first run
-        verifyTestScriptInvokledPath(firstRunTestsScriptFilePath, runs.get(0));
+        verifyScriptInvokledPath(firstRunTestsScriptName, getMatrixRunFromMatrixBuild(matrixBuild,"MATLAB_VERSION", "R2020b"));
         verifyDotMATLABFolderIsEmptyAfterBuild(firstRunWorkspace);
+
         // verify source files invoked path for second run
-        verifyTestScriptInvokledPath(secondRunTestsScriptFilePath, runs.get(1));
+        verifyScriptInvokledPath(secondRunTestsScriptName, getMatrixRunFromMatrixBuild(matrixBuild,"MATLAB_VERSION", "R2020a"));
         verifyDotMATLABFolderIsEmptyAfterBuild(secondRunWorkspace);
 
         jenkins.assertLogContains("R2020b completed", matrixBuild);
@@ -492,19 +526,19 @@ public class DockerSupportIT extends Thread{
             }
         };
         FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(pipelineProject);
+
         thread.start();
-        while(!testFolder(projectWorkspace)){
+        while(!verifyMATLABScriptsFolderIsCreated(projectWorkspace)){
             Thread.sleep(12000);
         }
         thread.suspend();
 
-        verifySourceFilesFolderStructure(projectWorkspace);
         verifyCommandScriptSourceFolder(projectWorkspace);
-        commandScriptFilePath = getCommandScriptFilePath(projectWorkspace);
+        FilePath MATLABCommandScriptFilePath = getMATLABCommandScriptFilePath(projectWorkspace);
 
         thread.resume();
         thread.join();
-        verifyCommandScriptInvokledPath(commandScriptFilePath, pipelineBuild);
+        verifyScriptInvokledPath(MATLABCommandScriptFilePath, pipelineBuild);
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
     }
 
@@ -538,19 +572,19 @@ public class DockerSupportIT extends Thread{
             }
         };
         FilePath projectWorkspace =jenkins.jenkins.getWorkspaceFor(pipelineProject);
+
         thread.start();
-        while(!testFolder(projectWorkspace)){
+        while(!verifyMATLABScriptsFolderIsCreated(projectWorkspace)){
             Thread.sleep(12000);
         }
         thread.suspend();
 
-        verifySourceFilesFolderStructure(projectWorkspace);
         verifyTestsScriptFolder(projectWorkspace);
-        runnerScriptFilePath = getrunnerScriptFilePath(projectWorkspace);
+        FilePath runnerMATLABScriptFilePath = getMATLABrunnerScriptFilePath(projectWorkspace);
 
         thread.resume();
         thread.join();
-        verifyTestScriptInvokledPath(runnerScriptFilePath, pipelineBuild);
+        verifyScriptInvokledPath(runnerMATLABScriptFilePath, pipelineBuild);
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
     }
 }
