@@ -191,8 +191,9 @@ public class DockerSupportIT extends Thread{
      */
     private void verifyDotMATLABFolderIsEmptyAfterBuild(FilePath projectWorkspace) throws Exception {
         assertTrue(verifyFilePathContainsFolder(projectWorkspace, ".matlab"));
+        FilePath dotMATLABPath = getFilePathOfFileFromWorkspace(projectWorkspace, ".matlab");
         // Assert it has only one folder inside it
-        assertEquals(projectWorkspace.listDirectories().get(0).list().size(), 0);
+        assertEquals(dotMATLABPath.list().size(), 0);
     }
 
     FilePath getMATLABCommandScriptFilePath(FilePath projectWorkspace) throws Exception {
