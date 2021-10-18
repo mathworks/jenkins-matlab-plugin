@@ -31,7 +31,7 @@ jobs:
       demands:
         - agent.name -equals $(imageName)
     steps:
-      - script: mw -using bci mvn clean verify
+      - script: mvn clean verify
 #       - task: Maven@3
 #         inputs:
 #           mavenPomFile: 'pom.xml'
