@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         linux:
-          imageName: 'vahila_bgl_linux'
+          imageName: 'linuxdockeragent'
         mac:
           imageName: 'vahila_mac_bgl'
         windows:
