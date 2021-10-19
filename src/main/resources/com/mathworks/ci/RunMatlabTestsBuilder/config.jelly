@@ -64,20 +64,35 @@
     <br></br>
     <b>Verbosity</b>
     
-    	<f:entry title="Logging Level" field="logginglevel">
-	    <select name="logginglevel">
+	<f:entry title="Logging Level" field="logginglevel">
+	    <select name="logginglevel" >
 	    <j:forEach var="level" items="${descriptor.getlevels()}" varStatus="loop">
-	        <option value="${level}">${level}</option>
+	    <j:choose>
+	    <j:when test="${descriptor.check1(level)}">
+	        <option value="${level}" selected="selected">${level}</option>
+	     </j:when>
+	     <j:otherwise>
+	        <option value="${level}">${level}</option>	     
+	     </j:otherwise>
+	     </j:choose>
 	     </j:forEach>
 	    </select>
 	</f:entry>
-    
+	
 	<f:entry title="Output Level" field="outputlevel">
 	    <select name="outputlevel">
 	    <j:forEach var="level" items="${descriptor.getlevels()}" varStatus="loop">
-	        <option value="${level}">${level}</option>
+	 	 <j:choose>
+	    <j:when test="${descriptor.check2(level)}">
+	        <option value="${level}" selected="selected">${level}</option>
+	     </j:when>
+	     <j:otherwise>
+	        <option value="${level}">${level}</option>	     
+	     </j:otherwise>
+	     </j:choose>
 	     </j:forEach>
 	    </select>
 	</f:entry>
-	</f:block>
+	
+</f:block>
 </j:jelly>

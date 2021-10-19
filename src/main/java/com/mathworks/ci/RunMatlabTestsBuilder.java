@@ -64,7 +64,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     private String logginglevel;
     private String outputlevel;
+	private static String loglevel = Message.getValue("matlab.loglevel.default") ;
+	private static String outputvalue = Message.getValue("matlab.outputdetail.default") ; 
     
+    public String getOutputlevel() {
+		return outputlevel;
+	}
+
+	public String getLogginglevel() {
+		return logginglevel;
+	}
+	
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
@@ -74,11 +84,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     @DataBoundSetter
     public void setLogginglevel(String logginglevel) {
+    	loglevel = logginglevel;
         this.logginglevel = logginglevel ;
     } 
     
     @DataBoundSetter
     public void setOutputlevel(String outputlevel) {
+    	outputvalue = outputlevel ;
         this.outputlevel = outputlevel ;
     }
     
@@ -230,9 +242,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
-
-    	private final String outputvalue = Message.getValue("matlab.outputdetail.default") ; 
-    	private final String loglevel = Message.getValue("matlab.loglevel.default") ;
     	
         // Overridden Method used to show the text under build dropdown
         @Override
@@ -258,6 +267,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
+        /*
         public ListBoxModel doFillLogginglevelItems() {
             ListBoxModel items = new ListBoxModel();
             
@@ -281,11 +291,20 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
       
             items.get(3).selected = true;
             return items;
-        }
+        }*/
+        
         public boolean check1(String val)
         {
         	val=val.toString();
-        	return loglevel.equalsIgnoreCase(val) ;
+        	boolean ans = loglevel.equalsIgnoreCase(val) ;        	
+        	return ans ;
+        }
+        public boolean check2(String val)
+        {
+        	val=val.toString();
+        	boolean ans = outputvalue.equalsIgnoreCase(val) ;
+        	return ans ;
+        	
         }
         public String[] getlevels()
         {
