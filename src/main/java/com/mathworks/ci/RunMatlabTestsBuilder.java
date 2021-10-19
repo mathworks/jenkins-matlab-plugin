@@ -35,6 +35,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import hudson.Launcher.ProcStarter;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -61,7 +62,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
     
-
+    private String logginglevel;
+    private String outputlevel;
+    
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
@@ -69,6 +72,16 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     // Getter and Setters to access local members
 
+    @DataBoundSetter
+    public void setLogginglevel(String logginglevel) {
+        this.logginglevel = logginglevel ;
+    } 
+    
+    @DataBoundSetter
+    public void setOutputlevel(String outputlevel) {
+        this.outputlevel = outputlevel ;
+    }
+    
     @DataBoundSetter
     public void setTapArtifact(TapArtifact tapArtifact) {
         this.tapArtifact = tapArtifact;
@@ -218,6 +231,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
 
+    	private final String outputvalue = Message.getValue("matlab.outputdetail.default") ; 
+    	private final String loglevel = Message.getValue("matlab.loglevel.default") ;
+    	
         // Overridden Method used to show the text under build dropdown
         @Override
         public String getDisplayName() {
@@ -242,6 +258,40 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
+        public ListBoxModel doFillLogginglevelItems() {
+            ListBoxModel items = new ListBoxModel();
+            
+            for(String val:Verbosity.getverbosity())
+            {
+            	items.add(val,val);
+            }
+      
+            items.get(2).selected = true;
+            return items;
+        }
+        
+        public ListBoxModel doFillOutputlevelItems() {
+            ListBoxModel items = new ListBoxModel();
+            int i=0 ;
+            for(String val:Verbosity.getverbosity())
+            {
+            	items.add(val,val);
+            	i++ ;
+            }
+      
+            items.get(3).selected = true;
+            return items;
+        }
+        public boolean check1(String val)
+        {
+        	val=val.toString();
+        	return loglevel.equalsIgnoreCase(val) ;
+        }
+        public String[] getlevels()
+        {
+        	return Verbosity.getverbosity() ;
+        }
+        
     }
 
     @Override
@@ -260,6 +310,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
+        listener.getLogger().println(logginglevel) ; 
+        listener.getLogger().println(outputlevel) ; 
     }
 
     private int execMatlabCommand(FilePath workspace, Launcher launcher,

@@ -58,4 +58,26 @@
   	  </f:entry>
    </f:optionalBlock>
 </f:block>
+
+
+<f:block>
+    <br></br>
+    <b>Verbosity</b>
+    
+    	<f:entry title="Logging Level" field="logginglevel">
+	    <select name="logginglevel">
+	    <j:forEach var="level" items="${descriptor.getlevels()}" varStatus="loop">
+	        <option value="${level}">${level}</option>
+	     </j:forEach>
+	    </select>
+	</f:entry>
+    
+	<f:entry title="Output Level" field="outputlevel">
+	    <select name="outputlevel">
+	    <j:forEach var="level" items="${descriptor.getlevels()}" varStatus="loop">
+	        <option value="${level}">${level}</option>
+	     </j:forEach>
+	    </select>
+	</f:entry>
+	</f:block>
 </j:jelly>
