@@ -32,7 +32,7 @@ jobs:
       demands:
         - agent.name -equals $(imageName)
     steps:
-      - script:  mvn clean verify
+      - script:  mvn clean verify -Dfindbugs.skip=true
 #       - task: Maven@3
 #         inputs:
 #           mavenPomFile: 'pom.xml'
