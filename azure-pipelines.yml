@@ -21,7 +21,7 @@ jobs:
     strategy:
       matrix:
         linux:
-          imageName: 'linux_vm_vahila'
+          imageName: 'vahila_bgl_linux'
 #         mac:
 #           imageName: 'vahila_mac_bgl'
 #         windows:
