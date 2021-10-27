@@ -20,12 +20,12 @@ jobs:
     timeoutInMinutes: 120
     strategy:
       matrix:
-#         linux:
-#           imageName: 'linux_vm_vahila'
+        linux:
+          imageName: 'linux_vm_vahila'
 #         mac:
 #           imageName: 'vahila_mac_bgl'
-        windows:
-          imagename: 'windowsdockeragent'
+#         windows:
+#           imagename: 'windowsdockeragent'
           #imageName: 'vahila_win_bgl'
     pool:
       name: Default
