@@ -417,7 +417,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
-
+        
+//        inputArgsList.add("'" + "LoggingLevel" + "'" + "," + "'" + logginglevel+"'");
+//        inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputlevel+"'");
         return String.join(",", inputArgsList);
     }
 
