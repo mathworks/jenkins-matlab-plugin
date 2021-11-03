@@ -62,7 +62,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
     
-    private String logginglevel;
+//    private String logginglevel;
     private String outputlevel;
 	private static String loglevel = Message.getValue("matlab.loglevel.default") ;
 	private static String outputvalue = Message.getValue("matlab.outputdetail.default") ; 
@@ -71,9 +71,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 		return outputlevel;
 	}
 
-	public String getLogginglevel() {
-		return logginglevel;
-	}
+//	public String getLogginglevel() {
+//		return logginglevel;
+//	}
 	
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
@@ -82,11 +82,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     // Getter and Setters to access local members
 
-    @DataBoundSetter
-    public void setLogginglevel(String logginglevel) {
-    	loglevel = logginglevel;
-        this.logginglevel = logginglevel ;
-    } 
+//    @DataBoundSetter
+//    public void setLogginglevel(String logginglevel) {
+//    	loglevel = logginglevel;
+//        this.logginglevel = logginglevel ;
+//    } 
     
     @DataBoundSetter
     public void setOutputlevel(String outputlevel) {
@@ -293,12 +293,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return items;
         }*/
         
-        public boolean check1(String val)
-        {
-        	val=val.toString();
-        	boolean ans = loglevel.equalsIgnoreCase(val) ;        	
-        	return ans ;
-        }
+//        public boolean check1(String val)
+//        {
+//        	val=val.toString();
+//        	boolean ans = loglevel.equalsIgnoreCase(val) ;        	
+//        	return ans ;
+//        }
         public boolean check2(String val)
         {
         	val=val.toString();
@@ -329,7 +329,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
-        listener.getLogger().println(logginglevel) ; 
+//        listener.getLogger().println(logginglevel) ; 
         listener.getLogger().println(outputlevel) ; 
     }
 
@@ -419,7 +419,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
         
 //        inputArgsList.add("'" + "LoggingLevel" + "'" + "," + "'" + logginglevel+"'");
-//        inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputlevel+"'");
+        inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputlevel+"'");
         return String.join(",", inputArgsList);
     }
 
