@@ -79,7 +79,7 @@
 	    </select>
 	</f:entry> -->
 	
-	 <f:entry title="Output Level" field="outputlevel">
+	 <!--<f:entry title="Output Level" field="outputlevel">
 	    <select name="outputlevel">
 	    <j:forEach var="level" items="${descriptor.getlevels()}" varStatus="loop">
 	 	 <j:choose>
@@ -90,6 +90,21 @@
 	        <option value="${level}">${level}</option>	     
 	     </j:otherwise>
 	     </j:choose>
+	     </j:forEach>
+	    </select>
+	</f:entry> -->
+	
+	 <f:entry title="Output Level" field="outputlevel1">
+	    <select name="outputlevel1" size="20" width="200px">
+	    <j:forEach var="level1" items="${descriptor.getval1()}" varStatus="loop">
+	 	 <j:choose>
+	    <j:when test="${descriptor.check3(level1.toString())}">
+	        <option value="${level1.toString()}" selected="selected">${level1.toString()}</option>
+	     </j:when>
+	     <j:otherwise>
+	        <option value="${level1.toString()}">${level1.toString()}</option>	     
+	     </j:otherwise>
+	     </j:choose>	
 	     </j:forEach>
 	    </select>
 	</f:entry> 
