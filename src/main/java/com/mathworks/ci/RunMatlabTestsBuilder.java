@@ -62,23 +62,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
     
-	private static String outputvalue1 = Message.getValue("matlab.outputdetail.default") ;
-	private static String outputvalue = Message.getValue("matlab.outputdetail.default") ;
-	private static verbosityTypes outputlevel1 ;
-	private String outputlevel;
-	private static verbosityTypes [] arr ;
-    
-    public String getOutputlevel() {
-		return outputlevel;
-	}
-    
-	public static enum verbosityTypes{
-		NONE, TERSE, CONCISE, DETAILED , VERBOSE
-		
-	}
+	private static String defaultOutputValue = Message.getValue("matlab.outputdetail.default") ;
+	private Verbosity.verbosityTypes outputLevel ;
+        
 	
-    public verbosityTypes getOutputlevel1() {
-		return outputlevel1;
+    public Verbosity.verbosityTypes getOutputLevel() {
+		return outputLevel;
 	}
     
 
@@ -87,18 +76,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public RunMatlabTestsBuilder() {
 
     }
-    
-    
-    @DataBoundSetter
-    public void setOutputlevel(String outputlevel) {
-    	outputvalue = outputlevel ;
-        this.outputlevel = outputlevel ;
-    }
+       
     
     @DataBoundSetter
-    public void setOutputlevel1(String outputlevel1) {
-    	outputvalue1 = outputlevel1 ;
-        this.outputlevel1 = verbosityTypes.valueOf(outputlevel1) ;
+    public void setOutputLevel(String outputLevel) {
+    	defaultOutputValue = outputLevel ;
+        this.outputLevel = Verbosity.verbosityTypes.valueOf(outputLevel) ;
     }
     
     @DataBoundSetter
@@ -274,64 +257,17 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
-        /*
-        public ListBoxModel doFillLogginglevelItems() {
-            ListBoxModel items = new ListBoxModel();
-            
-            for(String val:Verbosity.getverbosity())
-            {
-            	items.add(val,val);
-            }
-      
-            items.get(2).selected = true;
-            return items;
-        }
         
-        public ListBoxModel doFillOutputlevelItems() {
-            ListBoxModel items = new ListBoxModel();
-            int i=0 ;
-            for(String val:Verbosity.getverbosity())
-            {
-            	items.add(val,val);
-            	i++ ;
-            }
-      
-            items.get(3).selected = true;
-            return items;
-        }*/
-        
-//        public boolean check1(String val)
-//        {
-//        	val=val.toString();
-//        	boolean ans = loglevel.equalsIgnoreCase(val) ;        	
-//        	return ans ;
-//        }
-        public boolean check2(String val)
+        public boolean check(String val)
         {
         	val=val.toString();
-        	boolean ans = outputvalue.equalsIgnoreCase(val) ;
-        	return ans ;
-        	
-        }
-        
-        public boolean check3(String val)
-        {
-        	val=val.toString();
-        	boolean ans = outputvalue1.equalsIgnoreCase(val) ;
+        	boolean ans = defaultOutputValue.equalsIgnoreCase(val) ;
         	return ans ;	
         }
         
-        public String[] getlevels()
+        public Verbosity.verbosityTypes[] getlevels()
         {
-        	return Verbosity.getverbosity() ;
-        }
-        
-        public verbosityTypes[] getval1()
-        {
-        	arr = verbosityTypes.values();
-//        	System.out.println("Here") ;
-        	return arr ;
-        	
+        	return Verbosity.verbosityTypes.values() ;
         }	
     }
 
@@ -350,10 +286,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
-        }
-//        listener.getLogger().println(logginglevel) ; 
-//        listener.getLogger().println(outputlevel) ; 
-        listener.getLogger().println(outputlevel1) ; 
+        } 
     }
 
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
@@ -405,6 +338,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         final List<String> inputArgsList = new ArrayList<String>();
         final Map<String,String> args = new HashMap<String,String>();
         
+        String outputDetailLevel = Verbosity.getverbosityValue().get(outputLevel);
+        
         final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
@@ -441,9 +376,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
         
-//        inputArgsList.add("'" + "LoggingLevel" + "'" + "," + "'" + logginglevel+"'");
-//        inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputlevel+"'");
-        inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputlevel1+"'");
+        inputArgsList.add("'" + "OutputDetail" + "'" + "," + outputDetailLevel);
         return String.join(",", inputArgsList);
     }
 
