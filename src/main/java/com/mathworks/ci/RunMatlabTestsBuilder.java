@@ -60,12 +60,30 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
+    private boolean check ;
+
+	private static String outputvalue1 = Message.getValue("matlab.outputdetail.default") ;
+
+	private static Verbosity.verbosityTypes outputlevel;
+
+
+    public Verbosity.verbosityTypes getOutputlevel() {
+		return outputlevel;
+	}
+
     
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
     }
+
+    @DataBoundSetter
+    public void setOutputlevel(String outputlevel) {
+    	//outputvalue1 = outputlevel ;
+        this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
+    }
+    
     
     // Getter and Setters to access local members
 
@@ -177,6 +195,20 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         // If previously checked assign valid artifact object else NullArtifact.
         return (isChecked) ? returnVal : new NullArtifact();
     }
+
+    public boolean getCheck(String val)
+    {
+    	val=val.toString();
+    	//boolean temp ;
+    	if (getOutputlevel() == null)
+    		check= outputvalue1.equalsIgnoreCase(val) ;
+    	else
+    	check = getOutputlevel().toString().equalsIgnoreCase(val) ;
+    	//check="'"+String.valueOf(temp)+"'" ;
+    	System.out.println(check) ;
+    	return check ;
+    }
+
     
     
     // To retain Backward compatibility
@@ -219,6 +251,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
 
         // Overridden Method used to show the text under build dropdown
+	public static String outputvalue = Message.getValue("matlab.outputdetail.default") ;
         @Override
         public String getDisplayName() {
             return Message.getBuilderDisplayName();
@@ -242,6 +275,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
+
+	public Verbosity.verbosityTypes[] getArr()
+        {
+        	return Verbosity.verbosityTypes.values();
+        } 
     }
 
     @Override
@@ -260,6 +298,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
         }
+	listener.getLogger().println(outputlevel) ;
     }
 
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
@@ -310,6 +349,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final List<String> inputArgsList = new ArrayList<String>();
         final Map<String,String> args = new HashMap<String,String>();
+
+	String outputDetailLevel = Verbosity.getverbosityValue().get(outputlevel);
+        //Verbosity.verbosityTypes t=Verbosity.verbosityTypes.valueOf(outputvalue) ;
         
         final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
@@ -346,6 +388,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
+	inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputDetailLevel +"'");
 
         return String.join(",", inputArgsList);
     }
