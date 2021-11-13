@@ -21,15 +21,15 @@
 	 <f:entry title="Output Level" field="outputlevel">
 	    <select name="outputlevel">
 	    <j:forEach var="level1" items="${descriptor.getArr()}" varStatus="loop">
-	   <!-- <option value="${level1.toString()}" selected="${instance.getCheck(level1.toString())}">${level1.toString()}</option> -->
-	 	  <j:choose>
+	     <option value="${level1.toString()}" selected="${instance.getCheck(level1.toString())}">${level1.toString()}</option> 
+	 	<!--  <j:choose>
 	    <j:when test="${instance.getCheck(level1.toString())}">
 	        <option value="${level1.toString()}" selected="selected">${level1.toString()}</option>
 	     </j:when>
 	     <j:otherwise>
 	        <option value="${level1.toString()}">${level1.toString()}</option>
 	     </j:otherwise>
-	     </j:choose>
+	     </j:choose> -->
 	     </j:forEach>
 	    </select>
 	</f:entry>

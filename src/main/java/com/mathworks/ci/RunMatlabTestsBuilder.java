@@ -80,8 +80,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     @DataBoundSetter
     public void setOutputlevel(String outputlevel) {
-    	//outputvalue1 = outputlevel ;
-        this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
+    	if(outputlevel == null)
+    		this.outputlevel = Verbosity.verbosityTypes.valueOf(outputvalue1) ;
+    	else
+    		this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
     }
     
     
@@ -388,7 +390,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
-	inputArgsList.add("'" + "OutputDetail" + "'" + "," + "'" + outputDetailLevel +"'");
+	inputArgsList.add("'" + "OutputDetail" + "'" + ","+ "'"+outputDetailLevel+"'");
 
         return String.join(",", inputArgsList);
     }
