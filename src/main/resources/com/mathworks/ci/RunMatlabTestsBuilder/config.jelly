@@ -21,7 +21,6 @@
 	 <f:entry title="Output Level" field="outputlevel">
 	    <select name="outputlevel">
 	    <j:forEach var="level1" items="${descriptor.getArr()}" varStatus="loop">
-	     <!-- <option value="${level1.toString()}" selected="${instance.getCheck(level1.toString())}">${level1.toString()}</option> -->
 	 	 <j:choose>
 	    <j:when test="${(instance == null)? descriptor.getlevel(level1.toString()):instance.getCheck(level1.toString())}">
 	        <option value="${level1.toString()}" selected="selected">${level1.toString()}</option>
@@ -33,14 +32,6 @@
 	     </j:forEach>
 	    </select>
 	</f:entry>
-	
-		
-  	<!-- <f:entry field="outputlevel" title = "Output Level">
-  	 <j:forEach var="level1" items="${descriptor.getArr()}" varStatus="loop">
-  	  	  <f:radio name="outputlevel" value = "${level1.toString()}" title="${level1.toString()}" checked="${instance.getCheck(level1.toString())=='true'}">
-  	  </f:radio>
-  	  </j:forEach>
-  	  </f:entry> -->	
 
 </f:block>
 

@@ -62,8 +62,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SelectByTag selectByTag;
     private boolean check ;
 
-//	private String outputvalue1 = Message.getValue("matlab.outputdetail.default") ;
-
 	private Verbosity.verbosityTypes outputlevel;
 
 
@@ -80,10 +78,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     @DataBoundSetter
     public void setOutputlevel(String outputlevel) {
-//    	if(outputlevel == null)
-//    		this.outputlevel = Verbosity.verbosityTypes.valueOf(outputvalue1) ;
-//    	else
-    		this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
+    	this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
     }
     
     
@@ -201,10 +196,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public boolean getCheck(String val)
     {
     	val=val.toString();
-    	//boolean temp ;
-//    	if (getOutputlevel() == null)
-//    		check= outputvalue1.equalsIgnoreCase(val) ;
-//    	else
     	check = getOutputlevel().toString().equalsIgnoreCase(val) ;
     	return check ;
     }
