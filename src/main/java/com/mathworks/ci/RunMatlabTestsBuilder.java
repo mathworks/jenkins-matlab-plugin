@@ -276,7 +276,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         {
         	return str.equalsIgnoreCase(outputvalue) ;
         }
-	
+        
+        public String capitalize(String str) {
+            if(str == null || str.isEmpty()) {
+                return str;
+            }
+
+            return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+        }
     }
 
     @Override
