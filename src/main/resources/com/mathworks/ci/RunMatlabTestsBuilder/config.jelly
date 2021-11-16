@@ -23,10 +23,10 @@
 	    <j:forEach var="level1" items="${descriptor.getArr()}" varStatus="loop">
 	 	 <j:choose>
 	    <j:when test="${(instance == null)? descriptor.getlevel(level1.toString()):instance.getCheck(level1.toString())}">
-	        <option value="${level1.toString()}" selected="selected">${level1.toString()}</option>
+	        <option value="${level1.toString()}" selected="selected">${descriptor.capitalize(level1.toString())}</option>
 	     </j:when>
 	     <j:otherwise>
-	        <option value="${level1.toString()}">${level1.toString()}</option>
+	        <option value="${level1.toString()}">${descriptor.capitalize(level1.toString())}</option>
 	     </j:otherwise>
 	     </j:choose> 
 	     </j:forEach>
