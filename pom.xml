@@ -128,7 +128,7 @@
                             <overwrite>true</overwrite>
 						</configuration>
 					</execution>
-					<execution>
+				<!--  <execution>
 						<id>get-matlab-gen-script</id>
 						<phase>validate</phase>
 						<goals>
@@ -141,7 +141,7 @@
 							<skipCache>true</skipCache>
                             <overwrite>true</overwrite>
 						</configuration>
-					</execution>
+					</execution> -->
 				</executions>
 			</plugin>
 		</plugins>
