@@ -195,7 +195,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     public boolean getCheck(String val)
     {
-    	val=val.toString();
     	check = getOutputlevel().toString().equalsIgnoreCase(val) ;
     	return check ;
     }
