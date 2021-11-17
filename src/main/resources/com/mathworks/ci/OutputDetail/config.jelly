@@ -1,0 +1,19 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    	 
+    	 <f:entry title="Output Detail" field="outputDetail">
+	    <select name="outputDetail">
+	    <j:forEach var="level1" items="${descriptor.getArr()}" varStatus="loop">
+	 	 <j:choose>
+	    <j:when test="${(instance == null)? descriptor.getlevel(level1.toString()):instance.getCheck(level1.toString())}">
+	        <option value="${level1.toString()}" selected="selected">${descriptor.capitalize(level1.toString())}</option>
+	     </j:when>
+	     <j:otherwise>
+	        <option value="${level1.toString()}">${descriptor.capitalize(level1.toString())}</option>
+	     </j:otherwise>
+	     </j:choose> 
+	     </j:forEach>
+	    </select>
+	</f:entry>
+
+</j:jelly>

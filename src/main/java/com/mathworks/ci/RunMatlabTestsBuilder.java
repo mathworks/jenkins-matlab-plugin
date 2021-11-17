@@ -60,14 +60,15 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
-    private boolean check ;
-
-	private Verbosity.verbosityTypes outputlevel;
-
-
-    public Verbosity.verbosityTypes getOutputlevel() {
-		return outputlevel;
-	}
+    private OutputDetail outputdetail ;
+//    private boolean check ;
+//
+//	private Verbosity.verbosityTypes outputlevel;
+//
+//
+//    public Verbosity.verbosityTypes getOutputlevel() {
+//		return outputlevel;
+//	}
 
     
 
@@ -76,14 +77,23 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
     }
 
-    @DataBoundSetter
-    public void setOutputlevel(String outputlevel) {
-    	this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
-    }
+//    @DataBoundSetter
+//    public void setOutputlevel(String outputlevel) {
+//    	this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
+//    }
     
     
     // Getter and Setters to access local members
+    
+    public OutputDetail getOutputdetail() {
+        return this.outputdetail;
+    }
 
+    @DataBoundSetter
+    public void setOutputdetail(OutputDetail outputdetail) {
+        this.outputdetail = outputdetail;
+    }
+    
     @DataBoundSetter
     public void setTapArtifact(TapArtifact tapArtifact) {
         this.tapArtifact = tapArtifact;
@@ -193,11 +203,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return (isChecked) ? returnVal : new NullArtifact();
     }
 
-    public boolean getCheck(String val)
-    {
-    	check = getOutputlevel().toString().equalsIgnoreCase(val) ;
-    	return check ;
-    }
+//    public boolean getCheck(String val)
+//    {
+//    	check = getOutputlevel().toString().equalsIgnoreCase(val) ;
+//    	return check ;
+//    }
 
     
     
@@ -241,7 +251,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
 
         // Overridden Method used to show the text under build dropdown
-    	public final String outputvalue = Message.getValue("matlab.outputdetail.default") ;
+    	//public final String outputvalue = Message.getValue("matlab.outputdetail.default") ;
 	
         @Override
         public String getDisplayName() {
@@ -267,23 +277,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             return true;
         }
 
-        public Verbosity.verbosityTypes[] getArr()
-        {
-        	return Verbosity.verbosityTypes.values();
-        } 
-        
-        public boolean getlevel(String str)
-        {
-        	return str.equalsIgnoreCase(outputvalue) ;
-        }
-        
-        public String capitalize(String str) {
-            if(str == null || str.isEmpty()) {
-                return str;
-            }
-
-            return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
-        }
     }
 
     @Override
@@ -352,8 +345,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final List<String> inputArgsList = new ArrayList<String>();
         final Map<String,String> args = new HashMap<String,String>();
-
-        String outputDetailLevel = Verbosity.getverbosityValue().get(outputlevel);
         
         final List<Artifact> artifactList =
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
@@ -391,7 +382,12 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
         
-        inputArgsList.add("'" + "OutputDetail" + "'" + ","+ "'"+outputDetailLevel+"'");
+        OutputDetail od = getOutputdetail() ;
+        if(od != null){
+        	getOutputdetail().addOutputDetailToInputArgs(inputArgsList,od.getOutputDetail());
+        }
+        
+        //inputArgsList.add("'" + "OutputDetail" + "'" + ","+ "'"+outputDetailLevel+"'");
 
         return String.join(",", inputArgsList);
     }

@@ -33,7 +33,7 @@ public class RunMatlabTestsStep extends Step {
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
     private String selectByTag;
-    private Verbosity.verbosityTypes outputlevel;
+    private Verbosity.verbosityTypes outputDetail;
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
 
@@ -42,13 +42,13 @@ public class RunMatlabTestsStep extends Step {
         
     }
     
-    public Verbosity.verbosityTypes getOutputlevel() {
-		return outputlevel;
+    public Verbosity.verbosityTypes getOutputDetail() {
+		return outputDetail;
 	}
     
     @DataBoundSetter
-    public void setOutputlevel(String outputlevel) {
-    	this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
+    public void setOutputDetail(String outputDetail) {
+    	this.outputDetail = Verbosity.verbosityTypes.valueOf(outputDetail.toUpperCase()) ;
     }
     
     public String getTestResultsTAP() {
@@ -184,7 +184,7 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         args.put("SelectByTag", getSelectByTag());
-        args.put("OutputDetail", Verbosity.getverbosityValue().get(getOutputlevel()));
+        args.put("OutputDetail", Verbosity.getverbosityValue().get(getOutputDetail()));
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;
