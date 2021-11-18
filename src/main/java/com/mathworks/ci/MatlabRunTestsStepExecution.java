@@ -68,12 +68,16 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
                     "addpath('" + genScriptLocation.getRemote().replaceAll("'", "''") + "'); ";
             final String matlabScriptName = getValidMatlabFileName(genScriptLocation.getBaseName());
 
-            ProcStarter matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener,
-                    envVars, cmdPrefix + matlabScriptName, uniqueTmpFldrName);
+            ProcStarter matlabLauncher =
+                    getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+                            cmdPrefix + matlabScriptName + ",delete .matlab/"
+                                    + genScriptLocation.getBaseName() + "/" + matlabScriptName
+                                    + ".m,run(runner_script),rmdir(tmpdir,'s')",
+                            uniqueTmpFldrName);
             
             // prepare temp folder by coping genscript package and writing runner script.
             prepareTmpFldr(genScriptLocation,
-                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs())));
+                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs()),uniqueTmpFldrName));
                                
             return matlabLauncher.pwd(workspace).join();
         } finally {
