@@ -70,9 +70,9 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
 
             ProcStarter matlabLauncher =
                     getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                            cmdPrefix + matlabScriptName + ",delete .matlab/"
+                            cmdPrefix + matlabScriptName + ",delete(.matlab/"
                                     + genScriptLocation.getBaseName() + "/" + matlabScriptName
-                                    + ".m,run(runner_script),rmdir(tmpdir,'s')",
+                                    + ".m),run(runnerScript),rmdir(tmpDir,'s')",
                             uniqueTmpFldrName);
             
             // prepare temp folder by coping genscript package and writing runner script.
