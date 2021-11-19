@@ -45,6 +45,6 @@ public class MatlabBuilderConstants {
             + "[tmpDir,runnerScript,ext] = fileparts(runnerFile);"
             + "addpath(tmpDir);\n"
             + "rmdir('.matlab/tmp_f/+scriptgen', 's');\n"
-            + "delete(.matlab/tmp_f/genscript.m);\n"
+            + "delete('.matlab/tmp_f/genscript.m');\n"
             + "fprintf('___________________________________\\n\\n');\n";
 }
