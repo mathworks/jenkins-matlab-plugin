@@ -94,6 +94,36 @@ public class RunMatlabTestBuilderPersistenceTest {
     * */
 
     @Test
+    public void verifyOutputDetailSpecPersistence() {
+        jenkins.then(r -> {
+        	
+            FreeStyleProject project = r.createFreeStyleProject();
+            RunMatlabTestsBuilder testBuilder = new RunMatlabTestsBuilder();
+            OutputDetail od = new OutputDetail();
+            od.setOutputDetail("Detailed") ;
+            testBuilder.setOutputdetail(od);
+            project.getBuildersList().add(testBuilder);
+            project.save();
+        });
+
+        jenkins.then(r -> {
+            // Make sure there's only one project
+            List<Item> items = r.getInstance().getAllItems();
+            assertEquals(items.size(), 1);
+
+            FreeStyleProject project = (FreeStyleProject) items.get(0);
+            
+            // Compare outputDetail values
+            RunMatlabTestsBuilder saveInstance = project.getBuildersList().get(RunMatlabTestsBuilder.class);
+            
+            assertNotNull(saveInstance.getOutputdetail());
+            String savedOutputDetail = (saveInstance.getOutputdetail()).getOutputDetail().toString();
+
+            assertEquals(savedOutputDetail, "Detailed");
+        });
+    }
+    
+    @Test
     public void verifySourceFolderSpecPersistence() {
         jenkins.then(r -> {
             paths.add(new SourceFolderPaths("src/A"));

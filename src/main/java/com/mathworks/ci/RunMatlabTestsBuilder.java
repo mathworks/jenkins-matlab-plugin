@@ -61,27 +61,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
     private OutputDetail outputdetail ;
-//    private boolean check ;
-//
-//	private Verbosity.verbosityTypes outputlevel;
-//
-//
-//    public Verbosity.verbosityTypes getOutputlevel() {
-//		return outputlevel;
-//	}
-
     
-
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
 
     }
 
-//    @DataBoundSetter
-//    public void setOutputlevel(String outputlevel) {
-//    	this.outputlevel = Verbosity.verbosityTypes.valueOf(outputlevel) ;
-//    }
-    
+
     
     // Getter and Setters to access local members
     
@@ -201,15 +187,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
         // If previously checked assign valid artifact object else NullArtifact.
         return (isChecked) ? returnVal : new NullArtifact();
-    }
-
-//    public boolean getCheck(String val)
-//    {
-//    	check = getOutputlevel().toString().equalsIgnoreCase(val) ;
-//    	return check ;
-//    }
-
-    
+    }    
     
     // To retain Backward compatibility
     protected Object readResolve() {
