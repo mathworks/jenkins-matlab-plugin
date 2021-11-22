@@ -13,6 +13,8 @@ import java.net.URL;
 import java.util.*;
 
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
+import com.gargoylesoftware.htmlunit.html.HtmlOption;
+
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -23,6 +25,7 @@ import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 import com.mathworks.ci.RunMatlabTestsBuilder.CoberturaArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.JunitArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.ModelCovArtifact;
@@ -295,6 +298,21 @@ public class RunMatlabTestsBuilderTest {
         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.srcFolderPath\"]");
         HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
         assertEquals("", srcFolderPath.getTextContent());
+    }
+    
+    @Test
+    public void verifyOutputDetailDefaultState() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput outputdetail = page.getElementByName("_.outputdetail");
+        outputdetail.click();
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"outputDetail\"]");
+        HtmlSelect s = page.getElementByName("outputDetail");
+        List<HtmlOption> opt=s.getSelectedOptions();
+        String stt = opt.get(0).asText();
+        assertEquals(stt,"Detailed");
     }
     
     /*
