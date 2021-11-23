@@ -44,7 +44,7 @@ public class MatlabBuilderConstants {
             + "runnerFile = testScript.writeToFile([tempname(tempname),'.m']);\n"
             + "[tmpDir,runnerScript,ext] = fileparts(runnerFile);"
             + "addpath(tmpDir);\n"
-            + "rmdir('.matlab/tmp_f/+scriptgen', 's');\n"
-            + "delete('.matlab/tmp_f/genscript.m');\n"
+            + "rmdir('.matlab/${TMPDIR}/+scriptgen', 's');\n"
+            + "delete('.matlab/${TMPDIR}/genscript.m');\n"
             + "fprintf('___________________________________\\n\\n');\n";
 }

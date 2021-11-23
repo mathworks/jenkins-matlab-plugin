@@ -101,7 +101,7 @@ public interface MatlabBuild {
     
     default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
-        script = script.replaceAll("tmp_f", uniqueTmpFldrName);
+        script = script.replaceAll("\\$\\{TMPDIR\\}", uniqueTmpFldrName);
         return script;
     }
     
