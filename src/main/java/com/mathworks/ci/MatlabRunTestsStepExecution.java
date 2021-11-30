@@ -60,10 +60,10 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
 
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
-        final String uniqueTmpFldrName = getUniqueNameForRunnerFile();  
+        final String uniqueMatlabResourceFldr = getUniqueNameForRunnerFile();  
         try {
             FilePath genScriptLocation =
-                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+                    getFilePathForUniqueFolder(launcher, uniqueMatlabResourceFldr, workspace);
             final String cmdPrefix =
                     "addpath('" + genScriptLocation.getRemote().replaceAll("'", "''") + "'); ";
             final String matlabScriptName = getValidMatlabFileName(genScriptLocation.getBaseName());
@@ -72,18 +72,18 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
                     getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                             cmdPrefix + matlabScriptName + ",delete('.matlab/"
                                     + genScriptLocation.getBaseName() + "/" + matlabScriptName
-                                    + ".m'),run(runnerScript),rmdir(tmpDir,'s')",
-                            uniqueTmpFldrName);
+                                    + ".m'),runnerScript,rmdir(tmpDir,'s')",
+                            uniqueMatlabResourceFldr);
             
             // prepare temp folder by coping genscript package and writing runner script.
             prepareTmpFldr(genScriptLocation,
-                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs()),uniqueTmpFldrName));
+                    getRunnerScript(MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getCommandArgs()),uniqueMatlabResourceFldr));
                                
             return matlabLauncher.pwd(workspace).join();
         } finally {
             // Cleanup the runner File from tmp directory
             final FilePath matlabRunnerScript =
-                    getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
+                    getFilePathForUniqueFolder(launcher, uniqueMatlabResourceFldr, workspace);
             if (matlabRunnerScript.exists()) {
                 matlabRunnerScript.deleteRecursive();
             }
