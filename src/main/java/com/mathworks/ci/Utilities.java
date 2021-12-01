@@ -45,8 +45,9 @@ public class Utilities {
         }
 
         String matlabExecutablePath = getNodeSpecificHome(name,
-               cmp.getNode(), listener, env) + "/bin";
+               cmp.getNode(), listener, env) + ((Boolean.TRUE.equals(cmp.isUnix()))?"/bin" : "\\bin");
         env.put("PATH+matlabroot", matlabExecutablePath);
+
         // Specify which MATLAB was added to path.
         listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath) + "\n");
     }
