@@ -502,7 +502,7 @@ public class RunMatlabTestsBuilderTest {
     }
     
     /*
-     * Test to verify if runner script is deleted from .matlb folder during MATLAB call 
+     * Test to verify if runner script is deleted from .matlab folder during MATLAB call 
      */
     @Test
     public void verifyRunnerScriptDeleted() throws Exception {
