@@ -484,7 +484,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runnerScript.m");
         Assert.assertFalse(matlabRunner.exists());
     }
     
@@ -499,5 +499,29 @@ public class RunMatlabTestsBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
         Assert.assertTrue(matlabRunner.exists());
+    }
+    
+    /*
+     * Test to verify if runner script is deleted from .matlab folder during MATLAB call 
+     */
+    @Test
+    public void verifyRunnerScriptDeleted() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("delete('.matlab/", build);
+    }
+    
+    /*
+     * Test to verify if runner script is deleted from system temp directory during MATLAB call 
+     */
+    @Test
+    public void verifySystemTempDirDeleted() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("rmdir(tmpDir,'s')", build);
     }
 }

@@ -182,7 +182,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         setEnv(initialEnvironment);
 
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
-                getNodeSpecificMatlab(Computer.currentComputer(), listener) + "/bin/" + getNodeSpecificExecutable(launcher));
+                getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher));
 
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
@@ -196,6 +196,6 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     }
 
     private String getNodeSpecificExecutable(Launcher launcher) {
-        return (launcher.isUnix()) ? "matlab" : "matlab.exe";
+        return (launcher.isUnix()) ? "/bin/matlab" : "\\bin\\matlab.exe";
     }
 }
