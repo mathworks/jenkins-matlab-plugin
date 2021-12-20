@@ -2,6 +2,7 @@ package com.mathworks.ci;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
+import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -21,10 +22,17 @@ import hudson.matrix.MatrixRun;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import static org.junit.Assert.*;
+
+
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 
 public class RunMATLABTestsIT {
 
@@ -290,7 +298,7 @@ public class RunMATLABTestsIT {
     }
     
     /*
-     * Test to verify if Matrix build passes (mock MATLAB).
+     * Test to verify if Matrix build passes.
      */
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
@@ -313,7 +321,7 @@ public class RunMATLABTestsIT {
     }
 
     /*
-     * Test to verify if tests are filtered bu tag and by folder path
+     * Test to verify if tests are filtered by tag and by folder path
      */
     @Test
     public void verifyTestsFilterByFolderAndTag() throws Exception {
@@ -409,13 +417,26 @@ public class RunMATLABTestsIT {
         jenkins.assertLogContains("testMultiplication",build);
     }
 
-//    @Test
-//    public void verifyArtifactsContainsFilteredTests() throws Exception{
-//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot()));
-//        project.getBuildWrappersList().add(this.buildWrapper);
-//        project.setScm(get_GitSCM());
-//        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
-//
-//    }
+    @Test
+    public void verifyCodeCoverageResult() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
 
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        testingBuilder.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));
+        project.getBuildersList().add(testingBuilder);
+
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File projectWorkspace = new File(jenkins.jenkins.getWorkspaceFor(project).toURI());
+        File codeCoverageFile = new File(projectWorkspace.getAbsolutePath() + "/TestArtifacts/coberturaresult.xml");
+        XML xml = new XMLDocument(codeCoverageFile);
+        String xmlString = xml.toString();
+        assertFalse(xmlString.contains("+scriptgen"));
+        assertFalse(xmlString.contains("genscript"));
+        assertFalse(xmlString.contains("runner_"));
+        jenkins.assertLogContains("testSquare", build);
+        jenkins.assertBuildStatus(Result.FAILURE,build);
+    }
 }

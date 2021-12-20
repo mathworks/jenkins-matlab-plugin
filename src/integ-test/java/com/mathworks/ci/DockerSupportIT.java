@@ -545,7 +545,6 @@ public class DockerSupportIT extends Thread{
 
     @Test
     public void verifyPipelineTestsSourceFiles() throws Exception {
-        FilePath runnerScriptFilePath;
         pipelineProject = jenkins.createProject(WorkflowJob.class);
         URL zipFile = MatlabRootSetup.getRunMATLABTestsData();
         String script = "pipeline {\n" +

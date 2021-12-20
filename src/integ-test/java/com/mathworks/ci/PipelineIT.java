@@ -1,5 +1,7 @@
 package com.mathworks.ci;
 
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
 import hudson.model.Result;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.IOUtils;
@@ -9,10 +11,13 @@ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import static org.junit.Assert.assertFalse;
 import static org.jvnet.hudson.test.JenkinsRule.getLog;
 
 public class PipelineIT {
@@ -240,4 +245,30 @@ public class PipelineIT {
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
+    @Test
+    public void verifyCodeCoverageResult() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                envDSL + "\n" +
+                "    stages{\n" +
+                "        stage('Generate Code coverage Report') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "                runMATLABTests(codeCoverageCobertura: 'code-coverage/coverage.xml')\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        File projectWorkspace = new File(jenkins.jenkins.getWorkspaceFor(project).toURI());
+        File codeCoverageFile = new File(projectWorkspace.getAbsolutePath() + "/code-coverage/coverage.xml");
+        XML xml = new XMLDocument(codeCoverageFile);
+        String xmlString = xml.toString();
+        assertFalse(xmlString.contains("+scriptgen"));
+        assertFalse(xmlString.contains("genscript"));
+        assertFalse(xmlString.contains("runner_"));
+        jenkins.assertLogContains("testSquare", build);
+        jenkins.assertBuildStatus(Result.FAILURE,build);
+    }
 }
