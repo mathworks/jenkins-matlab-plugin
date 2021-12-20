@@ -32,7 +32,7 @@ jobs:
       demands:
         - agent.name -equals $(imageName)
     steps:
-      - script:  mw -using bci mvn clean verify -Dfindbugs.skip=true
+      - script:  mw -using bci mvn failsafe:integration-test
 #       - task: Maven@3
 #         inputs:
 #           mavenPomFile: 'pom.xml'
