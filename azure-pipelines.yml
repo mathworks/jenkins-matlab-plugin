@@ -32,7 +32,7 @@ jobs:
       demands:
         - agent.name -equals $(imageName)
     steps:
-      - script: mvn clean failsafe:integration-test
+      - script: mvn clean integration-test
 #       - task: Maven@3
 #         inputs:
 #           mavenPomFile: 'pom.xml'
