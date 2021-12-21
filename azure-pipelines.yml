@@ -25,7 +25,7 @@ jobs:
 #                   mac:
 #                     imageName: 'vahila_mac_bgl'
         windows:
-          imagename: 'vahila_win_bgl'
+          imagename: 'win_devpool_iat'
 #          imageName: 'vahila_win_bgl'
     pool:
       name: Default
