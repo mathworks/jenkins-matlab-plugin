@@ -22,13 +22,4 @@ jobs:
       demands:
         - agent.name -equals $(imageName)
     steps:
-      - script: mvn clean integration-test
-#       - task: Maven@3
-#         inputs:
-#           mavenPomFile: 'pom.xml'
-#           mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
-#           publishJUnitResults: true
-#           testResultsFiles: '**/surefire-reports/TEST-*.xml'
-#           codeCoverageToolOption: 'JaCoCo'
-#           goals: 'verify'
-#         displayName: 'Build $(imageName)'
+      - script: mw -using bci mvn clean integration-test
