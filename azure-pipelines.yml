@@ -13,11 +13,10 @@ jobs:
       matrix:
         linux:
           imageName: 'linux_vm_vahila'
-#                   mac:
-#                     imageName: 'vahila_mac_bgl'
+        mac:
+          imageName: 'vahila_mac_bgl'
         windows:
           imagename: 'win_iat'
-#          imageName: 'vahila_win_bgl'
     pool:
       name: Default
       demands:
