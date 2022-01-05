@@ -282,7 +282,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             
             // copy genscript package in temp folder and write a runner script.
             prepareTmpFldr(genScriptLocation, getRunnerScript(
-                    MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getInputArguments())));
+                    MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getInputArguments()),uniqueTmpFldrName));
 
             return matlabLauncher.pwd(workspace).join();
         } catch (Exception e) {
@@ -301,7 +301,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public String constructCommandForTest(FilePath scriptPath) {
         final String matlabScriptName = getValidMatlabFileName(scriptPath.getBaseName());
         final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''")
-                + "'); " + matlabScriptName;
+                + "'); " + matlabScriptName + ",delete('.matlab/" + scriptPath.getBaseName() + "/"
+                + matlabScriptName + ".m'),runnerScript,rmdir(tmpDir,'s')";
         return runCommand;
     }
 

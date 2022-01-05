@@ -40,6 +40,11 @@ public class MatlabBuilderConstants {
     // MATLAB runner script
     static final String TEST_RUNNER_SCRIPT = "testScript = genscript(${PARAMS});\n" + "\n"
             + "disp('Running MATLAB script with content:');\n"
-            + "disp(strtrim(testScript.writeToText()));\n"
-            + "fprintf('___________________________________\\n\\n');\n" + "run(testScript);\n" + "";
+            + "disp(strtrim(testScript.Contents));\n"
+            + "runnerFile = testScript.writeToFile(fullfile(tempname,'runnerScript.m'));\n"
+            + "[tmpDir,scriptName,ext] = fileparts(runnerFile);"
+            + "addpath(tmpDir);\n"
+            + "rmdir('.matlab/${TMPDIR}/+scriptgen', 's');\n"
+            + "delete('.matlab/${TMPDIR}/genscript.m');\n"
+            + "fprintf('___________________________________\\n\\n');\n";
 }
