@@ -457,32 +457,39 @@ public class RunMATLABTestsIT {
         matrixProject.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder tester = new RunMatlabTestsBuilder();
-        matrixProject.getBuildersList().add(tester);
+
         tester.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));
+        // Adding list of test folder
+        List<TestFolders> testFolders = new ArrayList<TestFolders>();
+        testFolders.add(new TestFolders("test/TestSum"));
+        tester.setSelectByFolder(new SelectByFolder(testFolders));
+
+        matrixProject.getBuildersList().add(tester);
+        MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
         Map<String, String> vals = new HashMap<String, String>();
         vals.put("VERSION", "R2020b");
         Combination c1 = new Combination(vals);
-        MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
+        MatrixRun build1 = build.getRun(c1);
 
-        String xmlString = xmlToString(build.getWorkspace().getRemote() + "/TestArtifacts/coberturaresult.xml");
+        String xmlString = xmlToString(build1.getWorkspace().getRemote() + "/TestArtifacts/coberturaresult.xml");
         assertFalse(xmlString.contains("+scriptgen"));
         assertFalse(xmlString.contains("genscript"));
         assertFalse(xmlString.contains("runner_"));
-        jenkins.assertLogContains("testSquare", build);
-        jenkins.assertBuildStatus(Result.FAILURE,build);
+        jenkins.assertLogContains("testSum", build1);
+        jenkins.assertBuildStatus(Result.SUCCESS,build1);
 
         // Check for second Matrix combination
 
         vals.put("VERSION", "R2020a");
         Combination c2 = new Combination(vals);
-        MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+        MatrixRun build2 = build.getRun(c2);
 
-        xmlString = xmlToString(build.getWorkspace().getRemote() + "/TestArtifacts/coberturaresult.xml");
+        xmlString = xmlToString(build2.getWorkspace().getRemote() + "/TestArtifacts/coberturaresult.xml");
         assertFalse(xmlString.contains("+scriptgen"));
         assertFalse(xmlString.contains("genscript"));
         assertFalse(xmlString.contains("runner_"));
-        jenkins.assertLogContains("testSquare", build);
-        jenkins.assertBuildStatus(Result.FAILURE, build2);
+        jenkins.assertLogContains("testSum", build2);
+        jenkins.assertBuildStatus(Result.SUCCESS, build2);
     }
 }
