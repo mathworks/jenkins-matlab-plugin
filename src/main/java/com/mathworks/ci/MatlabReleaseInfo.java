@@ -72,8 +72,10 @@ public class MatlabReleaseInfo {
         }
     }
     
-    @SuppressFBWarnings(value = "REC_CATCH_EXCEPTION",
-            justification = "Irrespective of exception type, intention is to handle it in same way. Also, there is no intention to propagate any runtime exception up in the hierarchy.")
+    @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"},
+            justification = "REC_CATCH_EXCEPTION: Irrespective of exception type, intention is to handle it in same way." +
+                    " Also, there is no intention to propagate any runtime exception up in the hierarchy." +
+                    "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE: This is a false positive reported by spotbugs for JDK 11 for try-with-resources block.")
     private Map<String, String> getVersionInfoFromFile() throws MatlabVersionNotFoundException {
         if (MapUtils.isEmpty(versionInfoCache)) {
             try {
