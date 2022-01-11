@@ -3,8 +3,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
 trigger:
-  - master
-
+  - IntegTests
 
 jobs:
   - job : Test
@@ -13,8 +12,6 @@ jobs:
       matrix:
         linux:
           imageName: 'linux_vm_vahila'
-        mac:
-          imageName: 'vahila_mac_bgl'
         windows:
           imagename: 'win_iat'
     pool:
@@ -22,4 +19,12 @@ jobs:
       demands:
         - agent.name -equals $(imageName)
     steps:
-      - script: mw -using bci mvn clean integration-test
+      - task: Maven@3
+        inputs:
+          mavenPomFile: 'pom.xml'
+          mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          codeCoverageToolOption: 'JaCoCo'
+          goals: 'integration-test'
+        displayName: 'Build $(imageName)'

@@ -146,7 +146,7 @@ public class PipelineIT {
                             "            steps\n" +
                             "            {\n" +
                             "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
-                            "              runMATLABTests(sourceFolder:['src'], testResultsTAP: 'test-results/results.tap',\n" +
+                            "              runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestSum'], testResultsTAP: 'test-results/results.tap',\n" +
                             "                             testResultsJUnit: 'test-results/results.xml',\n" +
                             "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
                             "                             codeCoverageCobertura: 'code-coverage/coverage.xml',\n" +

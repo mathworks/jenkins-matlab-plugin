@@ -426,7 +426,7 @@ public class RunMATLABTestsIT {
     }
 
     @Test
-    public void verifyCodeCoverageResult() throws Exception {
+    public void verifyCodeCoverageResultForFreeStyle() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
@@ -480,7 +480,6 @@ public class RunMATLABTestsIT {
         jenkins.assertBuildStatus(Result.SUCCESS,build1);
 
         // Check for second Matrix combination
-
         vals.put("VERSION", "R2020a");
         Combination c2 = new Combination(vals);
         MatrixRun build2 = build.getRun(c2);
