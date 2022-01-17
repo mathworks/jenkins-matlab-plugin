@@ -85,7 +85,7 @@ Select check boxes in the **Generate Test Artifacts** and **Generate Coverage Ar
 The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log in **Console Output** to understand the testing workflow.
  
 Artifacts to generate with the plugin are subject to these restrictions: 
-* Producing a PDF test report issupported on macOS platforms in MATLAB R2020b and later.
+* Producing a PDF test report is supported on macOS platforms in MATLAB R2020b and later.
 * Exporting Simulink Test&trade; Manager results requires a Simulink Test license and is supported in MATLAB R2019a and later.
 * Producing a Cobertura model coverage report requires a Simulink Coverage&trade; license and is supported in MATLAB R2018b and later.
 
