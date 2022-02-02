@@ -242,7 +242,7 @@ public class DockerSupportIT extends Thread{
      * Test to verify if Build FAILS when matlab command fails
      */
 
-    @Test
+    
     public void verifyFreeStyleCommandSourceFiles() throws Exception {
         buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot);
@@ -280,7 +280,7 @@ public class DockerSupportIT extends Thread{
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
     }
 
-    @Test
+    
     public void verifyFreeStyleTestsSourceFiles() throws Exception {
         FilePath runnerScriptFilePath;
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"),MatlabRootSetup.getMatlabRoot()));
@@ -323,7 +323,7 @@ public class DockerSupportIT extends Thread{
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
     }
 //
-    @Test
+    
     public void verifyMatrixCommandSourceFiles() throws Exception {
         matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("MATLAB_VERSION", "R2020b", "R2020a");
@@ -393,7 +393,7 @@ public class DockerSupportIT extends Thread{
     }
 
 
-    @Test
+    
     public void verifyMatrixTestsSourceFiles() throws Exception {
         matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("MATLAB_VERSION", "R2020b", "R2020a");
@@ -498,7 +498,7 @@ public class DockerSupportIT extends Thread{
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 
-    @Test
+    
     public void verifyPipelineCommandSourceFiles() throws Exception {
 //        WorkspaceBrowser w =
         FilePath commandScriptFilePath;
@@ -543,7 +543,7 @@ public class DockerSupportIT extends Thread{
         verifyDotMATLABFolderIsEmptyAfterBuild(projectWorkspace);
     }
 
-    @Test
+    
     public void verifyPipelineTestsSourceFiles() throws Exception {
         FilePath runnerScriptFilePath;
         pipelineProject = jenkins.createProject(WorkflowJob.class);
