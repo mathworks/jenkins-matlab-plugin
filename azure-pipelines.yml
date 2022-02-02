@@ -22,11 +22,11 @@ jobs:
       matrix:
         linux:
           imageName: 'vahila_bgl_linux'
-#         mac:
-#           imageName: 'vahila_mac_bgl'
-#         windows:
-#           imagename: 'windowsdockeragent'
-          #imageName: 'vahila_win_bgl'
+        mac:
+          imageName: 'vahila_mac_bgl'
+        windows:
+          imagename: 'windowsdockeragent'
+          imageName: 'vahila_win_bgl'
     pool:
       name: Default
       demands:
