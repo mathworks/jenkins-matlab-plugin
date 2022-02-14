@@ -36,7 +36,7 @@ jobs:
       - script: chmod +x mpm
       - script: cd /home && ls 
       - script: sudo ./mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox
-      - script: cd /home && ls 
+      - script: cd /home/matlab && ls 
       - script: matlab -batch ver
 #       mw -using bci mvn clean verify -Dfindbugs.skip=true
 #       - task: Maven@3
