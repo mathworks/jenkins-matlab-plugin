@@ -188,8 +188,6 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyPDFReportCustomFilePathInput() throws Exception {
-        Assume.assumeFalse
-                (System.getProperty("os.name").toLowerCase().startsWith("mac"));
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
 //        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
         project.getBuildWrappersList().add(this.buildWrapper);
