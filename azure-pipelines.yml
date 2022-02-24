@@ -40,7 +40,7 @@ jobs:
            matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
            echo MATHWORKS_ACCOUNT
            
-          env:
+        env:
             MATHWORKS_TOKEN: $(MATHWORKS_TOKEN)
             MATHWORKS_ACCOUNT: $(MATHWORKS_ACCOUNT)
             
