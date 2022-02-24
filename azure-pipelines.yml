@@ -35,9 +35,9 @@ jobs:
       - bash: wget https://www.mathworks.com/mpm/glnxa64/mpm |
            wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
            chmod +x mpm
-      - bash: cd /home && ls |
-           mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox |
-           matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
+      - script: cd /home && ls 
+      - script:     mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox |
+      - bash:     matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
            echo MATHWORKS_ACCOUNT
            
         env:
