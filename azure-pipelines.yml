@@ -32,7 +32,7 @@ jobs:
 #       demands:
 #         - agent.name -equals $(imageName)
     steps:
-      - script: wget https://www.mathworks.com/mpm/glnxa64/mpm |
+      - bash: wget https://www.mathworks.com/mpm/glnxa64/mpm |
            wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
            chmod +x mpm
            cd /home && ls 
