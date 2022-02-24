@@ -32,12 +32,20 @@ jobs:
 #       demands:
 #         - agent.name -equals $(imageName)
     steps:
-      - script: wget https://www.mathworks.com/mpm/glnxa64/mpm
-      - script: chmod +x mpm
-      - script: cd /home && ls 
-      - script: sudo ./mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox
-      - script: cd /home/matlab && ls 
-      - script: cd /home/matlab/bin && ./matlab -batch ver
+      - script: wget https://www.mathworks.com/mpm/glnxa64/mpm |
+           wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
+           chmod +x mpm
+           cd /home && ls 
+           sudo ./mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox
+           matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
+           echo MATHWORKS_ACCOUNT
+           
+          env:
+            MATHWORKS_TOKEN: $(MATHWORKS_TOKEN)
+            MATHWORKS_ACCOUNT: $(MATHWORKS_ACCOUNT)
+            
+#       - script: cd /home/matlab && ls 
+#       - script: cd /home/matlab/bin && ./matlab -batch ver
 #       mw -using bci mvn clean verify -Dfindbugs.skip=true
 #       - task: Maven@3
 #         inputs:
