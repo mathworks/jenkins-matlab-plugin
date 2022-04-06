@@ -27,22 +27,24 @@ jobs:
 #         windows:
 #           imagename: 'windowsdockeragent'
 #           imageName: 'vahila_win_bgl'
-#     pool:
-#       name: Default
+    pool:
+      name: vmssagentspool
+      vmImage: #
 #       demands:
 #         - agent.name -equals $(imageName)
     steps:
-      - bash: wget https://www.mathworks.com/mpm/glnxa64/mpm |
-           wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
-           chmod +x mpm
-      - script: ls 
-      - script: ls &&  mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox 
-      - bash:     matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
-           echo MATHWORKS_ACCOUNT
+        - script: mvn --version
+#       - bash: wget https://www.mathworks.com/mpm/glnxa64/mpm |
+#            wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
+#            chmod +x mpm
+#       - script: ls 
+#       - script: ls &&  mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox 
+#       - bash:     matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
+#            echo MATHWORKS_ACCOUNT
            
-        env:
-            MATHWORKS_TOKEN: $(MATHWORKS_TOKEN)
-            MATHWORKS_ACCOUNT: $(MATHWORKS_ACCOUNT)
+#         env:
+#             MATHWORKS_TOKEN: $(MATHWORKS_TOKEN)
+#             MATHWORKS_ACCOUNT: $(MATHWORKS_ACCOUNT)
             
 #       - script: cd /home/matlab && ls 
 #       - script: cd /home/matlab/bin && ./matlab -batch ver
@@ -56,3 +58,5 @@ jobs:
 #           codeCoverageToolOption: 'JaCoCo'
 #           goals: 'verify'
 #         displayName: 'Build $(imageName)'
+
+
