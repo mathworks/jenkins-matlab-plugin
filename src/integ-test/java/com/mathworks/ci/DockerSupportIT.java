@@ -479,8 +479,8 @@ public class DockerSupportIT extends Thread{
         String script = "pipeline {\n" +
                 "    agent {\n" +
                 "        docker {\n" +
-                "            image 'mathworks/matlab:r2021a'\n" +
-                "            args \"--entrypoint='' -v /home/vkayithi/license:/opt/matlab/R2021a/licenses \"\n" +
+                "            image 'mathworks/matlab:r2021b'\n" +
+                "            args \"--entrypoint='' -v /home/vkayithi/matlab_R2021b/licenses:/opt/matlab/R2021b/licenses \"\n" +
                 "        }\n" +
                 "    }\n" +
                 "    stages {\n" +

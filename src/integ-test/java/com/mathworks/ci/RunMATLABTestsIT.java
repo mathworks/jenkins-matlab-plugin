@@ -293,10 +293,10 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2020b", "R2020a");
+        Axis axes = new Axis("VERSION", TestData.getPropValues("matlab.version"), TestData.getPropValues("matlab.matrix.version"));
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = MatlabRootSetup.getMatlabRoot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(TestData.getPropValues("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
 //        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder tester = new RunMatlabTestsBuilder();
@@ -305,8 +305,8 @@ public class RunMATLABTestsIT {
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
         String build_log = jenkins.getLog(build);
         jenkins.assertLogContains("Triggering", build);
-        jenkins.assertLogContains("R2020b completed", build);
-        jenkins.assertLogContains("R2020a completed", build);
+        jenkins.assertLogContains(TestData.getPropValues("matlab.version")+" completed", build);
+        jenkins.assertLogContains(TestData.getPropValues("matlab.matrix.version")+" completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
