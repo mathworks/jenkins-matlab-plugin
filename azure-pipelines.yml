@@ -36,8 +36,8 @@ steps:
 #       vmImage: #
 #       demands:
 #         - agent.name -equals $(imageName)
-    steps:
-        - script: mvn --version
+#     steps:
+#         - script: mvn --version
 #       - bash: wget https://www.mathworks.com/mpm/glnxa64/mpm |
 #            wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
 #            chmod +x mpm
