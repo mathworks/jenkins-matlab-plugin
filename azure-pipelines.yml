@@ -25,7 +25,7 @@ steps:
 #     strategy:
 #       matrix:
 #         linux:
-          imageName: 'ubuntu-latest'
+#           imageName: 'ubuntu-latest'
 #         mac:
 #           imageName: 'vahila_mac_bgl'
 #         windows:
