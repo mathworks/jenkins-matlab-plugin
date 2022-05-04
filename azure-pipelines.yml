@@ -28,7 +28,7 @@ jobs:
 #           imagename: 'windowsdockeragent'
 #           imageName: 'vahila_win_bgl'
     pool:
-      name: vmssagentspool
+      name: matlabinwin
       vmImage: #
 #       demands:
 #         - agent.name -equals $(imageName)
