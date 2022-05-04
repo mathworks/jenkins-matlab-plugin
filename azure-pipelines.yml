@@ -13,23 +13,27 @@
 
 trigger:
  - master
-
-  
-jobs:
-  - job : Test
-    timeoutInMinutes: 120
-    strategy:
-      matrix:
-        linux:
+pool:
+  name: WindowsScaleSetAgent
+  vmImage: #
+steps:
+  - script: mvn --version
+  - script: pwd
+# jobs:
+#   - job : Test
+#     timeoutInMinutes: 120
+#     strategy:
+#       matrix:
+#         linux:
           imageName: 'ubuntu-latest'
 #         mac:
 #           imageName: 'vahila_mac_bgl'
 #         windows:
 #           imagename: 'windowsdockeragent'
 #           imageName: 'vahila_win_bgl'
-    pool:
-      name: WindowsScaleSetAgent
-      vmImage: #
+#     pool:
+#       name: WindowsScaleSetAgent
+#       vmImage: #
 #       demands:
 #         - agent.name -equals $(imageName)
     steps:
