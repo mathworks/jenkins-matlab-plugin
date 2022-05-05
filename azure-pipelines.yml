@@ -19,6 +19,15 @@ pool:
 steps:
   - script: mvn --version
   - script: pwd
+  - task: Maven@3
+        inputs:
+          mavenPomFile: 'pom.xml'
+          mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          codeCoverageToolOption: 'JaCoCo'
+          goals: 'verify'
+        displayName: 'Build'
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
