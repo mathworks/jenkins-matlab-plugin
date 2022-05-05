@@ -14,7 +14,7 @@
 trigger:
  - master
 pool:
-  name: WindowsScaleSetAgent
+  name: WindowsVMSS
   vmImage: #
 steps:
   - script: mvn --version
