@@ -19,8 +19,8 @@ jobs:
 - job: Test
   timeoutInMinutes: 120
   pool:
-  name: WindowsVMSS
-  vmImage: #
+    name: WindowsVMSS
+    vmImage: #
   steps:
     - script: mvn --version
     - task: Maven@3
