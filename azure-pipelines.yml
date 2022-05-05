@@ -15,8 +15,8 @@ trigger:
  - master
 
 
-jobs
-- job : Test
+jobs:
+- job: Test
   timeoutInMinutes: 120
   pool:
   name: WindowsVMSS
