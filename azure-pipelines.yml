@@ -13,21 +13,24 @@
 
 trigger:
  - master
-timeoutInMinutes: 120
+
 pool:
   name: WindowsVMSS
   vmImage: #
-steps:
-  - script: mvn --version
-  - task: Maven@3
-    inputs:
-      mavenPomFile: 'pom.xml'
-      mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
-      publishJUnitResults: true
-      testResultsFiles: '**/surefire-reports/TEST-*.xml'
-      codeCoverageToolOption: 'JaCoCo'
-      goals: 'verify'
-    displayName: 'Build'
+jobs
+  - job: Test
+    timeoutInMinutes: 120
+    steps:
+      - script: mvn --version
+      - task: Maven@3
+        inputs:
+          mavenPomFile: 'pom.xml'
+          mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
+          publishJUnitResults: true
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          codeCoverageToolOption: 'JaCoCo'
+          goals: 'verify'
+        displayName: 'Build'
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
