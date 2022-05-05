@@ -13,6 +13,7 @@
 
 trigger:
  - master
+timeoutInMinutes: 120
 pool:
   name: WindowsVMSS
   vmImage: #
