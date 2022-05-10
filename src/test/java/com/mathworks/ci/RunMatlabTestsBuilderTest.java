@@ -1,12 +1,14 @@
 package com.mathworks.ci;
 /**
  * Copyright 2019-2020 The MathWorks, Inc.
+
  * 
  * Test class for RunMatlabTestsBuilder
  * 
  */
 
 import java.io.File;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -154,7 +156,7 @@ public class RunMatlabTestsBuilderTest {
     public void verifyMATLABlaunchedWithDefaultArgumentsRWindows() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(testBuilder);
+        project.getBuildersList().add(testBuilder);//adds latest plugin
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run_matlab_command", build);
         jenkins.assertLogContains("runner", build);
@@ -522,6 +524,6 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("rmdir(tmpDir,'s')", build);
+        jenkins.assertLogContains("rmdir(destination,'s')", build);
     }
 }

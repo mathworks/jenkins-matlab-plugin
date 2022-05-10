@@ -9,6 +9,8 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -262,7 +264,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    private int execMatlabCommand(FilePath workspace, Launcher launcher,
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,/////change needs to be made here.
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         /*
@@ -273,7 +275,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
+      
         try {
+      
             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
@@ -281,6 +285,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     constructCommandForTest(genScriptLocation), uniqueTmpFldrName);
             
             // copy genscript package in temp folder and write a runner script.
+           
             prepareTmpFldr(genScriptLocation, getRunnerScript(
                     MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getInputArguments()),uniqueTmpFldrName));
 
@@ -292,7 +297,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             // Cleanup the runner File from tmp directory
             FilePath matlabRunnerScript =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-            if (matlabRunnerScript.exists()) {
+           if (matlabRunnerScript.exists()) {
                 matlabRunnerScript.deleteRecursive();
             }
         }
@@ -300,9 +305,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     public String constructCommandForTest(FilePath scriptPath) {
         final String matlabScriptName = getValidMatlabFileName(scriptPath.getBaseName());
+     
         final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''")
                 + "'); " + matlabScriptName + ",delete('.matlab/" + scriptPath.getBaseName() + "/"
-                + matlabScriptName + ".m'),runnerScript,rmdir(tmpDir,'s')";
+                + matlabScriptName + ".m'),runnerScript,rmdir(destination,'s')";
         return runCommand;
     }
 

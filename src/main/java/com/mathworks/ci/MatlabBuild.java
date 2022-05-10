@@ -7,7 +7,10 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
+
 import java.io.InputStream;
+import java.net.URL;
+
 import org.apache.commons.lang.RandomStringUtils;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -21,10 +24,10 @@ public interface MatlabBuild {
      * This Method decorates the launcher with MATLAB command provided and returns the Process
      * object to launch MATLAB with appropriate startup options like -r or -batch
      * 
-     * @param workspace Current build workspace
+     * @param workspace Current build workspace 
      * @param launcher Current build launcher
-     * @param listener Current build listener
-     * @param envVars Environment variables of the current build
+     * @param listener Current build listener 
+     * @param envVars Environment variables of the current build                                                                                                                       
      * @param matlabCommand MATLAB command to execute on shell
      * @return matlabLauncher returns the process launcher to run MATLAB commands
      */
@@ -67,6 +70,8 @@ public interface MatlabBuild {
         targetFilePath.copyFrom(in);
         // set executable permission
         targetFilePath.chmod(0755);
+     
+        
     }
 
     default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,
@@ -81,29 +86,43 @@ public interface MatlabBuild {
     default String getUniqueNameForRunnerFile() {
         //Using 8 bit long random alphanumeric string
         return RandomStringUtils.randomAlphanumeric(8);
-    }
+    } 
     
     // This method prepares the temp folder by coping all helper files in it.
     default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
-        // Write MATLAB scratch file in temp folder.
-        FilePath scriptFile =
-                new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
-        scriptFile.write(runnerScript, "UTF-8");
-        // copy genscript package
-        copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
-                MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
-        FilePath zipFileLocation =
-                new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
+    	
+    		// copy genscript package
+    	 copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
+                 MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
+       FilePath zipFileLocation =
+                 new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
+       
 
-        // Unzip the file in temp folder.
-        zipFileLocation.unzip(tmpFldr);
+         runnerScript=getZipScript(runnerScript, zipFileLocation.getRemote());
+         
+      // Write MATLAB scratch file in temp folder.
+         FilePath scriptFile =
+                 new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
+         scriptFile.write(runnerScript, "UTF-8");
+        
+          
+       
     }
+    
+    default String getZipScript(String script, String url) {
+        script = script.replace("${ZIP_FILE}", url);
+       return script;
+    }
+    
+    
     
     default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
-        script = script.replaceAll("\\$\\{TMPDIR\\}", uniqueTmpFldrName);
+      //  script = script.replaceAll("\\$\\{TMPDIR\\}", uniqueTmpFldrName);
         return script;
     }
+    
+    
     
     default String getValidMatlabFileName(String actualName) {
         return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX

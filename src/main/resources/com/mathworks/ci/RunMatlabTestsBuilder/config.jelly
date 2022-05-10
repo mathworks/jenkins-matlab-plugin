@@ -17,6 +17,7 @@
 <f:block>
     <br></br>
     <b>Generate Test Artifacts</b>
+    
     <f:optionalBlock name="pdfReportArtifact" field="pdfReportArtifact" title="PDF test report" checked="${instance.pdfReportArtifact.selected}">
   	 <f:entry field="pdfReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
@@ -24,7 +25,7 @@
     </f:optionalBlock>
     
     <f:optionalBlock name="tapArtifact" field="tapArtifact" title="TAP test results" checked="${instance.tapArtifact.selected}">   	
-     <f:entry field="tapReportFilePath" title="File path: ">	
+     <f:entry field="tapReportFilePath" title="File path: ">
     	<f:textbox default="matlabTestArtifacts/taptestresults.tap"/>
      </f:entry>
     </f:optionalBlock>
