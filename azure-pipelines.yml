@@ -23,7 +23,7 @@ jobs:
     vmImage: #
   steps:
     - script: mvn --version
-    - script: C:\MATLAB\bin\matlab.exe -batch version,pwd
+    - script: C:\MATLAB\R2021b\bin\matlab.exe -batch version,pwd
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
