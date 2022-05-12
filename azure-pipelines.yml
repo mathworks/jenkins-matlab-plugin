@@ -23,7 +23,7 @@ jobs:
     vmImage: #
   steps:
     - script: mvn --version
-    - script: %cd%
+    - script: dir
     - script: C:\MATLAB\R2021b\bin\matlab.exe -batch version,pwd
 # jobs:
 #   - job : Test
