@@ -138,7 +138,7 @@ public class GlobalToolIT {
     @Test
     public void verifyGlobalToolMatrix() throws Exception {
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", MatlabRootSetup.getMatlabRoot(), jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace(TestData.getPropValues("matlab.version"), TestData.getPropValues("matlab.matrix.version")), jenkins);
+        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot(), jenkins);
 
         List<String> list= new ArrayList<>(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_2"));
         MatlabInstallationAxis axis = new MatlabInstallationAxis(list);
