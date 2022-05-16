@@ -22,7 +22,7 @@ jobs:
     name: WindowsVMSS
     vmImage: #
   steps:
-    - script: mvn -Dtest=RunMATLABCommandIT#verifyMatrixBuildPasses test
+    - script: mvn -Dtest=RunMATLABTestsIT#verifyMatrixBuildPasses test
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
