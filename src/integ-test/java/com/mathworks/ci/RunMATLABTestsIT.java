@@ -305,6 +305,11 @@ public class RunMATLABTestsIT {
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
         String build_log = jenkins.getLog(build);
         jenkins.assertLogContains("Triggering", build);
+        List<MatrixRun> runs = build.getRuns();
+        System.out.println("RAN BUILD");
+        for (MatrixRun run : runs) {
+            System.out.println(jenkins.getLog(run));
+        }
         jenkins.assertLogContains(TestData.getPropValues("matlab.version")+" completed", build);
         jenkins.assertLogContains(TestData.getPropValues("matlab.matrix.version")+" completed", build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
