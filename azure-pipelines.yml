@@ -24,6 +24,7 @@ jobs:
   steps:
     - script: mvn --version
     - script: dir
+    - script: mvn verify
     - script: C:\MATLAB\R2021b\bin\matlab.exe -batch version,pwd
 # jobs:
 #   - job : Test
