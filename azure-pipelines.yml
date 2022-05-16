@@ -22,10 +22,7 @@ jobs:
     name: WindowsVMSS
     vmImage: #
   steps:
-    - script: mvn --version
-    - script: dir
-    - script: mvn verify
-    - script: C:\MATLAB\R2021b\bin\matlab.exe -batch version,pwd
+    - script: mvn -Dtest=GlobalToolIT#verifyGlobalToolMatrix test
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
