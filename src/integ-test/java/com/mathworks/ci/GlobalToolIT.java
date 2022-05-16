@@ -146,9 +146,13 @@ public class GlobalToolIT {
 
         scriptBuilder.setMatlabCommand("version");
         matrixProject.getBuildersList().add(scriptBuilder);
+        System.out.println("STARTING BUILD");
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+        System.out.println("SCHEDULED BUILD");
         List<MatrixRun> runs = build.getRuns();
+        System.out.println("RAN BUILD");
         for (MatrixRun run : runs) {
+            System.out.println(jenkins.getLog(run));
             String matlabName = run.getBuildVariables().get("MATLAB");
             System.out.println(matlabName);
             Assert.assertTrue(matlabName.equalsIgnoreCase("MATLAB_PATH_1") || matlabName.equalsIgnoreCase("MATLAB_PATH_2"));
