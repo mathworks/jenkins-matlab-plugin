@@ -132,6 +132,11 @@ public class RunMATLABCommandIT {
 
         jenkins.assertLogContains("R2020b completed", build);
         jenkins.assertLogContains("R2020a completed", build);
+        List<MatrixRun> runs = build.getRuns();
+        System.out.println("RAN BUILD");
+        for (MatrixRun run : runs) {
+            System.out.println(jenkins.getLog(run));
+        }
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
