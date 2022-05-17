@@ -22,7 +22,7 @@ jobs:
     name: WindowsVMSS
     vmImage: #
   steps:
-    - script: mvn -Dtest=RunMATLABTestsIT#verifyTestsFilterByFolderAndTag test
+    - script: mvn verify
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
