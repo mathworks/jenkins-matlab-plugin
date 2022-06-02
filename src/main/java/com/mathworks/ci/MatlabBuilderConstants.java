@@ -1,6 +1,5 @@
-       package com.mathworks.ci;
-       
-/*
+ package com.mathworks.ci;
+ /*
  * Copyright 2019-2020 The MathWorks, Inc.
  */
 
@@ -38,22 +37,22 @@ public class MatlabBuilderConstants {
     //Temporary MATLAB folder name in workspace 
     static final String TEMP_MATLAB_FOLDER_NAME = ".matlab";
     
+    static final String NEW_LINE = System.getProperty("line.separator");
 
-  
-    static final String TEST_RUNNER_SCRIPT="destination=tempname;\n"
-			+"mkdir(destination);\n"
-			+ "addpath(destination);\n"
-			+"zipURL='${ZIP_FILE}';\n"
-			+"unzip(zipURL,destination);\n"
-			+"disp('Unziping genscript resource in');\n"
-			+"disp(destination);\n"
-			+ "testScript = genscript(${PARAMS});\n"
-	        + "disp('Running MATLAB script with content:');\n"
-	        + "disp(strtrim(testScript.Contents));\n"
-	        + "runnerFile = testScript.writeToFile(fullfile(destination,'runnerScript.m'));\n"
-	        +"warning('off');"
-	        + "fprintf('___________________________________\\n\\n');\n";
+    static final String TEST_RUNNER_SCRIPT = String.join(NEW_LINE,
+    	"tmpDir=tempname;",
+        "mkdir(tmpDir);",
+        "addpath(tmpDir);",
+        "zipURL='${ZIP_FILE}';",
+    	"unzip(zipURL,tmpDir);",
+    	"testScript = genscript(${PARAMS});",
+        "disp('Running MATLAB script with content:');",
+        "disp(testScript.Contents);",
+        "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
+    	"fprintf('___________________________________\\n\\n');");
+}
+
 	  
 
-}
+
 	            
