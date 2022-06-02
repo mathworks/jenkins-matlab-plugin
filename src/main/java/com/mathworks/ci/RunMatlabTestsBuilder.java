@@ -9,8 +9,6 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
@@ -264,7 +262,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
     }
 
-    private int execMatlabCommand(FilePath workspace, Launcher launcher,/////change needs to be made here.
+    private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         /*
@@ -275,17 +273,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
-      
         try {
-      
-            FilePath genScriptLocation =
+             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                     constructCommandForTest(genScriptLocation), uniqueTmpFldrName);
             
             // copy genscript package in temp folder and write a runner script.
-           
             prepareTmpFldr(genScriptLocation, getRunnerScript(
                     MatlabBuilderConstants.TEST_RUNNER_SCRIPT, envVars.expand(getInputArguments()),uniqueTmpFldrName));
 
@@ -305,10 +300,9 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     
     public String constructCommandForTest(FilePath scriptPath) {
         final String matlabScriptName = getValidMatlabFileName(scriptPath.getBaseName());
-     
         final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''")
                 + "'); " + matlabScriptName + ",delete('.matlab/" + scriptPath.getBaseName() + "/"
-                + matlabScriptName + ".m'),runnerScript,rmdir(destination,'s')";
+                + matlabScriptName + ".m'),runnerScript,rmdir(tmpDir,'s')";
         return runCommand;
     }
 
