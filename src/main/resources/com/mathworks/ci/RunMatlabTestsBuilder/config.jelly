@@ -17,7 +17,6 @@
 <f:block>
     <br></br>
     <b>Generate Test Artifacts</b>
-    
     <f:optionalBlock name="pdfReportArtifact" field="pdfReportArtifact" title="PDF test report" checked="${instance.pdfReportArtifact.selected}">
   	 <f:entry field="pdfReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
