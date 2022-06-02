@@ -7,10 +7,8 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-
 import java.io.InputStream;
 import java.net.URL;
-
 import org.apache.commons.lang.RandomStringUtils;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -70,8 +68,6 @@ public interface MatlabBuild {
         targetFilePath.copyFrom(in);
         // set executable permission
         targetFilePath.chmod(0755);
-     
-        
     }
 
     default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,
@@ -90,40 +86,29 @@ public interface MatlabBuild {
     
     // This method prepares the temp folder by coping all helper files in it.
     default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
-    	
-    		// copy genscript package
+        // copy genscript package
     	 copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
                  MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
-       FilePath zipFileLocation =
+         FilePath zipFileLocation =
                  new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
-       
-
-         runnerScript=getZipScript(runnerScript, zipFileLocation.getRemote());
+         runnerScript=replaceZipPlaceholder(runnerScript, zipFileLocation.getRemote());
          
       // Write MATLAB scratch file in temp folder.
          FilePath scriptFile =
                  new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
          scriptFile.write(runnerScript, "UTF-8");
-        
-          
-       
     }
     
-    default String getZipScript(String script, String url) {
+    default String replaceZipPlaceholder(String script, String url) {
         script = script.replace("${ZIP_FILE}", url);
        return script;
     }
-    
-    
-    
+ 
     default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
-      //  script = script.replaceAll("\\$\\{TMPDIR\\}", uniqueTmpFldrName);
         return script;
     }
-    
-    
-    
+   
     default String getValidMatlabFileName(String actualName) {
         return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + actualName.replaceAll("-", "_");
