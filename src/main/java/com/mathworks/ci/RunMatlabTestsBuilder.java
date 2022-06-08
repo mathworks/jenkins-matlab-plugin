@@ -274,7 +274,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
         try {
-             FilePath genScriptLocation =
+            FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
@@ -292,7 +292,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             // Cleanup the runner File from tmp directory
             FilePath matlabRunnerScript =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
-           if (matlabRunnerScript.exists()) {
+            if (matlabRunnerScript.exists()) {
                 matlabRunnerScript.deleteRecursive();
             }
         }
