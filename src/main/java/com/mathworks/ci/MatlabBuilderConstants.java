@@ -1,7 +1,7 @@
- package com.mathworks.ci;
- /*
- * Copyright 2019-2020 The MathWorks, Inc.
- */
+package com.mathworks.ci;
+/*
+* Copyright 2019-2020 The MathWorks, Inc.
+*/
 
 public class MatlabBuilderConstants {
     static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
@@ -39,6 +39,7 @@ public class MatlabBuilderConstants {
     
     static final String NEW_LINE = System.getProperty("line.separator");
 
+    //MATLAB Runner Script
     static final String TEST_RUNNER_SCRIPT = String.join(NEW_LINE,
     	"tmpDir=tempname;",
         "mkdir(tmpDir);",
@@ -51,8 +52,3 @@ public class MatlabBuilderConstants {
         "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
     	"fprintf('___________________________________\\n\\n');");
 }
-
-	  
-
-
-	            
