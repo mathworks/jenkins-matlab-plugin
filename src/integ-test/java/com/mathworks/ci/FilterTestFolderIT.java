@@ -143,9 +143,10 @@ public class FilterTestFolderIT {
                 "            runMATLABTests(sourceFolder:['src'])\n" +
                 "        }";
         WorkflowRun build = getBuild(script);
-        jenkins.assertLogContains("testMultiply/testMultiplication", build);
-        jenkins.assertLogContains("testSquare/testSquareNum", build);
-        jenkins.assertLogContains("testSum/testAddition", build);
+        System.out.println(build.getLog());
+        jenkins.assertLogContains("Done testMultiply", build);
+        jenkins.assertLogContains("testSquare", build);
+        jenkins.assertLogContains("testSum", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 
@@ -161,8 +162,8 @@ public class FilterTestFolderIT {
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag')\n" +
                 "        }";
         WorkflowRun build = getBuild(script);
-        jenkins.assertLogContains("testSquare/testSquareNum", build);
-        jenkins.assertLogContains("testSum/testAddition", build);
+        jenkins.assertLogContains("Done testSquare", build);
+        jenkins.assertLogContains("Done testSum", build);
         jenkins.assertLogNotContains("testMultiply/testMultiplication", build);
         jenkins.assertLogNotContains("testModel/testModelSim", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
