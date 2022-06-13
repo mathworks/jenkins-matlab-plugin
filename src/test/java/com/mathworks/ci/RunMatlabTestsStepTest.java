@@ -164,6 +164,30 @@ public class RunMatlabTestsStepTest {
         j.assertBuildStatusSuccess(build);
     }
     
+    /*
+     * Verify runner script deleted from .matlab folder during MATLAB call
+     */
+
+    @Test
+    public void verifyRunnerScriptDeletedFromWorkSpace() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("delete('.matlab/", build);
+    }
+    
+    /*
+     * Verify runner script deleted from system Tmp directory during MATLAB call
+     */
+
+    @Test
+    public void verifySystemTmpDirDeleted() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("rmdir(tmpDir,'s')", build);
+    }
+    
     /*@Integ Test
      * Verify default command options for test Filter using selectByTag option 
      */

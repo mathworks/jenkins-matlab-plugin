@@ -99,8 +99,9 @@ public interface MatlabBuild {
         zipFileLocation.unzip(tmpFldr);
     }
     
-    default String getRunnerScript(String script, String params) {
+    default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
+        script = script.replaceAll("\\$\\{TMPDIR\\}", uniqueTmpFldrName);
         return script;
     }
     
