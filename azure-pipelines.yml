@@ -20,10 +20,10 @@ jobs:
 - job: Test
   timeoutInMinutes: 120
   pool:
-    name: WindowsVMSS
+    name: LinuxVMSS
     vmImage: #
   steps:
-    - script: mvn verify
+    - script: mvn --version
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
