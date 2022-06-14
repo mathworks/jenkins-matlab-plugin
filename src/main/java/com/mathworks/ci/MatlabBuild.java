@@ -8,7 +8,6 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import org.apache.commons.lang.RandomStringUtils;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -25,7 +24,7 @@ public interface MatlabBuild {
      * @param workspace Current build workspace
      * @param launcher Current build launcher
      * @param listener Current build listener
-     * @param envVars Environment variables of the current build                                                                                     
+     * @param envVars Environment variables of the current build
      * @param matlabCommand MATLAB command to execute on shell
      * @return matlabLauncher returns the process launcher to run MATLAB commands
      */
@@ -87,10 +86,10 @@ public interface MatlabBuild {
     // This method prepares the temp folder by coping all helper files in it.
     default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
         // copy genscript package
-    	 copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
-                 MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
-         FilePath zipFileLocation =
-                 new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
+        copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
+                MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
+        FilePath zipFileLocation =
+                new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
          runnerScript=replaceZipPlaceholder(runnerScript, zipFileLocation.getRemote());
          
       // Write MATLAB scratch file in temp folder.
