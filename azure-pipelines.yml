@@ -23,7 +23,7 @@ jobs:
     name: LinuxVMSS
     vmImage: #
   steps:
-    - script: mvn --version
+    - script: mvn verify
 # jobs:
 #   - job : Test
 #     timeoutInMinutes: 120
