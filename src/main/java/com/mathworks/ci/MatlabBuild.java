@@ -90,12 +90,12 @@ public interface MatlabBuild {
                 MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
         FilePath zipFileLocation =
                 new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
-         runnerScript=replaceZipPlaceholder(runnerScript, zipFileLocation.getRemote());
+        runnerScript=replaceZipPlaceholder(runnerScript, zipFileLocation.getRemote());
          
       // Write MATLAB scratch file in temp folder.
-         FilePath scriptFile =
-                 new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
-         scriptFile.write(runnerScript, "UTF-8");
+        FilePath scriptFile =
+                new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
+        scriptFile.write(runnerScript, "UTF-8");
     }
     
     //This method replaces the placeholder with genscript's zip file location URL in temp folder
