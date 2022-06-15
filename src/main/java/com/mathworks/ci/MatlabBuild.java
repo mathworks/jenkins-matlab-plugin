@@ -103,12 +103,12 @@ public interface MatlabBuild {
         script = script.replace("${ZIP_FILE}", url);
        return script;
     }
-
+    
     default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
         return script;
     }
-
+    
     default String getValidMatlabFileName(String actualName) {
         return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + actualName.replaceAll("-", "_");
