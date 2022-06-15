@@ -91,24 +91,24 @@ public interface MatlabBuild {
         FilePath zipFileLocation =
                 new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
         runnerScript=replaceZipPlaceholder(runnerScript, zipFileLocation.getRemote());
-         
+
       // Write MATLAB scratch file in temp folder.
         FilePath scriptFile =
                 new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
         scriptFile.write(runnerScript, "UTF-8");
     }
-    
+
     //This method replaces the placeholder with genscript's zip file location URL in temp folder
     default String replaceZipPlaceholder(String script, String url) {
         script = script.replace("${ZIP_FILE}", url);
        return script;
     }
- 
+
     default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
         return script;
     }
-   
+
     default String getValidMatlabFileName(String actualName) {
         return MatlabBuilderConstants.MATLAB_TEST_RUNNER_FILE_PREFIX
                 + actualName.replaceAll("-", "_");
