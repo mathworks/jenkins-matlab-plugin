@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 /*
-* Copyright 2019-2020 The MathWorks, Inc.
-*/
+ * Copyright 2019-2020 The MathWorks, Inc.
+ */
 
 public class MatlabBuilderConstants {
     static final double BASE_MATLAB_VERSION_RUNTESTS_SUPPORT = 8.1;
