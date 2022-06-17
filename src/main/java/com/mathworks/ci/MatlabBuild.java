@@ -100,7 +100,7 @@ public interface MatlabBuild {
 
     //This method replaces the placeholder with genscript's zip file location URL in temp folder
     default String replaceZipPlaceholder(String script, String url) {
-        script = script.replace("${ZIP_FILE}", url);
+        script = script.replace("${ZIP_FILE}", url.replaceAll("'","''"));
         return script;
     }
     
