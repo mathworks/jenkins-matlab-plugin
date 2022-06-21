@@ -16,56 +16,18 @@ trigger:
  - master
 
 
+
 jobs:
 - job: Test
   timeoutInMinutes: 120
+  strategy:
+    matrix:
+      linux:
+        vmss: LinuxVMSS
+      windows:
+        vmss: WindowsVMSS
   pool:
-    name: LinuxVMSS
+    name: $(vmss)
     vmImage: #
   steps:
     - script: mvn verify
-# jobs:
-#   - job : Test
-#     timeoutInMinutes: 120
-#     strategy:
-#       matrix:
-#         linux:
-#           imageName: 'ubuntu-latest'
-#         mac:
-#           imageName: 'vahila_mac_bgl'
-#         windows:
-#           imagename: 'windowsdockeragent'
-#           imageName: 'vahila_win_bgl'
-#     pool:
-#       name: WindowsScaleSetAgent
-#       vmImage: #
-#       demands:
-#         - agent.name -equals $(imageName)
-#     steps:
-#         - script: mvn --version
-#       - bash: wget https://www.mathworks.com/mpm/glnxa64/mpm |
-#            wget -qO- --retry-connrefused https://static-dev.mathworks-ci.com/matlab-batch/v0/install.sh | bash -s 
-#            chmod +x mpm
-#       - script: ls 
-#       - script: ls &&  mpm install --release=R2021b --destination=/home/matlab MATLAB Simulink Deep_Learning_Toolbox Parallel_Computing_Toolbox 
-#       - bash:     matlab-batch --token $MATHWORKS_TOKEN --acount $MATHWORKS_ACCOUNT pwd,version
-#            echo MATHWORKS_ACCOUNT
-           
-#         env:
-#             MATHWORKS_TOKEN: $(MATHWORKS_TOKEN)
-#             MATHWORKS_ACCOUNT: $(MATHWORKS_ACCOUNT)
-            
-#       - script: cd /home/matlab && ls 
-#       - script: cd /home/matlab/bin && ./matlab -batch ver
-#       mw -using bci mvn clean verify -Dfindbugs.skip=true
-#       - task: Maven@3
-#         inputs:
-#           mavenPomFile: 'pom.xml'
-#           mavenOptions: '-Xmx3072m -Dmaven.javadoc.skip=true'
-#           publishJUnitResults: true
-#           testResultsFiles: '**/surefire-reports/TEST-*.xml'
-#           codeCoverageToolOption: 'JaCoCo'
-#           goals: 'verify'
-#         displayName: 'Build $(imageName)'
-
-
