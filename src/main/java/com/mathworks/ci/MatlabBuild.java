@@ -85,23 +85,27 @@ public interface MatlabBuild {
     
     // This method prepares the temp folder by coping all helper files in it.
     default void prepareTmpFldr(FilePath tmpFldr, String runnerScript) throws IOException, InterruptedException {
-        // Write MATLAB scratch file in temp folder.
-        FilePath scriptFile =
-                new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
-        scriptFile.write(runnerScript, "UTF-8");
         // copy genscript package
         copyFileInWorkspace(MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR,
                 MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR, tmpFldr);
         FilePath zipFileLocation =
                 new FilePath(tmpFldr, MatlabBuilderConstants.MATLAB_SCRIPT_GENERATOR);
+        runnerScript=replaceZipPlaceholder(runnerScript, zipFileLocation.getRemote());
 
-        // Unzip the file in temp folder.
-        zipFileLocation.unzip(tmpFldr);
+        // Write MATLAB scratch file in temp folder.
+        FilePath scriptFile =
+                new FilePath(tmpFldr, getValidMatlabFileName(tmpFldr.getBaseName()) + ".m");
+        scriptFile.write(runnerScript, "UTF-8");
+    }
+
+    //This method replaces the placeholder with genscript's zip file location URL in temp folder
+    default String replaceZipPlaceholder(String script, String url) {
+        script = script.replace("${ZIP_FILE}", url.replaceAll("'","''"));
+        return script;
     }
     
     default String getRunnerScript(String script, String params, String uniqueTmpFldrName) {
         script = script.replace("${PARAMS}", params);
-        script = script.replaceAll("\\$\\{TMPDIR\\}", uniqueTmpFldrName);
         return script;
     }
     
