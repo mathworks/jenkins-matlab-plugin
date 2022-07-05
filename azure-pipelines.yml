@@ -22,8 +22,8 @@ jobs:
   timeoutInMinutes: 120
   strategy:
     matrix:
-      linux:
-        vmss: LinuxVMSS
+#       linux:
+#         vmss: LinuxVMSS
       windows:
         vmss: WindowsVMSS
   pool:
