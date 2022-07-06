@@ -7,11 +7,13 @@ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import static org.jvnet.hudson.test.JenkinsRule.getLog;
 
@@ -21,6 +23,9 @@ public class PipelineIT {
     private String envDSL;
     // Test data to run MATLAB Tests
     private URL zipFile;
+
+    @Rule
+    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();

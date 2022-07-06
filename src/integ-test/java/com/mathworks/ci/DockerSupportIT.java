@@ -18,6 +18,7 @@ import org.jenkinsci.plugins.workflow.graph.FlowNode;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.StringUtils;
 import jenkins.model.*;
@@ -42,6 +44,8 @@ public class DockerSupportIT extends Thread{
     volatile MatrixBuild matrixBuild;
     volatile WorkflowRun pipelineBuild;
 
+    @Rule
+    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();

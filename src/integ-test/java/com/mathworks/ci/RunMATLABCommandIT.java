@@ -21,6 +21,7 @@ import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.Builder;
 
 
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.File;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 
 public class RunMATLABCommandIT {
@@ -35,6 +37,9 @@ public class RunMATLABCommandIT {
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabCommandBuilder scriptBuilder;
+
+    @Rule
+    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();

@@ -18,6 +18,7 @@ import hudson.matrix.MatrixProject;
 import hudson.matrix.MatrixRun;
 
 
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 public class RunMATLABTestsIT {
 
@@ -32,6 +34,8 @@ public class RunMATLABTestsIT {
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
 
+    @Rule
+    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();

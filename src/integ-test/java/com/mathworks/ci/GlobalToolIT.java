@@ -11,6 +11,7 @@ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.w3c.dom.html.HTMLElement;
 
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -29,6 +31,8 @@ public class GlobalToolIT {
     private UseMatlabVersionBuildWrapper buildWrapper;
     private MatrixProject matrixProject;
 
+    @Rule
+    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();

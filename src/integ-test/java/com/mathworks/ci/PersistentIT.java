@@ -10,11 +10,13 @@ import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.jvnet.hudson.test.RestartableJenkinsRule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -27,6 +29,10 @@ public class PersistentIT {
     private final String modelCovFilePath = "mymodel/report.xml";
     private final String stmFilePath = "mystm/results.mldatx";
     private final List<SourceFolderPaths> paths = new ArrayList<>();
+
+    @Rule
+    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
+
     @Rule
     public RestartableJenkinsRule jenkins = new RestartableJenkinsRule();
 
