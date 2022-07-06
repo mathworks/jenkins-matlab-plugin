@@ -31,7 +31,7 @@ public class PersistentIT {
     private final List<SourceFolderPaths> paths = new ArrayList<>();
 
     @Rule
-    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
+    public Timeout timeout = Timeout.seconds(0);
 
     @Rule
     public RestartableJenkinsRule jenkins = new RestartableJenkinsRule();

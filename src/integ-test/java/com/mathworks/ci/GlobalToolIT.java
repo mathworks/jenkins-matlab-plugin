@@ -32,7 +32,7 @@ public class GlobalToolIT {
     private MatrixProject matrixProject;
 
     @Rule
-    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
+    public Timeout timeout = Timeout.seconds(0);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();

@@ -45,7 +45,7 @@ public class DockerSupportIT extends Thread{
     volatile WorkflowRun pipelineBuild;
 
     @Rule
-    public Timeout timeout = new Timeout(0, TimeUnit.MILLISECONDS);
+    public Timeout timeout = Timeout.seconds(0);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
