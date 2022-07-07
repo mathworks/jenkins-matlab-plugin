@@ -158,6 +158,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/com.jcabi/jcabi-xml -->
+		<dependency>
+			<groupId>com.jcabi</groupId>
+			<artifactId>jcabi-xml</artifactId>
+			<version>0.23.1</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

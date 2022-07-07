@@ -5,9 +5,6 @@ import com.gargoylesoftware.htmlunit.html.*;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import hudson.plugins.git.BranchSpec;
-import hudson.plugins.git.GitSCM;
-import hudson.plugins.git.UserRemoteConfig;
 import hudson.tasks.Builder;
 import org.junit.*;
 import hudson.matrix.Axis;
@@ -22,11 +19,18 @@ import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+
+import com.jcabi.xml.XML;
+import com.jcabi.xml.XMLDocument;
+
+import static org.junit.Assert.assertFalse;
 
 public class RunMATLABTestsIT {
 
@@ -53,6 +57,14 @@ public class RunMATLABTestsIT {
         this.project = null;
         this.testBuilder = null;
     }
+
+    /* Helper function to read XML file as string */
+    public String xmlToString(String codegenReportPath) throws FileNotFoundException {
+        File codeCoverageFile = new File(codegenReportPath);
+        XML xml = new XMLDocument(codeCoverageFile);
+        return xml.toString();
+    }
+
 
     @Test
     public void verifyMATLABEmptyRootError() throws Exception{
@@ -424,5 +436,72 @@ public class RunMATLABTestsIT {
 //        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 //
 //    }
+
+    @Test
+    public void verifyCodeCoverageResultForFreeStyle() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+
+        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+
+        RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
+        testingBuilder.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));
+        project.getBuildersList().add(testingBuilder);
+
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+
+        String xmlString = xmlToString(build.getWorkspace() + "/TestArtifacts/coberturaresult.xml");
+        assertFalse(xmlString.contains("+scriptgen"));
+        assertFalse(xmlString.contains("genscript"));
+        assertFalse(xmlString.contains("runner_"));
+        jenkins.assertLogContains("testSquare", build);
+        jenkins.assertBuildStatus(Result.FAILURE,build);
+    }
+
+    @Test
+    public void verifyCodeCoverageResultForMatrix() throws Exception {
+        MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+        Axis axes = new Axis("VERSION", "R2020b", "R2020a");
+        matrixProject.setAxes(new AxisList(axes));
+        String matlabRoot = MatlabRootSetup.getMatlabRoot();
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
+
+        matrixProject.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        matrixProject.getBuildWrappersList().add(this.buildWrapper);
+        RunMatlabTestsBuilder tester = new RunMatlabTestsBuilder();
+
+        tester.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));
+        // Adding list of test folder
+        List<TestFolders> testFolders = new ArrayList<TestFolders>();
+        testFolders.add(new TestFolders("test/TestSum"));
+        tester.setSelectByFolder(new SelectByFolder(testFolders));
+
+        matrixProject.getBuildersList().add(tester);
+        MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+
+        Map<String, String> vals = new HashMap<String, String>();
+        vals.put("VERSION", "R2020b");
+        Combination c1 = new Combination(vals);
+        MatrixRun build1 = build.getRun(c1);
+
+        String xmlString = xmlToString(build1.getWorkspace().getRemote() + "/TestArtifacts/coberturaresult.xml");
+        assertFalse(xmlString.contains("+scriptgen"));
+        assertFalse(xmlString.contains("genscript"));
+        assertFalse(xmlString.contains("runner_"));
+        jenkins.assertLogContains("testSum", build1);
+        jenkins.assertBuildStatus(Result.SUCCESS,build1);
+
+        // Check for second Matrix combination
+        vals.put("VERSION", "R2020a");
+        Combination c2 = new Combination(vals);
+        MatrixRun build2 = build.getRun(c2);
+
+        xmlString = xmlToString(build2.getWorkspace().getRemote() + "/TestArtifacts/coberturaresult.xml");
+        assertFalse(xmlString.contains("+scriptgen"));
+        assertFalse(xmlString.contains("genscript"));
+        assertFalse(xmlString.contains("runner_"));
+        jenkins.assertLogContains("testSum", build2);
+        jenkins.assertBuildStatus(Result.SUCCESS, build2);
+    }
 
 }
