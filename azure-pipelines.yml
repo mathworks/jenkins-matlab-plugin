@@ -14,10 +14,11 @@ jobs:
     matrix:
       linux:
         vmss: LinuxVMSS
-      windows:
-        vmss: WindowsVMSS
+#       windows:
+#         vmss: WindowsVMSS
   pool:
     name: $(vmss)
     vmImage: #
   steps:
-    - script: mvn verify
+    - script: git --version
+    - script: git clone https://insidelabs-git.mathworks.com/cit/utilities/network-license-manager-docker
