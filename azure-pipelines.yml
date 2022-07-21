@@ -2,23 +2,30 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
-trigger:
- branches:
-    include:
-    - IntegTests
+# trigger:
+#  branches:
+#     include:
+#     - IntegTests
 
-jobs:
-- job: Test
-  timeoutInMinutes: 120
-  strategy:
-    matrix:
-      linux:
-        vmss: LinuxVMSS
-#       windows:
-#         vmss: WindowsVMSS
-  pool:
-    name: $(vmss)
-    vmImage: #
-  steps:
-    - script: git --version
-    - script: git clone https://insidelabs-git.mathworks.com/cit/utilities/network-license-manager-docker
+# jobs:
+# - job: Test
+#   timeoutInMinutes: 120
+#   strategy:
+#     matrix:
+#       linux:
+#         vmss: LinuxVMSS
+# #       windows:
+# #         vmss: WindowsVMSS
+#   pool:
+#     name: $(vmss)
+#     vmImage: #
+#   steps:
+#     - script: git --version
+#     - script: git clone https://insidelabs-git.mathworks.com/cit/utilities/network-license-manager-docker
+
+pool:
+   vmImage: 'ubuntu-latest'
+
+steps:
+ -script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm && sudo mkdir /usr/local/matlab && sudo mkdir /usr/local/matla/R2022a && chmod 777 /usr/local/maltab &&  ./mpm install --release=R2022a --destination=/usr/local/matlab/R2022a --products MATLAB
+ -script: setenv PATH /usr/local/matlab/R2022a/bin:$PATH
