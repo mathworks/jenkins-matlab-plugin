@@ -27,4 +27,4 @@ pool:
    vmImage: 'ubuntu-latest'
 
 steps:
- - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm && ./mpm install --release=R2022a --destination=matlab --products MATLAB && export PATH=matlab/R2022a/bin:$PATH && echo $PATH && matlab -batch ver,pwd
+ - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm && ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab/R2022a && export PATH=matlab/R2022a/bin:$PATH && echo $PATH && matlab -batch ver,pwd
