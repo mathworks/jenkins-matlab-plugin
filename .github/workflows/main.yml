@@ -7,10 +7,10 @@ jobs:
     steps:
       - name: Get mpm
         run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
-      - name: Install MATLAB
-        run: ./mpm install --release=R2022a --destination=matlab --products MATLAB
+#       - name: Install MATLAB
+#         run: ./mpm install --release=R2022a --destination=matlab --products MATLAB
       - name: Create license Directory and file
-        run: mkdir matlab/licenses && touch matlab/licenses/license.lic
+        run: mkdir matlab && mkdir matlab/licenses && touch matlab/licenses/license.lic
       - name: Get license
         run: printenv LINUX_LIC > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
         env:
