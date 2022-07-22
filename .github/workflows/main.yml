@@ -16,7 +16,7 @@ jobs:
         env:
           LINUX_LIC: ${{ secrets.LINUX_R2022A }}
       - name: test substring
-        run: grep -q "abcdefgh" matlab/licenses/license.lic && echo "yes" || echo "no"
+        run: grep -q "ab\ncd" matlab/licenses/license.lic && echo "yes" || echo "no"
       - name: Run MATLAB
         run: export PATH=matlab/bin:$PATH && matlab -batch ver,pwd
       
