@@ -31,10 +31,10 @@ steps:
 #  - script: ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab && export PATH=matlab/bin:$PATH && echo $PATH && pwd 
  - script: pwd
  - script: mkdir matlab && mkdir matlab/licenses && touch matlab/licenses/license.lic
- - script: cat matlab/licenses/license.lic
- - script: echo "$LINUX_R2022A" > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
- - script: printf "%s" "$LINUX_R2022A" > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
-#  - script: printenv "$LINUX_R2022A" > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
- - script: echo "$LINUX_R2022A" > matlab/licenses/license_enc.lic && cat matlab/licenses/license_enc.lic | base64 -d > matlab/licenses/license.lic
+ - script: printenv LINUX_LIC > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
+   env:
+      LINUX_LIC: $(LINUX_R2022A)
+ 
+#  - script: echo "$LINUX_R2022A" > matlab/licenses/license_enc.lic && cat matlab/licenses/license_enc.lic | base64 -d > matlab/licenses/license.lic
  - script: cat matlab/licenses/license.lic
 #  - script: export PATH=matlab/bin:$PATH && matlab -batch ver,pwd
