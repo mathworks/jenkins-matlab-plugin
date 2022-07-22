@@ -14,7 +14,7 @@ jobs:
       - name: Get license
         run: printenv LINUX_LIC > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
         env:
-          LINUX_LIC: $(LINUX_R2022A)
+          LINUX_LIC: ${{ secrets.LINUX_R2022A }}
       - name: Run MATLAB
         run: export PATH=matlab/bin:$PATH && matlab -batch ver,pwd
       
