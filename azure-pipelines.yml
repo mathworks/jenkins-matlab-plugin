@@ -27,6 +27,7 @@ pool:
    vmImage: 'ubuntu-latest'
 
 steps:
- - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm && ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab && export PATH=matlab/bin:$PATH && echo $PATH && pwd && matlab -batch ver,pwd
+ - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm && ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab && export PATH=matlab/bin:$PATH && echo $PATH && pwd 
  - script: pwd
- - script: mkdir matlab/licenses && touch matlab/licenses/license.lic && printf "%s" "${{ secrets.LINUX_R2022a }}" > "matlab/licenses/license.lic"
+ - script: mkdir matlab/licenses && touch matlab/licenses/license.lic && printf "%s" "$(LINUX_R2022A)" > "matlab/licenses/license.lic"
+ - script: matlab -batch ver,pwd
