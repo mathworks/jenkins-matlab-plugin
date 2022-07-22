@@ -29,7 +29,7 @@ pool:
 steps:
  - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
  - script: ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab && export PATH=matlab/bin:$PATH && echo $PATH && pwd 
- - script: mkdir matlab && mkdir matlab/licenses && touch matlab/licenses/license.lic
+ - script:  mkdir matlab/licenses && touch matlab/licenses/license.lic
  - script: printenv LINUX_LIC > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
    env:
       LINUX_LIC: $LINUX_R2022A
