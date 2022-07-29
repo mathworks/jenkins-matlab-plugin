@@ -301,8 +301,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public String constructCommandForTest(FilePath scriptPath) {
         final String matlabScriptName = getValidMatlabFileName(scriptPath.getBaseName());
         final String runCommand = "addpath('" + scriptPath.getRemote().replaceAll("'", "''")
-                + "'); " + matlabScriptName + ",delete('.matlab/" + scriptPath.getBaseName() + "/"
-                + matlabScriptName + ".m'),runnerScript,rmdir(tmpDir,'s')";
+                + "');tmpDir=tempname;mkdir(tmpDir), ,movefile('.matlab/" + scriptPath.getBaseName() + "/"
+                + matlabScriptName + ".m',tmpDir),addpath(tmpDir),"+matlabScriptName+",runnerScript,rmdir(tmpDir,'s')";
         return runCommand;
     }
 

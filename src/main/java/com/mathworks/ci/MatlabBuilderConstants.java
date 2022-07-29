@@ -38,17 +38,13 @@ public class MatlabBuilderConstants {
     static final String TEMP_MATLAB_FOLDER_NAME = ".matlab";
     
     static final String NEW_LINE = System.getProperty("line.separator");
-
-    //MATLAB Runner Script
+        
     static final String TEST_RUNNER_SCRIPT = String.join(NEW_LINE,
-    	"tmpDir=tempname;",
-        "mkdir(tmpDir);",
-        "addpath(tmpDir);",
-        "zipURL='${ZIP_FILE}';",
-    	"unzip(zipURL,tmpDir);",
-    	"testScript = genscript(${PARAMS});",
-        "disp('Running MATLAB script with content:');",
-        "disp(testScript.Contents);",
-        "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
-    	"fprintf('___________________________________\\n\\n');");
+            "zipURL='${ZIP_FILE}';",
+        	"unzip(zipURL,tmpDir);",
+        	"testScript = genscript(${PARAMS});",
+            "disp('Running MATLAB script with content:');",
+            "disp(testScript.Contents);",
+            "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
+        	"fprintf('___________________________________\\n\\n');");  
 }
