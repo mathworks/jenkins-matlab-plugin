@@ -40,11 +40,11 @@ public class MatlabBuilderConstants {
     static final String NEW_LINE = System.getProperty("line.separator");
         
     static final String TEST_RUNNER_SCRIPT = String.join(NEW_LINE,
-            "zipURL='${ZIP_FILE}';",
-        	"unzip(zipURL,tmpDir);",
-        	"testScript = genscript(${PARAMS});",
-            "disp('Running MATLAB script with content:');",
-            "disp(testScript.Contents);",
-            "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
-        	"fprintf('___________________________________\\n\\n');");  
+        "zipURL='${ZIP_FILE}';",
+    	"unzip(zipURL,tmpDir);",
+    	"testScript = genscript(${PARAMS});",
+        "disp('Running MATLAB script with content:');",
+        "disp(testScript.Contents);",
+        "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
+    	"fprintf('___________________________________\\n\\n');");
 }
