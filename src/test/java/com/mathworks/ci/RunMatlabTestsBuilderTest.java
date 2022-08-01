@@ -510,7 +510,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("delete('.matlab/", build);
+        jenkins.assertLogContains("movefile('.matlab/", build);
     }
     
     /*
