@@ -81,4 +81,11 @@
   	  </f:entry>
    </f:optionalBlock>
 </f:block>
+
+<f:section title="Advaced Test Run Options" align="left" optional="true">
+  <f:advanced title="Test run option" align="left">
+    <st:include page="configure-advanced.jelly" />
+  </f:advanced>
+</f:section>
+
 </j:jelly>
