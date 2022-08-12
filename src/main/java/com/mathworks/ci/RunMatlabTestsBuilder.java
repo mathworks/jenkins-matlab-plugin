@@ -35,6 +35,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import hudson.Launcher.ProcStarter;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -60,6 +61,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
+    private LoggingLevel loggingLevel;
+    private OutputDetail outputDetail;
+    private boolean useParallel;
+    private boolean strict;
     
 
     @DataBoundConstructor
@@ -177,6 +182,49 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         // If previously checked assign valid artifact object else NullArtifact.
         return (isChecked) ? returnVal : new NullArtifact();
     }
+    
+    // Verbosity level 
+    
+    public LoggingLevel getLoggingLevel() {
+        return loggingLevel;
+    }
+    
+    @DataBoundSetter
+    public void setLoggingLevel(LoggingLevel loggingLevel) {
+        this.loggingLevel = loggingLevel;
+    }
+
+
+
+    public OutputDetail getOutputDetail() {
+        return outputDetail;
+    }
+
+    @DataBoundSetter
+    public void setOutputDetail(OutputDetail outputDetail) {
+        this.outputDetail = outputDetail;
+    }
+    
+    public boolean getUseParallel() {
+        return useParallel;
+    }
+
+    @DataBoundSetter
+    public void setUseParallel(boolean useParallel) {
+        this.useParallel = useParallel;
+    }
+
+
+
+    public boolean getStrict() {
+        return strict;
+    }
+
+    @DataBoundSetter
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
+
     
     
     // To retain Backward compatibility
@@ -316,6 +364,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
+        final String USE_PARALLEL = "UseParallel";
+        final String STRICT = "Strict";
         
         inputArgsList.add("'Test'");
 
@@ -347,6 +397,22 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
+        
+        //Add Logging level 
+        if (getLoggingLevel() != null && !getLoggingLevel().getLoggingLevel().isEmpty()) {
+            getLoggingLevel().addTagToInputArgs(inputArgsList);
+        }
+        
+        //Add Logging level 
+        if (getOutputDetail() != null && !getOutputDetail().getOutputDetail().isEmpty()) {
+            getOutputDetail().addTagToInputArgs(inputArgsList);
+        }
+        
+        //Add UseParallel
+        inputArgsList.add("'" + USE_PARALLEL  + "'" + "," + getUseParallel());
+        
+        // Add Strict
+        inputArgsList.add("'" + STRICT  + "'" + "," + getStrict());
 
         return String.join(",", inputArgsList);
     }
@@ -522,6 +588,83 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Extension
         public static class DescriptorImpl extends Descriptor<SelectByTag> {
+        }
+    }
+    
+    // Logging level 
+    
+    public static final class LoggingLevel extends AbstractDescribableImpl<LoggingLevel> {
+        private String loggingLevel;
+        private static final String LOGGING_LEVEL = "LoggingLevel";
+
+        @DataBoundConstructor
+        public LoggingLevel(String loggingLevel) {
+            this.loggingLevel = Util.fixNull(loggingLevel);
+        }
+
+        public String getLoggingLevel() {
+            return this.loggingLevel;
+        }
+
+        public void addTagToInputArgs(List<String> inputArgsList) {
+            inputArgsList.add("'" + LOGGING_LEVEL + "'" + "," + "'"
+                    + getLoggingLevel().replaceAll("'", "''") + "'");
+        }
+
+        @Extension
+        public static class DescriptorImpl extends Descriptor<LoggingLevel> {
+            public ListBoxModel doFillLoggingLevelItems() {
+                ListBoxModel items = new ListBoxModel();
+
+                items.add("None", "none");
+                items.add("Terse", "terse");
+                items.add("Concise", "concise");
+                items.add("Detailed", "detailed");
+                items.add("Verbose", "verbose");
+
+                return items;
+            }
+        }
+    }
+    
+// Verbosity level 
+    
+    public static final class OutputDetail extends AbstractDescribableImpl<OutputDetail> {
+        private String outputDetail;
+        private static final String OUTPUT_DETAIL = "OutputDetail";
+
+        @DataBoundConstructor
+        public OutputDetail(String outputDetail) {
+            this.outputDetail = outputDetail;
+        }
+        
+        
+        public String setetOutputDetail(String value) {
+            return this.outputDetail = value;
+        }
+
+        public String getOutputDetail() {
+            return this.outputDetail;
+        }
+
+        public void addTagToInputArgs(List<String> inputArgsList) {
+            inputArgsList.add("'" + OUTPUT_DETAIL + "'" + "," + "'"
+                    + getOutputDetail() + "'");
+        }
+
+        @Extension
+        public static class DescriptorImpl extends Descriptor<OutputDetail> {
+            public ListBoxModel doFillOutputDetailItems() {
+                ListBoxModel items = new ListBoxModel();
+
+                items.add("None", "none");
+                items.add("Terse", "terse");
+                items.add("Concise", "concise");
+                items.add("Detailed", "detailed");
+                items.add("Verbose", "verbose");
+
+                return items;
+            }
         }
     }
 }

@@ -1,18 +1,41 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-<f:block>
+<f:block> 
     <br></br>
     <f:optionalProperty field="sourceFolder" title="Source folder" />
 </f:block>
 
 <f:block>
+<br></br>
+<b>Test Run </b>
+<f:entry field="useParallel" checked="${instance.useParallel}">
+    <f:checkbox/> Use parallel
+</f:entry>
+
+<f:entry field="strict" checked="${instance.strict}">
+    <f:checkbox/> Strict
+</f:entry> 
+</f:block>
+
+<f:block>
+    <br></br>
+   <b>Verbosity</b>
+   <f:optionalProperty field="loggingLevel" title="Logging level" />
+   <br></br>
+   <f:optionalProperty field="outputDetail" title="Output Detail" /> 
+</f:block>
+
+<f:block>
     <br></br>
    <b>Filter Tests</b>
-   <f:optionalProperty field="selectByFolder" title="By folder name" />  
+   <f:optionalProperty field="selectByFolder" title="By folder name" />
    <br></br>
-   <f:optionalProperty field="selectByTag" title="By tag" />  
+   <f:optionalProperty field="selectByTag" title="By tag" /> 
 </f:block>
+
+
+
 
 <f:block>
     <br></br>
