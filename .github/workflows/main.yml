@@ -17,8 +17,8 @@ jobs:
         uses: matlab-actions/run-command@v1
         with:
           command: matlabroot
-#       - name: Build project with Maven
-#         run: mvn verify
+      - name: Build project with Maven
+        run: mvn failsafe:integration-test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
