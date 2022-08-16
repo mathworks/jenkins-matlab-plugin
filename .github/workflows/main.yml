@@ -3,7 +3,7 @@ on: push
 jobs:
   my-job:
     name: Run MATLAB Script
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
