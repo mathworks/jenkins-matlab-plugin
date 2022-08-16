@@ -18,7 +18,7 @@ jobs:
         with:
           command: matlabroot
       - name: Build project with Maven
-        run: mvn verify
+        run: mvn verify -Dmaven.test.failure.ignore=true
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
