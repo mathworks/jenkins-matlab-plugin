@@ -18,7 +18,7 @@ jobs:
         with:
           command: matlabroot
       - name: Build project with Maven
-        run: mvn failsafe:integration-test
+        run: mvn verify
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
