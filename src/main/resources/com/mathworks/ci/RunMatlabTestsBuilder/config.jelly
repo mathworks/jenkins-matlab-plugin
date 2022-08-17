@@ -8,22 +8,22 @@
 
 <f:block>
 <br></br>
-<b>Test Run </b>
-<f:entry field="useParallel" checked="${instance.useParallel}">
-    <f:checkbox/> Use parallel
+<b>Run Customization</b>
+<f:entry field="useParallel" title="Use parallel " checked="${instance.useParallel}">
+    <f:checkbox/>
 </f:entry>
 
-<f:entry field="strict" checked="${instance.strict}">
-    <f:checkbox/> Strict
+<f:entry field="strict" title="Strict " checked="${instance.strict}">
+    <f:checkbox/> 
 </f:entry> 
-</f:block>
 
-<f:block>
-    <br></br>
-   <b>Verbosity</b>
-   <f:optionalProperty field="loggingLevel" title="Logging level" />
-   <br></br>
-   <f:optionalProperty field="outputDetail" title="Output Detail" /> 
+<!-- Verbocity fields --> 
+<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
+    <f:select/>
+</f:entry>
+<f:entry name="outputDetail" title="Output detail " field="outputDetail" default="Default">
+    <f:select/>
+</f:entry>
 </f:block>
 
 <f:block>

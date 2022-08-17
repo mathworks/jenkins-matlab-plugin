@@ -23,6 +23,10 @@ public class MatlabBuilderConstants {
     static final String STM_RESULTS = "'SimulinkTestResults'";
     static final String COBERTURA_CODE_COVERAGE = "'CoberturaCodeCoverage'";
     static final String COBERTURA_MODEL_COVERAGE = "'CoberturaModelCoverage'";
+    static final String USE_PARALLEL = "UseParallel";
+    static final String STRICT = "Strict";
+    static final String LOGGING_LEVEL = "LoggingLevel";
+    static final String OUTPUT_DETAIL = "OutputDetail";
 
     // Matlab Runner files 
     static final String BAT_RUNNER_SCRIPT = "run_matlab_command.bat";

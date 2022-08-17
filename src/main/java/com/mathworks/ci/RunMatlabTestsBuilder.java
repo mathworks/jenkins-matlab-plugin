@@ -61,8 +61,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
-    private LoggingLevel loggingLevel;
-    private OutputDetail outputDetail;
+    private String loggingLevel;
+    private String outputDetail;
     private boolean useParallel;
     private boolean strict;
     
@@ -117,6 +117,27 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @DataBoundSetter
     public void setSelectByFolder(SelectByFolder selectByFolder) {
     	this.selectByFolder = selectByFolder;
+    }
+    
+
+    @DataBoundSetter
+    public void setLoggingLevel(String loggingLevel) {
+        this.loggingLevel = loggingLevel;
+    }
+
+    @DataBoundSetter
+    public void setOutputDetail(String outputDetail) {
+        this.outputDetail = outputDetail;
+    }
+
+    @DataBoundSetter
+    public void setUseParallel(boolean useParallel) {
+        this.useParallel = useParallel;
+    }
+
+    @DataBoundSetter
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 
 
@@ -183,48 +204,23 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return (isChecked) ? returnVal : new NullArtifact();
     }
     
-    // Verbosity level 
-    
-    public LoggingLevel getLoggingLevel() {
+    // Verbosity level
+
+    public String getLoggingLevel() {
         return loggingLevel;
     }
-    
-    @DataBoundSetter
-    public void setLoggingLevel(LoggingLevel loggingLevel) {
-        this.loggingLevel = loggingLevel;
-    }
 
-
-
-    public OutputDetail getOutputDetail() {
+    public String getOutputDetail() {
         return outputDetail;
     }
-
-    @DataBoundSetter
-    public void setOutputDetail(OutputDetail outputDetail) {
-        this.outputDetail = outputDetail;
-    }
-    
-    public boolean getUseParallel() {
-        return useParallel;
-    }
-
-    @DataBoundSetter
-    public void setUseParallel(boolean useParallel) {
-        this.useParallel = useParallel;
-    }
-
-
 
     public boolean getStrict() {
         return strict;
     }
 
-    @DataBoundSetter
-    public void setStrict(boolean strict) {
-        this.strict = strict;
+    public boolean getUseParallel() {
+        return useParallel;
     }
-
     
     
     // To retain Backward compatibility
@@ -276,6 +272,31 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             save();
             return super.configure(req, formData);
+        }
+        
+        // Verbosity lists
+        public ListBoxModel doFillLoggingLevelItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Default", "default");
+            items.add("None", "none");
+            items.add("Terse", "terse");
+            items.add("Concise", "concise");
+            items.add("Detailed", "detailed");
+            items.add("Verbose", "verbose");
+            return items;
+        }
+
+        public ListBoxModel doFillOutputDetailItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Default", "default");
+            items.add("None", "none");
+            items.add("Terse", "terse");
+            items.add("Concise", "concise");
+            items.add("Detailed", "detailed");
+            items.add("Verbose", "verbose");
+            return items;
         }
 
         /*
@@ -364,8 +385,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                 new ArrayList<Artifact>(Arrays.asList(getPdfReportArtifact(), getTapArtifact(),
                         getJunitArtifact(), getStmResultsArtifact(), getCoberturaArtifact(),
                         getModelCoverageArtifact()));
-        final String USE_PARALLEL = "UseParallel";
-        final String STRICT = "Strict";
         
         inputArgsList.add("'Test'");
 
@@ -398,21 +417,24 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
         
-        //Add Logging level 
-        if (getLoggingLevel() != null && !getLoggingLevel().getLoggingLevel().isEmpty()) {
-            getLoggingLevel().addTagToInputArgs(inputArgsList);
+        // Add Logging level
+        System.out.println("Logging Level is " + getLoggingLevel());
+        if (!getLoggingLevel().equalsIgnoreCase("default")) {
+            inputArgsList.add("'" + MatlabBuilderConstants.LOGGING_LEVEL + "'" + "," + "'"
+                    + getLoggingLevel() + "'");
         }
-        
-        //Add Logging level 
-        if (getOutputDetail() != null && !getOutputDetail().getOutputDetail().isEmpty()) {
-            getOutputDetail().addTagToInputArgs(inputArgsList);
+
+        // Add Logging level
+        if (!getLoggingLevel().equalsIgnoreCase("default")) {
+            inputArgsList.add("'" + MatlabBuilderConstants.OUTPUT_DETAIL + "'" + "," + "'"
+                    + getOutputDetail() + "'");
         }
-        
-        //Add UseParallel
-        inputArgsList.add("'" + USE_PARALLEL  + "'" + "," + getUseParallel());
-        
+
+        // Add UseParallel
+        inputArgsList.add("'" + MatlabBuilderConstants.USE_PARALLEL + "'" + "," + getUseParallel());
+
         // Add Strict
-        inputArgsList.add("'" + STRICT  + "'" + "," + getStrict());
+        inputArgsList.add("'" + MatlabBuilderConstants.STRICT + "'" + "," + getStrict());
 
         return String.join(",", inputArgsList);
     }
@@ -588,83 +610,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         @Extension
         public static class DescriptorImpl extends Descriptor<SelectByTag> {
-        }
-    }
-    
-    // Logging level 
-    
-    public static final class LoggingLevel extends AbstractDescribableImpl<LoggingLevel> {
-        private String loggingLevel;
-        private static final String LOGGING_LEVEL = "LoggingLevel";
-
-        @DataBoundConstructor
-        public LoggingLevel(String loggingLevel) {
-            this.loggingLevel = Util.fixNull(loggingLevel);
-        }
-
-        public String getLoggingLevel() {
-            return this.loggingLevel;
-        }
-
-        public void addTagToInputArgs(List<String> inputArgsList) {
-            inputArgsList.add("'" + LOGGING_LEVEL + "'" + "," + "'"
-                    + getLoggingLevel().replaceAll("'", "''") + "'");
-        }
-
-        @Extension
-        public static class DescriptorImpl extends Descriptor<LoggingLevel> {
-            public ListBoxModel doFillLoggingLevelItems() {
-                ListBoxModel items = new ListBoxModel();
-
-                items.add("None", "none");
-                items.add("Terse", "terse");
-                items.add("Concise", "concise");
-                items.add("Detailed", "detailed");
-                items.add("Verbose", "verbose");
-
-                return items;
-            }
-        }
-    }
-    
-// Verbosity level 
-    
-    public static final class OutputDetail extends AbstractDescribableImpl<OutputDetail> {
-        private String outputDetail;
-        private static final String OUTPUT_DETAIL = "OutputDetail";
-
-        @DataBoundConstructor
-        public OutputDetail(String outputDetail) {
-            this.outputDetail = outputDetail;
-        }
-        
-        
-        public String setetOutputDetail(String value) {
-            return this.outputDetail = value;
-        }
-
-        public String getOutputDetail() {
-            return this.outputDetail;
-        }
-
-        public void addTagToInputArgs(List<String> inputArgsList) {
-            inputArgsList.add("'" + OUTPUT_DETAIL + "'" + "," + "'"
-                    + getOutputDetail() + "'");
-        }
-
-        @Extension
-        public static class DescriptorImpl extends Descriptor<OutputDetail> {
-            public ListBoxModel doFillOutputDetailItems() {
-                ListBoxModel items = new ListBoxModel();
-
-                items.add("None", "none");
-                items.add("Terse", "terse");
-                items.add("Concise", "concise");
-                items.add("Detailed", "detailed");
-                items.add("Verbose", "verbose");
-
-                return items;
-            }
         }
     }
 }
