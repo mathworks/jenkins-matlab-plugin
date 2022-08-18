@@ -34,9 +34,9 @@ public class RunMatlabTestsStep extends Step {
     private String modelCoverageCobertura;
     private String selectByTag;
     private String loggingLevel;
-    private String outputDetail;
-    private String useParallel;
-    private String strict;
+    private String outputLevel;
+    private boolean useParallel;
+    private boolean strict;
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
 
@@ -127,39 +127,39 @@ public class RunMatlabTestsStep extends Step {
         this.selectByFolder = selectByFolder;
     }
     
-    public String getLogingLevel() {
+    public String getLoggingLevel() {
         return loggingLevel;
     }
     
     @DataBoundSetter
-    public void setLogingLevel(String loggingLevel) {
+    public void setLoggingLevel(String loggingLevel) {
         this.loggingLevel = loggingLevel;
     }
 
-    public String getOutputDetail() {
-        return outputDetail;
+    public String getOutputLevel() {
+        return outputLevel;
     }
     
     @DataBoundSetter
-    public void setOutputDetail(String outputDetail) {
-        this.outputDetail = outputDetail;
+    public void setOutputLevel(String outputLevel) {
+        this.outputLevel = outputLevel;
     }
 
-    public String getUseParallel() {
+    public boolean getUseParallel() {
         return useParallel;
     }
     
     @DataBoundSetter
-    public void setUseParallel(String useParallel) {
+    public void setUseParallel(boolean useParallel) {
         this.useParallel = useParallel;
     }
 
-    public String getStrict() {
+    public boolean getStrict() {
         return strict;
     }
     
     @DataBoundSetter
-    public void setStrict(String strict) {
+    public void setStrict(boolean strict) {
         this.strict = strict;
     }
 
@@ -216,10 +216,10 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         args.put("SelectByTag", getSelectByTag());
-        args.put(MatlabBuilderConstants.USE_PARALLEL, getUseParallel());
-        args.put(MatlabBuilderConstants.STRICT, getStrict());
-        args.put(MatlabBuilderConstants.LOGGING_LEVEL, getLogingLevel());
-        args.put(MatlabBuilderConstants.OUTPUT_DETAIL, getOutputDetail());
+        args.put(MatlabBuilderConstants.USE_PARALLEL, String.valueOf(getUseParallel()));
+        args.put(MatlabBuilderConstants.STRICT, String.valueOf(getStrict()));
+        args.put(MatlabBuilderConstants.LOGGING_LEVEL, getLoggingLevel());
+        args.put(MatlabBuilderConstants.OUTPUT_DETAIL, getOutputLevel());
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;
