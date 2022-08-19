@@ -8,23 +8,25 @@
 
 <f:section title="Run Customization">
 <f:block>
-<f:entry field="useParallel" title="Use parallel " checked="${instance.useParallel}">
-    <f:checkbox/>
-</f:entry>
+	<f:entry field="useParallel" title="Use parallel " checked="${instance.useParallel}">
+	    <f:checkbox/>
+	</f:entry>
 
-<f:entry field="strict" title="Strict " checked="${instance.strict}">
-    <f:checkbox/> 
-</f:entry> 
+	<f:entry field="strict" title="Strict " checked="${instance.strict}">
+	    <f:checkbox/> 
+	</f:entry> 
 
-<!-- Verbocity fields --> 
-<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
-    <f:select/>
-</f:entry>
-<f:entry name="outputDetail" title="Output detail " field="outputDetail" default="Default">
-    <f:select/>
-</f:entry>
+	<!-- Verbocity fields --> 
+	<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
+	    <f:select/>
+	</f:entry>
+	
+	<f:entry name="outputDetail" title="Output detail " field="outputDetail" default="Default">
+	    <f:select/>
+	</f:entry>
 </f:block>
 </f:section>
+<br></br>
 
 <f:section title="Filter Tests">
 <f:block>
@@ -33,7 +35,7 @@
    <f:optionalProperty field="selectByTag" title="By tag" /> 
 </f:block>
 </f:section>
-
+<br></br>
 
 
 <f:section title="Generate Test Artifacts">
@@ -63,6 +65,7 @@
    </f:optionalBlock>
 </f:block>
 </f:section>
+<br></br>
 
 <f:section title="Generate Coverage Artifacts">
 <f:block>
