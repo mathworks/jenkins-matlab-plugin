@@ -6,7 +6,9 @@ package com.mathworks.ci;
  */
 
 import java.io.IOException;
-
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 import hudson.model.Result;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
@@ -197,5 +199,103 @@ public class RunMatlabTestsStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("myTestTag", build);
         j.assertBuildStatusSuccess(build);
+    }
+    
+    /*
+     * Verify outPutDetail set
+     */
+    @Test
+    public void verifyOutputDetailSet() {
+        Map<String, String> outputDetail = new HashMap<String, String>();
+        outputDetail.put("none", "'OutputDetail', 0");
+        outputDetail.put("terse", "'OutputDetail', 1");
+        outputDetail.put("concise", "'OutputDetail', 2");
+        outputDetail.put("detailed", "'OutputDetail', 3");
+        outputDetail.put("verbose", "'OutputDetail', 4");
+        outputDetail.forEach((key, val) -> {
+            project.setDefinition(new CpsFlowDefinition(
+                    "node {runMATLABTests(outputDetail: '" + key + "')}", true));
+            WorkflowRun build;
+
+            try {
+                build = project.scheduleBuild2(0).get();
+                j.assertLogContains(val, build);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                System.out.println("Build Failed, refer logs for details");
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    /*
+     * Verify loggingLevel set 
+     */
+    
+    @Test
+    public void verifyLoggingLevelSet() {
+        Map<String, String> outputDetail = new HashMap<String, String>();
+        outputDetail.put("none", "'LoggingLevel', 0");
+        outputDetail.put("terse", "'LoggingLevel', 1");
+        outputDetail.put("concise", "'LoggingLevel', 2");
+        outputDetail.put("detailed", "'LoggingLevel', 3");
+        outputDetail.put("verbose", "'LoggingLevel', 4");
+        outputDetail.forEach((key, val) -> {
+            project.setDefinition(new CpsFlowDefinition(
+                    "node {runMATLABTests(loggingLevel: '" + key + "', outputDetail: 'None')}",
+                    true));
+            WorkflowRun build;
+
+            try {
+                build = project.scheduleBuild2(0).get();
+                j.assertLogContains(val, build);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                System.out.println("Build Failed, refer logs for details");
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    /*
+     * Verify when useParallel Set 
+     */
+    @Test
+    public void verifyRunParallelSet () throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(useParallel: true)}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("runInParallel", build);
+    }
+    
+    /*
+     * Verify when useParallel Not Set 
+     */
+    @Test
+    public void verifyRunParallelNotSet () throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(useParallel: false)}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogNotContains("runInParallel", build);
+    }
+   
+    /*
+     * Verify when strict Set 
+     */
+    @Test
+    public void verifyStrictSet () throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(strict: true)}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("FailOnWarningsPlugin", build);
+    }
+    
+    /*
+     * Verify when strict is not Set 
+     */
+    @Test
+    public void verifyStrictNotSet () throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(strict: false)}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogNotContains("FailOnWarningsPlugin", build);
     }
 }

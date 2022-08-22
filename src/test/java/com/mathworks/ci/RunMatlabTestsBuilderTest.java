@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
-
+import java.util.concurrent.ExecutionException;
 import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import org.junit.After;
 import org.junit.Assert;
@@ -523,5 +523,136 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("rmdir(tmpDir,'s')", build);
+    }
+    
+    /*
+     * Test To verify if Logging level is set correctly 
+     * 
+     */
+
+    @Test
+    public void verifyLoggingLevelSet() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+                Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        Map<String, String> logginggLevel = new HashMap<String, String>();
+        logginggLevel.put("None", "'LoggingLevel', 0");
+        logginggLevel.put("Terse", "'LoggingLevel', 1");
+        logginggLevel.put("Concise", "'LoggingLevel', 2");
+        logginggLevel.put("Detailed", "'LoggingLevel', 3");
+        logginggLevel.put("Verbose", "'LoggingLevel', 4");
+        logginggLevel.forEach((key, val) -> {
+            testBuilder.setLoggingLevel(key);
+            project.getBuildersList().add(this.testBuilder);
+            FreeStyleBuild build;
+            try {
+                build = project.scheduleBuild2(0).get();
+                jenkins.assertLogContains(val, build);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                System.out.println("Build Failed, refer logs for details");
+                e.printStackTrace();
+            }
+        });
+    }
+    
+    /*
+     * Test To verify if Output Detail  is set correctly 
+     * 
+     */
+
+    @Test
+    public void verifyOutputDetailSet() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+                Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        testBuilder.setLoggingLevel("None");
+        Map<String, String> outputDetail = new HashMap<String, String>();
+        outputDetail.put("none", "'OutputDetail', 0");
+        outputDetail.put("terse", "'OutputDetail', 1");
+        outputDetail.put("concise", "'OutputDetail', 2");
+        outputDetail.put("detailed", "'OutputDetail', 3");
+        outputDetail.put("verbose", "'OutputDetail', 4");
+        outputDetail.forEach((key, val) -> {
+            testBuilder.setOutputDetail(key);
+            project.getBuildersList().add(this.testBuilder);
+            FreeStyleBuild build;
+            try {
+                build = project.scheduleBuild2(0).get();
+                jenkins.assertLogContains(val, build);
+            } catch (InterruptedException | ExecutionException | IOException e) {
+                System.out.println("Build Failed, refer logs for details");
+                e.printStackTrace();
+            }
+        });
+    }
+
+    /*
+     * Test To verify when Strict option set
+     * 
+     */
+
+    @Test
+    public void verifyStrictSet() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+                Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        testBuilder.setLoggingLevel("None");
+        testBuilder.setStrict(true);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("FailOnWarningsPlugin", build);
+
+    }
+
+    /*
+     * Test To verify when Strict option not set
+     * 
+     */
+
+    @Test
+    public void verifyStrictNotSet() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+                Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        testBuilder.setLoggingLevel("None");
+        testBuilder.setStrict(false);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogNotContains("FailOnWarningsPlugin", build);
+
+    }
+    
+    /*
+     * Test To verify when Run in Parallel option is set 
+     * 
+     */
+
+    @Test
+    public void verifyRunParallelSet() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+                Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        testBuilder.setLoggingLevel("None");
+        testBuilder.setUseParallel(true);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("runInParallel", build);
+    }
+    
+    /*
+     * Test To verify when Run in Parallel option is set 
+     * 
+     */
+
+    @Test
+    public void verifyRunParallelNotSet() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+                Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        testBuilder.setLoggingLevel("None");
+        testBuilder.setUseParallel(false);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogNotContains("runInParallel", build);
     }
 }

@@ -34,7 +34,7 @@ public class RunMatlabTestsStep extends Step {
     private String modelCoverageCobertura;
     private String selectByTag;
     private String loggingLevel;
-    private String outputLevel;
+    private String outputDetail;
     private boolean useParallel;
     private boolean strict;
     private List<String> sourceFolder = new ArrayList<>();
@@ -136,13 +136,13 @@ public class RunMatlabTestsStep extends Step {
         this.loggingLevel = loggingLevel;
     }
 
-    public String getOutputLevel() {
-        return outputLevel;
+    public String getOutputDetail() {
+        return outputDetail;
     }
     
     @DataBoundSetter
-    public void setOutputLevel(String outputLevel) {
-        this.outputLevel = outputLevel;
+    public void setOutputDetail(String outputDetail) {
+        this.outputDetail = outputDetail;
     }
 
     public boolean getUseParallel() {
@@ -219,7 +219,7 @@ public class RunMatlabTestsStep extends Step {
         args.put(MatlabBuilderConstants.USE_PARALLEL, String.valueOf(getUseParallel()));
         args.put(MatlabBuilderConstants.STRICT, String.valueOf(getStrict()));
         args.put(MatlabBuilderConstants.LOGGING_LEVEL, getLoggingLevel());
-        args.put(MatlabBuilderConstants.OUTPUT_DETAIL, getOutputLevel());
+        args.put(MatlabBuilderConstants.OUTPUT_DETAIL, getOutputDetail());
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;

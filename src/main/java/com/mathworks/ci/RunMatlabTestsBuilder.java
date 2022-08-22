@@ -418,7 +418,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         }
         
         // Add Logging level
-        System.out.println("Logging Level is " + getLoggingLevel());
         if (!getLoggingLevel().equalsIgnoreCase("default")) {
             inputArgsList.add("'" + MatlabBuilderConstants.LOGGING_LEVEL + "'" + "," + "'"
                     + getLoggingLevel() + "'");

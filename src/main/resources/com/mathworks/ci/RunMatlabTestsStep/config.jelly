@@ -38,7 +38,7 @@
 		<f:textbox/>
 	  </f:entry>
 	  
-	  <f:entry field="outputDetail" title="outputLevel: ">
+	  <f:entry field="outputDetail" title="outputDetail: ">
 		<f:textbox/>
 	  </f:entry>
 	  
