@@ -16,7 +16,7 @@
 	    <f:checkbox/> 
 	</f:entry> 
 
-	<!-- Verbocity fields --> 
+	<!-- Verbosity fields --> 
 	<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
 	    <f:select/>
 	</f:entry>
