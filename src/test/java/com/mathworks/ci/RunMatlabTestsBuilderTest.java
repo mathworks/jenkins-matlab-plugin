@@ -21,8 +21,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.html.HtmlSelect;
+import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLSelectElement;
 import com.mathworks.ci.RunMatlabTestsBuilder.CoberturaArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.JunitArtifact;
 import com.mathworks.ci.RunMatlabTestsBuilder.ModelCovArtifact;
@@ -87,6 +90,8 @@ public class RunMatlabTestsBuilderTest {
     public void testSetup() throws IOException {
         this.project = jenkins.createFreeStyleProject();
         this.testBuilder = new RunMatlabTestsBuilder();
+        testBuilder.setLoggingLevel("default");
+        testBuilder.setOutputDetail("default");
         this.buildWrapper = new UseMatlabVersionBuildWrapper();
     }
 
@@ -525,23 +530,106 @@ public class RunMatlabTestsBuilderTest {
         jenkins.assertLogContains("rmdir(tmpDir,'s')", build);
     }
     
+    
     /*
+     * Test to verify Use Parallel check box present.
+     */
+
+     @Test
+     public void verifyUseParallelPresent() throws Exception {
+         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+         project.getBuildWrappersList().add(this.buildWrapper);
+         project.getBuildersList().add(this.testBuilder);
+         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+         WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.useParallel\"]");
+     }
+     
+     /*
+      * Test to verify Strict check box present.
+      */
+
+      @Test
+      public void verifyStrictPresent() throws Exception {
+          this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+          project.getBuildWrappersList().add(this.buildWrapper);
+          project.getBuildersList().add(this.testBuilder);
+          HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+          WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.strict\"]");
+      }
+      
+      /*
+       * Test to verify Logging Level is present.
+       */
+
+       @Test
+       public void verifyLoggingLevelPresent() throws Exception {
+           this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+           project.getBuildWrappersList().add(this.buildWrapper);
+           project.getBuildersList().add(this.testBuilder);
+           HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+           WebAssert.assertElementPresentByXPath(page, "//select[@name=\"_.loggingLevel\"]");
+       }
+       
+       /*
+        * Test to verify Output Detail is present.
+        */
+
+        @Test
+        public void verifyOutputDetailPresent() throws Exception {
+            this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+            project.getBuildWrappersList().add(this.buildWrapper);
+            project.getBuildersList().add(this.testBuilder);
+            HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+            WebAssert.assertElementPresentByXPath(page, "//select[@name=\"_.outputDetail\"]");
+        }
+        
+        /*
+         * Test to verify Logging Level set to default
+         */
+
+         @Test
+         public void verifyLoggingLevelSetToDefault() throws Exception {
+             this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+             project.getBuildWrappersList().add(this.buildWrapper);
+             project.getBuildersList().add(this.testBuilder);
+             HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+             HtmlSelect loggingLevel = page.getElementByName("_.loggingLevel");
+             assertEquals("default", loggingLevel.getAttribute("value"));
+         }
+         
+         /*
+          * Test to verify Output Detail set to default
+          */
+
+          @Test
+          public void verifyOutputDetailSetToDefault() throws Exception {
+              this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+              project.getBuildWrappersList().add(this.buildWrapper);
+              project.getBuildersList().add(this.testBuilder);
+              HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+              HtmlSelect outputDetail = page.getElementByName("_.outputDetail");
+              assertEquals("default", outputDetail.getAttribute("value"));
+          }
+     
+    
+    /*
+     * @Integ
      * Test To verify if Logging level is set correctly 
      * 
      */
 
-    @Test
+    
     public void verifyLoggingLevelSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
                 Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
-        Map<String, String> logginggLevel = new HashMap<String, String>();
-        logginggLevel.put("None", "'LoggingLevel', 0");
-        logginggLevel.put("Terse", "'LoggingLevel', 1");
-        logginggLevel.put("Concise", "'LoggingLevel', 2");
-        logginggLevel.put("Detailed", "'LoggingLevel', 3");
-        logginggLevel.put("Verbose", "'LoggingLevel', 4");
-        logginggLevel.forEach((key, val) -> {
+        Map<String, String> loggingLevel = new HashMap<String, String>();
+        loggingLevel.put("None", "'LoggingLevel', 0");
+        loggingLevel.put("Terse", "'LoggingLevel', 1");
+        loggingLevel.put("Concise", "'LoggingLevel', 2");
+        loggingLevel.put("Detailed", "'LoggingLevel', 3");
+        loggingLevel.put("Verbose", "'LoggingLevel', 4");
+        loggingLevel.forEach((key, val) -> {
             testBuilder.setLoggingLevel(key);
             project.getBuildersList().add(this.testBuilder);
             FreeStyleBuild build;
@@ -555,12 +643,12 @@ public class RunMatlabTestsBuilderTest {
         });
     }
     
-    /*
+    /*@Integ
      * Test To verify if Output Detail  is set correctly 
      * 
      */
 
-    @Test
+    
     public void verifyOutputDetailSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
                 Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
@@ -586,12 +674,12 @@ public class RunMatlabTestsBuilderTest {
         });
     }
 
-    /*
+    /*@Integ
      * Test To verify when Strict option set
      * 
      */
 
-    @Test
+    
     public void verifyStrictSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
                 Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
@@ -604,12 +692,12 @@ public class RunMatlabTestsBuilderTest {
 
     }
 
-    /*
+    /*@Integ
      * Test To verify when Strict option not set
      * 
      */
 
-    @Test
+    
     public void verifyStrictNotSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
                 Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
@@ -622,12 +710,12 @@ public class RunMatlabTestsBuilderTest {
 
     }
     
-    /*
+    /*@Integ
      * Test To verify when Run in Parallel option is set 
      * 
      */
 
-    @Test
+    
     public void verifyRunParallelSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
                 Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
@@ -639,12 +727,12 @@ public class RunMatlabTestsBuilderTest {
         jenkins.assertLogContains("runInParallel", build);
     }
     
-    /*
+    /*@Integ
      * Test To verify when Run in Parallel option is set 
      * 
      */
 
-    @Test
+    
     public void verifyRunParallelNotSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
                 Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));

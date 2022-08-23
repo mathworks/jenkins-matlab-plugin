@@ -419,21 +419,21 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         
         // Add Logging level
         if (!getLoggingLevel().equalsIgnoreCase("default")) {
-            inputArgsList.add("'" + MatlabBuilderConstants.LOGGING_LEVEL + "'" + "," + "'"
+            inputArgsList.add("'LoggingLevel'" + "," + "'"
                     + getLoggingLevel() + "'");
         }
 
-        // Add Logging level
-        if (!getLoggingLevel().equalsIgnoreCase("default")) {
-            inputArgsList.add("'" + MatlabBuilderConstants.OUTPUT_DETAIL + "'" + "," + "'"
+        // Add Output Detail
+        if (!getOutputDetail().equalsIgnoreCase("default")) {
+            inputArgsList.add("'OutputDetail'" + "," + "'"
                     + getOutputDetail() + "'");
         }
 
         // Add UseParallel
-        inputArgsList.add("'" + MatlabBuilderConstants.USE_PARALLEL + "'" + "," + getUseParallel());
+        inputArgsList.add("'UseParallel'" + "," + getUseParallel());
 
         // Add Strict
-        inputArgsList.add("'" + MatlabBuilderConstants.STRICT + "'" + "," + getStrict());
+        inputArgsList.add("'Strict'" + "," + getStrict());
 
         return String.join(",", inputArgsList);
     }

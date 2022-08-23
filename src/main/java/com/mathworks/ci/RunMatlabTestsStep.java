@@ -196,8 +196,8 @@ public class RunMatlabTestsStep extends Step {
 
         args.forEach((key, val) -> {
             if (key.equals("SourceFolder") || key.equals("SelectByFolder")
-                    || key.equals(MatlabBuilderConstants.USE_PARALLEL)
-                    || key.equals(MatlabBuilderConstants.STRICT) && val != null) {
+                    || key.equals("UseParallel")
+                    || key.equals("Strict") && val != null) {
                 inputArgs.add("'" + key + "'" + "," + val);
             } else if (val != null) {
                 inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
@@ -216,10 +216,10 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         args.put("SelectByTag", getSelectByTag());
-        args.put(MatlabBuilderConstants.USE_PARALLEL, String.valueOf(getUseParallel()));
-        args.put(MatlabBuilderConstants.STRICT, String.valueOf(getStrict()));
-        args.put(MatlabBuilderConstants.LOGGING_LEVEL, getLoggingLevel());
-        args.put(MatlabBuilderConstants.OUTPUT_DETAIL, getOutputDetail());
+        args.put("UseParallel", String.valueOf(getUseParallel()));
+        args.put("Strict", String.valueOf(getStrict()));
+        args.put("LoggingLevel", getLoggingLevel());
+        args.put("OutputDetail", getOutputDetail());
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;

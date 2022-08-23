@@ -201,10 +201,10 @@ public class RunMatlabTestsStepTest {
         j.assertBuildStatusSuccess(build);
     }
     
-    /*
+    /*@Integ
      * Verify outPutDetail set
      */
-    @Test
+    
     public void verifyOutputDetailSet() {
         Map<String, String> outputDetail = new HashMap<String, String>();
         outputDetail.put("none", "'OutputDetail', 0");
@@ -227,11 +227,11 @@ public class RunMatlabTestsStepTest {
         });
     }
     
-    /*
+    /*@Integ
      * Verify loggingLevel set 
      */
     
-    @Test
+    
     public void verifyLoggingLevelSet() {
         Map<String, String> outputDetail = new HashMap<String, String>();
         outputDetail.put("none", "'LoggingLevel', 0");
@@ -255,10 +255,10 @@ public class RunMatlabTestsStepTest {
         });
     }
     
-    /*
+    /*@Integ
      * Verify when useParallel Set 
      */
-    @Test
+    
     public void verifyRunParallelSet () throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(useParallel: true)}", true));
@@ -266,10 +266,10 @@ public class RunMatlabTestsStepTest {
         j.assertLogContains("runInParallel", build);
     }
     
-    /*
+    /*@Integ
      * Verify when useParallel Not Set 
      */
-    @Test
+    
     public void verifyRunParallelNotSet () throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(useParallel: false)}", true));
@@ -277,10 +277,10 @@ public class RunMatlabTestsStepTest {
         j.assertLogNotContains("runInParallel", build);
     }
    
-    /*
+    /*@Integ
      * Verify when strict Set 
      */
-    @Test
+    
     public void verifyStrictSet () throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(strict: true)}", true));
@@ -288,10 +288,10 @@ public class RunMatlabTestsStepTest {
         j.assertLogContains("FailOnWarningsPlugin", build);
     }
     
-    /*
+    /*@Integ
      * Verify when strict is not Set 
      */
-    @Test
+    
     public void verifyStrictNotSet () throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(strict: false)}", true));
