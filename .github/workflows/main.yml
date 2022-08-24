@@ -13,6 +13,10 @@ jobs:
           java-version: 14
       - name: Set up MATLAB
         uses: matlab-actions/setup-matlab@v1
+      - name: MATLAB-2021b
+        uses: matlab-actions/setup-matlab@v1
+        with:
+          release: R2021b
       - name: Run script
         uses: matlab-actions/run-command@v1
         with:
