@@ -195,12 +195,14 @@ public class RunMatlabTestsStep extends Step {
         inputArgs.add("'Test'");
 
         args.forEach((key, val) -> {
-            if (key.equals("SourceFolder") || key.equals("SelectByFolder")
-                    || key.equals("UseParallel")
-                    || key.equals("Strict") && val != null) {
-                inputArgs.add("'" + key + "'" + "," + val);
-            } else if (val != null) {
-                inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
+            if (val != null) {
+                if (key.equals("SourceFolder") || key.equals("SelectByFolder")
+                        || key.equals("UseParallel")
+                        || key.equals("Strict")) {
+                    inputArgs.add("'" + key + "'" + "," + val);             
+                } else {
+                    inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
+                }
             }
         });
 
