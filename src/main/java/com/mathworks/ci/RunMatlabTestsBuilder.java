@@ -35,6 +35,7 @@ import org.kohsuke.stapler.StaplerRequest;
 import hudson.Launcher.ProcStarter;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.util.ListBoxModel;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -60,6 +61,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
+    private String loggingLevel;
+    private String outputDetail;
+    private boolean useParallel;
+    private boolean strict;
     
 
     @DataBoundConstructor
@@ -112,6 +117,27 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @DataBoundSetter
     public void setSelectByFolder(SelectByFolder selectByFolder) {
     	this.selectByFolder = selectByFolder;
+    }
+    
+
+    @DataBoundSetter
+    public void setLoggingLevel(String loggingLevel) {
+        this.loggingLevel = loggingLevel;
+    }
+
+    @DataBoundSetter
+    public void setOutputDetail(String outputDetail) {
+        this.outputDetail = outputDetail;
+    }
+
+    @DataBoundSetter
+    public void setUseParallel(boolean useParallel) {
+        this.useParallel = useParallel;
+    }
+
+    @DataBoundSetter
+    public void setStrict(boolean strict) {
+        this.strict = strict;
     }
 
 
@@ -178,6 +204,24 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return (isChecked) ? returnVal : new NullArtifact();
     }
     
+    // Verbosity level
+
+    public String getLoggingLevel() {
+        return loggingLevel;
+    }
+
+    public String getOutputDetail() {
+        return outputDetail;
+    }
+
+    public boolean getStrict() {
+        return strict;
+    }
+
+    public boolean getUseParallel() {
+        return useParallel;
+    }
+    
     
     // To retain Backward compatibility
     protected Object readResolve() {
@@ -228,6 +272,31 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             save();
             return super.configure(req, formData);
+        }
+        
+        // Verbosity lists
+        public ListBoxModel doFillLoggingLevelItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Default", "default");
+            items.add("None", "none");
+            items.add("Terse", "terse");
+            items.add("Concise", "concise");
+            items.add("Detailed", "detailed");
+            items.add("Verbose", "verbose");
+            return items;
+        }
+
+        public ListBoxModel doFillOutputDetailItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("Default", "default");
+            items.add("None", "none");
+            items.add("Terse", "terse");
+            items.add("Concise", "concise");
+            items.add("Detailed", "detailed");
+            items.add("Verbose", "verbose");
+            return items;
         }
 
         /*
@@ -347,6 +416,24 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         if (getSelectByTag() != null && !getSelectByTag().getTestTag().isEmpty()) {
             getSelectByTag().addTagToInputArgs(inputArgsList);
         }
+        
+        // Add Logging level
+        if (!getLoggingLevel().equalsIgnoreCase("default")) {
+            inputArgsList.add("'LoggingLevel'" + "," + "'"
+                    + getLoggingLevel() + "'");
+        }
+
+        // Add Output Detail
+        if (!getOutputDetail().equalsIgnoreCase("default")) {
+            inputArgsList.add("'OutputDetail'" + "," + "'"
+                    + getOutputDetail() + "'");
+        }
+
+        // Add UseParallel
+        inputArgsList.add("'UseParallel'" + "," + getUseParallel());
+
+        // Add Strict
+        inputArgsList.add("'Strict'" + "," + getStrict());
 
         return String.join(",", inputArgsList);
     }

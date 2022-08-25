@@ -33,9 +33,25 @@
 	  <f:entry field="selectByTag" title="selectByTag: ">
 		<f:textbox/>
 	  </f:entry>
-
-	<f:entry field="sourceFolder" title="sourceFolder: ">
+	  
+	  <f:entry field="loggingLevel" title="loggingLevel: ">
 		<f:textbox/>
-	</f:entry>
+	  </f:entry>
+	  
+	  <f:entry field="outputDetail" title="outputDetail: ">
+		<f:textbox/>
+	  </f:entry>
+	  
+	  <f:entry field="sourceFolder" title="sourceFolder: ">
+		<f:textbox/>
+	  </f:entry>
+	  
+	  <f:entry field="useParallel" title="useParallel: ">
+	    <f:checkbox/>
+	  </f:entry>
+	  
+	  <f:entry field="strict" title="strict: ">
+	    <f:checkbox/>
+	  </f:entry> 
 
 </j:jelly>
