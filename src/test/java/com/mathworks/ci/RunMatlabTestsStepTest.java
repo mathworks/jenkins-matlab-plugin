@@ -202,7 +202,7 @@ public class RunMatlabTestsStepTest {
     }
     
     /*@Integ
-     * Verify outPutDetail set
+     * Verify outputDetail set
      */
     
     public void verifyOutputDetailSet() {
@@ -259,7 +259,7 @@ public class RunMatlabTestsStepTest {
      * Verify when useParallel Set 
      */
     
-    public void verifyRunParallelSet () throws Exception {
+    public void verifyUseParallelSet () throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(useParallel: true)}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
@@ -270,7 +270,7 @@ public class RunMatlabTestsStepTest {
      * Verify when useParallel Not Set 
      */
     
-    public void verifyRunParallelNotSet () throws Exception {
+    public void verifyUseParallelNotSet () throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(useParallel: false)}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
