@@ -37,14 +37,18 @@ public class MatlabBuilderConstants {
     //Temporary MATLAB folder name in workspace 
     static final String TEMP_MATLAB_FOLDER_NAME = ".matlab";
     
-    // MATLAB runner script
-    static final String TEST_RUNNER_SCRIPT = "testScript = genscript(${PARAMS});\n" + "\n"
-            + "disp('Running MATLAB script with content:');\n"
-            + "disp(strtrim(testScript.Contents));\n"
-            + "runnerFile = testScript.writeToFile(fullfile(tempname,'runnerScript.m'));\n"
-            + "[tmpDir,scriptName,ext] = fileparts(runnerFile);"
-            + "addpath(tmpDir);\n"
-            + "rmdir('.matlab/${TMPDIR}/+scriptgen', 's');\n"
-            + "delete('.matlab/${TMPDIR}/genscript.m');\n"
-            + "fprintf('___________________________________\\n\\n');\n";
+    static final String NEW_LINE = System.getProperty("line.separator");
+
+    //MATLAB Runner Script
+    static final String TEST_RUNNER_SCRIPT = String.join(NEW_LINE,
+    	"tmpDir=tempname;",
+        "mkdir(tmpDir);",
+        "addpath(tmpDir);",
+        "zipURL='${ZIP_FILE}';",
+    	"unzip(zipURL,tmpDir);",
+    	"testScript = genscript(${PARAMS});",
+        "disp('Running MATLAB script with content:');",
+        "disp(testScript.Contents);",
+        "testScript.writeToFile(fullfile(tmpDir,'runnerScript.m'));",
+    	"fprintf('___________________________________\\n\\n');");
 }
