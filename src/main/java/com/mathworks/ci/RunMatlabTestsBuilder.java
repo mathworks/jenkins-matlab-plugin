@@ -61,10 +61,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
-    private String loggingLevel;
-    private String outputDetail;
-    private boolean useParallel;
-    private boolean strict;
+    private String loggingLevel = "default";
+    private String outputDetail = "default";
+    private boolean useParallel = false;
+    private boolean strict = false;
     
 
     @DataBoundConstructor
