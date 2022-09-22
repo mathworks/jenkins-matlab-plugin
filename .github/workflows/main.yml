@@ -20,9 +20,9 @@ jobs:
       - name: Run script
         uses: matlab-actions/run-command@v1
         with:
-          command: matlabroot
-      - name: Build project with Maven
-        run: mvn verify -Dmaven.test.failure.ignore=true
+          command: matlabroot,ver
+#       - name: Build project with Maven
+#         run: mvn verify -Dmaven.test.failure.ignore=true
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
