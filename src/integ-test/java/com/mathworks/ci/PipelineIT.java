@@ -245,4 +245,79 @@ public class PipelineIT {
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
+    @Test
+    public void verifyRunInParallel() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                envDSL + "\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "              runMATLABTests(useParallel:true),\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertLogContains("runInParallel", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    @Test
+    public void verifyStrictSet() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                envDSL + "\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "              runMATLABTests(strict:true)\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertLogContains("FailOnWarningsPlugin)", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    @Test
+    public void verifyLoggingLevelSet() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                envDSL + "\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "              runMATLABTests(sourceFolder:['src'], loggingLevel:'None')\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertLogContains("'LoggingLevel', 0", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+
+    @Test
+    public void verifyOutoutDetailSet() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                envDSL + "\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "              runMATLABTests(outputDetail:'None')\n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertLogContains("'OutputDetail', 0", build);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
 }

@@ -95,5 +95,9 @@ public class MatlabRootSetup {
         return zipfile;
     }
 
-
+    public static URL getTestOnWarningData() throws MalformedURLException {
+        File file = new File(System.getProperty("user.dir") + File.separator +"src" + File.separator + "integ-test" + File.separator + "resources" + File.separator + "TestData" + File.separator + "TestWithWarning.zip");
+        URL zipfile = file.toURI().toURL();
+        return zipfile;
+    }
 }
