@@ -24,7 +24,7 @@ To follow the steps in this example:
 Create a new project and configure it by following these steps:
 1. In your Jenkins interface, select **New Item** on the left. A new page opens where you can choose the type of your project. Enter a project name, and then click **Freestyle project**. To confirm your choices, click **OK**.
 
-![create_project](https://user-images.githubusercontent.com/48831250/105080784-520e6480-5a5f-11eb-9218-4d43013e2850.png)
+![create_project](https://user-images.githubusercontent.com/48831250/193948023-65f038c2-a81e-416b-8dea-0cf91ae5f105.png)
 
 2. On the project configuration page, in the **Source Code Management** section, specify the repository that hosts your tests.
 
@@ -32,34 +32,28 @@ Create a new project and configure it by following these steps:
 
 3. In the **Build Environment** section, select **Use MATLAB version** and specify the MATLAB version you want to use in the build. If your desired MATLAB version is not listed under **Use MATLAB version**, enter the full path to its root folder in the **MATLAB root** box. 
 
-![build_environment](https://user-images.githubusercontent.com/48831250/105091260-943ea280-5a6d-11eb-8d11-48747df7ec32.png)
+![build_environment](https://user-images.githubusercontent.com/48831250/193948480-564ac249-0ef2-407b-b18c-ee52b5129ac0.png)
 
 4. In the **Build** section, select **Add build step > Run MATLAB Tests**. Then, specify the artifacts to be generated in the project workspace. In this example, the plugin generates Cobertura code coverage and JUnit-style test results reports. Furthermore, to generate the coverage report, the plugin uses only the code in the `source` folder located in the root of the repository. For more information about the build steps provided by the plugin, see [Plugin Configuration Guide](../CONFIGDOC.md).
 
-![run_matlab_tests](https://user-images.githubusercontent.com/48831250/105909903-2149a480-5ff6-11eb-81f1-c3b44e9b17d1.png)
+![run_,matlab_tests](https://user-images.githubusercontent.com/48831250/193948891-aa09960a-04ba-4a13-9eea-e4bebab9371d.png)
 
 5. In the **Post-build Actions** section, add two post-build actions to publish the Cobertura code coverage and JUnit-style test results reports. For each artifact, provide the path to the report.
 
-![post_build](https://user-images.githubusercontent.com/48831250/105082096-14aad680-5a61-11eb-9868-68d018199f9d.png)
+![post_build](https://user-images.githubusercontent.com/48831250/193949176-aced5dfb-f7b9-4978-8726-7d01bae4bc97.png)
 
 6. Click **Save** to save the project configuration settings. You can access and modify your settings at a later stage by selecting **Configure** in the project interface, which displays the project name at the top-left of the page.
 
 ## Run Tests and Inspect Artifacts
 To build your freestyle project, click **Build Now** in the project interface. Jenkins triggers a build, assigns it a number under **Build History**, and runs the build. If the build is successful, a blue circle icon appears next to the build number. If the build fails, Jenkins adds a red circle icon. In this example, the build succeeds because all the tests in the Times Table App project pass.
 
-![build_1](https://user-images.githubusercontent.com/48831250/105084788-dca59280-5a64-11eb-858d-664a5727a947.png)
-
 Navigate to the project workspace by clicking the **Workspace** icon in the project interface. The generated artifacts are in the `matlabTestArtifacts` folder of the workspace.
 
-![workspace](https://user-images.githubusercontent.com/48831250/105085419-b46a6380-5a65-11eb-8d46-747dd23291bf.png)
+![workspace](https://user-images.githubusercontent.com/48831250/193951807-a09ef1f8-cf7e-49c8-8615-af5fbd97acd0.png)
 
-Access the published Cobertura code coverage report by opening the **Coverage Report** link in the project interface.
+Click the **Status** icon in the project interface. You can access the published artifacts by opening the **Latest Test Result** and **Coverage Report** links. For example, open the **Latest Test Result** link to view the published JUnit-style test results. In the new page, open the link in the **All Tests** table. The table expands and lists information for each of the test classes within the Times Table App project.  
 
-![cobertura_report](https://user-images.githubusercontent.com/48831250/105085331-9ac91c00-5a65-11eb-9628-efbf70520489.png)
-
-To view the published JUnit-style test results, open the **Latest Test Result** link in the project interface. In the new page, open the link in the **All Tests** table. The table expands and lists information for each of the test classes within the Times Table App project.  
-
-![junit_report](https://user-images.githubusercontent.com/48831250/105088211-956dd080-5a69-11eb-931c-aef201eb9dbe.png)
+![test_results](https://user-images.githubusercontent.com/48831250/194086287-35f7c677-4c18-4316-b676-f2491ffa20a7.png)
 
 ## See Also
 * [Plugin Configuration Guide](../CONFIGDOC.md)<br/>
