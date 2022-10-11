@@ -61,10 +61,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
-    private String loggingLevel;
-    private String outputDetail;
-    private boolean useParallel;
-    private boolean strict;
+    private String loggingLevel = "default";
+    private String outputDetail = "default";
+    private boolean useParallel = false;
+    private boolean strict = false;
     
 
     @DataBoundConstructor
@@ -207,19 +207,19 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     // Verbosity level
 
     public String getLoggingLevel() {
-        return loggingLevel;
+        return loggingLevel == null ? "default" : this.loggingLevel;
     }
 
     public String getOutputDetail() {
-        return outputDetail;
+        return outputDetail == null ? "default" : this.outputDetail;
     }
 
     public boolean getStrict() {
-        return strict;
+        return this.strict;
     }
 
     public boolean getUseParallel() {
-        return useParallel;
+        return this.useParallel;
     }
     
     

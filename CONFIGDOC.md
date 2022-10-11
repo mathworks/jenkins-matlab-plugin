@@ -1,3 +1,5 @@
+# Plugin Configuration Guide
+
 When you define an automated pipeline of tasks in Jenkins&trade;, whether in the web UI or with a [`Jenkinsfile`](https://www.jenkins.io/doc/book/pipeline/jenkinsfile/), you can use the plugin to run your MATLAB&reg; code or Simulink&reg; models. This guide demonstrates how to configure the plugin and use it in freestyle, multi-configuration, and Pipeline projects.
 
 > :information_source: **Note:** To run MATLAB code or Simulink models, Jenkins requires a valid MATLAB or Simulink license. If you have installed Jenkins as a Windows&reg; service application, you need to provide a MathWorks&reg; username and password in the **Jenkins Properties** window (accessible from within the Windows Task Manager).
@@ -35,9 +37,9 @@ You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabr
 
 | Platform     | Path to MATLAB Root Folder      |
 |--------------|---------------------------------|
-| Windows      | C:\Program Files\MATLAB\R2021a  |
-| Linux&reg;   | /usr/local/MATLAB/R2021a        |
-| macOS        | /Applications/MATLAB_R2021a.app |
+| Windows      | C:\Program Files\MATLAB\R2022b  |
+| Linux&reg;   | /usr/local/MATLAB/R2022b        |
+| macOS        | /Applications/MATLAB_R2022b.app |
 
 ### Specify Build Steps
 When you set up the **Build** section of the project configuration window, the plugin provides you with the **Run MATLAB Command** and **Run MATLAB Tests** build steps.
@@ -53,18 +55,18 @@ For example, run a script named `myscript.m` in the root of your repository.
 
 ![run_matlab_command](https://user-images.githubusercontent.com/48831250/94472499-d8ddbf80-0198-11eb-8f25-ead3c4039f55.png)
 
-MATLAB exits with exit code 0 if the specified script, function, or statement executes successfully without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the build to fail. To ensure that the build fails in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) functions.
+MATLAB exits with exit code 0 if the specified script, function, or statement executes successfully without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the build to fail. To fail the build in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) functions.
 
 When you use this step, all the required files must be on the MATLAB search path. If your script or function is not in the root of your repository, you can use the [`addpath`](https://www.mathworks.com/help/matlab/ref/addpath.html), [`cd`](https://www.mathworks.com/help/matlab/ref/cd.html), or [`run`](https://www.mathworks.com/help/matlab/ref/run.html) functions to ensure that it is on the path when invoked. For example, to run `myscript.m` in a folder named `myfolder` and located in the root of the repository, you can specify the contents of the **Command** box like this:
 
-`addpath('myfolder'), myscript`
+`addpath("myfolder"), myscript`
 
 #### Run MATLAB Tests
-This build step lets you run MATLAB and Simulink tests and generate artifacts such as JUnit-style test results and Cobertura coverage reports. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository or in any of its subfolders.
+This build step lets you run MATLAB and Simulink tests and generate artifacts such as JUnit-style test results and Cobertura coverage reports. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
  
-With the **Run MATLAB Tests** build step, you can customize your test run using the existing options in the step configuration interface. For example, you can add folders to the MATLAB search path, control which tests to run, and generate various code and coverage artifacts. If you do not select any of the check boxes, all the tests in your project run, and any test failure causes the build to fail.
+You can customize the **Run MATLAB Tests** build step in the step configuration interface. For example, you can add folders to the MATLAB search path, control which tests to run, and generate various code and coverage artifacts. If you do not select any of the existing options, all the tests in your project run, and any test failure causes the build to fail.
  
-![run_matlab_tests](https://user-images.githubusercontent.com/48831250/105909610-c2842b00-5ff5-11eb-9b6a-9530ae7289ff.png)
+![run_matlab_tests](https://user-images.githubusercontent.com/48831250/193947143-03ff40d4-6134-403d-835d-ac7f791578e1.png)
  
 Select **Source folder** if you want to specify the location of a folder containing source code, relative to the project root folder. The plugin adds the specified folder and its subfolders to the top of the MATLAB search path. If you specify a source folder and then generate a coverage report, the plugin uses only the source code in the specified folder and its subfolders to generate the report. You can specify more than one folder by clicking **Add folder**.
 
@@ -73,12 +75,20 @@ Select **Source folder** if you want to specify the location of a folder contain
 By default, the **Run MATLAB Tests** step creates a test suite from all the tests in your project. To create a filtered test suite, select **By folder name**, **By tag**, or both:
 
 * Select **By folder name** if you want to specify the location of a folder containing test files, relative to the project root folder. The plugin creates a test suite using only the tests in the specified folder and its subfolders. You can specify more than one folder by clicking **Add folder**.
-
 * Select **By tag** if you want to select test suite elements using a specified test tag.
 
 ![run_matlab_tests_filter](https://user-images.githubusercontent.com/48831250/105909635-cfa11a00-5ff5-11eb-8642-7fc037dbedf5.png)
 
-Select check boxes in the **Generate Test Artifacts** and **Generate Coverage Artifacts** sections if you want to generate test and coverage artifacts. To publish the test results, you can use these artifacts with other Jenkins plugins. By default, the plugin assigns a name to each selected artifact and stores it in the `matlabTestArtifacts` folder of the project workspace. You can override the default artifact name and location by specifying a path relative to the project root folder in the **File path** box. The plugin does not create the `matlabTestArtifacts` folder if the name of the folder does not appear in any of the displayed **File path** boxes.
+To customize your test run, select options in the **Customize Test Run** section:
+
+* To apply strict checks when running the tests, select **Strict**. When you select this option, the plugin generates a qualification failure whenever a test issues a warning. Selecting **Strict** is the same as specifying the `Strict` name-value argument of the [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) function as `true`.
+* To run tests in parallel, select **Use Parallel**. This feature might not be compatible with certain options, in which case, the plugin runs the tests in serial regardless of your choice. Selecting **Use parallel** is the same as specifying the `UseParallel` name-value argument of `runtests` as `true`. You must have Parallel Computing Toolbox&trade; installed to use this option.
+* To control the amount of event detail displayed for your test run, select a value from the **Output detail** list. Selecting a value for this option is the same as specifying the `OutputDetail` name-value argument of `runtests` as that value. By default, the plugin displays failing and logged events at the `Detailed` level and test run progress at the `Concise` level.
+* To include diagnostics logged by the [`log (TestCase)`](https://www.mathworks.com/help/matlab/ref/matlab.unittest.testcase.log.html) or [`log (Fixture)`](https://www.mathworks.com/help/matlab/ref/matlab.unittest.fixtures.fixture.log.html) methods at a specified verbosity level and below, select a value from the **Logging level** list. Selecting a value for this option is the same as specifying the `LoggingLevel` name-value argument of `runtests` as that value. By default, the plugin includes diagnostics logged at the `Terse` level. 
+
+![run_matlab_tests_customization](https://user-images.githubusercontent.com/48831250/193946910-9b8fa6ff-5439-413a-a19c-50277d2a7f6f.png)
+
+To generate test and coverage artifacts, select check boxes in the **Generate Test Artifacts** and **Generate Coverage Artifacts** sections. To publish the test results, you can use these artifacts with other Jenkins plugins. By default, the plugin assigns a name to each selected artifact and stores it in the `matlabTestArtifacts` folder of the project workspace. You can override the default artifact name and location by specifying a path relative to the project root folder in the **File path** box. The plugin does not create the `matlabTestArtifacts` folder if the name of the folder does not appear in any of the displayed **File path** boxes.
 
 ![run_matlab_tests_artifacts](https://user-images.githubusercontent.com/48831250/104773381-f7b19300-5742-11eb-9dad-392c5ca8777d.png)
 
@@ -98,7 +108,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Build Envi
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build** section:
 * If you add the [**Run MATLAB Command**](#run-matlab-command) build step, specify your MATLAB script, function, or statement in the **Command** box. 
-* If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, specify the source code, the test suite filters, and the artifacts to be generated in the project workspace.
+* If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
    
 ## Set Up Multi-Configuration Project
 The plugin supports [multi-configuration (matrix) projects](https://plugins.jenkins.io/matrix-project/). Multi-configuration projects are useful when builds include similar steps. For example:
@@ -145,7 +155,7 @@ Once you have specified the axes, add the required build steps in the **Build** 
 results = runtests(pwd,'Tag','$TEST_TAG'); assertSuccess(results);
 ```
 
-* If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, specify the source code, the test suite filters, and the artifacts to be generated in the project workspace.
+* If you add the [**Run MATLAB Tests**](#run-matlab-tests) build step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
 
 ## Set Up Pipeline Project
 When you define your Pipeline with a `Jenkinsfile`, the plugin provides you with a step to run MATLAB scripts, functions, and statements. The plugin also provides a step to run MATLAB and Simulink tests. These steps are common to both Declarative and Scripted Pipelines.
@@ -161,16 +171,16 @@ You also can define your Pipeline directly in the project configuration window. 
 ### Add MATLAB to System Path
 When the plugin executes MATLAB related steps in your Pipeline, it uses the topmost MATLAB version on the system path. If the PATH environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
 
-To update the system PATH environment variable using Declarative Pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2021a to the system PATH environment variable and use it to run your command.
+To update the system PATH environment variable using Declarative Pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2022b to the system PATH environment variable and use it to run your command.
 
 ```groovy
 // Declarative Pipeline
 pipeline {
    agent any
    environment {
-       PATH = "C:\\Program Files\\MATLAB\\R2021a\\bin;${PATH}"   // Windows agent
-    // PATH = "/usr/local/MATLAB/R2021a/bin:${PATH}"   // Linux agent
-    // PATH = "/Applications/MATLAB_R2021a.app/bin:${PATH}"   // macOS agent    
+       PATH = "C:\\Program Files\\MATLAB\\R2022b\\bin;${PATH}"   // Windows agent
+    // PATH = "/usr/local/MATLAB/R2022b/bin:${PATH}"   // Linux agent
+    // PATH = "/Applications/MATLAB_R2022b.app/bin:${PATH}"   // macOS agent    
    }
     stages{
         stage('Run MATLAB Command') {
@@ -187,14 +197,14 @@ If you define your Pipeline using Scripted Pipeline syntax, set the PATH environ
 ```groovy
 // Scripted Pipeline
 node {
-    env.PATH = "C:\\Program Files\\MATLAB\\R2021a\\bin;${env.PATH}"   //Windows agent
-    // env.PATH = "/usr/local/MATLAB/R2021a/bin:${env.PATH}"   //Linux agent
-    // env.PATH = "/Applications/MATLAB_R2021a.app/bin:${env.PATH}"   //macOS agent
+    env.PATH = "C:\\Program Files\\MATLAB\\R2022b\\bin;${env.PATH}"   //Windows agent
+    // env.PATH = "/usr/local/MATLAB/R2022b/bin:${env.PATH}"   //Linux agent
+    // env.PATH = "/Applications/MATLAB_R2022b.app/bin:${env.PATH}"   //macOS agent
     runMATLABCommand "disp('Hello World!')"
 }
 ``` 
 
-### Use the runMATLABCommand Step
+### Use the `runMATLABCommand` Step
 Use the `runMATLABCommand` step in your Pipeline to run MATLAB scripts, functions, and statements. You can use this step to customize your test run or execute any MATLAB commands.
 
 You must provide `runMATLABCommand` with a string that specifies the script, function, or statement you want to execute. If you specify more than one script, function, or statement, use a comma or semicolon to separate them. If you want to run a script or function, do not specify the file extension.
@@ -232,10 +242,10 @@ MATLAB exits with exit code 0 if the specified script, function, or statement ex
 
 When you use the `runMATLABCommand` step, all the required files must be on the MATLAB search path. If your script or function is not in the root of your repository, you can use the [`addpath`](https://www.mathworks.com/help/matlab/ref/addpath.html), [`cd`](https://www.mathworks.com/help/matlab/ref/cd.html), or [`run`](https://www.mathworks.com/help/matlab/ref/run.html) functions to ensure that it is on the path when invoked. For example, to run `myscript.m` in a folder named `myfolder` and located in the root of the repository, you can specify the `runMATLABCommand` step like this: 
 
-`runMATLABCommand 'addpath('myfolder'), myscript'` 
+`runMATLABCommand 'addpath("myfolder"), myscript'` 
 
-### Use the runMATLABTests Step
-Use the `runMATLABTests` step in your Pipeline to run MATLAB and Simulink tests and generate various code and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your Pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository or in any of its subfolders.
+### Use the `runMATLABTests` Step
+Use the `runMATLABTests` step in your Pipeline to run MATLAB and Simulink tests and generate various code and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your Pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
 
 For example, in your `Jenkinsfile`, define a Declarative Pipeline to run the tests in your project.
 
@@ -266,13 +276,17 @@ node {
 
 MATLAB exits with exit code 0 if the test suite runs successfully without any test failures. Otherwise, MATLAB terminates with a nonzero exit code, which causes the current stage to fail. If you properly react to the resulting MATLAB execution exception, the remaining stages of your Pipeline can still run, and your build can succeed. Otherwise, Jenkins terminates the build in the current stage and marks it as a failure.
 
-The `runMATLABTests` step lets you customize your test run using optional inputs. For example, you can add folders to the MATLAB search path, control which tests to run, and generate various artifacts.
+You can customize the `runMATLABTests` step using optional inputs. For example, you can add folders to the MATLAB search path, control which tests to run, and generate various artifacts.
 
 Input                     | Description    
 ------------------------- | ---------------
 `sourceFolder`            | (Optional) Location of the folder containing source code, relative to the project root folder. The specified folder and its subfolders are added to the top of the MATLAB search path. If you specify `sourceFolder` and then generate a coverage report, the plugin uses only the source code in the specified folder and its subfolders to generate the report.<br/>**Example:** `['source']`<br/>**Example:** `['source/folderA', 'source/folderB']`
 `selectByFolder`          | (Optional) Location of the folder used to select test suite elements, relative to the project root folder. To create a test suite, the plugin uses only the tests in the specified folder and its subfolders.<br/>**Example:** `['test']`<br/>**Example:** `['test/folderA', 'test/folderB']`
 `selectByTag`             | (Optional) Test tag used to select test suite elements. To create a test suite, the plugin uses only the test elements with the specified tag.<br/>**Example:** `'FeatureA'`
+`strict`                  | (Optional) Whether to apply strict checks when running the tests, specified as `false` or `true`. By default, the value is `false`. If you specify a value of `true`, the plugin generates a qualification failure whenever a test issues a warning.
+`useParallel`             | (Optional) Whether to run tests in parallel, specified as `false` or `true`. By default, the value is `false` and tests run in serial. If the test runner configuration is suited for parallelization, you can specify a value of `true` to run tests in parallel. This input requires a Parallel Computing Toolbox license.
+`outputDetail`            | (Optional) Amount of event detail displayed for the test run, specified as `'None'`, `'Terse'`, `'Concise'`, `'Detailed'`, or `'Verbose'`. Selecting a value for this input is the same as specifying the `OutputDetail` name-value argument of [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) as that value. By default, the plugin displays failing and logged events at the `Detailed` level and test run progress at the `Concise` level.
+`loggingLevel`            | (Optional) Maximum verbosity level for logged diagnostics included for the test run, specified as `'None'`, `'Terse'`, `'Concise'`, `'Detailed'`, or `'Verbose'`. Selecting a value for this input is the same as specifying the `LoggingLevel` name-value argument of `runtests` as that value. By default, the plugin includes diagnostics logged at the `Terse` level. 
 `testResultsPDF`          | (Optional) Path to write test results report in PDF format. On macOS platforms, this input is supported in MATLAB R2020b and later.<br/>**Example:** `'test-results/results.pdf'`      
 `testResultsTAP`          | (Optional) Path to write test results report in TAP format.<br/>**Example:** `'test-results/results.tap'`
 `testResultsJUnit`        | (Optional) Path to write test results report in JUnit XML format.<br/>**Example:** `'test-results/results.xml'`
@@ -314,7 +328,7 @@ node {
 ## Use MATLAB in Matrix Build
 Like multi-configuration projects, you can use MATLAB as part of a [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) build in Pipeline projects. For example, you can define a Pipeline to run your test suite on different platforms or against different versions of MATLAB.
 
-This example shows how to define a Declarative Pipeline to run your MATLAB code and generate artifacts using MATLAB R2019a, R2020b, and R2021a. The Pipeline has a `matrix` block to define the possible name-value combinations that should run in parallel. 
+This example shows how to define a Declarative Pipeline to run your MATLAB code and generate artifacts using MATLAB R2019a, R2020b, and R2022b. The Pipeline has a `matrix` block to define the possible name-value combinations that should run in parallel. 
 
 ```groovy
 // Declarative Pipeline
@@ -330,7 +344,7 @@ pipeline {
                 axes {
                     axis {
                         name 'MATLAB_VERSION'
-                        values 'R2019a', 'R2020b', 'R2021a'
+                        values 'R2019a', 'R2020b', 'R2022b'
                     }
                 }
                 stages {
@@ -381,14 +395,14 @@ For example, on a Linux remote agent, register MATLAB R2020b as a tool.
 ![tool_remote](https://user-images.githubusercontent.com/48831250/98685471-67676400-2335-11eb-9db5-bd027bc053f6.PNG)
 
 ### Use MATLAB as a Tool in Pipeline Project
-To invoke MATLAB as a Jenkins tool using Declarative Pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Global Tool Configuration** page. For example, run `myscript.m` using the MATLAB version that has been registered as a tool named R2021a.  
+To invoke MATLAB as a Jenkins tool using Declarative Pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Global Tool Configuration** page. For example, run `myscript.m` using the MATLAB version that has been registered as a tool named R2022b.  
 
 ```groovy
 // Declarative Pipeline
 pipeline {
    agent any
    tools {
-       matlab 'R2021a'
+       matlab 'R2022b'
    }
     stages{
         stage('Run MATLAB Command') {
@@ -409,7 +423,7 @@ If you define your Pipeline using Scripted Pipeline syntax, use the `tool` keywo
 node {
     def matlabver
     stage('Run MATLAB Command') {
-        matlabver = tool 'R2021a'
+        matlabver = tool 'R2022b'
         if (isUnix()){
             env.PATH = "${matlabver}/bin:${env.PATH}"   // Linux or macOS agent
         }else{
@@ -432,7 +446,7 @@ pipeline {
                 axes {
                     axis {
                         name 'MATLAB_VERSION'
-                        values 'R2019a', 'R2020b', 'R2021a'
+                        values 'R2019a', 'R2020b', 'R2022b'
                     }
                 }
                 tools{
