@@ -1,22 +1,46 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
-<f:block>
+<f:block> 
     <br></br>
     <f:optionalProperty field="sourceFolder" title="Source folder" />
 </f:block>
 
-<f:block>
-    <br></br>
-   <b>Filter Tests</b>
-   <f:optionalProperty field="selectByFolder" title="By folder name" />  
-   <br></br>
-   <f:optionalProperty field="selectByTag" title="By tag" />  
-</f:block>
+<br></br>
 
+<f:section title="Filter Tests">
 <f:block>
-    <br></br>
-    <b>Generate Test Artifacts</b>
+   <f:optionalProperty field="selectByFolder" title="By folder name" />
+   <br></br>
+   <f:optionalProperty field="selectByTag" title="By tag" /> 
+</f:block>
+</f:section>
+<br></br>
+
+<f:section title="Customize Test Run">
+<f:block>
+    <f:entry field="strict" title="Strict " checked="${instance.strict}">
+	    <f:checkbox/> 
+	</f:entry> 
+	<f:entry field="useParallel" title="Use parallel " checked="${instance.useParallel}">
+	    <f:checkbox/>
+	</f:entry>
+
+	<!-- Verbosity fields --> 
+	
+	<f:entry name="outputDetail" title="Output detail " field="outputDetail" default="Default">
+	    <f:select/>
+	</f:entry>
+	
+	<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
+	    <f:select/>
+	</f:entry>
+</f:block>
+</f:section>
+
+
+<f:section title="Generate Test Artifacts">
+<f:block>
     <f:optionalBlock name="pdfReportArtifact" field="pdfReportArtifact" title="PDF test report" checked="${instance.pdfReportArtifact.selected}">
   	 <f:entry field="pdfReportFilePath" title="File path: ">	
     	<f:textbox default="matlabTestArtifacts/testreport.pdf"/>
@@ -40,12 +64,12 @@
     	<f:textbox default="matlabTestArtifacts/simulinktestresults.mldatx"/>
      </f:entry>   
    </f:optionalBlock>
-  
 </f:block>
+</f:section>
+<br></br>
 
+<f:section title="Generate Coverage Artifacts">
 <f:block>
-    <br></br>
-    <b>Generate Coverage Artifacts</b>
    <f:optionalBlock name="coberturaArtifact" field="coberturaArtifact" title="Cobertura code coverage" checked="${instance.coberturaArtifact.selected}">
 	 <f:entry field="coberturaReportFilePath" title="File path: ">
     	<f:textbox default="matlabTestArtifacts/cobertura.xml"/>
@@ -58,4 +82,5 @@
   	  </f:entry>
    </f:optionalBlock>
 </f:block>
+</f:section>
 </j:jelly>

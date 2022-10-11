@@ -33,6 +33,10 @@ public class RunMatlabTestsStep extends Step {
     private String testResultsSimulinkTest;
     private String modelCoverageCobertura;
     private String selectByTag;
+    private String loggingLevel;
+    private String outputDetail;
+    private boolean useParallel;
+    private boolean strict;
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
 
@@ -122,6 +126,42 @@ public class RunMatlabTestsStep extends Step {
     public void setSelectByFolder(List<String> selectByFolder) {
         this.selectByFolder = selectByFolder;
     }
+    
+    public String getLoggingLevel() {
+        return loggingLevel;
+    }
+    
+    @DataBoundSetter
+    public void setLoggingLevel(String loggingLevel) {
+        this.loggingLevel = loggingLevel;
+    }
+
+    public String getOutputDetail() {
+        return outputDetail;
+    }
+    
+    @DataBoundSetter
+    public void setOutputDetail(String outputDetail) {
+        this.outputDetail = outputDetail;
+    }
+
+    public boolean getUseParallel() {
+        return useParallel;
+    }
+    
+    @DataBoundSetter
+    public void setUseParallel(boolean useParallel) {
+        this.useParallel = useParallel;
+    }
+
+    public boolean getStrict() {
+        return strict;
+    }
+    
+    @DataBoundSetter
+    public void setStrict(boolean strict) {
+        this.strict = strict;
+    }
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
@@ -155,10 +195,14 @@ public class RunMatlabTestsStep extends Step {
         inputArgs.add("'Test'");
 
         args.forEach((key, val) -> {
-            if(key.equals("SourceFolder") || key.equals("SelectByFolder") && val != null){
-                inputArgs.add("'" + key + "'" + "," + val);
-            }else if(val != null){
-                inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
+            if (val != null) {
+                if (key.equals("SourceFolder") || key.equals("SelectByFolder")
+                        || key.equals("UseParallel")
+                        || key.equals("Strict")) {
+                    inputArgs.add("'" + key + "'" + "," + val);             
+                } else {
+                    inputArgs.add("'" + key + "'" + "," + "'" + val.replaceAll("'", "''") + "'");
+                }
             }
         });
 
@@ -174,6 +218,10 @@ public class RunMatlabTestsStep extends Step {
         args.put("CoberturaCodeCoverage", getCodeCoverageCobertura());
         args.put("CoberturaModelCoverage", getModelCoverageCobertura());
         args.put("SelectByTag", getSelectByTag());
+        args.put("UseParallel", String.valueOf(getUseParallel()));
+        args.put("Strict", String.valueOf(getStrict()));
+        args.put("LoggingLevel", getLoggingLevel());
+        args.put("OutputDetail", getOutputDetail());
         addFolderArgs("SourceFolder",getSourceFolder(),args);
         addFolderArgs("SelectByFolder",getSelectByFolder(),args);
         return args;
