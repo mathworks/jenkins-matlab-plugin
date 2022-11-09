@@ -25,8 +25,12 @@ jobs:
         run: mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
-      - name: Build project with Maven
-        run: mvn -Dtest=DockerSupportIT#verifyDockerSupport test
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: licenses/license.lic
+#       - name: Build project with Maven
+#         run: mvn -Dtest=DockerSupportIT#verifyDockerSupport test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
