@@ -22,7 +22,7 @@ jobs:
         with:
           command: matlabroot
       - name: Get license
-        run: cd /tmp &&pwd && sudo printenv LINUX_LIC > "license.lic" && ls
+        run: mkdir licenses && cd licenses && pwd && sudo printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC: $(LINUX_R2022A)
       - name: Build project with Maven
