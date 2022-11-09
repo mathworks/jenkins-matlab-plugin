@@ -34,7 +34,7 @@ jobs:
           name: my-artifact
           path: licenses/license.lic
       - name: Build project with Maven
-        run: mvn clean verify -P integration-test
+        run: mvn clean test-compile failsafe:integration-test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
