@@ -34,7 +34,7 @@ jobs:
           name: my-artifact
           path: licenses/license.lic
       - name: Build project with Maven
-        run: mvn -verify
+        run: mvn verify
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
