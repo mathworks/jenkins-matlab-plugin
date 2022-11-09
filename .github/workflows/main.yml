@@ -29,8 +29,8 @@ jobs:
         with:
           name: my-artifact
           path: licenses/license.lic
-#       - name: Build project with Maven
-#         run: mvn -Dtest=DockerSupportIT#verifyDockerSupport test
+      - name: Build project with Maven
+        run: mvn -Dtest=DockerSupportIT#verifyDockerSupport test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
