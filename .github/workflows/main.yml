@@ -22,7 +22,7 @@ jobs:
         with:
           command: matlabroot,ver
       - name: List of folders
-        run: ls /usr/local/MATLAB/R2021b
+        run: ls /usr/local/MATLAB/R2021b && sudo mkdir /usr/local/MATLAB/R2021b/licenses
       - name: Get license
         run: sudo printenv LINUX_LIC > "/usr/local/MATLAB/R2021b/licenses/license.lic" 
         env:
