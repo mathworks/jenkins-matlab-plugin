@@ -21,8 +21,6 @@ jobs:
         uses: matlab-actions/run-command@v1
         with:
           command: matlabroot,ver
-      - name: Create license Directory and file
-        run: mkdir matlab/licenses && touch matlab/licenses/license.lic
       - name: Get license
         run: sudo printenv LINUX_LIC > "/usr/local/MATLAB/R2021b/licenses/license.lic" 
         env:
