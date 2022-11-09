@@ -22,9 +22,9 @@ jobs:
         with:
           command: matlabroot,ver
       - name: List of folders
-        run: ls /usr/local/MATLAB/R2021b && sudo mkdir /usr/local/MATLAB/R2021b/licenses
+        run: ls /usr/local/MATLAB/R2021b && sudo mkdir /usr/local/licenses
       - name: Get license
-        run: sudo printenv LINUX_LIC > "/usr/local/MATLAB/R2021b/licenses/license.lic" 
+        run: sudo printenv LINUX_LIC > "/usr/local/licenses/license.lic" 
         env:
           LINUX_LIC: $(LINUX_R2022A)
       - name: Build project with Maven
