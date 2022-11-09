@@ -20,11 +20,9 @@ jobs:
       - name: Run script
         uses: matlab-actions/run-command@v1
         with:
-          command: matlabroot,ver
-      - name: List of folders
-        run: ls /usr/local/MATLAB/R2021b && sudo mkdir /usr/local/licenses
+          command: matlabroot
       - name: Get license
-        run: sudo printenv LINUX_LIC > "/usr/local/licenses/license.lic" 
+        run: pwd && sudo printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC: $(LINUX_R2022A)
       - name: Build project with Maven
