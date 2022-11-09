@@ -17,6 +17,10 @@ jobs:
         uses: matlab-actions/setup-matlab@v1
         with:
           release: R2021b
+      - name: MATLAB-2022a
+        uses: matlab-actions/setup-matlab@v1
+        with:
+          release: R2022a
       - name: Run script
         uses: matlab-actions/run-command@v1
         with:
@@ -30,7 +34,7 @@ jobs:
           name: my-artifact
           path: licenses/license.lic
       - name: Build project with Maven
-        run: mvn -Dtest=DockerSupportIT#verifyDockerSupport test
+        run: mvn -verify
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
