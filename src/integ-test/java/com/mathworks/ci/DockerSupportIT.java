@@ -484,7 +484,7 @@ public class DockerSupportIT extends Thread{
                 "    agent {\n" +
                 "        docker {\n" +
                 "            image 'mathworks/matlab:"+TestData.getPropValues("matlab.version").toLowerCase()+"'\n" +
-                "            args \"--entrypoint='' -v " + TestData.getPropValues("matlab.linux.installed.path") +"/licenses" + ":/opt/matlab/" + TestData.getPropValues("matlab.version")+"/licenses \"\n" +
+                "            args \"--entrypoint='' -v " +"/tmp/licenses" + ":/opt/matlab/" + TestData.getPropValues("matlab.version")+"/licenses \"\n" +
                 "        }\n" +
                 "    }\n" +
                 "    stages {\n" +
