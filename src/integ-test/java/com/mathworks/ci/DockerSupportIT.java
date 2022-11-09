@@ -499,6 +499,8 @@ public class DockerSupportIT extends Thread{
                 "    }\n" +
                 "}";
         WorkflowRun build = getPipelineBuild(script);
+        Assert.assertTrue(jenkins.getInstance().getWorkspaceFor(project).child("test-results/results.pdf").exists());
+        jenkins.assertLogContains(TestData.getPropValues("matlab.version"));
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 
