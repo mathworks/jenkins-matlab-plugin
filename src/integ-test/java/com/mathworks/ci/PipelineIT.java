@@ -51,7 +51,7 @@ public class PipelineIT {
         return project.scheduleBuild2(0).get();
     }
 
-    @Test
+//     @Test
 //     public void verifyEmptyRootError() throws Exception {
 //         String script = "pipeline {\n" +
 //                         "  agent any\n" +
