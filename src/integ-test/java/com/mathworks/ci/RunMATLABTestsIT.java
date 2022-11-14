@@ -70,15 +70,15 @@ public class RunMATLABTestsIT {
     }
 
 
-    @Test
-    public void verifyMATLABEmptyRootError() throws Exception{
-            project.getBuildWrappersList().add(this.buildWrapper);
-            HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
-            HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
-            matlabver.setChecked(true);
-            WebAssert.assertTextPresent(configurePage, TestMessage.getValue("Builder.matlab.root.empty.error"));
+//     @Test
+//     public void verifyMATLABEmptyRootError() throws Exception{
+//             project.getBuildWrappersList().add(this.buildWrapper);
+//             HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
+//             HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
+//             matlabver.setChecked(true);
+//             WebAssert.assertTextPresent(configurePage, TestMessage.getValue("Builder.matlab.root.empty.error"));
 
-    }
+//     }
 
     @Test
     public void verifyInvalidMATLABRootError() throws Exception{
