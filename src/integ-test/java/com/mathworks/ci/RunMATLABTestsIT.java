@@ -326,14 +326,17 @@ public class RunMATLABTestsIT {
 
         matrixProject.getBuildersList().add(testBuilder);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+        
+        for (MatrixRun run : runs) {
+            jenkins.assertLogContains("LoggingLevel', 0", run);
+            jenkins.assertLogContains("OutputDetail', 0", run);
+            jenkins.assertLogContains("FailOnWarningsPlugin", run);
+            jenkins.assertLogContains("runInParallel", run);
+        }
+
 
         jenkins.assertLogContains(TestData.getPropValues("matlab.version")+" completed", build);
         jenkins.assertLogContains(TestData.getPropValues("matlab.matrix.version")+" completed", build);
-        jenkins.assertLogContains("LoggingLevel', 0", build);
-        jenkins.assertLogContains("OutputDetail', 0", build);
-        jenkins.assertLogContains("FailOnWarningsPlugin", build);
-        jenkins.assertLogContains("runInParallel", build);
-        jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
     /*
