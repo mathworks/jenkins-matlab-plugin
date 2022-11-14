@@ -52,22 +52,22 @@ public class PipelineIT {
     }
 
     @Test
-    public void verifyEmptyRootError() throws Exception {
-        String script = "pipeline {\n" +
-                        "  agent any\n" +
-                        "    stages{\n" +
-                        "        stage('Run MATLAB Command') {\n" +
-                        "            steps\n" +
-                        "            {\n" +
-                        "              runMATLABCommand 'version' \n" +
-                        "            }\n" +
-                        "        }\n" +
-                        "    }\n" +
-                        "}";
-        WorkflowRun build = getPipelineBuild(script);
-        jenkins.assertLogContains("MATLAB_ROOT",build);
-        jenkins.assertBuildStatus(Result.FAILURE,build);
-    }
+//     public void verifyEmptyRootError() throws Exception {
+//         String script = "pipeline {\n" +
+//                         "  agent any\n" +
+//                         "    stages{\n" +
+//                         "        stage('Run MATLAB Command') {\n" +
+//                         "            steps\n" +
+//                         "            {\n" +
+//                         "              runMATLABCommand 'version' \n" +
+//                         "            }\n" +
+//                         "        }\n" +
+//                         "    }\n" +
+//                         "}";
+//         WorkflowRun build = getPipelineBuild(script);
+//         jenkins.assertLogContains("MATLAB_ROOT",build);
+//         jenkins.assertBuildStatus(Result.FAILURE,build);
+//     }
 
 //    @Test
 //    public void verifyWrongMatlabVersion() throws Exception {
@@ -254,7 +254,7 @@ public class PipelineIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "              runMATLABTests(useParallel:true),\n" +
+                "              runMATLABTests(useParallel:true)\n" +
                 "            }\n" +
                 "        }\n" +
                 "    }\n" +
@@ -279,7 +279,7 @@ public class PipelineIT {
                 "    }\n" +
                 "}";
         WorkflowRun build = getPipelineBuild(script);
-        jenkins.assertLogContains("FailOnWarningsPlugin)", build);
+        jenkins.assertLogContains("FailOnWarningsPlugin", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 
