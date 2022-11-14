@@ -326,6 +326,7 @@ public class RunMATLABTestsIT {
 
         matrixProject.getBuildersList().add(testBuilder);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+        List<MatrixRun> runs = build.getRuns();
         
         for (MatrixRun run : runs) {
             jenkins.assertLogContains("LoggingLevel', 0", run);
