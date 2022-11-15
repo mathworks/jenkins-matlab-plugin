@@ -5,20 +5,20 @@ jobs:
     name: Run MATLAB Script
     runs-on: ubuntu-latest
     steps:
-#       - name: Check out repository
-#         uses: actions/checkout@v2
+      - name: Check out repository
+        uses: actions/checkout@v2
 #       - name: Set up JDK 14
 #         uses: actions/setup-java@v1
 #         with:
 #           java-version: 14
-#       - name: Get mpm
-#         run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
-#       - name: MATLAB install dir
-#         run: mkdir matlab
-#       - name: Install MATLAB
-#         run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
+      - name: Get mpm
+        run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
+      - name: MATLAB install dir
+        run: mkdir matlab
+      - name: Install MATLAB
+        run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
       - name: Add matlab to path
-        run: mkdir matlab && printenv PATH && export PATH=$(pwd)/matlab:$PATH && printenv PATH
+        run: export PATH=$(pwd)/matlab/bin:$PATH && printenv PATH
 #       - name: Set up MATLAB
 #         uses: matlab-actions/setup-matlab@v1
 #       - name: MATLAB-2021b
@@ -30,22 +30,22 @@ jobs:
 #         with:
 #           release: R2022a
 
-#       - name: Check contents of matlab folder
-#         run: cd matlab && ls
-#       - name: Get license
-#         run: cd matlab && mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
-#         env:
-#           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
-#       - uses: actions/upload-artifact@v3
-#         with:
-#           name: my-artifact
-#           path: matlab/licenses/license.lic
+      - name: Check contents of matlab folder
+        run: cd matlab && ls
+      - name: Get license
+        run: cd matlab && mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
+        env:
+          LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-artifact
+          path: matlab/licenses/license.lic
           
           
-#       - name: Run script
-#         uses: matlab-actions/run-command@v1
-#         with:
-#           command: matlabroot, ver, parpool
+      - name: Run script
+        uses: matlab-actions/run-command@v1
+        with:
+          command: matlabroot, ver, parpool
 #       - name: Build project with Maven
 #         run: mvn clean test-compile failsafe:integration-test
  
