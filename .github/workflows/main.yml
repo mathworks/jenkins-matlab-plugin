@@ -31,7 +31,7 @@ jobs:
       - name: Check contents of matlab folder
         run: cd matlab && ls
       - name: Get license
-        run: cd matlab mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
+        run: cd matlab && mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
       - uses: actions/upload-artifact@v3
