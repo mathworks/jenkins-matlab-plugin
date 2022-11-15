@@ -41,7 +41,7 @@ jobs:
           name: my-artifact
           path: matlab/licenses/license.lic
       - name: Run matlab command
-        run: printenv PATH && matlab -batch matlabroot, ver, parpool
+        run: export PATH=$(pwd)/matlab/bin:$PATH && printenv PATH && matlab -batch matlabroot, ver, parpool
           
 #       - name: Run script
 #         uses: matlab-actions/run-command@v1
