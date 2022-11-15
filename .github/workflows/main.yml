@@ -40,12 +40,13 @@ jobs:
         with:
           name: my-artifact
           path: matlab/licenses/license.lic
+      - name: Run matlab command
+        run: printenv PATH && matlab -batch matlabroot, ver, parpool
           
-          
-      - name: Run script
-        uses: matlab-actions/run-command@v1
-        with:
-          command: matlabroot, ver, parpool
+#       - name: Run script
+#         uses: matlab-actions/run-command@v1
+#         with:
+#           command: matlabroot, ver, parpool
 #       - name: Build project with Maven
 #         run: mvn clean test-compile failsafe:integration-test
  
