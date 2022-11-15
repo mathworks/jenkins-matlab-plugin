@@ -31,7 +31,7 @@ jobs:
 #           release: R2022a
 
       - name: Check contents of matlab folder
-        run: cd matlab && ls
+        run: cd matlab/bin && ls
       - name: Get license
         run: cd matlab && mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
         env:
