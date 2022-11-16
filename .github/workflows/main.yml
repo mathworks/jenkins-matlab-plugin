@@ -16,7 +16,8 @@ jobs:
       - name: MATLAB install dir
         run: mkdir matlab
       - name: Install MATLAB
-        run: ./mpm install --release=R2021b --destination=matlab --products MATLAB Parallel_Computing_Toolbox Simulink Simulink_Test
+        run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
+# Parallel_Computing_Toolbox Simulink Simulink_Test
       - name: Add matlab to path
         run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
 #       - name: Set up MATLAB
@@ -30,17 +31,12 @@ jobs:
 #         with:
 #           release: R2022a
 
-      - name: Check contents of matlab folder
-        run: cd matlab && ls
       - name: Get license
         run: cd matlab && mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: my-artifact
-          path: matlab/licenses/license.lic
-#       - name: Run matlab command
+      - name: Run matlab command
+        run: cd matlab/bin && ./matlab -batch matlabroot
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv MATLAB_JAVA && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
           
 #       - name: Run script
@@ -48,9 +44,9 @@ jobs:
 #         uses: matlab-actions/run-command@v1
 #         with:
 #           command: matlabroot,ver,parpool
-      - name: Build project with Maven
-        if: always()
-        run: export PATH=$(pwd)/matlab/bin:$PATH && mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
+#       - name: Build project with Maven
+#         if: always()
+#         run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
 # mvn clean test-compile failsafe:integration-test
  
 #     name: Install MATLAB
