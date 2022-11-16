@@ -43,14 +43,14 @@ jobs:
 #       - name: Run matlab command
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv MATLAB_JAVA && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
           
-      - name: Run script
-        if: always()
-        uses: matlab-actions/run-command@v1
-        with:
-          command: matlabroot,ver,parpool
+#       - name: Run script
+#         if: always()
+#         uses: matlab-actions/run-command@v1
+#         with:
+#           command: matlabroot,ver,parpool
       - name: Build project with Maven
         if: always()
-        run: export PATH=$(pwd)/matlab/bin:$PATH && mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet # mvn clean test-compile failsafe:integration-test
+        run: export PATH=$(pwd)/matlab/bin:$PATH && mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test# mvn clean test-compile failsafe:integration-test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
