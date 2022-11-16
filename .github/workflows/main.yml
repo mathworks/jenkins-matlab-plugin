@@ -18,7 +18,7 @@ jobs:
 #       - name: Install MATLAB
 #         run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
       - name: Add matlab to path
-        run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm
+        run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
 #       - name: Set up MATLAB
 #         uses: matlab-actions/setup-matlab@v1
 #       - name: MATLAB-2021b
