@@ -50,7 +50,7 @@ jobs:
           command: matlabroot,ver,parpool
       - name: Build project with Maven
         if: always()
-        run: mvn clean test-compile failsafe:integration-test
+        run: export PATH=$(pwd)/matlab/bin:$PATH && mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet # mvn clean test-compile failsafe:integration-test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
