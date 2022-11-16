@@ -16,7 +16,7 @@ jobs:
       - name: MATLAB install dir
         run: mkdir matlab
       - name: Install MATLAB
-        run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
+        run: ./mpm install --release=R2021b --destination=matlab --products MATLAB Parallel_Computing_Toolbox Simulink Simulink_Test
       - name: Add matlab to path
         run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
 #       - name: Set up MATLAB
@@ -40,15 +40,17 @@ jobs:
         with:
           name: my-artifact
           path: matlab/licenses/license.lic
-      - name: Run matlab command
-        run: export PATH=$(pwd)/matlab/bin:$PATH && printenv MATLAB_JAVA && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
+#       - name: Run matlab command
+#         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv MATLAB_JAVA && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
           
-#       - name: Run script
-#         uses: matlab-actions/run-command@v1
-#         with:
-#           command: matlabroot, ver, parpool
-#       - name: Build project with Maven
-#         run: mvn clean test-compile failsafe:integration-test
+      - name: Run script
+        if: always()
+        uses: matlab-actions/run-command@v1
+        with:
+          command: matlabroot,ver,parpool
+      - name: Build project with Maven
+        if: always()
+        run: mvn clean test-compile failsafe:integration-test
  
 #     name: Install MATLAB
 #     runs-on: ubuntu-latest
