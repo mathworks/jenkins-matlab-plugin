@@ -36,7 +36,7 @@ jobs:
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
       - name: Run matlab command
-        run: cd matlab/bin && ./matlab -batch matlabroot
+        run: export MATLAB_JAVA=$JAVA_HOME && cd matlab/bin && ./matlab -batch matlabroot
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv MATLAB_JAVA && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
           
 #       - name: Run script
