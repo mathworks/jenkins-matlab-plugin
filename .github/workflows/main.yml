@@ -39,11 +39,11 @@ jobs:
 #       - name: Run matlab command
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv JAVA_HOME && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
           
-#       - name: Run script
-#         if: always()
-#         uses: matlab-actions/run-command@v1
-#         with:
-#           command: matlabroot,ver,parpool
+      - name: Run script
+        if: always()
+        uses: matlab-actions/run-command@v1
+        with:
+          command: matlabroot,ver
       - name: Run MATLAB -batch
         run: matlab -batch ver,parpool 
 #       - name: Build project with Maven
