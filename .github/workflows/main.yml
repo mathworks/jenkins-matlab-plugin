@@ -44,12 +44,14 @@ jobs:
 #         uses: matlab-actions/run-command@v1
 #         with:
 #           command: matlabroot,ver,parpool
-      - name: Build project with Maven
-        if: always()
-        run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
-      - name: Build command
-        if: always()
-        run: mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
+      - name: Run MATLAB -batch
+        run: matlab -batch ver,parpool 
+#       - name: Build project with Maven
+#         if: always()
+#         run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
+#       - name: Build command
+#         if: always()
+#         run: mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
 # mvn clean test-compile failsafe:integration-test
  
 #     name: Install MATLAB
