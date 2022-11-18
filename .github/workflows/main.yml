@@ -24,7 +24,7 @@ jobs:
 #         run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
 
       - name: MATLAB-2021b
-        uses: matlab-actions/setup-matlab@v1
+        uses: matlab-actions/setup-matlab@v2-beta
         with:
           release: R2021b
 #       - name: MATLAB-2022a
@@ -32,10 +32,10 @@ jobs:
 #         with:
 #           release: R2022a
 
-#       - name: Get license
-#         run: cd matlab && mkdir licenses  && cd licenses && pwd &&  printenv LINUX_LIC > "license.lic" && ls
-#         env:
-#           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
+      - name: Get license
+        run: cd /home/runner/.matlab/R2021b_licenses &&  printenv LINUX_LIC > "license.lic" && ls
+        env:
+          LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
 #       - name: Run matlab command
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv JAVA_HOME && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
           
