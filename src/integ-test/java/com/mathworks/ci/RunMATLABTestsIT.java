@@ -678,9 +678,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyRunParallelSet() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                 Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setUseParallel(true);
         project.getBuildersList().add(this.testBuilder);
