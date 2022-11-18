@@ -47,6 +47,7 @@ jobs:
       - name: Run JAVA_HOME
         run: printenv JAVA_HOME & printenv MATLAB_JAVA
       - name: Run MATLAB -batch
+        if: always()
         run: matlab -batch ver,parpool 
       - name: Build project with Maven
         if: always()
