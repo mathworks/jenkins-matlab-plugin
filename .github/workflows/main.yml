@@ -43,7 +43,9 @@ jobs:
         if: always()
         uses: matlab-actions/run-command@v1
         with:
-          command: matlabroot,ver
+          command: version -java
+      - name: Run JAVA_HOME
+        run: printenv JAVA_HOME & printenv MATLAB_JAVA
       - name: Run MATLAB -batch
         run: matlab -batch ver,parpool 
 #       - name: Build project with Maven
