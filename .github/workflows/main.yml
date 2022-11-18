@@ -23,17 +23,17 @@ jobs:
 #       - name: Add matlab to path
 #         run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
 
-      - name: MATLAB-2021b
-        uses: matlab-actions/setup-matlab@v2-beta
-        with:
-          release: R2021b
+#       - name: MATLAB-2021b
+#         uses: matlab-actions/setup-matlab@v2-beta
+#         with:
+#           release: R2021b
 #       - name: MATLAB-2022a
 #         uses: matlab-actions/setup-matlab@v2-beta
 #         with:
 #           release: R2022a
 
       - name: Get license
-        run: cd /home/runner/.matlab/R2021b_licenses &&  printenv LINUX_LIC > "license.lic" && ls
+        run: cd /home/runner/.matlab &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
 #       - name: Run matlab command
