@@ -80,8 +80,8 @@ public class RunMATLABCommandIT {
     */
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
         tester.setMatlabCommand("version");
