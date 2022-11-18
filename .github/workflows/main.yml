@@ -33,7 +33,7 @@ jobs:
 #           release: R2022a
 
       - name: Get license
-        run: cd /home/runner/.matlab &&  printenv LINUX_LIC > "license.lic" && ls
+        run: mkdir /home/runner/.matlab &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
 #       - name: Run matlab command
