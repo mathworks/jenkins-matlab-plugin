@@ -38,21 +38,11 @@ jobs:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
 #       - name: Run matlab command
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv JAVA_HOME && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
-          
-      - name: Run script
-        if: always()
-        uses: matlab-actions/run-command@v1
-        with:
-          command: version -java
-      - name: Run JAVA_HOME
-        run: printenv JAVA_HOME & printenv MATLAB_JAVA
-      - name: Run MATLAB -batch
-        if: always()
-        run: matlab -batch ver,parpool 
+
+#       - name: Build project with Maven
+#         if: always()
+#         run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
       - name: Build project with Maven
-        if: always()
-        run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
-      - name: Build command
         if: always()
         run: mvn clean test-compile failsafe:integration-test
 #         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
