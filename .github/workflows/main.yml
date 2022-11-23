@@ -44,7 +44,7 @@ jobs:
 #         run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
       - name: Build project with Maven
         if: always()
-        run: mvn clean test-compile failsafe:integration-test
+        run: mvn -B clean test-compile failsafe:integration-test
 #         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
 # 
  
