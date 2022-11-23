@@ -260,6 +260,7 @@
 							<excludes>
 								<exclude>**/*Test.java</exclude>
 							</excludes>
+							<buildSuccessOnTestFailure>false</buildSuccessOnTestFailure>
 						</configuration>
 					</execution>
 				</executions>
