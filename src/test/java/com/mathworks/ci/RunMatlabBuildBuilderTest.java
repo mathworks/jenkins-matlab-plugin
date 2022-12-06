@@ -2,9 +2,7 @@ package com.mathworks.ci;
 
 /**
  * Copyright 2022 The MathWorks, Inc.
- * 
- * Test class for RunMatlabBuildBuilderTest
- * 
+ *  
  */
 
 import java.io.File;

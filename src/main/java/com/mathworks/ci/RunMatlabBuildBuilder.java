@@ -1,9 +1,8 @@
 package com.mathworks.ci;
+
 /**
  * Copyright 2022 The MathWorks, Inc.
- * 
- * Builder used to run a build using the MATLAB Build Tool.
- * 
+ *  
  */
 
 import java.io.IOException;
