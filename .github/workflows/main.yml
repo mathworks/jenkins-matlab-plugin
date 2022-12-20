@@ -45,14 +45,11 @@ jobs:
       - name: Build project with Maven
         if: always()
         run: mvn -B clean test-compile failsafe:integration-test
-      - name: list of files in target
-        if: always()
-        run: ls target/failsafe-reports
-#       - uses: actions/upload-artifact@v2  # upload test results
-#         if: success() || failure()        # run this step even if previous step failed
-#         with:
-#           name: test-results
-#           path: jest-junit.xml
+      - uses: actions/upload-artifact@v2  # upload test results
+        if: success() || failure()        # run this step even if previous step failed
+        with:
+          name: test-results
+          path: target/failsafe-reports
       - name: Report
         uses: dorny/test-reporter@v1
         if: always()
