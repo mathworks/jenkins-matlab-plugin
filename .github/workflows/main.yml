@@ -50,14 +50,25 @@ jobs:
         with:
           name: test-results
           path: target/failsafe-reports
-      - name: Report
-        uses: dorny/test-reporter@v1
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v1
         if: always()
         with:
-          name: Maven Tests
-          path: test-results
-          reporter: java-junit
-          fail-on-error: true
+          files: test-results/failsafe-summary.xml
+          report_individual_runs: "true"
+#       - uses: actions/upload-artifact@v2  # upload test results
+#         if: success() || failure()        # run this step even if previous step failed
+#         with:
+#           name: test-results
+#           path: target/failsafe-reports
+#       - name: Report
+#         uses: dorny/test-reporter@v1
+#         if: always()
+#         with:
+#           name: Maven Tests
+#           path: test-results
+#           reporter: java-junit
+#           fail-on-error: true
 #         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
 # 
  
