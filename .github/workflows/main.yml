@@ -45,6 +45,14 @@ jobs:
       - name: Build project with Maven
         if: always()
         run: mvn -B clean test-compile failsafe:integration-test
+      - name: Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Maven Tests
+          path: target/failsafe-reports/*.xml
+          reporter: java-junit
+          fail-on-error: true
 #         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
 # 
  
