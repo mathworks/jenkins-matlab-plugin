@@ -55,7 +55,7 @@ jobs:
         if: always()
         with:
           name: Maven Tests
-          path: target/failsafe-reports/*.xml
+          path: test-results
           reporter: java-junit
           fail-on-error: true
 #         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
