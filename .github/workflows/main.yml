@@ -39,23 +39,28 @@ jobs:
 #       - name: Run matlab command
 #         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv JAVA_HOME && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
 
-#       - name: Build project with Maven
-#         if: always()
-#         run: mvn -Dtest=RunMATLABTestsIT#verifyRunParallelSet test 
       - name: Build project with Maven
         if: always()
         run: mvn -B clean test-compile failsafe:integration-test
-      - uses: actions/upload-artifact@v2  # upload test results
-        if: success() || failure()        # run this step even if previous step failed
+      - name: Publish Test Report
+        if: ${{ always() }}
+        uses: scacap/action-surefire-report@v1
         with:
-          name: test-results
-          path: target/failsafe-reports
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action/composite@v1
-        if: always()
-        with:
-          files: test-results/failsafe-summary.xml
-          report_individual_runs: "true"
+          report_paths: '**/failsafe-reports/TEST-*.xml'
+#       - name: Build project with Maven
+#         if: always()
+#         run: mvn -B clean test-compile failsafe:integration-test
+#       - uses: actions/upload-artifact@v2  # upload test results
+#         if: success() || failure()        # run this step even if previous step failed
+#         with:
+#           name: test-results
+#           path: target/failsafe-reports
+#       - name: Publish Unit Test Results
+#         uses: EnricoMi/publish-unit-test-result-action/composite@v1
+#         if: always()
+#         with:
+#           files: test-results/failsafe-summary.xml
+#           report_individual_runs: "true"
 #       - uses: actions/upload-artifact@v2  # upload test results
 #         if: success() || failure()        # run this step even if previous step failed
 #         with:
