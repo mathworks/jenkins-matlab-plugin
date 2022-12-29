@@ -65,7 +65,6 @@ public class RunMATLABCommandIT {
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(matlabRoot);
         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
@@ -80,8 +79,6 @@ public class RunMATLABCommandIT {
     */
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-//         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
         tester.setMatlabCommand("version");
@@ -101,7 +98,6 @@ public class RunMATLABCommandIT {
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = TestData.getPropValues("matlab.invalid.root.path") + "VERSION";
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
-//        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
         matrixProject.getBuildersList().add(scriptBuilder);
@@ -123,25 +119,29 @@ public class RunMATLABCommandIT {
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", "R2020b", "R2020a");
+        String MATLABVersion1 = TestData.getPropValues("matlab.version");
+        String MATLABVersion2 = TestData.getPropValues("matlab.matrix.version");
+        Axis axes = new Axis("VERSION", MATLABVersion1, MATLABVersion2);
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = MatlabRootSetup.getMatlabRoot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2020b", "$VERSION")));
-//        this.buildWrapper.setMatlabRootFolder(matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION"));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(MATLABVersion1, "$VERSION")));
         matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
 
-        tester.setMatlabCommand("pwd,version");
+        tester.setMatlabCommand("version");
         matrixProject.getBuildersList().add(tester);
         MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
-        jenkins.assertLogContains("R2020b completed", build);
-        jenkins.assertLogContains("R2020a completed", build);
-        List<MatrixRun> runs = build.getRuns();
-        System.out.println("RAN BUILD");
-        for (MatrixRun run : runs) {
-            System.out.println(jenkins.getLog(run));
-        }
+        Map<String, String> vals = new HashMap<String, String>();
+        vals.put("VERSION", MATLABVersion1);
+        Combination c = new Combination(vals);
+        MatrixRun run = build.getRun(c);
+        jenkins.assertLogContains('(' + MATLABVersion1 + ')', run);
+
+        vals.put("VERSION", MATLABVersion2);
+        c = new Combination(vals);
+        run = build.getRun(c);
+        jenkins.assertLogContains('(' + MATLABVersion2 + ')', run);
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
