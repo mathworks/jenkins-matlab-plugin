@@ -23,7 +23,7 @@ jobs:
         
       - name: Build project with Maven
         if: always()
-        run: mvn -B clean test-compile failsafe:integration-test
+        run: mvn -B -Dtest=RunMATLABCommandIT test
         
       - name: Publish Test Report
         if: ${{ always() }}
