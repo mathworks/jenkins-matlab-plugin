@@ -7,46 +7,34 @@ jobs:
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
-#       - name: 'Set up archived Oracle JDK 17.0.1'
-#         uses: oracle-actions/setup-java@v1
-#         with:
-#           website: oracle.com
-#           release: 17
-#           version: 17.0.1
-#       - name: Get mpm
-#         run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
-#       - name: MATLAB install dir
-#         run: mkdir matlab
-#       - name: Install MATLAB
-#         run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
-# # Parallel_Computing_Toolbox Simulink Simulink_Test
-#       - name: Add matlab to path
-#         run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
 
       - name: MATLAB-2021b
         uses: matlab-actions/setup-matlab@v2-beta
         with:
           release: R2021b
-#       - name: MATLAB-2022a
-#         uses: matlab-actions/setup-matlab@v2-beta
-#         with:
-#           release: R2022a
 
       - name: Get license
         run: mkdir /home/runner/.matlab && cd /home/runner/.matlab/ && mkdir R2021b_licenses && cd R2021b_licenses &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
-#       - name: Run matlab command
-#         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv JAVA_HOME && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
 
+      - name: Run MATLAB batch command
+        run: matlab -batch version
+        
       - name: Build project with Maven
         if: always()
         run: mvn -B clean test-compile failsafe:integration-test
+        
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@v1
         with:
           report_paths: '**/failsafe-reports/TEST-*.xml'
+
+
+
+
+
 #       - name: Build project with Maven
 #         if: always()
 #         run: mvn -B clean test-compile failsafe:integration-test
@@ -96,4 +84,25 @@ jobs:
 #         run: grep -q "ab\ncd" matlab/licenses/license.lic && echo "yes" || echo "no"
 #       - name: Run MATLAB
 #         run: export PATH=matlab/bin:$PATH && matlab -batch ver,pwd
-      
+#       - name: 'Set up archived Oracle JDK 17.0.1'
+#         uses: oracle-actions/setup-java@v1
+#         with:
+#           website: oracle.com
+#           release: 17
+#           version: 17.0.1
+#       - name: Get mpm
+#         run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
+#       - name: MATLAB install dir
+#         run: mkdir matlab
+#       - name: Install MATLAB
+#         run: ./mpm install --release=R2021b --destination=matlab --products MATLAB 
+# # Parallel_Computing_Toolbox Simulink Simulink_Test
+#       - name: Add matlab to path
+#         run: export PATH=$(pwd):$PATH && printenv PATH && printenv JAVA_HOME && ls /usr/lib/jvm/temurin-11-jdk-amd64
+#       - name: MATLAB-2022a
+#         uses: matlab-actions/setup-matlab@v2-beta
+#         with:
+#           release: R2022a
+#       - name: Run matlab command
+#         run: export PATH=$(pwd)/matlab/bin:$PATH && printenv JAVA_HOME && export MATLAB_JAVA=$JAVA_HOME && printenv MATLAB_JAVA  && matlab -batch matlabroot,ver,parpool
+
