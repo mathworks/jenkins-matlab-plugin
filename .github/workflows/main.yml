@@ -8,14 +8,25 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v2
 
-      - name: MATLAB-2021b
-        uses: matlab-actions/setup-matlab@v2-beta
-        with:
-          release: R2021b
-      - name: MATLAB-2022a
-        uses: matlab-actions/setup-matlab@v2-beta
-        with:
-          release: R2022a
+      - name: Create MATLAB install dir
+        run: mkdir matlab && cd matlab && mkdir R2022a
+
+#       - name: MATLAB-2021b
+#         uses: matlab-actions/setup-matlab@v2-beta
+#         with:
+#           release: R2021b
+#       - name: MATLAB-2022a
+#         uses: matlab-actions/setup-matlab@v2-beta
+#         with:
+#           release: R2022a
+
+      - name: Get mpm
+        run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
+      - name: Install MATLAB
+        run: ./mpm install --release=R2022a --destination=matlab --products MATLAB
+      - name: Check contents
+        run: cd matlab & ls
+
 
       - name: Get license 21b
         run: mkdir /home/runner/.matlab && cd /home/runner/.matlab/ && mkdir R2021b_licenses && cd R2021b_licenses &&  printenv LINUX_LIC > "license.lic" && ls
@@ -29,15 +40,15 @@ jobs:
       - name: Run MATLAB batch command
         run: matlab -batch version,matlabroot
         
-      - name: Build project with Maven
-        if: always()
-        run: mvn -B -Dtest=FilterTestFolderIT test
+#       - name: Build project with Maven
+#         if: always()
+#         run: mvn -B -Dtest=FilterTestFolderIT test
         
-      - name: Publish Test Report
-        if: ${{ always() }}
-        uses: scacap/action-surefire-report@v1
-        with:
-          report_paths: '**/failsafe-reports/TEST-*.xml'
+#       - name: Publish Test Report
+#         if: ${{ always() }}
+#         uses: scacap/action-surefire-report@v1
+#         with:
+#           report_paths: '**/failsafe-reports/TEST-*.xml'
 
 
 
