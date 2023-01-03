@@ -23,9 +23,11 @@ jobs:
       - name: Get mpm
         run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
       - name: Install MATLAB
-        run: ./mpm install --release=R2022a --destination=matlab --products MATLAB
+        run: ./mpm install --release=R2022a --destination=matlab/R2022a --products MATLAB
       - name: Check contents
         run: ls matlab/
+      - name: Add matlab to path
+        run: cd matlab/R2022a && export PATH=$(pwd):$PATH && printenv PATH
 
 
       - name: Get license 21b
@@ -40,9 +42,9 @@ jobs:
       - name: Run MATLAB batch command
         run: matlab -batch version,matlabroot
         
-#       - name: Build project with Maven
-#         if: always()
-#         run: mvn -B -Dtest=FilterTestFolderIT test
+      - name: Build project with Maven
+        if: always()
+        run: mvn -B -Dtest=FilterTestFolderIT test
         
 #       - name: Publish Test Report
 #         if: ${{ always() }}
