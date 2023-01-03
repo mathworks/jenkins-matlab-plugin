@@ -27,7 +27,7 @@ jobs:
       - name: Check contents
         run: ls matlab/
       - name: Add matlab to path
-        run: cd matlab/R2022a && export PATH=$(pwd):$PATH && printenv PATH
+        run: cd matlab/R2022a/bin && export PATH=$(pwd):$PATH && printenv PATH
 
 
       - name: Get license 21b
