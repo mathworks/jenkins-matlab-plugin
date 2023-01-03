@@ -25,7 +25,7 @@ jobs:
       - name: Install MATLAB
         run: ./mpm install --release=R2022a --destination=matlab --products MATLAB
       - name: Check contents
-        run: cd matlab & ls
+        run: ls matlab/
 
 
       - name: Get license 21b
