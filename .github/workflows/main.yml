@@ -25,7 +25,7 @@ jobs:
       - name: Install MATLAB
         run: ./mpm install --release=R2022a --destination=matlab/R2022a --products MATLAB
       - name: Check contents
-        run: ls matlab/
+        run: ls matlab/R2022a/bin
       - name: Add matlab to path
         run: cd matlab/R2022a/bin && export PATH=$(pwd):$PATH && printenv PATH
 
@@ -39,6 +39,8 @@ jobs:
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
 
+      - name: Run AMTLAB command
+        run: cd matlab/R2022a/bin && ./matlab -batch pwd,matlabroot,version
       - name: Run MATLAB batch command
         run: matlab -batch version,matlabroot
         
