@@ -22,7 +22,7 @@ jobs:
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2021B}}
       - name: Get license 22a
-        run: mkdir /home/runner/.matlab && cd /home/runner/.matlab/ && mkdir R2022a_licenses && cd R2022a_licenses &&  printenv LINUX_LIC > "license.lic" && ls
+        run: cd /home/runner/.matlab/ && mkdir R2022a_licenses && cd R2022a_licenses &&  printenv LINUX_LIC > "license.lic" && ls
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
 
