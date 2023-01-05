@@ -84,7 +84,6 @@ public class PipelineIT {
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -102,7 +101,6 @@ public class PipelineIT {
     public void verifyBuildFailsWhenMatlabCommandFails() throws Exception {
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -121,7 +119,6 @@ public class PipelineIT {
     public void verifyBuildFailsWhenDSLNameFails() throws Exception {
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -140,7 +137,6 @@ public class PipelineIT {
     public void verifyCustomeFilenamesForArtifacts() throws Exception {
         String script = "pipeline {\n" +
                             "  agent any\n" +
-                            envDSL + "\n" +
                             "    stages{\n" +
                             "        stage('Run MATLAB Command') {\n" +
                             "            steps\n" +
@@ -166,7 +162,6 @@ public class PipelineIT {
                 (System.getProperty("os.name").toLowerCase().startsWith("mac"));
         String script = "pipeline {\n" +
                         "  agent any\n" +
-                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -188,7 +183,6 @@ public class PipelineIT {
                 (System.getProperty("os.name").toLowerCase().startsWith("windows"));
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -249,7 +243,6 @@ public class PipelineIT {
     public void verifyRunInParallel() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -268,7 +261,6 @@ public class PipelineIT {
     public void verifyStrictSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -287,7 +279,6 @@ public class PipelineIT {
     public void verifyLoggingLevelSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -306,7 +297,6 @@ public class PipelineIT {
     public void verifyOutoutDetailSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +

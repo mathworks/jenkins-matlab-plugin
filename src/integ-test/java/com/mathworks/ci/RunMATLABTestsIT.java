@@ -82,9 +82,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyInvalidMATLABRootError() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), TestData.getPropValues("matlab.invalid.root.path")));
-//        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.invalid.root.path"));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), TestData.getPropValues("matlab.invalid.root.path")));
+////        this.buildWrapper.setMatlabRootFolder(TestData.getPropValues("matlab.invalid.root.path"));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
         matlabver.setChecked(true);
@@ -107,10 +107,10 @@ public class RunMATLABTestsIT {
     
     @Test
     public void verifyBuilderFailsForInvalidMATLABPath() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "fake"));
-
-//        this.buildWrapper.setMatlabRootFolder("fake");
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "fake"));
+//
+////        this.buildWrapper.setMatlabRootFolder("fake");
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -120,10 +120,10 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyJUnitFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput junitChkbx = page.getElementByName("junitArtifact");
@@ -135,9 +135,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyTAPTestFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput tapChkbx = page.getElementByName("tapArtifact");
@@ -150,9 +150,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyPDFReportFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput pdfChkbx = page.getElementByName("pdfReportArtifact");
@@ -164,9 +164,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyCoberturaFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaArtifact");
@@ -179,9 +179,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyModelCoverageFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("modelCoverageArtifact");
@@ -194,9 +194,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifySTMResultsFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("stmResultsArtifact");
@@ -208,9 +208,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyPDFReportCustomFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz.pdf"));
         project.getBuildersList().add(testingBuilder);
@@ -223,9 +223,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyCustomFilePathInputForArtifacts() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setJunitArtifact(new RunMatlabTestsBuilder.JunitArtifact("TestArtifacts/junittestreport.xml"));
         testingBuilder.setTapArtifact(new RunMatlabTestsBuilder.TapArtifact("TestArtifacts/tapResult.tap"));
@@ -246,9 +246,9 @@ public class RunMATLABTestsIT {
     public void verifyExtForPdfReport() throws Exception {
         Assume.assumeFalse
                 (System.getProperty("os.name").toLowerCase().startsWith("mac"));
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/xyz"));
         project.getBuildersList().add(testingBuilder);
@@ -261,9 +261,9 @@ public class RunMATLABTestsIT {
     public void verifyBuildFailsForInvalidFilename() throws Exception {
         Assume.assumeTrue
                 (System.getProperty("os.name").toLowerCase().startsWith("windows"));
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-//        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+////        this.buildWrapper.setMatlabRootFolder(getMatlabroot());
+//        project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setPdfReportArtifact(new RunMatlabTestsBuilder.PdfArtifact("abc/?xyz.pdf"));
         project.getBuildersList().add(testingBuilder);
@@ -345,8 +345,8 @@ public class RunMATLABTestsIT {
      */
     @Test
     public void verifyTestsFilterByFolderAndTag() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -376,8 +376,8 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyTestFilterWithSourceSelection() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -400,8 +400,8 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyNoTestsAreRunForIncorrectTestFolderPath() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
 
         //set SCM
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
@@ -425,8 +425,8 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyDependentTestsFail() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
@@ -452,8 +452,8 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyCodeCoverageResultForFreeStyle() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
 
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
 
@@ -520,9 +520,9 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyLoggingLevelSetToNone() throws Exception {
 
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build;
@@ -534,9 +534,9 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyLoggingLevelSetToTerse() throws Exception {
 
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("Terse");
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build;
@@ -548,9 +548,9 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyLoggingLevelSetToConcise() throws Exception {
 
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("Concise");
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build;
@@ -562,9 +562,9 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyLoggingLevelSetToDetailed() throws Exception {
 
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("Detailed");
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build;
@@ -580,9 +580,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyOutputDetailSetToNone() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
         testBuilder.setOutputDetail("None");
@@ -594,9 +594,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyOutputDetailSetToTerse() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
         testBuilder.setOutputDetail("Terse");
@@ -608,9 +608,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyOutputDetailSetToConcise() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
         testBuilder.setOutputDetail("Concise");
@@ -622,9 +622,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyOutputDetailSetToDetailed() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
         testBuilder.setOutputDetail("Detailed");
@@ -642,9 +642,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyStrictSet() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setStrict(true);
         project.getBuildersList().add(this.testBuilder);
@@ -660,9 +660,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyStrictNotSet() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setStrict(false);
         project.getBuildersList().add(this.testBuilder);
@@ -700,9 +700,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyRunParallelNotSet() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setUseParallel(false);
         project.getBuildersList().add(this.testBuilder);
@@ -712,9 +712,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void testWithWarningFailsWithStrict() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+//        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
+//                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+//        project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getTestOnWarningData()));
         testBuilder.setStrict(true);
 
