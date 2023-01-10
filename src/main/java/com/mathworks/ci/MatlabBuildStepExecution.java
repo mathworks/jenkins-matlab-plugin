@@ -17,7 +17,7 @@ import hudson.model.TaskListener;
 
 public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecution<Void> implements MatlabBuild {
     
-    private static final long serialVersionUID = 6704588180717665100L;
+    private static final long serialVersionUID = 4771831219402275744L;
     
     private String tasks;
 
