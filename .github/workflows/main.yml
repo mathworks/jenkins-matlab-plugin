@@ -39,7 +39,7 @@ jobs:
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
       - name: Set MATLAB_ROOT
-        run: matlab -batch setenv("MATLAB_ROOT", matlabroot), getenv("MATLAB_ROOT)
+        run: matlab -batch setenv("MATLAB_ROOT", matlabroot), getenv("MATLAB_ROOT")
         
 
 #       - name: Run MATLAB command
