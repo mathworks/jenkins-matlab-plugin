@@ -55,11 +55,11 @@ If you use a source code management (SCM) system such as Git&trade;, then your p
 #### Run MATLAB Build
 The **Run MATLAB Build** step lets you run a build using the [MATLAB build tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html). You can use this step to run the tasks specified in a file named `buildfile.m` in the root of your repository. To use the **Run MATLAB Build** step, you need MATLAB R2022b or a later release.
 
-Specify the task you want to execute in the **Tasks** box. If you specify more than one task, use a space to separate them. If you do not specify any tasks, the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend. For example, run a task named `mytask` as well as all the tasks on which it depends.
+Specify the tasks you want to execute in the **Tasks** box. If you specify more than one task, use a space to separate them. If you do not specify any tasks, the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend. For example, run a task named `mytask` as well as all the tasks on which it depends.
 
 ![run_matlab_build](https://user-images.githubusercontent.com/48831250/217647265-38b0530f-f9f4-43a7-91ef-719e8d0a545e.png)
 
-MATLAB exits with exit code 0 if the specified task runs successfully. Otherwise, MATLAB terminates with a nonzero exit code, which causes the Jenkins build to fail.
+MATLAB exits with exit code 0 if the specified tasks run successfully. Otherwise, MATLAB terminates with a nonzero exit code, which causes the Jenkins build to fail.
 
 When you use this step, a file named `buildfile.m` must be in the root of your repository. For more information about the build tool, see [Create and Run Tasks Using Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/create-and-run-tasks-using-build-tool.html).
 
@@ -234,7 +234,7 @@ The `runMATLABBuild` step accepts an optional input. Use this input to specify t
 
 Input                     | Description    
 ------------------------- | ---------------
-`tasks`                   | (Optional) Task to execute. If you specify more than one task, use a space to separate them.<br/>**Example:** `'mytask'`<br/>**Example:** `'compile test'`
+`tasks`                   | (Optional) Tasks to execute. If you specify more than one task, use a space to separate them.<br/>**Example:** `'mytask'`<br/>**Example:** `'compile test'`
 
 For example, in your `Jenkinsfile`, define a declarative pipeline to run a task named `mytask` as well as all the tasks on which it depends.
 
@@ -261,7 +261,7 @@ node {
 }
 ``` 
 
-MATLAB exits with exit code 0 if the specified task runs successfully. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail.
+MATLAB exits with exit code 0 if the specified tasks run successfully. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail.
 
 When you use this step, a file named `buildfile.m` must be in the root of your repository. For more information about the build tool, see [Create and Run Tasks Using Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/create-and-run-tasks-using-build-tool.html).
 
