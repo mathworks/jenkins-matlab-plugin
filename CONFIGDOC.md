@@ -55,7 +55,7 @@ If you use a source code management (SCM) system such as Git&trade;, then your p
 #### Run MATLAB Build
 The **Run MATLAB Build** step lets you run a build using the [MATLAB build tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html). You can use this step to run the tasks specified in a file named `buildfile.m` in the root of your repository. To use the **Run MATLAB Build** step, you need MATLAB R2022b or a later release.
 
-Specify the tasks you want to execute in the **Tasks** box. If you specify more than one task, use a space to separate them. If you do not specify any tasks, the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend. For example, run a task named `mytask` as well as all the tasks on which it depends.
+Specify the tasks you want to execute in the **Tasks** box. If you specify more than one task, use a space to separate them. If you do not specify any tasks, the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend. For example, enter `mytask` in the **Tasks** box to run a task named `mytask` as well as all the tasks on which it depends.
 
 ![run_matlab_build](https://user-images.githubusercontent.com/48831250/217647265-38b0530f-f9f4-43a7-91ef-719e8d0a545e.png)
 
@@ -66,7 +66,7 @@ When you use this step, a file named `buildfile.m` must be in the root of your r
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts such as test results in JUnit XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
  
-You can customize the **Run MATLAB Tests** build step in the step configuration interface. For example, you can add folders to the MATLAB search path, control which tests to run, and generate various test and coverage artifacts. If you do not select any of the existing options, all the tests in your project run, and any test failure causes the build to fail.
+You can customize the **Run MATLAB Tests** build step in the step configuration interface. For example, you can add source folders to the MATLAB search path, control which tests to run, and generate various test and coverage artifacts. If you do not select any of the existing options, all the tests in your project run, and any test failure causes the build to fail.
  
 Select **Source folder** if you want to specify the location of a folder containing source code, relative to the project root folder. The plugin adds the specified folder and its subfolders to the top of the MATLAB search path. If you specify a source folder and then generate coverage results, the plugin uses only the source code in the specified folder and its subfolders to generate the results. You can specify more than one folder by clicking **Add folder**.
 
@@ -81,8 +81,8 @@ By default, the **Run MATLAB Tests** step creates a test suite from all the test
 
 To customize your test run, select options in the **Customize Test Run** section:
 
-* To apply strict checks when running the tests, select **Strict**. When you select this option, the plugin generates a qualification failure whenever a test issues a warning. Selecting **Strict** is the same as specifying the `Strict` name-value argument of the [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) function as `true`.
-* To run tests in parallel, select **Use parallel**. This feature might not be compatible with certain options, in which case, the plugin runs the tests in serial regardless of your choice. Selecting **Use parallel** is the same as specifying the `UseParallel` name-value argument of `runtests` as `true`. You must have Parallel Computing Toolbox&trade; installed to use this option.
+* To apply strict checks when running the tests, select **Strict**. If you select this option, the plugin generates a qualification failure whenever a test issues a warning. Selecting **Strict** is the same as specifying the `Strict` name-value argument of the [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) function as `true`.
+* To run tests in parallel, select **Use parallel**. Selecting **Use parallel** is the same as specifying the `UseParallel` name-value argument of `runtests` as `true`. You must have Parallel Computing Toolbox&trade; installed to use this option. If other selected options are not compatible with running tests in parallel, the plugin runs the tests in serial regardless of your selection.
 * To control the amount of output detail displayed for your test run, select a value from the **Output detail** list. Selecting a value for this option is the same as specifying the `OutputDetail` name-value argument of `runtests` as that value. By default, the plugin displays failing and logged events at the `Detailed` level and test run progress at the `Concise` level.
 * To include diagnostics logged by the [`log (TestCase)`](https://www.mathworks.com/help/matlab/ref/matlab.unittest.testcase.log.html) and [`log (Fixture)`](https://www.mathworks.com/help/matlab/ref/matlab.unittest.fixtures.fixture.log.html) methods at a specified verbosity level, select a value from the **Logging level** list. Selecting a value for this option is the same as specifying the `LoggingLevel` name-value argument of `runtests` as that value. By default, the plugin includes diagnostics logged at the `Terse` level. 
 
@@ -104,7 +104,7 @@ The **Run MATLAB Command** build step lets you run MATLAB scripts, functions, an
 
 Specify the MATLAB script, function, or statement you want to execute in the **Command** box. If you specify more than one script, function, or statement, use a comma or semicolon to separate them. If you want to run a script or function, do not specify the file extension.
 
-For example, run a script named `myscript.m` in the root of your repository.
+For example, enter `myscript` in the **Command** box to run a script named `myscript.m` in the root of your repository.
 
 ![run_matlab_command](https://user-images.githubusercontent.com/48831250/217652304-8f7b351a-c52f-4f2b-a911-f2bc4c94dec0.png)
 
@@ -122,7 +122,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Build Envi
 ![build_environment](https://user-images.githubusercontent.com/48831250/217673448-961f14de-6985-453e-944f-96b9ffe29b99.png)
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
-* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build task in the **Tasks** box. 
+* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks in the **Tasks** box. 
 * If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
 * If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. 
 
@@ -166,15 +166,15 @@ You can add several axes in the **Configuration Matrix** section. For example, a
 
 Once you have specified the axes, add the required build steps in the **Build Steps** section:
 
-* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build task in the **Tasks** box.
+* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks in the **Tasks** box.
 
 * If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
 
 * If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. You can use the user-defined axes to specify the contents of the **Command** box. For example:
    
-```
-results = runtests(pwd,"Tag","$TEST_TAG"); assertSuccess(results);
-```
+  ```
+  results = runtests(pwd,"Tag","$TEST_TAG"); assertSuccess(results);
+  ```
 
 ## Set Up Pipeline Project
 When you define your pipeline with a `Jenkinsfile`, the plugin provides you with three build steps:
@@ -297,7 +297,7 @@ node {
 
 MATLAB exits with exit code 0 if the test suite runs successfully without any test failures. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail.
 
-You can customize the `runMATLABTests` step using optional inputs. For example, you can add folders to the MATLAB search path, control which tests to run, and generate various artifacts.
+You can customize the `runMATLABTests` step using optional inputs. For example, you can add source folders to the MATLAB search path, control which tests to run, and generate various artifacts.
 
 Input                     | Description    
 ------------------------- | ---------------
