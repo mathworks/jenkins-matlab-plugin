@@ -26,12 +26,17 @@ public class RunMatlabBuildStep extends Step {
     private String tasks;
 
     @DataBoundConstructor
-    public RunMatlabBuildStep(String tasks) {
-        this.tasks = tasks;
+    public RunMatlabBuildStep() {
+ 
     }
 
     public String getTasks() {
         return Util.fixNull(tasks);
+    }
+
+    @DataBoundSetter
+    public void setTasks(String tasks) {
+        this.tasks = tasks;
     }
 
     @Override

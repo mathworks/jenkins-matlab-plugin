@@ -20,10 +20,10 @@ import hudson.model.TaskListener;
 
 public class RunMatlabBuildStepTester extends RunMatlabBuildStep {
     @DataBoundConstructor
-    public RunMatlabBuildStepTester(String tasks) {
-        super(tasks);
+    public RunMatlabBuildStepTester() {
+
     }
-    
+
     @Override
     public StepExecution start(StepContext context) throws Exception {   
         return new TestStepExecution(context,this.getTasks());
