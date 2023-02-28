@@ -88,6 +88,18 @@ public class RunMatlabBuildStepTest {
     }
 
     /*
+     * Verify build runs with default tasks if no tasks are specified
+     */
+    @Test
+    public void verifyRunsWithDefaultTasks() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node { runMATLABBuild() }", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("buildtool", build);
+    }
+
+    /*
      * Verify appropriate task is invoked as in pipeline script
      */
     @Test
