@@ -6,26 +6,6 @@
     <f:optionalProperty field="sourceFolder" title="Source folder" />
 </f:block>
 
-<f:section title="Run Customization">
-<f:block>
-	<f:entry field="useParallel" title="Use parallel " checked="${instance.useParallel}">
-	    <f:checkbox/>
-	</f:entry>
-
-	<f:entry field="strict" title="Strict " checked="${instance.strict}">
-	    <f:checkbox/> 
-	</f:entry> 
-
-	<!-- Verbosity fields --> 
-	<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
-	    <f:select/>
-	</f:entry>
-	
-	<f:entry name="outputDetail" title="Output detail " field="outputDetail" default="Default">
-	    <f:select/>
-	</f:entry>
-</f:block>
-</f:section>
 <br></br>
 
 <f:section title="Filter Tests">
@@ -36,6 +16,27 @@
 </f:block>
 </f:section>
 <br></br>
+
+<f:section title="Customize Test Run">
+<f:block>
+    <f:entry field="strict" title="Strict " checked="${instance.strict}">
+	    <f:checkbox/> 
+	</f:entry> 
+	<f:entry field="useParallel" title="Use parallel " checked="${instance.useParallel}">
+	    <f:checkbox/>
+	</f:entry>
+
+	<!-- Verbosity fields --> 
+	
+	<f:entry name="outputDetail" title="Output detail " field="outputDetail" default="Default">
+	    <f:select/>
+	</f:entry>
+	
+	<f:entry name="loggingLevel " title="Logging level" field="loggingLevel" default="Default">
+	    <f:select/>
+	</f:entry>
+</f:block>
+</f:section>
 
 
 <f:section title="Generate Test Artifacts">
