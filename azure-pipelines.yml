@@ -21,6 +21,7 @@ jobs:
     
 #     vmImage: #
   steps:
+    - script: ls && ls src/integ-test/java/com/mathworks/ci
     - task: Maven@3  
       inputs:
         goals: 'clean test'
