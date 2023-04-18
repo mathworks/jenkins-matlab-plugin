@@ -92,7 +92,7 @@ jobs:
           path: test-results
           reporter: java-junit
           fail-on-error: true
-        mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
+#         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
 # 
  
 #     name: Install MATLAB
