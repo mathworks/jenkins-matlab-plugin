@@ -11,10 +11,10 @@ jobs:
       - name: Create MATLAB install dir
         run: mkdir matlab && cd matlab && mkdir R2022a
 
-#       - name: MATLAB-2021b
-#         uses: matlab-actions/setup-matlab@v2-beta
-#         with:
-#           release: R2021b
+      - name: MATLAB-2021b
+        uses: matlab-actions/setup-matlab@v2-beta
+        with:
+          release: R2021b
       - name: MATLAB-2022a
         uses: matlab-actions/setup-matlab@v2-beta
         with:
@@ -31,10 +31,13 @@ jobs:
 #         run: cd matlab/R2022a/bin && export PATH=$(pwd):$PATH && printenv PATH
 
 
-#       - name: Get license 21b
-#         run: mkdir /home/runner/.matlab && cd /home/runner/.matlab/ && mkdir R2021b_licenses && cd R2021b_licenses &&  printenv LINUX_LIC > "license.lic" && ls
-#         env:
-#           LINUX_LIC:  ${{ secrets.LINUX_R2021B}}
+      - name: Get license 21b
+        run: mkdir /home/runner/.matlab && cd /home/runner/.matlab/ && mkdir R2021b_licenses && cd R2021b_licenses &&  printenv LINUX_LIC > "license.lic" && ls
+        env:
+          LINUX_LIC:  ${{ secrets.LINUX_R2021B}}
+ 
+      - name: Set MATLAB_ROOT_21b
+        run: matlab -batch version         
       - name: Get license 22a
         run: mkdir /home/runner/.matlab && cd /home/runner/.matlab/ && mkdir R2022a_licenses && cd R2022a_licenses &&  printenv LINUX_LIC > "license.lic" && ls
         env:
@@ -62,34 +65,34 @@ jobs:
 
 
 
-#       - name: Build project with Maven
-#         if: always()
-#         run: mvn -B clean test-compile failsafe:integration-test
-#       - uses: actions/upload-artifact@v2  # upload test results
-#         if: success() || failure()        # run this step even if previous step failed
-#         with:
-#           name: test-results
-#           path: target/failsafe-reports
-#       - name: Publish Unit Test Results
-#         uses: EnricoMi/publish-unit-test-result-action/composite@v1
-#         if: always()
-#         with:
-#           files: test-results/failsafe-summary.xml
-#           report_individual_runs: "true"
-#       - uses: actions/upload-artifact@v2  # upload test results
-#         if: success() || failure()        # run this step even if previous step failed
-#         with:
-#           name: test-results
-#           path: target/failsafe-reports
-#       - name: Report
-#         uses: dorny/test-reporter@v1
-#         if: always()
-#         with:
-#           name: Maven Tests
-#           path: test-results
-#           reporter: java-junit
-#           fail-on-error: true
-#         mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
+      - name: Build project with Maven
+        if: always()
+        run: mvn -B clean test-compile failsafe:integration-test
+      - uses: actions/upload-artifact@v2  # upload test results
+        if: success() || failure()        # run this step even if previous step failed
+        with:
+          name: test-results
+          path: target/failsafe-reports
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action/composite@v1
+        if: always()
+        with:
+          files: test-results/failsafe-summary.xml
+          report_individual_runs: "true"
+      - uses: actions/upload-artifact@v2  # upload test results
+        if: success() || failure()        # run this step even if previous step failed
+        with:
+          name: test-results
+          path: target/failsafe-reports
+      - name: Report
+        uses: dorny/test-reporter@v1
+        if: always()
+        with:
+          name: Maven Tests
+          path: test-results
+          reporter: java-junit
+          fail-on-error: true
+        mvn -Dtest=RunMATLABCommandIT#verifyBuildPassesWhenMatlabCommandPasses test 
 # 
  
 #     name: Install MATLAB
