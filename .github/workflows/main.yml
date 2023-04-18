@@ -20,6 +20,7 @@ jobs:
         with:
           release: R2022a
 
+
 #       - name: Get mpm
 #         run: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
 #       - name: Install MATLAB
@@ -39,7 +40,7 @@ jobs:
         env:
           LINUX_LIC:  ${{ secrets.LINUX_R2022A}}
       - name: Set MATLAB_ROOT
-        run: matlab -batch setenv("MATLAB_ROOT", matlabroot), getenv("MATLAB_ROOT")
+        run: matlab -batch version,setenv("MATLAB_ROOT", matlabroot), getenv("MATLAB_ROOT")
         
 
 #       - name: Run MATLAB command
