@@ -28,9 +28,9 @@ pool:
 
 steps:
  - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
- - script: ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab && export PATH=matlab/bin:$PATH && echo $PATH && pwd 
- - script:  mkdir matlab/licenses && touch matlab/licenses/license.lic
- - script: printenv LINUX_LIC > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
+ - script: mkdir matlab && cd matlab && mkdir R2022a && cd .. && ./mpm install --release=R2022a --destination=matlab/R2022a --products MATLAB && ls matlab/R2022a 
+ - script:  mkdir matlab/R2022a/licenses && touch matlab/R2022a/licenses/license.lic
+ - script: printenv LINUX_LIC > "matlab/R2022a/licenses/license.lic" && cat matlab/R2022a/licenses/license.lic
    env:
       LINUX_LIC: $(LINUX_R2022A)
  - script: export PATH=matlab/bin:$PATH && matlab -batch ver,pwd
