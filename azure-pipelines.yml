@@ -24,7 +24,7 @@ jobs:
     - script: ls && ls src/integ-test/java/com/mathworks/ci
     - task: Maven@3  
       inputs:
-        goals: 'clean test'
+        goals: 'clean test-compile failsafe:integration-test'
 #     - script: git --version
 #     - script: git clone https://insidelabs-git.mathworks.com/cit/utilities/network-license-manager-docker
 
