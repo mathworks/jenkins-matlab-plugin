@@ -22,9 +22,11 @@ jobs:
 #     vmImage: #
   steps:
     - script: ls && ls src/integ-test/java/com/mathworks/ci
-    - task: Maven@3  
-      inputs:
-        goals: 'clean test-compile failsafe:integration-test'
+    - script: echo $PATH
+    - script: matlab -batch matlabroot,
+#     - task: Maven@3  
+#       inputs:
+#         goals: 'clean test-compile failsafe:integration-test'
 #     - script: git --version
 #     - script: git clone https://insidelabs-git.mathworks.com/cit/utilities/network-license-manager-docker
 
