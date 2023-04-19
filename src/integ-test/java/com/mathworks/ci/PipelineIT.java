@@ -321,4 +321,38 @@ public class PipelineIT {
         jenkins.assertLogContains("'OutputDetail', 0", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
+    @Test
+    public void verifyBuildPassesWhenRunMatlabBuildPassesTaskProvided() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Build') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "              runMATLABBuild tasks: 'test' \n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
+    @Test
+    public void verifyBuildPassesWhenRunMatlabBuildPassesNoTaskProvided() throws Exception {
+        String script = "pipeline {\n" +
+                "  agent any\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Build') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "              runMATLABBuild tasks: '' \n" +
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertBuildStatus(Result.SUCCESS,build);
+    }
 }
