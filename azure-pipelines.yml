@@ -2,35 +2,42 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/java
 
-# trigger:
-#  branches:
-#     include:
-#     - IntegTests
+trigger:
+ branches:
+    include:
+    - IntegTests
 
-# jobs:
-# - job: Test
-#   timeoutInMinutes: 120
-#   strategy:
-#     matrix:
-#       linux:
-#         vmss: LinuxVMSS
-# #       windows:
-# #         vmss: WindowsVMSS
-#   pool:
-#     name: $(vmss)
+jobs:
+- job: Test
+  timeoutInMinutes: 120
+  strategy:
+    matrix:
+      linux:
+        vmss: LinuxVMSS
+#       windows:
+#         vmss: WindowsVMSS
+  pool:
+    name: $(vmss)
+    
 #     vmImage: #
-#   steps:
+  steps:
+    - script: ls && ls src/integ-test/java/com/mathworks/ci
+    - script: echo $PATH
+    - script: matlab -batch matlabroot,
+#     - task: Maven@3  
+#       inputs:
+#         goals: 'clean test-compile failsafe:integration-test'
 #     - script: git --version
 #     - script: git clone https://insidelabs-git.mathworks.com/cit/utilities/network-license-manager-docker
 
-pool:
-   vmImage: 'ubuntu-latest'
+# pool:
+#    vmImage: 'ubuntu-latest'
 
-steps:
- - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
- - script: ./mpm install --release=R2022a --destination=matlab --products MATLAB && ls matlab && export PATH=matlab/bin:$PATH && echo $PATH && pwd 
- - script:  mkdir matlab/licenses && touch matlab/licenses/license.lic
- - script: printenv LINUX_LIC > "matlab/licenses/license.lic" && cat matlab/licenses/license.lic
-   env:
-      LINUX_LIC: $(LINUX_R2022A)
- - script: export PATH=matlab/bin:$PATH && matlab -batch ver,pwd
+# steps:
+#  - script: wget https://www.mathworks.com/mpm/glnxa64/mpm && chmod +x mpm 
+#  - script: pwd && mkdir matlab && cd matlab && mkdir R2022a && cd .. && ./mpm install --release=R2022a --destination=matlab/R2022a --products MATLAB && ls matlab/R2022a 
+#  - script:  mkdir matlab/R2022a/licenses && touch matlab/R2022a/licenses/license.lic
+#  - script: printenv LINUX_LIC > "matlab/R2022a/licenses/license.lic" && cat matlab/R2022a/licenses/license.lic
+#    env:
+#       LINUX_LIC: $(LINUX_R2022A)
+#  - script: export PATH=matlab/R2022a/bin:$PATH && matlab -batch ver,pwd
