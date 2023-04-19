@@ -91,7 +91,7 @@ public class RunMATLABCommandIT {
     /*
      * Test to verify if Matrix build fails when MATLAB is not available.
      */
- 
+ @Test
     public void verifyMatrixBuildFails() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
@@ -116,7 +116,7 @@ public class RunMATLABCommandIT {
     /*
      * Test to verify if Matrix build passes .
      */
-  
+  @Test
     public void verifyMatrixBuildPasses() throws Exception {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         String MATLABVersion1 = TestData.getPropValues("matlab.version");
