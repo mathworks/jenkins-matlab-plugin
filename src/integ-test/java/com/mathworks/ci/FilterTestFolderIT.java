@@ -85,6 +85,7 @@ public class FilterTestFolderIT {
     public void verifyTestsAreFilteredDSL() throws Exception{
         String script = "pipeline {\n" +
                 "agent any" + "\n" +
+                envDSL + "\n" +
                 "stages{" + "\n" +
                 "stage('Run MATLAB Command') {\n" +
                 "steps\n" +
@@ -111,6 +112,7 @@ public class FilterTestFolderIT {
     public void verifyNoTestsAreRunForIncorrectTestPath() throws Exception{
         String script = "node {\n" +
                 addTestData()+"\n" +
+                envScripted + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByFolder:[ 'test/IncorrectFolder'])\n" +
                 "        }";
         WorkflowRun build = getBuild(script);
@@ -126,6 +128,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyIndependentTestsRunWithoutSource() throws Exception{
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(selectByFolder:['test/TestSum'])\n" +
                 "        }";
@@ -140,6 +143,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyAllTestsRunWithNoFilter() throws Exception{
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'])\n" +
                 "        }";
@@ -158,6 +162,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyTestsAreFilteredByTag() throws Exception{
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag')\n" +
                 "        }";
@@ -176,6 +181,7 @@ public class FilterTestFolderIT {
     public void verifyNoTestsRunWithIncorrectTag() throws Exception{
         String script = "node {\n" +
                 addTestData()  + "\n" +
+                envScripted + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'IncorrectTag')\n" +
                 "        }";
         WorkflowRun build = getBuild(script);
@@ -189,6 +195,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyTestsFromFolderWithTagAreRun() throws Exception{
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag', selectByFolder:['test/TestSum'])\n" +
                 "        }";
@@ -204,6 +211,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyTestsFromFolderNotUnderTESTAreRun() throws Exception {
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByFolder:['testing/modelSimTest'])\n" +
                 "        }";
@@ -218,6 +226,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyTestFailWhenSrcIsNotAdded() throws Exception{
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(selectByFolder:['test/TestSquare'])\n" +
                 "        }";
@@ -232,6 +241,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifySrcFolderSelection() throws Exception {
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src/multiplySrc'], selectByFolder:['test/TestMultiply'])\n" +
                 "        }";
@@ -246,6 +256,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifySourceFolderSelectionInScript() throws Exception {
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src/multiplySrc'], selectByFolder:['test/TestMultiply'])\n" +
                 "        }";
@@ -260,6 +271,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyMultipleTagsFails() throws  Exception {
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src'], selectByTag:'TestTag,TestTag1')\n" +
                 "        }";
@@ -274,6 +286,7 @@ public class FilterTestFolderIT {
     @Test
     public void verifyCodeCoverage() throws Exception {
         String script = "node {\n" +
+                envScripted + "\n" +
                 addTestData()  + "\n" +
                 "            runMATLABTests(sourceFolder:['src/multiplySrc'], selectByFolder:['test/TestMultiply'], codeCoverageCobertura: 'code-coverage/coverage.xml')\n" +
                 "            cobertura coberturaReportFile: 'code-coverage/coverage.xml', enableNewApi: true, lineCoverageTargets: '100'" +

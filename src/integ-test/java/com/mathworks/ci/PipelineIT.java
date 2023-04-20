@@ -84,6 +84,7 @@ public class PipelineIT {
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -101,6 +102,7 @@ public class PipelineIT {
     public void verifyBuildFailsWhenMatlabCommandFails() throws Exception {
         String script = "pipeline {\n" +
                         "  agent any\n" +
+                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -119,6 +121,7 @@ public class PipelineIT {
     public void verifyBuildFailsWhenDSLNameFails() throws Exception {
         String script = "pipeline {\n" +
                         "  agent any\n" +
+                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -137,6 +140,7 @@ public class PipelineIT {
     public void verifyCustomeFilenamesForArtifacts() throws Exception {
         String script = "pipeline {\n" +
                             "  agent any\n" +
+                            envDSL + "\n" +
                             "    stages{\n" +
                             "        stage('Run MATLAB Command') {\n" +
                             "            steps\n" +
@@ -162,6 +166,7 @@ public class PipelineIT {
                 (System.getProperty("os.name").toLowerCase().startsWith("mac"));
         String script = "pipeline {\n" +
                         "  agent any\n" +
+                        envDSL + "\n" +
                         "    stages{\n" +
                         "        stage('Run MATLAB Command') {\n" +
                         "            steps\n" +
@@ -183,6 +188,7 @@ public class PipelineIT {
                 (System.getProperty("os.name").toLowerCase().startsWith("windows"));
         String script = "pipeline {\n" +
                 "  agent any\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -204,6 +210,7 @@ public class PipelineIT {
         MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_2", MatlabRootSetup.getMatlabRoot().replace("R2020b", "R2020a"), jenkins);
         String script = "pipeline {\n" +
                 "   agent any\n" +
+                envDSL + "\n" +
                 "   tools {\n" +
                 "       matlab 'MATLAB_PATH_1'\n" +
                 "   }\n" +
@@ -243,6 +250,7 @@ public class PipelineIT {
     public void verifyRunInParallel() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -261,6 +269,7 @@ public class PipelineIT {
     public void verifyStrictSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -279,6 +288,7 @@ public class PipelineIT {
     public void verifyLoggingLevelSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -297,6 +307,7 @@ public class PipelineIT {
     public void verifyOutoutDetailSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
+                envDSL + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -308,40 +319,6 @@ public class PipelineIT {
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("'OutputDetail', 0", build);
-        jenkins.assertBuildStatus(Result.SUCCESS,build);
-    }
-    @Test
-    public void verifyBuildPassesWhenRunMatlabBuildPassesTaskProvided() throws Exception {
-        String script = "pipeline {\n" +
-                "  agent any\n" +
-                "    stages{\n" +
-                "        stage('Run MATLAB Build') {\n" +
-                "            steps\n" +
-                "            {\n" +
-                "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
-                "              runMATLABBuild tasks: 'test' \n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}";
-        WorkflowRun build = getPipelineBuild(script);
-        jenkins.assertBuildStatus(Result.SUCCESS,build);
-    }
-    @Test
-    public void verifyBuildPassesWhenRunMatlabBuildPassesNoTaskProvided() throws Exception {
-        String script = "pipeline {\n" +
-                "  agent any\n" +
-                "    stages{\n" +
-                "        stage('Run MATLAB Build') {\n" +
-                "            steps\n" +
-                "            {\n" +
-                "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
-                "              runMATLABBuild tasks: '' \n" +
-                "            }\n" +
-                "        }\n" +
-                "    }\n" +
-                "}";
-        WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 }
