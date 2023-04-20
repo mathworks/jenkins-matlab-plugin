@@ -48,7 +48,7 @@ public class RunMatlabBuildIT {
         project.getBuildersList().add(tester);
         FreeStyleBuild build=project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS,build);
-        //jenkins.assertLogContains("buildool test",build);
+        jenkins.assertLogContains("buildtool test",build);
     }
     @Test
     public void verifyBuildPassesWhenTaskNotProvided()throws Exception
@@ -58,7 +58,7 @@ public class RunMatlabBuildIT {
         project.getBuildersList().add(tester);
         FreeStyleBuild build=project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS,build);
-        //jenkins.assertLogContains("buildtool test",build);
+
     }
     @Test
     public void verifyMatrixBuildPassesTaskProvided() throws Exception {
@@ -88,6 +88,7 @@ public class RunMatlabBuildIT {
 
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+
     }
     @Test
     public void verifyMatrixBuildPassesTaskNotProvided() throws Exception {
@@ -117,6 +118,7 @@ public class RunMatlabBuildIT {
 
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+
     }
 
 
