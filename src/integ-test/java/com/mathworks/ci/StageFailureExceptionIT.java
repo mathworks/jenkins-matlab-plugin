@@ -43,6 +43,7 @@ public class StageFailureExceptionIT {
     @Test
     public void verifyExceptionisRaisedForStageFailureInScripted() throws Exception{
         String script = "node {\n" +
+                            envScripted + "\n" +
                             "stage('Error') { " + "\n" +
                                 "runMATLABCommand 'exit(5)'" + "\n" +
                             "}" + "\n" +
@@ -56,6 +57,7 @@ public class StageFailureExceptionIT {
     public void verifyExceptionisRaisedForStageFailureInDSL() throws Exception{
         String script = "pipeline {\n" +
                             "agent any" + "\n" +
+                            envDSL + "\n" +
                             "stages{" + "\n" +
                                 "stage('Run MATLAB Command') {\n" +
                                     "steps {"+
@@ -73,6 +75,7 @@ public class StageFailureExceptionIT {
     public void verifyExceptionMessageInScripted() throws Exception{
         String script = "node {\n" +
                             "stage('Error') { " + "\n" +
+                                envScripted + "\n" +
                                 "try {" + "\n" +
                                     "runMATLABCommand 'exit(5)'" + "\n" +
                                 "}" + "\n" +
@@ -91,6 +94,7 @@ public class StageFailureExceptionIT {
     public void verifyExceptionMessageInDSL() throws Exception{
         String script = "pipeline {\n" +
                             "agent any" + "\n" +
+                            envDSL + "\n" +
                             "stages{" + "\n" +
                                 "stage('Run MATLAB Command') {\n" +
                                     "steps {"+ "\n" +
@@ -115,6 +119,7 @@ public class StageFailureExceptionIT {
     @Test
     public void catchErrorInScripted() throws Exception {
         String script  = "node {\n" +
+                envScripted + "\n" +
                 "catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS'){" + "\n"+
                 "runMATLABCommand 'exit(2)'"+ "\n"+
                 "}" + "\n"+
@@ -128,6 +133,7 @@ public class StageFailureExceptionIT {
     public void verifyExceptionIsCaughtUsingcatchErrorINDSL() throws Exception {
         String script = "pipeline {\n" +
                             "agent any" + "\n" +
+                            envDSL + "\n" +
                             "stages{" + "\n" +
                                 "stage('Run MATLAB Command') {\n" +
                                     "steps {"+ "\n" +
@@ -147,6 +153,7 @@ public class StageFailureExceptionIT {
     public void verifyBuildIsSuccessWhenExceptionIsCaughtInScripted() throws Exception {
         String script = "node {" +
                             "stage('Error') { " + "\n" +
+                                envScripted + "\n" +
                                 "try {" + "\n" +
                                     "runMATLABCommand 'exit(5)'" + "\n" +
                                 "}" + "\n" +
@@ -168,6 +175,7 @@ public class StageFailureExceptionIT {
     public void verifyBuildIsSuccessWhenExceptionIsCaughtInDSL() throws Exception {
         String script = "pipeline {\n" +
                             "agent any" + "\n" +
+                            envDSL + "\n" +
                             "stages{" + "\n" +
                                 "stage('Run MATLAB Command') {\n" +
                                     "steps {"+ "\n" +
