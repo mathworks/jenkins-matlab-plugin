@@ -32,7 +32,7 @@ public class RunMatlabBuildIT {
         this.tester=new RunMatlabBuildBuilder();
         this.buildWrapper=new UseMatlabVersionBuildWrapper();
         project.setScm(new ExtractResourceSCM(MatlabRootSetup.getTestOnWarningData()));
-        //project.setScm(new SingleFileSCM("buildfile.m",MatlabRootSetup.getBuildFile()));
+
     }
     @After
     public void testTearDown()
@@ -58,7 +58,7 @@ public class RunMatlabBuildIT {
         project.getBuildersList().add(tester);
         FreeStyleBuild build=project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS,build);
-
+        jenkins.assertLogContains("buildtool",build);
     }
     @Test
     public void verifyMatrixBuildPassesTaskProvided() throws Exception {
@@ -80,13 +80,14 @@ public class RunMatlabBuildIT {
         vals.put("VERSION", MATLABVersion1);
         Combination c = new Combination(vals);
         MatrixRun run = build.getRun(c);
-
-
+        jenkins.assertLogContains("buildtool test",run);
         vals.put("VERSION", MATLABVersion2);
         c = new Combination(vals);
         run = build.getRun(c);
 
-
+        jenkins.assertLogContains("R2022b completed with result SUCCESS",build);
+        jenkins.assertLogContains("R2023a completed with result SUCCESS",build);
+        jenkins.assertLogContains("buildtool test",run);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
 
     }
@@ -110,14 +111,16 @@ public class RunMatlabBuildIT {
         vals.put("VERSION", MATLABVersion1);
         Combination c = new Combination(vals);
         MatrixRun run = build.getRun(c);
-
+        jenkins.assertLogContains("buildtool",run);
 
         vals.put("VERSION", MATLABVersion2);
         c = new Combination(vals);
         run = build.getRun(c);
 
-
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+        jenkins.assertLogContains("R2022b completed with result SUCCESS",build);
+        jenkins.assertLogContains("R2023a completed with result SUCCESS",build);
+        jenkins.assertLogContains("buildtool",run);
 
     }
 

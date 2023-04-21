@@ -337,6 +337,7 @@ public class PipelineIT {
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
+        jenkins.assertLogContains("buildtool test",build);
     }
     @Test
     public void verifyBuildPassesWhenRunMatlabBuildPassesTaskNotProvided() throws Exception {
@@ -354,5 +355,6 @@ public class PipelineIT {
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
+        jenkins.assertLogContains("buildtool",build);
     }
 }
