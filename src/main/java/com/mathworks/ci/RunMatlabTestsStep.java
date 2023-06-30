@@ -40,6 +40,8 @@ public class RunMatlabTestsStep extends Step {
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
 
+    private String startupOptions;
+
     @DataBoundConstructor
     public RunMatlabTestsStep() {
         
@@ -163,9 +165,18 @@ public class RunMatlabTestsStep extends Step {
         this.strict = strict;
     }
 
+    public String getStartupOptions() {
+        return startupOptions;
+    }
+    
+    @DataBoundSetter
+    public void setStartupOptions(String startupOptions) {
+        this.startupOptions = startupOptions;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabRunTestsStepExecution(context, getInputArgs());
+        return new MatlabRunTestsStepExecution(context, getInputArgs(), getStartupOptions());
     }
 
     @Extension

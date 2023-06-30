@@ -20,10 +20,12 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
     private static final long serialVersionUID = 4771831219402275744L;
     
     private String tasks;
+    private String startupOptions;
 
-    public MatlabBuildStepExecution(StepContext context, String tasks) {
+    public MatlabBuildStepExecution(StepContext context, String tasks, String startupOptions) {
         super(context);
         this.tasks = tasks;
+        this.startupOptions = startupOptions;
     }
 
     private String getTasks() {
@@ -71,7 +73,7 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueBuildFile, uniqueTmpFldrName);
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueBuildFile, startupOptions, uniqueTmpFldrName);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();

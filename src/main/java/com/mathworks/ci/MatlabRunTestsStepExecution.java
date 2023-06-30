@@ -20,11 +20,12 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
     private static final long serialVersionUID = 6704588180717665100L;
     
     private String commandArgs;
+    private String startupOptions;
 
-
-    public MatlabRunTestsStepExecution(StepContext context, String commandArgs) {
+    public MatlabRunTestsStepExecution(StepContext context, String commandArgs, String startupOptions) {
         super(context);
         this.commandArgs = commandArgs;
+        this.startupOptions = startupOptions;
     }
 
     private String getCommandArgs() {
@@ -73,7 +74,7 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
                             cmdPrefix + matlabScriptName + ",delete('.matlab/"
                                     + genScriptLocation.getBaseName() + "/" + matlabScriptName
                                     + ".m'),runnerScript,rmdir(tmpDir,'s')",
-                            uniqueMatlabResourceFldr);
+                            startupOptions, uniqueMatlabResourceFldr);
             
             // prepare temp folder by coping genscript package and writing runner script.
             prepareTmpFldr(genScriptLocation,

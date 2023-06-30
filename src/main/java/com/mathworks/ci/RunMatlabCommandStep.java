@@ -20,13 +20,16 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 
 public class RunMatlabCommandStep extends Step {
-
     
     private String command;
+    private String startupOptions;
 
     @DataBoundConstructor
-    public RunMatlabCommandStep(String command) {
+    public RunMatlabCommandStep(String command, String startupOptions) {
         this.command = command;
+        this.startupOptions = startupOptions;
+
+        System.err.println(startupOptions);
     }
 
 
@@ -34,9 +37,13 @@ public class RunMatlabCommandStep extends Step {
         return this.command;
     }
 
+    public String getStartupOptions() {
+        return this.startupOptions;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabCommandStepExecution(context, getCommand());
+        return new MatlabCommandStepExecution(context, getCommand(), getStartupOptions());
     }
 
     @Extension

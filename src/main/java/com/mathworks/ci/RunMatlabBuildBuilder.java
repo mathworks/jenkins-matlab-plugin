@@ -28,6 +28,7 @@ import net.sf.json.JSONObject;
 public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
     private String tasks;
+    private String startupOptions;
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -38,8 +39,17 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         this.tasks = tasks;
     }
 
+    @DataBoundSetter
+    public void setStartupOptions(String startupOptions) {
+        this.startupOptions = startupOptions;
+    }
+
     public String getTasks() {
         return this.tasks;
+    }
+
+    public String getStartupOptions() {
+        return this.startupOptions;
     }
     
     @Extension
@@ -111,7 +121,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, uniqueTmpFldrName);
+                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, startupOptions, uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");

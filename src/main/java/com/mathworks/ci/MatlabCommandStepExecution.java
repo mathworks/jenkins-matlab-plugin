@@ -15,11 +15,12 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
     private static final long serialVersionUID = 1957239693658914450L;
     
     private String command;
+    private String startupOptions;
 
-
-    public MatlabCommandStepExecution(StepContext context, String command) {
+    public MatlabCommandStepExecution(StepContext context, String command, String startupOptions) {
         super(context);
         this.command = command;
+        this.startupOptions = startupOptions;
     }
 
     private String getCommand() {
@@ -55,6 +56,7 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
     
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
             TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
@@ -67,7 +69,7 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueCommandFile, uniqueTmpFldrName);
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueCommandFile, startupOptions, uniqueTmpFldrName);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();

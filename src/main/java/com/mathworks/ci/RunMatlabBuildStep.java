@@ -24,6 +24,7 @@ import hudson.Util;
 public class RunMatlabBuildStep extends Step {
 
     private String tasks;
+    private String startupOptions;
 
     @DataBoundConstructor
     public RunMatlabBuildStep() {
@@ -34,14 +35,23 @@ public class RunMatlabBuildStep extends Step {
         return Util.fixNull(tasks);
     }
 
+    public String getStartupOptions() {
+        return Util.fixNull(startupOptions);
+    }
+
     @DataBoundSetter
     public void setTasks(String tasks) {
         this.tasks = tasks;
     }
 
+    @DataBoundSetter
+    public void setStartupOptions(String startupOptions) {
+        this.startupOptions = startupOptions;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabBuildStepExecution(context, getTasks());
+        return new MatlabBuildStepExecution(context, getTasks(), getStartupOptions());
     }
 
     @Extension

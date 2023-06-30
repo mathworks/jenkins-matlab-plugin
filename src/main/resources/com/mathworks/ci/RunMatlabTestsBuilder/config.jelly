@@ -83,4 +83,10 @@
    </f:optionalBlock>
 </f:block>
 </f:section>
+
+<f:section title="MATLAB Startup Options">
+    <f:entry title="Startup Options" field="startupOptions">
+        <f:textbox/>
+    </f:entry>
+</f:section>
 </j:jelly>

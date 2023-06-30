@@ -8,6 +8,7 @@ package com.mathworks.ci;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
 import org.apache.commons.lang.RandomStringUtils;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -29,28 +30,43 @@ public interface MatlabBuild {
      * @return matlabLauncher returns the process launcher to run MATLAB commands
      */
     default ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
-            Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
+            Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String startupOpts, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific temp .matlab directory to copy matlab runner script             
         FilePath targetWorkspace = new FilePath(launcher.getChannel(),
                 workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
-            final String runnerScriptName = uniqueName + "/run_matlab_command.sh";
+            // Determine whether we're on Mac on Linux
+            ByteArrayOutputStream kernelStream = new ByteArrayOutputStream();
+            launcher.launch()
+                .cmds("uname")
+                .stdout(kernelStream)
+                .join();
+
+            String binaryName;
+            String runnerName;
+            if (kernelStream.toString().contains("Linux")) {
+                binaryName = "glnxa64/run-matlab-command";
+                runnerName = uniqueName + "/run-matlab-command";
+            } else {
+                binaryName = "maci64/run-matlab-command";
+                runnerName = uniqueName + "/run-matlab-command";
+            }
+
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerScriptName, matlabCommand).stdout(listener);
+            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName, matlabCommand, startupOpts).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.
-            copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName,
-                    targetWorkspace);
+            copyFileInWorkspace(binaryName, runnerName, targetWorkspace);
         } else {
-            final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
-            launcher = launcher.decorateByPrefix("cmd.exe", "/C");
+            final String runnerName = uniqueName + "\\run-matlab-command.exe";
+            // launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "\\" + runnerName, "\"" + matlabCommand + "\"", startupOpts)
                     .stdout(listener);
             // Copy runner.bat for Windows platform in workspace.
-            copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,
+            copyFileInWorkspace("win64/run-matlab-command.exe", runnerName,
                     targetWorkspace);
         }
         return matlabLauncher;
@@ -67,6 +83,9 @@ public interface MatlabBuild {
         targetFilePath.copyFrom(in);
         // set executable permission
         targetFilePath.chmod(0755);
+
+        System.out.println(sourceFile);
+        System.out.println(targetFile);
     }
 
     default FilePath getFilePathForUniqueFolder(Launcher launcher, String uniqueName,

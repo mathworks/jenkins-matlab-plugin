@@ -65,6 +65,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private String outputDetail = "default";
     private boolean useParallel = false;
     private boolean strict = false;
+
+    private String startupOptions;
     
 
     @DataBoundConstructor
@@ -140,6 +142,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         this.strict = strict;
     }
 
+    @DataBoundSetter
+    public void setStartupOptions(String startupOptions) {
+        this.startupOptions = startupOptions;
+    }
 
     public String getTapReportFilePath() {
         return this.getTapArtifact().getFilePath();
@@ -221,7 +227,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public boolean getUseParallel() {
         return this.useParallel;
     }
-    
+
+    public String getStartupOptions() {
+        return this.startupOptions;
+    }
     
     // To retain Backward compatibility
     protected Object readResolve() {
@@ -347,7 +356,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(genScriptLocation), uniqueTmpFldrName);
+                    constructCommandForTest(genScriptLocation), startupOptions, uniqueTmpFldrName);
             
             // copy genscript package in temp folder and write a runner script.
             prepareTmpFldr(genScriptLocation, getRunnerScript(
