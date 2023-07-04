@@ -15,8 +15,7 @@ strategy:
 pool:
   vmImage: $(imageName)
 
-trigger:
-  - master
+
 
 steps:
   - task: Maven@3
