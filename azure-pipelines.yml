@@ -25,5 +25,5 @@ steps:
       publishJUnitResults: true
       testResultsFiles: '**/surefire-reports/TEST-*.xml'
       codeCoverageToolOption: 'JaCoCo'
-      goals: 'tests'
+      goals: 'verify'
     displayName: 'Build $(imageName)'
