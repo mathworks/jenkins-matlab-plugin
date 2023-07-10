@@ -227,6 +227,22 @@ public class RunMatlabTestsBuilderTest {
     }
 
     /*
+     * Test to verify Builder picks the exact startup options that user entered.
+     * 
+     */
+
+    @Test
+    public void verifyBuildPicksTheCorrectStartupOptions() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        testBuilder.setStartupOptions("-nojvm -uniqueoption");
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("run-matlab-command", build);
+        jenkins.assertLogContains("-nojvm -uniqueoption", build);
+    }
+
+    /*
      * Test to verify appropriate test atrtifact values are passed. Need to 
      * include in integration test.
      */

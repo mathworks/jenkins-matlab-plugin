@@ -81,6 +81,20 @@ public class RunMatlabTestsStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("producingPDF('myresult/result.pdf')", build);
     }
+
+    /*
+     * Verify appropriate startup options are invoked as in pipeline script
+     *
+     */
+
+    @Test
+    public void verifyStartupOptionsSameAsScript() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node {runMATLABTests(testResultsPDF:'myresult/result.pdf', startupOptions: '-nojvm -uniqueoption')}", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("-nojvm -uniqueoption", build);
+    }
     
     /*
     * Verify default command options for test run.

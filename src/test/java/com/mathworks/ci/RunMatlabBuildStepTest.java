@@ -112,6 +112,18 @@ public class RunMatlabBuildStepTest {
     }
 
     /*
+     * Verify appropriate startup options are invoked as in pipeline script
+     */
+    @Test
+    public void verifyStartupOptionsSameAsScript() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node { runMATLABBuild(startupOptions: '-nojvm -uniqueoption') }", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("-nojvm -uniqueoption", build);
+    }
+
+    /*
      * Verify script can run Matrix build
      */
     @Test

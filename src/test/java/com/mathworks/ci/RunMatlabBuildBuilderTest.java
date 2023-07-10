@@ -207,6 +207,21 @@ public class RunMatlabBuildBuilderTest {
     }
 
     /*
+     * Test to verify builder correctly sets startup options that user entered.
+     */
+    @Test
+    public void verifyBuildPicksTheCorrectStartupOptions() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setTasks("");
+        scriptBuilder.setStartupOptions("-nojvm -uniqueoption");
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
+        jenkins.assertLogContains("-nojvm -uniqueoption", build);
+    }
+
+    /*
      * Test to verify if MATLAB scratch file is not generated in workspace for this builder.
      */
     @Test
