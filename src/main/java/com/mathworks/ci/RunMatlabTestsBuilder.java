@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /** 
- * Copyright 2019-2020 The MathWorks, Inc.  
+ * Copyright 2019-2023 The MathWorks, Inc.  
  *  
  * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate   
  * selected test artifacts. 

@@ -1,6 +1,6 @@
 package com.mathworks.ci;
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2019-2023 The MathWorks, Inc.
  * 
  * Build Interface has two default methods. MATLAB builders can override the default behavior.
  * 
@@ -41,6 +41,7 @@ public interface MatlabBuild {
             ByteArrayOutputStream kernelStream = new ByteArrayOutputStream();
             launcher.launch()
                 .cmds("uname")
+                .masks(true)
                 .stdout(kernelStream)
                 .join();
 
