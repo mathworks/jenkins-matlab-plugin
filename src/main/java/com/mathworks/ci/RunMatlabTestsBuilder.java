@@ -229,7 +229,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     }
 
     public String getStartupOptions() {
-        return this.startupOptions;
+        return Util.fixNull(this.startupOptions);
     }
     
     // To retain Backward compatibility
@@ -356,7 +356,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(genScriptLocation), startupOptions, uniqueTmpFldrName);
+                    constructCommandForTest(genScriptLocation), getStartupOptions(), uniqueTmpFldrName);
             
             // copy genscript package in temp folder and write a runner script.
             prepareTmpFldr(genScriptLocation, getRunnerScript(

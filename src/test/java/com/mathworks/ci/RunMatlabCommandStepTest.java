@@ -42,7 +42,7 @@ public class RunMatlabCommandStepTest {
         project.setDefinition(
                 new CpsFlowDefinition("node { runMATLABCommand(command: 'pwd')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("MATLAB_ROOT", build);
+        j.assertLogContains("system path", build);
     }
 
     /*

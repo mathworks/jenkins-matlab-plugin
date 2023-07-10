@@ -42,7 +42,7 @@ public class RunMatlabBuildStepTest {
         project.setDefinition(
                 new CpsFlowDefinition("node { runMATLABBuild() }", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("MATLAB_ROOT", build);
+        j.assertLogContains("system path", build);
     }
 
     /*

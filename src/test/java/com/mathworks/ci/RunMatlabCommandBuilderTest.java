@@ -126,7 +126,7 @@ public class RunMatlabCommandBuilderTest {
 
 
     /*
-     * Test To verify MATLAB is launched using the default matlab runner script.
+     * Test To verify MATLAB is launched using the default matlab runner binary.
      * 
      */
 
@@ -137,7 +137,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
 
     /*
@@ -215,7 +215,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("Generating MATLAB script with content", build);
         jenkins.assertLogContains("pwd", build);
     }
@@ -265,7 +265,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
     
     /*
@@ -302,7 +302,7 @@ public class RunMatlabCommandBuilderTest {
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("run_matlab_command", build);
+		jenkins.assertLogContains("run-matlab-command", build);
 		jenkins.assertBuildStatus(Result.FAILURE, build);
 		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);

@@ -166,7 +166,7 @@ public class RunMatlabTestsStep extends Step {
     }
 
     public String getStartupOptions() {
-        return startupOptions;
+        return Util.fixNull(startupOptions);
     }
     
     @DataBoundSetter

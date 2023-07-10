@@ -55,6 +55,11 @@ public interface MatlabBuild {
             }
 
             matlabLauncher = launcher.launch().envs(envVars);
+
+            System.err.println(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName);
+            System.err.println(matlabCommand);
+            System.err.println(startupOpts);
+
             matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName, matlabCommand, startupOpts).stdout(listener);
 
             // Copy runner .sh for linux platform in workspace.

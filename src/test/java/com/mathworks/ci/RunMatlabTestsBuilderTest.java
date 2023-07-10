@@ -145,7 +145,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("runner", build);
         jenkins.assertLogContains("addpath(", build);
     }
@@ -161,7 +161,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("runner", build);
     }
 
@@ -245,7 +245,7 @@ public class RunMatlabTestsBuilderTest {
 
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("TAPPlugin", build);
         jenkins.assertLogContains("mytap/report.tap", build);
         jenkins.assertLogContains("TestManagerResultsPlugin", build);
@@ -368,7 +368,7 @@ public class RunMatlabTestsBuilderTest {
         
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("runner", build);
         jenkins.assertLogNotContains("\'PDFTestReport\',\'mypdf/report.pdf\'",build);
         jenkins.assertLogNotContains("\'TAPTestResults\',\'mytap/report.tap\'",build);
@@ -389,7 +389,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("runner", build);
     }
 
@@ -406,7 +406,7 @@ public class RunMatlabTestsBuilderTest {
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
     
     /*
@@ -445,7 +445,7 @@ public class RunMatlabTestsBuilderTest {
 		Combination c1 = new Combination(vals);
 		MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
-		jenkins.assertLogContains("run_matlab_command", build1);
+		jenkins.assertLogContains("run-matlab-command", build1);
 		jenkins.assertBuildStatus(Result.FAILURE, build1);
 
 		// Check for second Matrix combination

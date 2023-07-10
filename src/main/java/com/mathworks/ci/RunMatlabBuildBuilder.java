@@ -22,6 +22,7 @@ import hudson.model.TaskListener;
 import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.Util;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -49,7 +50,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     }
 
     public String getStartupOptions() {
-        return this.startupOptions;
+        return Util.fixNull(this.startupOptions);
     }
     
     @Extension
@@ -119,9 +120,12 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         createMatlabScriptByName(uniqeTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
 
+        System.err.println("Executing command");
+        System.err.println(uniqueBuildFile);
+
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, startupOptions, uniqueTmpFldrName);
+                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, getStartupOptions(), uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");

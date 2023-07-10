@@ -250,7 +250,7 @@ public class RunMatlabBuildBuilderTest {
         scriptBuilder.setTasks("");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
     
     /*

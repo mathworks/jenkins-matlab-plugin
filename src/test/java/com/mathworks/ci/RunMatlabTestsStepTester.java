@@ -26,7 +26,7 @@ public class RunMatlabTestsStepTester extends RunMatlabTestsStep {
     @Override
     public StepExecution start(StepContext context) throws Exception {
         
-        return new TestStepExecution(context, getInputArgs());
+        return new TestStepExecution(context, getInputArgs(), getStartupOptions());
     }
 
 

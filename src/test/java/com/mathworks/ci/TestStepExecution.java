@@ -14,14 +14,14 @@ import hudson.model.TaskListener;
 
 public class TestStepExecution extends MatlabRunTestsStepExecution {
 
-    public TestStepExecution(StepContext context, String command) {
-        super(context, command);
+    public TestStepExecution(StepContext context, String command, String startupOptions) {
+        super(context, command, startupOptions);
 
     }
 
     @Override
     public ProcStarter getProcessToRunMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName)
+            TaskListener listener, EnvVars envVars, String matlabCommand, String startupOptions, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific tmp directory to copy matlab runner script
         FilePath targetWorkspace = new FilePath(launcher.getChannel(),

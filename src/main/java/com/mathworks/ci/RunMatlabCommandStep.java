@@ -18,6 +18,7 @@ import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
+import hudson.Util;
 
 public class RunMatlabCommandStep extends Step {
     
@@ -38,7 +39,7 @@ public class RunMatlabCommandStep extends Step {
     }
 
     public String getStartupOptions() {
-        return this.startupOptions;
+        return Util.fixNull(this.startupOptions);
     }
 
     @Override
