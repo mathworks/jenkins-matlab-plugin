@@ -29,7 +29,7 @@ import net.sf.json.JSONObject;
 public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
     private String tasks;
-    private String startupOptions;
+    private StartupOptions startupOptions;
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -41,7 +41,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     }
 
     @DataBoundSetter
-    public void setStartupOptions(String startupOptions) {
+    public void setStartupOptions(StartupOptions startupOptions) {
         this.startupOptions = startupOptions;
     }
 
@@ -49,8 +49,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         return this.tasks;
     }
 
-    public String getStartupOptions() {
-        return Util.fixNull(this.startupOptions);
+    public StartupOptions getStartupOptions() {
+        return this.startupOptions;
     }
     
     @Extension
@@ -119,13 +119,10 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         // Create MATLAB script
         createMatlabScriptByName(uniqeTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
-
-        System.err.println("Executing command");
-        System.err.println(uniqueBuildFile);
-
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getStartupOptions();
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, getStartupOptions(), uniqueTmpFldrName);
+                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");

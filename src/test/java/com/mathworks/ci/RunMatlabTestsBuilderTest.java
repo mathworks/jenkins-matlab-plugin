@@ -235,7 +235,7 @@ public class RunMatlabTestsBuilderTest {
     public void verifyBuildPicksTheCorrectStartupOptions() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
-        testBuilder.setStartupOptions("-nojvm -uniqueoption");
+        testBuilder.setStartupOptions(new StartupOptions("-nojvm -uniqueoption"));
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run-matlab-command", build);

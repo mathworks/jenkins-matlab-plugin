@@ -61,13 +61,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
+    private StartupOptions startupOptions;
     private String loggingLevel = "default";
     private String outputDetail = "default";
     private boolean useParallel = false;
     private boolean strict = false;
-
-    private String startupOptions;
-    
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
@@ -121,6 +119,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     	this.selectByFolder = selectByFolder;
     }
     
+    @DataBoundSetter
+    public void setStartupOptions(StartupOptions startupOptions) {
+    	this.startupOptions = startupOptions;
+    }
 
     @DataBoundSetter
     public void setLoggingLevel(String loggingLevel) {
@@ -140,11 +142,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     @DataBoundSetter
     public void setStrict(boolean strict) {
         this.strict = strict;
-    }
-
-    @DataBoundSetter
-    public void setStartupOptions(String startupOptions) {
-        this.startupOptions = startupOptions;
     }
 
     public String getTapReportFilePath() {
@@ -228,8 +225,8 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
         return this.useParallel;
     }
 
-    public String getStartupOptions() {
-        return Util.fixNull(this.startupOptions);
+    public StartupOptions getStartupOptions() {
+        return this.startupOptions;
     }
     
     // To retain Backward compatibility
@@ -351,12 +348,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getStartupOptions();
         try {
             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(genScriptLocation), getStartupOptions(), uniqueTmpFldrName);
+                    constructCommandForTest(genScriptLocation), options, uniqueTmpFldrName);
             
             // copy genscript package in temp folder and write a runner script.
             prepareTmpFldr(genScriptLocation, getRunnerScript(

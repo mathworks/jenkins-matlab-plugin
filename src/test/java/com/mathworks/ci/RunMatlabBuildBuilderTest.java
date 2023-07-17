@@ -214,7 +214,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setStartupOptions("-nojvm -uniqueoption");
+        scriptBuilder.setStartupOptions(new StartupOptions("-nojvm -uniqueoption"));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("Generating MATLAB script with content", build);
