@@ -231,6 +231,7 @@
 											<include>**/*.sh</include>
 											<include>**/*.txt</include>
 											<include>**/*.zip</include>
+                                            <include>**/run-matlab-command*</include>
 										</includes>
 										<followSymlinks>false</followSymlinks>
 									</fileset>

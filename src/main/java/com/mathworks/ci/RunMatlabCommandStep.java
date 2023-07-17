@@ -29,8 +29,6 @@ public class RunMatlabCommandStep extends Step {
     public RunMatlabCommandStep(String command, String startupOptions) {
         this.command = command;
         this.startupOptions = startupOptions;
-
-        System.err.println(startupOptions);
     }
 
 
