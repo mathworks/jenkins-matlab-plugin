@@ -47,7 +47,7 @@ public interface MatlabBuild {
 
             String binaryName;
             String runnerName;
-            if (kernelStream.toString().contains("Linux")) {
+            if (kernelStream.toString("UTF-8").contains("Linux")) {
                 binaryName = "glnxa64/run-matlab-command";
                 runnerName = uniqueName + "/run-matlab-command";
             } else {
