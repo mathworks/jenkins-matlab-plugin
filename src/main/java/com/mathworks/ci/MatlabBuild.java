@@ -36,7 +36,7 @@ public interface MatlabBuild {
         FilePath targetWorkspace; 
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
-            targetWorkspace = = new FilePath(launcher.getChannel(),
+            targetWorkspace = new FilePath(launcher.getChannel(),
                 workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
 
             // Determine whether we're on Mac on Linux
