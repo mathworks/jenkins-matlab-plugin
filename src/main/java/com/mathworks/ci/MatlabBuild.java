@@ -33,10 +33,12 @@ public interface MatlabBuild {
             Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String startupOpts, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific temp .matlab directory to copy matlab runner script             
-        FilePath targetWorkspace = new FilePath(launcher.getChannel(),
-                workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+        FilePath targetWorkspace; 
         ProcStarter matlabLauncher;
         if (launcher.isUnix()) {
+            targetWorkspace = = new FilePath(launcher.getChannel(),
+                workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+
             // Determine whether we're on Mac on Linux
             ByteArrayOutputStream kernelStream = new ByteArrayOutputStream();
             launcher.launch()
@@ -61,13 +63,17 @@ public interface MatlabBuild {
             // Copy runner .sh for linux platform in workspace.
             copyFileInWorkspace(binaryName, runnerName, targetWorkspace);
         } else {
+            targetWorkspace = new FilePath(launcher.getChannel(),
+                workspace.getRemote() + "\\" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+
             final String runnerName = uniqueName + "\\run-matlab-command.exe";
             // launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "\\" + runnerName, "\"" + matlabCommand + "\"", startupOpts)
+            matlabLauncher.cmds(targetWorkspace.toString() + "\\" + runnerName, "\"" + matlabCommand + "\"", startupOpts)
                     .stdout(listener);
+
             // Copy runner.bat for Windows platform in workspace.
-            copyFileInWorkspace("win64/run-matlab-command.exe", runnerName,
+            copyFileInWorkspace("win64\\run-matlab-command.exe", runnerName,
                     targetWorkspace);
         }
         return matlabLauncher;

@@ -141,7 +141,7 @@
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v1/win64/run-matlab-command</url>
+							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v1/win64/run-matlab-command.exe</url>
 							<unpack>false</unpack>
 							<outputDirectory>${basedir}/src/main/resources/win64</outputDirectory>
 							<skipCache>true</skipCache>
