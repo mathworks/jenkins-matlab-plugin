@@ -5,6 +5,6 @@
 	        <f:textbox/>
 	  </f:entry> 
 
-      <f:optionalProperty field="startupOptions" title="Startup Options" />
+      <f:optionalProperty field="startupOptions" title="Startup options" />
 
 </j:jelly>

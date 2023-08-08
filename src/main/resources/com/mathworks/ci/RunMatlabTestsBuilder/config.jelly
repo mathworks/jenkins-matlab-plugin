@@ -86,7 +86,7 @@
 
 <f:section title="Specify MATLAB Startup Options">
 <f:block>
-    <f:optionalProperty field="startupOptions" title="Startup Options" />
+    <f:optionalProperty field="startupOptions" title="Startup options" />
 </f:block>
 </f:section>
 </j:jelly>
