@@ -84,7 +84,7 @@
 </f:block>
 </f:section>
 
-<f:section title="MATLAB Startup Options">
+<f:section title="Speficy MATLAB Startup Options">
 <f:block>
     <f:optionalProperty field="startupOptions" title="Startup Options" />
 </f:block>
