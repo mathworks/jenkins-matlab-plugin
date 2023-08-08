@@ -5,6 +5,6 @@
 	        <f:textbox/>
 	  </f:entry> 
 
-      <f:optionalProperty field="startupOptions" title="Startup options" />
+      <f:optionalProperty field="startupOptions" title="MATLAB startup options" />
 
 </j:jelly>

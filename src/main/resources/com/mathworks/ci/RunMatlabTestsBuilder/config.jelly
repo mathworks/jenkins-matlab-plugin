@@ -4,6 +4,7 @@
 <f:block> 
     <br></br>
     <f:optionalProperty field="sourceFolder" title="Source folder" />
+    <f:optionalProperty field="startupOptions" title="MATLAB startup options" />
 </f:block>
 
 <br></br>
@@ -84,9 +85,4 @@
 </f:block>
 </f:section>
 
-<f:section title="Specify MATLAB Startup Options">
-<f:block>
-    <f:optionalProperty field="startupOptions" title="Startup options" />
-</f:block>
-</f:section>
 </j:jelly>
