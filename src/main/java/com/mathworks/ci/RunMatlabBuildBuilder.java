@@ -119,7 +119,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         // Create MATLAB script
         createMatlabScriptByName(uniqeTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
-        String options = getStartupOptions() == null ? "" : getStartupOptions().getStartupOptions();
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
                     "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);

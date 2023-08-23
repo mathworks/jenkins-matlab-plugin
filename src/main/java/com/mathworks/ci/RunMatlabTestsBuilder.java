@@ -348,7 +348,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
-        String options = getStartupOptions() == null ? "" : getStartupOptions().getStartupOptions();
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);

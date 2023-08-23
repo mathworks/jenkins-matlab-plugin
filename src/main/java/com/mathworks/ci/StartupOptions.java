@@ -16,15 +16,15 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 public class StartupOptions extends AbstractDescribableImpl<StartupOptions> {
 
-    private String startupOptions;
+    private String options;
 
     @DataBoundConstructor
-    public StartupOptions(String startupOptions) {
-        this.startupOptions = Util.fixNull(startupOptions);
+    public StartupOptions(String options) {
+        this.options = Util.fixNull(options);
     }
 
-    public String getStartupOptions() {
-        return this.startupOptions;
+    public String getOptions() {
+        return this.options;
     }
 
     @Extension public static class DescriptorImpl extends Descriptor<StartupOptions> {}

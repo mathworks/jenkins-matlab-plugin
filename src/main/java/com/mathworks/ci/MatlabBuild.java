@@ -48,31 +48,28 @@ public interface MatlabBuild {
                 .join();
 
             String binaryName;
-            String runnerName;
+            String runnerName = uniqueName + "/run-matlab-command";
             if (kernelStream.toString("UTF-8").contains("Linux")) {
                 binaryName = "glnxa64/run-matlab-command";
-                runnerName = uniqueName + "/run-matlab-command";
             } else {
                 binaryName = "maci64/run-matlab-command";
-                runnerName = uniqueName + "/run-matlab-command";
             }
 
             matlabLauncher = launcher.launch().envs(envVars);
             matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName, matlabCommand, startupOpts).stdout(listener);
 
-            // Copy runner .sh for linux platform in workspace.
+            // Copy runner for linux platform in workspace.
             copyFileInWorkspace(binaryName, runnerName, targetWorkspace);
         } else {
             targetWorkspace = new FilePath(launcher.getChannel(),
                 workspace.getRemote() + "\\" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
 
             final String runnerName = uniqueName + "\\run-matlab-command.exe";
-            // launcher = launcher.decorateByPrefix("cmd.exe", "/C");
             matlabLauncher = launcher.launch().envs(envVars);
             matlabLauncher.cmds(targetWorkspace.toString() + "\\" + runnerName, "\"" + matlabCommand + "\"", startupOpts)
                     .stdout(listener);
 
-            // Copy runner.bat for Windows platform in workspace.
+            // Copy runner for Windows platform in workspace.
             copyFileInWorkspace("win64\\run-matlab-command.exe", runnerName,
                     targetWorkspace);
         }

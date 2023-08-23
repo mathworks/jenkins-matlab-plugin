@@ -124,7 +124,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         // Create MATLAB script
         createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
-        String options = getStartupOptions() == null ? "" : getStartupOptions().getStartupOptions();
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
