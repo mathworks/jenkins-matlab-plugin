@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2022 The MathWorks, Inc.
+ * Copyright 2022-2023 The MathWorks, Inc.
  *  
  */
 
@@ -22,12 +22,14 @@ import hudson.model.TaskListener;
 import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.Util;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
 public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
     private String tasks;
+    private StartupOptions startupOptions;
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -38,8 +40,17 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         this.tasks = tasks;
     }
 
+    @DataBoundSetter
+    public void setStartupOptions(StartupOptions startupOptions) {
+        this.startupOptions = startupOptions;
+    }
+
     public String getTasks() {
         return this.tasks;
+    }
+
+    public StartupOptions getStartupOptions() {
+        return this.startupOptions;
     }
     
     @Extension
@@ -102,16 +113,16 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueBuildFile =
                 "build_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
-        final FilePath uniqeTmpFolderPath =
+        final FilePath uniqueTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqeTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
-
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, uniqueTmpFldrName);
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
@@ -122,17 +133,17 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             return 1;
         } finally {
             // Cleanup the tmp directory
-            if (uniqeTmpFolderPath.exists()) {
-                uniqeTmpFolderPath.deleteRecursive();
+            if (uniqueTmpFolderPath.exists()) {
+                uniqueTmpFolderPath.deleteRecursive();
             }
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = envVars.expand(getTasks());
         String cmd = "buildtool";
 

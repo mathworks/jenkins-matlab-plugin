@@ -20,14 +20,14 @@ import hudson.model.TaskListener;
 
 public class RunMatlabCommandStepTester extends RunMatlabCommandStep {
     @DataBoundConstructor
-    public RunMatlabCommandStepTester(String command) {
-        super(command);
+    public RunMatlabCommandStepTester(String command, String startupOptions) {
+        super(command, startupOptions);
     }
     
     @Override
     public StepExecution start(StepContext context) throws Exception {
         
-        return new TestStepExecution(context,this.getCommand());
+        return new TestStepExecution(context,this.getCommand(), this.getStartupOptions());
     }
     
     @Extension

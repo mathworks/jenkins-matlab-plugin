@@ -1,6 +1,6 @@
 package com.mathworks.ci;
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2023 The MathWorks, Inc.
  *  
  */
 
@@ -39,6 +39,8 @@ public class RunMatlabTestsStep extends Step {
     private boolean strict;
     private List<String> sourceFolder = new ArrayList<>();
     private List<String> selectByFolder = new ArrayList<>();
+
+    private String startupOptions;
 
     @DataBoundConstructor
     public RunMatlabTestsStep() {
@@ -163,9 +165,18 @@ public class RunMatlabTestsStep extends Step {
         this.strict = strict;
     }
 
+    public String getStartupOptions() {
+        return Util.fixNull(startupOptions);
+    }
+    
+    @DataBoundSetter
+    public void setStartupOptions(String startupOptions) {
+        this.startupOptions = startupOptions;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabRunTestsStepExecution(context, getInputArgs());
+        return new MatlabRunTestsStepExecution(context, getInputArgs(), getStartupOptions());
     }
 
     @Extension

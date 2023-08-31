@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2022 The MathWorks, Inc.
+ * Copyright 2022-2023 The MathWorks, Inc.
  *  
  */
 
@@ -42,7 +42,7 @@ public class RunMatlabBuildStepTest {
         project.setDefinition(
                 new CpsFlowDefinition("node { runMATLABBuild() }", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("MATLAB_ROOT", build);
+        j.assertLogContains("system path", build);
     }
 
     /*
@@ -109,6 +109,18 @@ public class RunMatlabBuildStepTest {
 
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("compile", build);
+    }
+
+    /*
+     * Verify appropriate startup options are invoked as in pipeline script
+     */
+    @Test
+    public void verifyStartupOptionsSameAsScript() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node { runMATLABBuild(startupOptions: '-nojvm -uniqueoption') }", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("-nojvm -uniqueoption", build);
     }
 
     /*
