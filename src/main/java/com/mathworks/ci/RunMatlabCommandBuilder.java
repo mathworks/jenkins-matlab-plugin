@@ -118,17 +118,17 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
-        final FilePath uniqeTmpFolderPath =
+        final FilePath uniqueTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, options, uniqueTmpFldrName);
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, options, uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
@@ -139,17 +139,17 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             return 1;
         } finally {
             // Cleanup the tmp directory
-            if (uniqeTmpFolderPath.exists()) {
-                uniqeTmpFolderPath.deleteRecursive();
+            if (uniqueTmpFolderPath.exists()) {
+                uniqueTmpFolderPath.deleteRecursive();
             }
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
      
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String cmd = envVars.expand(getMatlabCommand());
         final String matlabCommandFileContent =
                 "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;

@@ -86,11 +86,11 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabBuildFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = getContext().get(EnvVars.class).expand(getTasks());
         String cmd = "buildtool";
 

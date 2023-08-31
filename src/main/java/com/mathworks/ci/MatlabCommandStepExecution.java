@@ -87,11 +87,11 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
         
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String cmd = getContext().get(EnvVars.class).expand(getCommand());
         final String matlabCommandFileContent =
                 "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
