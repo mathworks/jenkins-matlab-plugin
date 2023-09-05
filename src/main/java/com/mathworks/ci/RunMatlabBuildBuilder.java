@@ -75,6 +75,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     public void perform(@Nonnull Run<?, ?> build, @Nonnull FilePath workspace,
             @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws InterruptedException, IOException {
+        build.addAction(new BuildArtifactAction());
 
         // Get the environment variable specific to the this build
         final EnvVars env = build.getEnvironment(listener);

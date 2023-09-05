@@ -1,0 +1,68 @@
+
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+  xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:r="/lib/hudson/test" xmlns:p="/lib/test">
+    <l:layout title="MATLAB Build Results">
+    <l:main-panel>
+        <j:set var="st" value="${it.status}" />
+        <h1 class="${st.cssClass}">
+            <st:out value="Build Results" />
+        </h1>
+        <p:bar/>
+        <table class="jenkins-table sortable" id="testresult">
+            <thead>
+                <tr>
+                    <th class="pane-header">Task Name</th>
+                    <th class="pane-header" style="width:6em">Duration </th>
+                    <th class="pane-header" style="width:6em">Status</th>
+                    <th class="pane-header" style="width:6em">Skipped</th>
+                    <th class="pane-header" style="width:6em">Dependencies</th>
+                    <!--<j:forEach var="tableheader" items="${it.testActions}">
+                        <st:include it="${tableheader}" page="${it.childType}tableheader.jelly" optional="true"/>
+                    </j:forEach> -->
+                    Table Header
+                </tr>
+            </thead>
+
+            <tbody>
+                <!--<j:forEach var="p" items="${it.children}" varStatus="status">-->
+                    <tr>
+                        <td class="pane">
+                            test
+                            <!--<j:forEach var="badge" items="${p.testActions}">
+                                <st:include it="${badge}" page="badge.jelly" optional="true"/>
+                            </j:forEach> -->
+
+                        </td>
+                        <td class="pane no-wrap" style="width:6em" data="${p.duration}">0.000123</td>
+                        <td class="pane" style="width:9em">
+                            <!--<j:set var="pst" value="${p.status}" /> -->
+
+                            <span class="${pst.cssClass}">
+                                <r:failed-test/>
+                                <font color="red">FAILED</font>
+                            </span>
+                        </td>
+                       <!-- <j:forEach var="tablerow" items="${p.testActions}">
+                            <st:include it="${tablerow}" page="tablerow.jelly" optional="true"/>
+                        </j:forEach> -->
+                        <td class="pane" style="width:6em">
+                            <!--<j:set var="pst" value="${p.status}" /> -->
+                            <span class="${pst.cssClass}">
+                                NO
+                            </span>
+                        </td>
+
+                        <td class="pane" style="width:6em">
+                            <!--<j:set var="pst" value="${p.status}" /> -->
+                            <span class="${pst.cssClass}">
+                                NA
+                            </span>
+                        </td>
+                    </tr>
+               <!-- </j:forEach> -->
+            </tbody>
+        </table>
+    </l:main-panel>
+    </l:layout>
+</j:jelly>
