@@ -1,0 +1,22 @@
+{"taskDetails":[
+  {
+    "name":"check",
+    "duration":"00:00:00",
+    "failed":"false",
+    "description":"Checks description"
+
+  },
+  {
+    "name":"show",
+    "duration":"00:00:00",
+    "failed":"true",
+    "description":"Show's description"
+
+  },
+  {
+    "name":"test",
+    "duration":"00:00:00",
+    "failed":"false",
+    "description":"Run tests"
+  }
+]}
