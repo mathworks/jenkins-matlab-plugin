@@ -1,39 +1,32 @@
 package com.mathworks.ci;
 
 import hudson.FilePath;
-import hudson.Functions;
 import hudson.model.Action;
 import hudson.model.Run;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.CheckForNull;
-import javax.servlet.ServletException;
 
 import jenkins.model.Jenkins;
-import org.acegisecurity.providers.dao.salt.SystemWideSaltSource;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.kohsuke.stapler.Stapler;
-import org.kohsuke.stapler.StaplerRequest;
-import org.kohsuke.stapler.StaplerResponse;
 
 public class BuildArtifactAction implements Action {
   //private List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
   private Run<?, ?> build;
+  private FilePath workspace;
 
-  public BuildArtifactAction(Run<?, ?> build){
+  public BuildArtifactAction(Run<?, ?> build, FilePath workspace){
     this.build = build;
+    this.workspace = workspace;
   }
 
   @CheckForNull
@@ -58,11 +51,18 @@ public class BuildArtifactAction implements Action {
     return Jenkins.get().getRootUrl();
   }
 
-  public List<BuildArtifactData> getBuildArtifact() throws IOException, ParseException, URISyntaxException {
+  public String getSomething(){
+
+    return build.getUrl();
+  }
+
+  public List<BuildArtifactData> getBuildArtifact() throws IOException, ParseException, URISyntaxException, InterruptedException {
     List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-    ClassLoader loader = this.getClass().getClassLoader();
-    File fl = new File(loader.getResource("buildArtifact.json").toURI());
-    Object obj = new JSONParser().parse(new FileReader(fl));
+    //ClassLoader loader = this.getClass().getClassLoader();
+    //File fl = new File(loader.getResource("buildArtifact.json").toURI());
+
+    FilePath fl = new FilePath(workspace,workspace.getRemote()+"/.matlab/buildArtifact.json");
+    Object obj = new JSONParser().parse(new FileReader(new File(fl.toURI())));
     JSONObject jo = (JSONObject) obj;
     // getting task
     JSONArray ja = (JSONArray) jo.get("taskDetails");
@@ -85,6 +85,8 @@ public class BuildArtifactAction implements Action {
           data.setTaskDescription(pair.getValue().toString());
         } else if (pair.getKey().toString().equalsIgnoreCase( "failed")) {
           data.setTaskStatus(pair.getValue().toString());
+        } else if (pair.getKey().toString().equalsIgnoreCase( "skipped")) {
+          data.setTaskSkipped(pair.getValue().toString());
         }
 
         //System.out.println(pair.getKey() + " : " + pair.getValue());
@@ -98,7 +100,7 @@ public class BuildArtifactAction implements Action {
 
 
   public int getTotalCount(){
-    return 2;
+    return 4;
   }
 
   public int getFailCount(){
@@ -106,7 +108,7 @@ public class BuildArtifactAction implements Action {
   }
 
   public int getSkipCount(){
-    return 0;
+    return 1;
   }
 
    /**public void doSummary(StaplerRequest req, StaplerResponse rsp) throws IOException, ServletException {

@@ -2,26 +2,27 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:r="/lib/hudson/test" xmlns:p="/lib/test">
+
     <l:layout title="MATLAB Build Results">
     <l:main-panel>
         <j:set var="st" value="${it.status}" />
         <h1 class="${st.cssClass}">
-            <st:out value="Build Results" />
+            <st:out value="MATLAB Build Results" />
         </h1>
         <div>
             <j:choose>
                 <j:when test="${it.totalCount==0}">
-                    ${%noTests}
+                    no tasks
                 </j:when>
                 <j:otherwise>
                     <div>
-                        ${(it.failCount)} Failures
+                        ${(it.totalCount)} Tasks
                         <j:if test="${prev!=null}">
                             (${h.getDiffString(it.failCount-prev.failCount)})
                         </j:if>
                         <!-- Only show skips if there are some since they don't make sense for JUnit, only for TestNG. -->
                         <j:if test="${it.skipCount > 0}">
-                            , ${%skipped(it.skipCount)}
+                            , Skipped ${(it.skipCount)}
                             <j:if test="${prev!=null}">
                                 (${h.getDiffString(it.skipCount-prev.skipCount)})
                             </j:if>
@@ -29,12 +30,12 @@
                     </div>
                     <div style="width:100%; height:1em; background-color: #729FCF; border-radius: 6px; overflow: hidden;">
                         <!-- Failed tests part of the bar. -->
-                        <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: #EF2929; float: left; border-top-left-radius: 6px; border-bottom-left-radius: 6px;"></div>
+                        <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: #EF2929; float: right; border-top-left-radius: 6px; border-bottom-left-radius: 6px;"></div>
                         <!-- Skipped tests part of the bar. -->
-                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: #FCE94F; float: left;"></div>
+                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: #FCE94F; float: right;"></div>
                     </div>
                     <div align="right">
-                        Tasks ${(it.totalCount)}
+                        ${(it.failCount)} Failures
                         <j:if test="${prev!=null}">
                             (${h.getDiffString(it.totalCount-prev.totalCount)})
                         </j:if>
@@ -47,14 +48,9 @@
             <thead>
                 <tr>
                     <th class="pane-header">Task Name</th>
-                    <th class="pane-header" style="width:6em">Duration </th>
-                    <th class="pane-header" style="width:6em">Status</th>
-                    <th class="pane-header" style="width:6em">Skipped</th>
-                    <th class="pane-header" style="width:6em">Dependencies</th>
-                    <!--<j:forEach var="tableheader" items="${it.testActions}">
-                        <st:include it="${tableheader}" page="${it.childType}tableheader.jelly" optional="true"/>
-                    </j:forEach> -->
-                    <b>MATLAB Build Results</b>
+                    <th class="pane-header" style="width:6em">Status </th>
+                    <th class="pane-header" style="width:6em">Description</th>
+                    <th class="pane-header" style="width:8em">Duration (ms)</th>
                 </tr>
             </thead>
 
@@ -63,47 +59,34 @@
                 <j:forEach var="p" items="${it.buildArtifact}" varStatus="status">
                     <tr>
                         <td class="pane" align="left">
-                            <r:failed-test url="${it.rootUrl}/${it.urlName}"/>
-                            ${p.taskName}
-                            <!--<j:forEach var="badge" items="${p.testActions}">
-                                <st:include it="${badge}" page="badge.jelly" optional="true"/>
-                            </j:forEach> -->
-
-
+                            <!-- <r:failed-test url="http://localhost:5000/jenkins/job/sidepanel_view/21/buildresults/"/> -->
+                             ${p.taskName}
                         </td>
-                        <td class="pane no-wrap" style="width:6em" data="${p.duration}"> ${p.taskDuration}</td>
-                        <td class="pane" style="width:9em">
-                            <!--<j:set var="pst" value="${p.status}" /> -->
 
+                        <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
                                 <!-- <r:failed-test url="${it.rootUrl}/${it.urlName}"/>/jenkins/job/sidepanel_view/17/buildresults -->
                                 <!-- <r:failed-test url="${it.rootUrl}/job/sidepanel_view/17/${it.urlName}"/> -->
                                 <j:if test="${p.taskStatus !='false'}">
-                                    <a href="#"><font color="#EF2929"> FAILED </font> </a>
+                                    <a href="../console"><font color="#EF2929"> FAILED </font> </a>
                                 </j:if>
                                 <j:if test="${p.taskStatus == 'false'}">
-                                    <font color="#729FCF"> PASSED </font>
+                                    <j:if test="${p.taskSkipped == 'false'}">
+                                        <font color="#729FCF"> PASSED </font>
+                                    </j:if>
+                                </j:if>
+                                <j:if test="${p.taskSkipped == 'true'}">
+                                    <font color="#FCE94F"> SKIPPED </font>
                                 </j:if>
                             </span>
                         </td>
-                       <!-- <j:forEach var="tablerow" items="${p.testActions}">
-                            <st:include it="${tablerow}" page="tablerow.jelly" optional="true"/>
-                        </j:forEach> -->
-                        <td class="pane" style="width:6em">
-                            <!--<j:set var="pst" value="${p.status}" /> -->
+                        <td class="pane" style="width:10em">
                             <span class="${pst.cssClass}">
-                                NO
+                                ${p.description}
                             </span>
                         </td>
-
-                        <td class="pane" style="width:6em">
-                            <!--<j:set var="pst" value="${p.status}" /> -->
-                            <span class="${pst.cssClass}">
-                                NA
-                            </span>
-                        </td>
+                        <td class="pane no-wrap" style="width:6em" data="${p.duration}"> ${p.taskDuration}</td>
                     </tr>
-
                 </j:forEach>
             </tbody>
         </table>
