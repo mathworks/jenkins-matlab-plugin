@@ -53,7 +53,7 @@ public class BuildArtifactAction implements Action {
   }
 
   public String getRootUrl() {
-    return Jenkins.get().getRootUrl();
+    return Jenkins.getInstanceOrNull().getRootUrl() + build.getUrl();
   }
 
   public String getSomething(){

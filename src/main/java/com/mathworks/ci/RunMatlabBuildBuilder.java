@@ -84,7 +84,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         // Output Console
 
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, env);
+        buildResult = execMatlabCommand(workspace, launcher, listener, env, build);
         build.addAction(new BuildArtifactAction(build, workspace));
 
         if (buildResult != 0) {
@@ -93,7 +93,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     }
 
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+            TaskListener listener, EnvVars envVars, @Nonnull Run<?, ?> build) throws IOException, InterruptedException {
 
         /*
          * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
@@ -110,10 +110,11 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         // Create MATLAB script
         createMatlabScriptByName(uniqeTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
-
+        BuildConsoleAnnotator bca = new BuildConsoleAnnotator(listener.getLogger(),build.getCharset());
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, uniqueTmpFldrName);
+
+            matlabLauncher = getProcessToRunMatlabCommandb(workspace, launcher, listener, envVars,
+                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, uniqueTmpFldrName, bca);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
@@ -123,6 +124,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
+            bca.forceEol();
             // Cleanup the tmp directory
             if (uniqeTmpFolderPath.exists()) {
                 uniqeTmpFolderPath.deleteRecursive();
@@ -150,5 +152,33 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
                 .println("Generating MATLAB script with content:\n" + cmd + "\n");
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
+    }
+
+    public ProcStarter getProcessToRunMatlabCommandb(FilePath workspace,
+        Launcher launcher, TaskListener listener, EnvVars envVars, String matlabCommand, String uniqueName, BuildConsoleAnnotator bca)
+        throws IOException, InterruptedException {
+        // Get node specific temp .matlab directory to copy matlab runner script
+        FilePath targetWorkspace = new FilePath(launcher.getChannel(),
+            workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+        ProcStarter matlabLauncher;
+        if (launcher.isUnix()) {
+            final String runnerScriptName = uniqueName + "/run_matlab_command.sh";
+            matlabLauncher = launcher.launch().envs(envVars);
+            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerScriptName, matlabCommand).stdout(bca);
+
+            // Copy runner .sh for linux platform in workspace.
+            copyFileInWorkspace(MatlabBuilderConstants.SHELL_RUNNER_SCRIPT, runnerScriptName,
+                targetWorkspace);
+        } else {
+            final String runnerScriptName = uniqueName + "\\run_matlab_command.bat";
+            launcher = launcher.decorateByPrefix("cmd.exe", "/C");
+            matlabLauncher = launcher.launch().envs(envVars);
+            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "\\" + runnerScriptName, "\"" + matlabCommand + "\"")
+                .stdout(bca);
+            // Copy runner.bat for Windows platform in workspace.
+            copyFileInWorkspace(MatlabBuilderConstants.BAT_RUNNER_SCRIPT, runnerScriptName,
+                targetWorkspace);
+        }
+        return matlabLauncher;
     }
 }
