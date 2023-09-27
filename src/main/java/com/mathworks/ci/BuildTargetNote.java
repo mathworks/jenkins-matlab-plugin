@@ -16,10 +16,10 @@ public class BuildTargetNote extends ConsoleNote {
 
   @Override
   public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
-    MarkupText.SubText t = text.findToken(Pattern.compile("buildtool"));
-    //MarkupText.SubText t = text.findToken(Pattern.compile("\\**Starting"));
+    MarkupText.SubText t = text.findToken(Pattern.compile("Starting"));
+    String taskName = text.subText(12,text.length()).getText();
     if (t!=null)
-      t.addMarkup(0,t.length(),"<a name=fl>","</a>");
+      t.addMarkup(0,t.length(),"<a id= matlab_"+taskName+" name=matlab_"+taskName+">","</a>");
     return null;
   }
 

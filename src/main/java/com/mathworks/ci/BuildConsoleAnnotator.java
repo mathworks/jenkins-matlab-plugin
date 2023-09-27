@@ -53,7 +53,7 @@ public class BuildConsoleAnnotator extends LineTransformationOutputStream {
     line = trimEOL(line);
     System.out.println(line); // this shows only log for Build runner
 
-    if (line.contains("Error"))
+    if (line.contains("** Starting"))
       out.write(antNotes[0]);
 
 

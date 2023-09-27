@@ -5,24 +5,8 @@
     <script type="text/javascript">
         <!-- TODO make sure load doesn't happen every time -->
 
-        function showFailureSummary(id,query) {
-        var element = document.getElementById(id)
-        element.style.display = "";
-        document.getElementById(id + "-showlink").style.display = "none";
-        document.getElementById(id + "-hidelink").style.display = "";
-
-        if (typeof query !== 'undefined') {
-        var rqo = new XMLHttpRequest();
-        rqo.open('GET', query, true);
-        rqo.onreadystatechange = function() { element.innerHTML = rqo.responseText; }
-        rqo.send(null);
-        }
-        }
-
-        function hideFailureSummary(id) {
-        document.getElementById(id).style.display = "none";
-        document.getElementById(id + "-showlink").style.display = "";
-        document.getElementById(id + "-hidelink").style.display = "none";
+        function chColor() {
+        document.getElementById("matlab_show").style.backgroundColor = "red";
         }
     </script>
     <l:layout title="MATLAB Build Results">
@@ -68,13 +52,13 @@
             </j:choose>
         </div>
 
-        <table class="jenkins-table sortable" id="testresult">
+        <table class="jenkins-table sortable" id="buildresults">
             <thead>
                 <tr>
-                    <th class="pane-header">Task Name</th>
+                    <th class="pane-header" style="width:6em">Task Name</th>
                     <th class="pane-header" style="width:6em">Status </th>
-                    <th class="pane-header" style="width:6em">Description</th>
-                    <th class="pane-header" style="width:8em">Duration (ms)</th>
+                    <th class="pane-header">Description</th>
+                    <th class="pane-header" style="width:6em">Duration (ms)</th>
                 </tr>
             </thead>
 
@@ -84,27 +68,8 @@
                     <tr>
                         <td class="pane" align="left">
 
-                            <j:set var="url" value="${it.rootUrl}buildresults"/>
-                            <j:set var="id" value="${h.htmlAttributeEscape(url)}"/>
-                            <j:set var="idjs" value="${h.jsStringEscape(url)}"/>
-                            <j:set var="open" value="showFailureSummary('test-${h.jsStringEscape(id)}','${idjs}/failure')"/>
-                            <j:set var="close" value="hideFailureSummary('test-${h.jsStringEscape(id)}')"/>
-                            <a id="test-${id}-showlink" onclick="${open}" title="${%Show details}">
-                                <l:icon src="symbol-forward plugin-matlab"/>
-
-                            </a>
-                            <a id="test-${id}-hidelink" onclick="${close}" title="${%Hide details}" style="display:none">
-                                <l:icon src="symbol-forward plugin-matlab"/>
-                            </a>
-                            <a href="${url}"><st:out value="${result.fullDisplayName}"/></a>
-                            <j:forEach var="badge" items="${result.testActions}">
-                                <st:include it="${badge}" page="badge.jelly" optional="true"/>
-                            </j:forEach>
-                            <div id="test-${id}" class="failure-summary" style="display: none;">
-                                ${%Loading...}
-                            </div>
                             <!-- <r:failed-test url="http://localhost:5000/jenkins/job/sidepanel_view/21/buildresults/"/> -->
-                             ${p.taskName}
+                            <a href="../console#matlab_${p.taskName}">${p.taskName}</a>
                         </td>
 
                         <td class="pane" style="width:9em">
@@ -112,7 +77,7 @@
                                 <!-- <r:failed-test url="${it.rootUrl}/${it.urlName}"/>/jenkins/job/sidepanel_view/17/buildresults -->
                                 <!-- <r:failed-test url="${it.rootUrl}/job/sidepanel_view/17/${it.urlName}"/> -->
                                 <j:if test="${p.taskStatus !='false'}">
-                                    <a href="../console#fl"><font color="#EF2929"> FAILED </font> </a>
+                                    <a href="../console#matlab_${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
                                 </j:if>
                                 <j:if test="${p.taskStatus == 'false'}">
                                     <j:if test="${p.taskSkipped == 'false'}">
