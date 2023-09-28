@@ -11,6 +11,7 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import org.jenkinsci.plugins.workflow.steps.StepDescriptor;
 import org.jenkinsci.plugins.workflow.steps.StepExecution;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import com.google.common.collect.ImmutableSet;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -23,17 +24,21 @@ import hudson.Util;
 public class RunMatlabCommandStep extends Step {
     
     private String command;
-    private String startupOptions;
+    private String startupOptions = "";
 
     @DataBoundConstructor
-    public RunMatlabCommandStep(String command, String startupOptions) {
+    public RunMatlabCommandStep(String command) {
         this.command = command;
-        this.startupOptions = startupOptions;
     }
 
 
     public String getCommand() {
         return this.command;
+    }
+
+    @DataBoundSetter
+    public void setStartupOptions(String startupOptions) {
+        this.startupOptions = startupOptions;
     }
 
     public String getStartupOptions() {
