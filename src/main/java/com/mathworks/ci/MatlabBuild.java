@@ -70,7 +70,7 @@ public interface MatlabBuild {
                     .stdout(listener);
 
             // Copy runner for Windows platform in workspace.
-            copyFileInWorkspace("win64\\run-matlab-command.exe", runnerName,
+            copyFileInWorkspace("win64/run-matlab-command.exe", runnerName,
                     targetWorkspace);
         }
         return matlabLauncher;
