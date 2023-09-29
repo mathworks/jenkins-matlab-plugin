@@ -31,7 +31,7 @@ Once you install the plugin, **Use MATLAB version** appears in the **Build Envir
 
 In this example, the list includes two registered tools as well as the option for specifying a custom installation. If you select **Custom**, a **MATLAB root** box appears in the UI. You must enter the full path to your preferred MATLAB root folder in this box.
 
-![use_matlab_version_tool](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/908748e6-afeb-40c1-a2f8-f2f6bde6f224)
+![use_matlab_version_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/1ef811c5-c69a-41c3-8649-55c5f2239776)
 
 When you specify a MATLAB version in the **Build Environment** section, the plugin prepends its `bin` folder to the system PATH environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
@@ -61,7 +61,7 @@ The **Run MATLAB Build** step lets you run a build using the [MATLAB build tool]
 
 Specify the tasks you want to execute in the **Tasks** box. If you specify more than one task, use a space to separate them. If you do not specify any tasks, the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend. For example, enter `mytask` in the **Tasks** box to run a task named `mytask` as well as all the tasks on which it depends.
 
-![run_matlab_build](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/19d719f3-7f02-41f6-96cd-9c5d55ccf98f)
+![run_matlab_build](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/b0df3645-e8df-48fe-8dd3-e429706dd61c)
 
 MATLAB exits with exit code 0 if the specified tasks run successfully. Otherwise, MATLAB terminates with a nonzero exit code, which causes the Jenkins build to fail.
 
@@ -110,7 +110,7 @@ Specify the MATLAB script, function, or statement you want to execute in the **C
 
 For example, enter `myscript` in the **Command** box to run a script named `myscript.m` in the root of your repository.
 
-![run_matlab_command](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/cbc44357-1b87-4f1f-8d49-92d88eda8d05)
+![run_matlab_command](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/45a99722-d872-403b-8c1a-90e23199ba47)
 
 MATLAB exits with exit code 0 if the specified script, function, or statement executes successfully without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the build to fail. To fail the build in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) function.
 
@@ -123,7 +123,7 @@ To configure the plugin for a freestyle project, specify the MATLAB version to u
 
 To specify the MATLAB version, select **Use MATLAB version** in the **Build Environment** section of the project configuration window. Then, specify the MATLAB version that Jenkins should use in the build. You can skip this step if MATLAB has already been added to the path on the build agent.
 
-![build_environment](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/7c2c2fdc-86fc-4e4e-b714-51a5a7e586a7)
+![build_environment](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/6fa3187a-5674-4435-9c69-4210a21b8d88)
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
 * If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks in the **Tasks** box. 
@@ -140,12 +140,12 @@ To configure the plugin for a multi-configuration project, specify the MATLAB ve
 
 There are two ways to specify multiple MATLAB versions in a multi-configuration project: using the **MATLAB** axis or using a user-defined axis.
 
-![add_axis](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/75cebe71-de6e-4422-b899-472771b4fc92)
+![add_axis](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/8d134ca1-892e-4014-98e3-14fd8fbb3024)
 
 ### Add MATLAB Axis
 If your Jenkins instance includes MATLAB versions registered as tools, then **MATLAB** appears as an option when you click **Add axis** in the **Configuration Matrix** section. By adding the **MATLAB** axis, you can select MATLAB versions and add them as axis values to your matrix configuration. The list includes all MATLAB versions that have been registered as Jenkins tools. In this example, there are two MATLAB versions registered as tools. In each build iteration, the plugin prepends one of the selected versions to the PATH environment variable and invokes it to run the build. 
 
-![matlab_axis](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/2376b483-2881-4cab-9b29-cab798dfd704)
+![matlab_axis](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/047283bb-782c-4437-af3b-ce296e73cf1a)
 
 For more information about registering a MATLAB version as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
 
@@ -154,7 +154,7 @@ For more information about registering a MATLAB version as a tool, see [Register
 ### Add User-Defined Axis
 If you do not specify the **MATLAB** axis, add a user-defined axis in the **Configuration Matrix** section to specify the MATLAB versions in the build. Enter the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. For instance, specify two MATLAB versions to run the same set of tests.
 
-![user_defined_axis](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/0824565c-4e5a-4774-ab6e-6c9e9da13542)
+![user_defined_axis](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/ee8cbdd6-f278-43ca-9580-99fb6d25853e)
 
 When you add a user-defined axis to specify MATLAB versions, you must also specify where they are installed. To do this, select **Use MATLAB version** in the **Build Environment** section and then construct a root folder path using the axis name. In this example, `$VERSION` in the **MATLAB root** box is replaced by one axis value per build iteration. 
 
@@ -166,7 +166,7 @@ A multi-configuration project creates a separate workspace for each user-defined
 
 You can add several axes in the **Configuration Matrix** section. For example, add the **MATLAB** axis to specify MATLAB versions and the user-defined `TEST_TAG` axis to specify the test tags for a group of tests.
 
-![axis_matlab_testtag](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/e1a2eda7-9038-4982-a981-4007fe7fa956)
+![axis_matlab_testtag](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/2dca099a-d316-4f90-8b4b-b09ac5c83819)
 
 Once you have specified the axes, add the required build steps in the **Build Steps** section:
 
@@ -306,10 +306,10 @@ Input                     | Description
 `sourceFolder`            | (Optional) Location of the folder containing source code, relative to the project root folder. The specified folder and its subfolders are added to the top of the MATLAB search path. If you specify `sourceFolder` and then generate coverage results, the plugin uses only the source code in the specified folder and its subfolders to generate the results. You can specify multiple folders using a comma-separated list.<br/>**Example:** `sourceFolder: ['source']`<br/>**Example:** `sourceFolder: ['source/folderA', 'source/folderB']`
 `selectByFolder`          | (Optional) Location of the folder used to select test suite elements, relative to the project root folder. To create a test suite, the plugin uses only the tests in the specified folder and its subfolders. You can specify multiple folders using a comma-separated list.<br/>**Example:** `selectByFolder: ['test']`<br/>**Example:** `selectByFolder: ['test/folderA', 'test/folderB']`
 `selectByTag`             | (Optional) Test tag used to select test suite elements. To create a test suite, the plugin uses only the test elements with the specified tag.<br/>**Example:** `selectByTag: 'FeatureA'`
-`strict`                  | (Optional) Whether to apply strict checks when running tests, specified as `false` or `true`. By default, the value is `false`. If you specify a value of `true`, the plugin generates a qualification failure whenever a test issues a warning.
-`useParallel`             | (Optional) Whether to run tests in parallel, specified as `false` or `true`. By default, the value is `false` and tests run in serial. If the test runner configuration is suited for parallelization, you can specify a value of `true` to run tests in parallel. This input requires a Parallel Computing Toolbox license.
-`outputDetail`            | (Optional) Amount of output detail displayed for the test run, specified as `'None'`, `'Terse'`, `'Concise'`, `'Detailed'`, or `'Verbose'`. By default, the plugin displays failing and logged events at the `Detailed` level and test run progress at the `Concise` level.
-`loggingLevel`            | (Optional) Maximum verbosity level for logged diagnostics included for the test run, specified as `'None'`, `'Terse'`, `'Concise'`, `'Detailed'`, or `'Verbose'`. By default, the plugin includes diagnostics logged at the `Terse` level. 
+`strict`                  | (Optional) Whether to apply strict checks when running tests, specified as `false` or `true`. By default, the value is `false`. If you specify a value of `true`, the plugin generates a qualification failure whenever a test issues a warning.<br/>**Example:** `strict: true`
+`useParallel`             | (Optional) Whether to run tests in parallel, specified as `false` or `true`. By default, the value is `false` and tests run in serial. If the test runner configuration is suited for parallelization, you can specify a value of `true` to run tests in parallel. This input requires a Parallel Computing Toolbox license.<br/>**Example:** `useParallel: true`
+`outputDetail`            | (Optional) Amount of output detail displayed for the test run, specified as `'None'`, `'Terse'`, `'Concise'`, `'Detailed'`, or `'Verbose'`. By default, the plugin displays failing and logged events at the `Detailed` level and test run progress at the `Concise` level.<br/>**Example:** `outputDetail: 'Verbose'`
+`loggingLevel`            | (Optional) Maximum verbosity level for logged diagnostics included for the test run, specified as `'None'`, `'Terse'`, `'Concise'`, `'Detailed'`, or `'Verbose'`. By default, the plugin includes diagnostics logged at the `Terse` level.<br/>**Example:** `loggingLevel: 'Detailed'` 
 `testResultsPDF`          | (Optional) Path to write the test results in PDF format. On macOS platforms, this input is supported in MATLAB R2020b and later.<br/>**Example:** `testResultsPDF: 'test-results/results.pdf'`      
 `testResultsTAP`          | (Optional) Path to write the test results in TAP format.<br/>**Example:** `testResultsTAP: 'test-results/results.tap'`
 `testResultsJUnit`        | (Optional) Path to write the test results in JUnit XML format.<br/>**Example:** `testResultsJUnit: 'test-results/results.xml'`
@@ -440,7 +440,7 @@ To register a MATLAB version as a Jenkins tool:
 
 For example, register MATLAB R2023b as a Jenkins tool on your Windows local agent.
 
-![matlab_tool](https://github.com/mw-hrastega/Times-Table-App/assets/48831250/c80d57c3-d9d4-4541-9817-76a9738d8bab)
+![matlab_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/50cb92d2-7b46-4bb7-822d-073e746e1d92)
 
 If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you have specified on the local agent. For example, if you have registered MATLAB R2023b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
 
