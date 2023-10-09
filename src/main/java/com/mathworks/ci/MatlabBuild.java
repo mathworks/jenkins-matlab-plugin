@@ -14,6 +14,7 @@ import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
+import hudson.util.ArgumentListBuilder;
 import hudson.model.TaskListener;
 
 public interface MatlabBuild {
@@ -35,6 +36,7 @@ public interface MatlabBuild {
         // Get node specific temp .matlab directory to copy matlab runner script             
         FilePath targetWorkspace; 
         ProcStarter matlabLauncher;
+        ArgumentListBuilder args = new ArgumentListBuilder();
         if (launcher.isUnix()) {
             targetWorkspace = new FilePath(launcher.getChannel(),
                 workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
@@ -55,8 +57,11 @@ public interface MatlabBuild {
                 binaryName = "maci64/run-matlab-command";
             }
 
-            matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName, matlabCommand, startupOpts).stdout(listener);
+            args.add(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName);
+            args.add(matlabCommand);
+            args.add(startupOpts.split(" "));
+
+            matlabLauncher = launcher.launch().envs(envVars).cmds(args).stdout(listener);
 
             // Copy runner for linux platform in workspace.
             copyFileInWorkspace(binaryName, runnerName, targetWorkspace);
@@ -65,9 +70,11 @@ public interface MatlabBuild {
                 workspace.getRemote() + "\\" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
 
             final String runnerName = uniqueName + "\\run-matlab-command.exe";
-            matlabLauncher = launcher.launch().envs(envVars);
-            matlabLauncher.cmds(targetWorkspace.toString() + "\\" + runnerName, "\"" + matlabCommand + "\"", startupOpts)
-                    .stdout(listener);
+
+            args.add(targetWorkspace.toString() + "\\" + runnerName, "\"" + matlabCommand + "\"");
+            args.add(startupOpts.split(" "));
+
+            matlabLauncher = launcher.launch().envs(envVars).cmds(args).stdout(listener);
 
             // Copy runner for Windows platform in workspace.
             copyFileInWorkspace("win64/run-matlab-command.exe", runnerName,
