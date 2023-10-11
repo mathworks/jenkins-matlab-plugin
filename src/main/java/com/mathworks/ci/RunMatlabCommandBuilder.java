@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
- *
+ * Copyright 2019-2023 The MathWorks, Inc.
+ * 
  * Script builder used to run custom MATLAB commands or scripts.
  *
  */
@@ -23,12 +23,14 @@ import hudson.model.TaskListener;
 import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.Util;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
 public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
     private String matlabCommand;
+    private StartupOptions startupOptions;
 
     @DataBoundConstructor
     public RunMatlabCommandBuilder() {
@@ -44,10 +46,20 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         this.matlabCommand = matlabCommand;
     }
 
+    @DataBoundSetter
+    public void setStartupOptions(StartupOptions startupOptions) {
+        this.startupOptions = startupOptions;
+    }
+
     public String getMatlabCommand() {
         return this.matlabCommand;
     }
 
+
+    public StartupOptions getStartupOptions() {
+        return this.startupOptions;
+    }
+    
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
 
@@ -88,7 +100,6 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         // Invoke MATLAB command and transfer output to standard
         // Output Console
 
-
         buildResult = execMatlabCommand(workspace, launcher, listener, env);
 
         if (buildResult != 0) {
@@ -108,17 +119,18 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueCommandFile =
                 "command_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
-        final FilePath uniqeTmpFolderPath =
+        final FilePath uniqueTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqeTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
         ProcStarter matlabLauncher;
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqeTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, uniqueTmpFldrName);
-
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, options, uniqueTmpFldrName);
+            
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();
@@ -128,17 +140,17 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
             return 1;
         } finally {
             // Cleanup the tmp directory
-            if (uniqeTmpFolderPath.exists()) {
-                uniqeTmpFolderPath.deleteRecursive();
+            if (uniqueTmpFolderPath.exists()) {
+                uniqueTmpFolderPath.deleteRecursive();
             }
         }
     }
-    
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+     
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String cmd = envVars.expand(getMatlabCommand());
         final String matlabCommandFileContent =
                 "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;

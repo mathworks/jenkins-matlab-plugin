@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2022 The MathWorks, Inc.
+ * Copyright 2022-2023 The MathWorks, Inc.
  *  
  */
 
@@ -20,10 +20,12 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
     private static final long serialVersionUID = 4771831219402275744L;
     
     private String tasks;
+    private String startupOptions;
 
-    public MatlabBuildStepExecution(StepContext context, String tasks) {
+    public MatlabBuildStepExecution(StepContext context, String tasks, String startupOptions) {
         super(context);
         this.tasks = tasks;
+        this.startupOptions = startupOptions;
     }
 
     private String getTasks() {
@@ -71,7 +73,7 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueBuildFile, uniqueTmpFldrName);
+                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueBuildFile, startupOptions, uniqueTmpFldrName);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();
@@ -84,11 +86,11 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabBuildFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = getContext().get(EnvVars.class).expand(getTasks());
         String cmd = "buildtool";
 

@@ -1,6 +1,6 @@
 package com.mathworks.ci;
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2023 The MathWorks, Inc.
  * 
  */
 
@@ -42,8 +42,7 @@ public class RunMatlabCommandStepTest {
         project.setDefinition(
                 new CpsFlowDefinition("node { runMATLABCommand(command: 'pwd')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        String build_log = j.getLog(build);
-        j.assertLogContains("MATLAB_ROOT", build);
+        j.assertLogContains("system path", build);
     }
 
     /*
@@ -105,6 +104,21 @@ public class RunMatlabCommandStepTest {
 
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("pwd", build);
+    }
+
+    /*
+     * 
+     * Verify appropriate startup options are invoked as in pipeline script
+     *
+     */
+
+    @Test
+    public void verifyStartupOptionsSameAsScript() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node { runMATLABCommand(command: 'pwd', startupOptions: '-nojvm -uniqueoption')}", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("-nojvm -uniqueoption", build);
     }
 
     /*

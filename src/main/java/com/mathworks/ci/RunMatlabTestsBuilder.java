@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /** 
- * Copyright 2019-2020 The MathWorks, Inc.  
+ * Copyright 2019-2023 The MathWorks, Inc.  
  *  
  * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate   
  * selected test artifacts. 
@@ -61,11 +61,11 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
+    private StartupOptions startupOptions;
     private String loggingLevel = "default";
     private String outputDetail = "default";
     private boolean useParallel = false;
     private boolean strict = false;
-    
 
     @DataBoundConstructor
     public RunMatlabTestsBuilder() {
@@ -119,6 +119,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     	this.selectByFolder = selectByFolder;
     }
     
+    @DataBoundSetter
+    public void setStartupOptions(StartupOptions startupOptions) {
+    	this.startupOptions = startupOptions;
+    }
 
     @DataBoundSetter
     public void setLoggingLevel(String loggingLevel) {
@@ -139,7 +143,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public void setStrict(boolean strict) {
         this.strict = strict;
     }
-
 
     public String getTapReportFilePath() {
         return this.getTapArtifact().getFilePath();
@@ -221,7 +224,10 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
     public boolean getUseParallel() {
         return this.useParallel;
     }
-    
+
+    public StartupOptions getStartupOptions() {
+        return this.startupOptions;
+    }
     
     // To retain Backward compatibility
     protected Object readResolve() {
@@ -342,12 +348,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep, M
 
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         ProcStarter matlabLauncher;
+        String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
             FilePath genScriptLocation =
                     getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    constructCommandForTest(genScriptLocation), uniqueTmpFldrName);
+                    constructCommandForTest(genScriptLocation), options, uniqueTmpFldrName);
             
             // copy genscript package in temp folder and write a runner script.
             prepareTmpFldr(genScriptLocation, getRunnerScript(

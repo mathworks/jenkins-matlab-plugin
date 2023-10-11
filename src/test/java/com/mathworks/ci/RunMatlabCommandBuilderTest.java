@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2019-2023 The MathWorks, Inc.
  * 
  * Test class for RunMatlabCommandBuilderTest
  * 
@@ -126,7 +126,7 @@ public class RunMatlabCommandBuilderTest {
 
 
     /*
-     * Test To verify MATLAB is launched using the default matlab runner script.
+     * Test To verify MATLAB is launched using the default matlab runner binary.
      * 
      */
 
@@ -137,7 +137,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
 
     /*
@@ -216,10 +216,28 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        String build_log = jenkins.getLog(build);
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
         jenkins.assertLogContains("Generating MATLAB script with content", build);
         jenkins.assertLogContains("pwd", build);
+    }
+
+    /*
+     * Test to verify Builder picks the exact startup options that user entered.
+     * 
+     */
+
+    @Test
+    public void verifyBuildPicksTheCorrectStartupOptions() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        scriptBuilder.setStartupOptions(new StartupOptions("-nojvm -uniqueoption"));
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("run-matlab-command", build);
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
+        jenkins.assertLogContains("pwd", build);
+        jenkins.assertLogContains("-nojvm -uniqueoption", build);
     }
 
     /*
@@ -267,7 +285,7 @@ public class RunMatlabCommandBuilderTest {
         scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("run_matlab_command", build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
     
     /*
@@ -304,7 +322,7 @@ public class RunMatlabCommandBuilderTest {
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("run_matlab_command", build);
+		jenkins.assertLogContains("run-matlab-command", build);
 		jenkins.assertBuildStatus(Result.FAILURE, build);
 		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);
