@@ -2,60 +2,54 @@ package com.mathworks.ci;
 
 public class BuildArtifactData {
 
-  private String taskName;
-  private String taskDuration;
-  private String taskStatus;
+    private String taskName;
+    private String taskDuration;
+    private String taskStatus;
 
-  private String description;
-  private String skipped;
+    private String description;
+    private String skipped;
 
-  /*public BuildArtifactData(String taskName, String taskDuration, String taskStatus, boolean skipped) {
-    this.taskName = taskName;
-    this.taskDuration = taskDuration;
-    this.taskStatus = taskStatus;
-    this.skipped = skipped;
-  }*/
-
-  public BuildArtifactData() {
-  }
+    public BuildArtifactData() {
+    }
 
 
-  public String getTaskDuration() {
-    return this.taskDuration;
-  }
+    public String getTaskDuration() {
+        return this.taskDuration;
+    }
 
-  public String getTaskName() {
-    return this.taskName;
-  }
-  public String getTaskSkipped() {
-    return this.skipped;
-  }
+    public void setTaskDuration(String taskDuration) {
+        this.taskDuration = taskDuration;
+    }
 
-  public String getTaskStatus() {
-    return this.taskStatus;
-  }
+    public String getTaskName() {
+        return this.taskName;
+    }
 
-  public String getDescription(){
-    return this.description;
-  }
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
 
+    public String getTaskSkipped() {
+        return this.skipped;
+    }
 
-  public void setTaskDuration(String taskDuration) {
-    this.taskDuration = taskDuration;
-  }
+    public void setTaskSkipped(String skipped) {
+        this.skipped = skipped;
+    }
 
-  public void setTaskName(String taskName) {
-    this.taskName = taskName;
-  }
+    public String getTaskStatus() {
+        return this.taskStatus;
+    }
 
-  public void setTaskStatus(String taskStatus) {
-    this.taskStatus = taskStatus;
-  }
+    public void setTaskStatus(String taskStatus) {
+        this.taskStatus = taskStatus;
+    }
 
-  public void setTaskDescription(String description) {
-    this.description = description;
-  }
-  public void setTaskSkipped(String skipped) {
-    this.skipped = skipped;
-  }
+    public String getDescription() {
+        return this.description;
+    }
+
+    public void setTaskDescription(String description) {
+        this.description = description;
+    }
 }

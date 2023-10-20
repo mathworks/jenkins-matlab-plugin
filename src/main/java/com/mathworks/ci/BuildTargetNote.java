@@ -11,28 +11,28 @@ import java.util.regex.Pattern;
 import org.jenkinsci.Symbol;
 
 public class BuildTargetNote extends ConsoleNote {
-  public BuildTargetNote() {
-  }
+    @VisibleForTesting
+    @SuppressFBWarnings(value = "MS_SHOULD_BE_FINAL", justification = "Visible for testing")
+    public static boolean ENABLED = !Boolean.getBoolean(BuildTargetNote.class.getName() + ".disabled");
 
-  @Override
-  public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
-    MarkupText.SubText t = text.findToken(Pattern.compile("Starting"));
-    String taskName = text.subText(12,text.length()).getText();
-    if (t!=null)
-      t.addMarkup(0,t.length(),"<a id= matlab_"+taskName+" name=matlab_"+taskName+">","</a>");
-    return null;
-  }
-
-  @Extension
-  @Symbol("mbuildTarget")
-  public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {
-    public String getDisplayName() {
-      return "Build targets";
+    public BuildTargetNote() {
     }
-  }
 
-  @VisibleForTesting
-  @SuppressFBWarnings(value="MS_SHOULD_BE_FINAL", justification="Visible for testing")
-  public static boolean ENABLED = !Boolean.getBoolean(BuildTargetNote.class.getName()+".disabled");
+    @Override
+    public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
+        MarkupText.SubText t = text.findToken(Pattern.compile("Starting"));
+        String taskName = text.subText(12, text.length()).getText();
+        if (t != null)
+            t.addMarkup(0, t.length(), "<a id= matlab_" + taskName + " name=matlab_" + taskName + ">", "</a>");
+        return null;
+    }
+
+    @Extension
+    @Symbol("mbuildTarget")
+    public static final class DescriptorImpl extends ConsoleAnnotationDescriptor {
+        public String getDisplayName() {
+            return "Build targets";
+        }
+    }
 
 }
