@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
@@ -10,7 +12,6 @@
 	<artifactId>matlab</artifactId>
 	<version>2.10.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
-
 	<developers>
 		<developer>
 			<id>mathworks_ci_team</id>
@@ -18,12 +19,10 @@
 			<email>nbhoski@mathworks.com</email>
 		</developer>
 	</developers>
-	
 	<properties>
 		<jenkins.version>2.164.3</jenkins.version>
 		<java.level>8</java.level>
 	</properties>
-	
 	<name>MATLAB Plugin</name>
 	<description>Jenkins plugin for MATLAB</description>
 	<url>https://github.com/jenkinsci/matlab-plugin</url>
@@ -45,13 +44,12 @@
 			<url>https://repo.jenkins-ci.org/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
-
 	<scm>
 		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/matlab-plugin.git</developerConnection>
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
@@ -64,47 +62,41 @@
 		</dependencies>
 	</dependencyManagement>
 	<dependencies>
-	
-    <!--  Pipeline Step dependencies -->
-    
-	<dependency>
-		<groupId>org.jenkins-ci.plugins</groupId>
-		<artifactId>matrix-project</artifactId>
-	</dependency>
-
-	<dependency>
-		<groupId>org.jenkins-ci.plugins.workflow</groupId>
-		<artifactId>workflow-step-api</artifactId>
-	</dependency>
-	<dependency>
-		<groupId>org.jenkins-ci.plugins.workflow</groupId>
-		<artifactId>workflow-api</artifactId>
-	</dependency>
-	
-	<!--  Jenkins workflow test dependencies -->
-	
-	<dependency>
-		<groupId>org.jenkins-ci.plugins.workflow</groupId>
-		<artifactId>workflow-basic-steps</artifactId>	
-		<scope>test</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.jenkins-ci.plugins.workflow</groupId>
-		<artifactId>workflow-cps</artifactId>	
-		<scope>test</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.jenkins-ci.plugins.workflow</groupId>
-		<artifactId>workflow-durable-task-step</artifactId>
-		<scope>test</scope>
-	</dependency>
-	<dependency>
-		<groupId>org.jenkins-ci.plugins.workflow</groupId>
-		<artifactId>workflow-job</artifactId>	
-		<scope>test</scope>
-	</dependency>
+		<!--  Pipeline Step dependencies -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins</groupId>
+			<artifactId>matrix-project</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-step-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-api</artifactId>
+		</dependency>
+		<!--  Jenkins workflow test dependencies -->
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-basic-steps</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-cps</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-durable-task-step</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jenkins-ci.plugins.workflow</groupId>
+			<artifactId>workflow-job</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
-
 	<build>
 		<plugins>
 			<!-- Plugin to download the matlab run scripts and keep it under class 
@@ -115,17 +107,45 @@
 				<version>1.5.0</version>
 				<executions>
 					<execution>
-						<id>get-matlab-runner-scripts</id>
+						<id>get-matlab-runner-linux</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>wget</goal>
 						</goals>
 						<configuration>
-							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v0/run-matlab-command.zip</url>
-							<unpack>true</unpack>
-							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
+							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v1/glnxa64/run-matlab-command</url>
+							<unpack>false</unpack>
+							<outputDirectory>${basedir}/src/main/resources/glnxa64</outputDirectory>
 							<skipCache>true</skipCache>
-                            <overwrite>true</overwrite>
+							<overwrite>true</overwrite>
+						</configuration>
+					</execution>
+					<execution>
+						<id>get-matlab-runner-mac</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v1/maci64/run-matlab-command</url>
+							<unpack>false</unpack>
+							<outputDirectory>${basedir}/src/main/resources/maci64</outputDirectory>
+							<skipCache>true</skipCache>
+							<overwrite>true</overwrite>
+						</configuration>
+					</execution>
+					<execution>
+						<id>get-matlab-runner-windows</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>wget</goal>
+						</goals>
+						<configuration>
+							<url>https://ssd.mathworks.com/supportfiles/ci/run-matlab-command/v1/win64/run-matlab-command.exe</url>
+							<unpack>false</unpack>
+							<outputDirectory>${basedir}/src/main/resources/win64</outputDirectory>
+							<skipCache>true</skipCache>
+							<overwrite>true</overwrite>
 						</configuration>
 					</execution>
 					<execution>
@@ -139,7 +159,7 @@
 							<unpack>false</unpack>
 							<outputDirectory>${basedir}/src/main/resources</outputDirectory>
 							<skipCache>true</skipCache>
-                            <overwrite>true</overwrite>
+							<overwrite>true</overwrite>
 						</configuration>
 					</execution>
 				</executions>
@@ -203,6 +223,7 @@
 											<include>**/*.sh</include>
 											<include>**/*.txt</include>
 											<include>**/*.zip</include>
+											<include>**/run-matlab-command*</include>
 										</includes>
 										<followSymlinks>false</followSymlinks>
 									</fileset>
