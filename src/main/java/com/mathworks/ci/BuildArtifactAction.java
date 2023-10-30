@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import javax.annotation.CheckForNull;
 
 import jenkins.model.Jenkins;
@@ -31,6 +32,9 @@ public class BuildArtifactAction implements Action {
     public BuildArtifactAction(Run<?, ?> build, FilePath workspace) {
         this.build = build;
         this.workspace = workspace;
+    }
+
+    public BuildArtifactAction() {
     }
 
     @CheckForNull
@@ -66,19 +70,35 @@ public class BuildArtifactAction implements Action {
         Object obj = new JSONParser().parse(new FileReader(new File(fl.toURI())));
         JSONObject jo = (JSONObject) obj;
 
-        // getting taskDetails
-        JSONArray ja = (JSONArray) jo.get("taskDetails");
-
-
-        // iterating taskDetails
-        Iterator itr2 = ja.iterator();
-        Iterator<Map.Entry> itr1;
-
-        while (itr2.hasNext()) {
+        if (jo.get("taskDetails") instanceof JSONArray) {
+            JSONArray ja = (JSONArray) jo.get("taskDetails");
+            Iterator itr2 = ja.iterator();
+            Iterator<Map.Entry> itr1;
+            while (itr2.hasNext()) {
+                BuildArtifactData data = new BuildArtifactData();
+                itr1 = ((Map) itr2.next()).entrySet().iterator();
+                while (itr1.hasNext()) {
+                    Entry pair = itr1.next();
+                    if (pair.getKey().toString().equalsIgnoreCase("duration")) {
+                        data.setTaskDuration(pair.getValue().toString());
+                    } else if (pair.getKey().toString().equalsIgnoreCase("name")) {
+                        data.setTaskName(pair.getValue().toString());
+                    } else if (pair.getKey().toString().equalsIgnoreCase("description")) {
+                        data.setTaskDescription(pair.getValue().toString());
+                    } else if (pair.getKey().toString().equalsIgnoreCase("failed")) {
+                        data.setTaskStatus(pair.getValue().toString());
+                    } else if (pair.getKey().toString().equalsIgnoreCase("skipped")) {
+                        data.setTaskSkipped(pair.getValue().toString());
+                    }
+                }
+                artifactData.add(data);
+            }
+        } else {
+            Map ja = ((Map) jo.get("taskDetails"));
+            Iterator<Map.Entry> itr1 = ja.entrySet().iterator();
             BuildArtifactData data = new BuildArtifactData();
-            itr1 = ((Map) itr2.next()).entrySet().iterator();
             while (itr1.hasNext()) {
-                Map.Entry pair = itr1.next();
+                Entry pair = itr1.next();
                 if (pair.getKey().toString().equalsIgnoreCase("duration")) {
                     data.setTaskDuration(pair.getValue().toString());
                 } else if (pair.getKey().toString().equalsIgnoreCase("name")) {
@@ -93,10 +113,8 @@ public class BuildArtifactAction implements Action {
             }
             artifactData.add(data);
         }
-        artifactData.forEach(artifact -> System.out.println(artifact.getTaskName()));
         return artifactData;
     }
-
 
     public void setTotalcount(int totalcount) {
         this.totalcount = totalcount;
@@ -142,15 +160,28 @@ public class BuildArtifactAction implements Action {
         JSONObject jo = (JSONObject) obj;
 
         // getting taskDetails
-        JSONArray ja = (JSONArray) jo.get("taskDetails");
-
-        // iterating taskDetails
-        Iterator itr2 = ja.iterator();
-        Iterator<Map.Entry> itr1;
-
-        while (itr2.hasNext()) {
+        if (jo.get("taskDetails") instanceof JSONArray) {
+            JSONArray ja = (JSONArray) jo.get("taskDetails");
+            Iterator itr2 = ja.iterator();
+            Iterator<Map.Entry> itr1;
+            while (itr2.hasNext()) {
+                BuildArtifactData data = new BuildArtifactData();
+                itr1 = ((Map) itr2.next()).entrySet().iterator();
+                while (itr1.hasNext()) {
+                    Map.Entry pair = itr1.next();
+                    if (pair.getKey().toString().equalsIgnoreCase("failed")) {
+                        data.setTaskStatus(pair.getValue().toString());
+                    } else if (pair.getKey().toString().equalsIgnoreCase("skipped")) {
+                        data.setTaskSkipped(pair.getValue().toString());
+                    }
+                }
+                artifactData.add(data);
+                setTotalcount(artifactData.size());
+            }
+        } else {
+            Map ja = ((Map) jo.get("taskDetails"));
+            Iterator<Map.Entry> itr1 = ja.entrySet().iterator();
             BuildArtifactData data = new BuildArtifactData();
-            itr1 = ((Map) itr2.next()).entrySet().iterator();
             while (itr1.hasNext()) {
                 Map.Entry pair = itr1.next();
                 if (pair.getKey().toString().equalsIgnoreCase("failed")) {
@@ -162,6 +193,7 @@ public class BuildArtifactAction implements Action {
             artifactData.add(data);
             setTotalcount(artifactData.size());
         }
+
         // Update the FAILED and SKIPPED task count
         int failCount = 0;
         int skipCount = 0;

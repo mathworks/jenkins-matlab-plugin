@@ -56,8 +56,6 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
 
         // Invoke MATLAB build and transfer output to standard
         // Output Console
-
-
         buildResult = execMatlabCommand(workspace, launcher, listener, env, build);
         FilePath jsonFile = new FilePath(workspace, ".matlab/buildArtifact.json");
         if(jsonFile.exists()){
@@ -88,6 +86,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
 
         // Create MATLAB script
         createMatlabScriptByName(uniqeTmpFolderPath, uniqueBuildFile, workspace, build, envVars);
+        // Copy buildRunner in temp folder
+        copyFileInWorkspace("buildRunner.m","buildRunner.m",uniqeTmpFolderPath);
         ProcStarter matlabLauncher;
         BuildConsoleAnnotator bca = new BuildConsoleAnnotator(listener.getLogger(), build.getCharset());
         try {
@@ -123,59 +123,11 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         if (!tasks.trim().isEmpty()) {
             cmd += " " + tasks;
         }
-        final String runnerLine;
 
-        if (tasks.trim().isEmpty()) {
-            runnerLine = "res= p.run();";
-        } else {
-            runnerLine = "res= p.run([\"" + tasks.replaceAll(" ", "\",\"") + "\"]);";
-        }
-        String buildScript = String.join(NEW_LINE,
-                "p= buildfile;",
-                runnerLine,
-                "d = configureDictionary(\"string\",\"string\");",
-                "for pl = p.Tasks",
-                "d = insert(d,pl.Name,pl.Description);",
-                "end",
-                "fID = makeFile();",
-                "totalTask = 0;",
-
-                "fprintf(fID, '{\\n\\t\"taskDetails\":[\\n');",
-                "for task = res.TaskResults",
-                "totalTask = totalTask + 1;",
-                "fprintf(fID, '\\t%c\\n','{');",
-                "fprintf(fID, '\\t\\t\"name\":\"%s\",\\n',task.Name);",
-                "fprintf(fID, '\\t\\t\"description\":\"%s\",\\n',d(task.Name));",
-                "if task.Failed == 1",
-                "fprintf(fID, '\\t\\t\"failed\":\"%s\",\\n','true');",
-                "else",
-                "fprintf(fID, '\\t\\t\"failed\":\"%s\",\\n','false');",
-                "end",
-                "if task.Skipped == 1",
-                "fprintf(fID, '\\t\\t\"skipped\":\"%s\",\\n','true');",
-                "else",
-                "fprintf(fID, '\\t\t\"skipped\":\"%s\",\\n','false');",
-                "end",
-                "fprintf(fID, '\\t\\t\"duration\":\"%s\"\\n',task.Duration);",
-
-                "if totalTask < length(res.TaskResults)",
-                "fprintf(fID, '\\t%c%c\\n','},');",
-                "else",
-                "fprintf(fID, '\\t%c%c\\n','}');",
-                "end",
-                "end",
-                "fprintf(fID, ']\\n}');",
-                "fclose(fID);",
-
-                "function fID = makeFile()",
-                "if exist('.matlab/buildArtifact.json','file') == 2",
-                "delete '.matlab/buildArtifact.json';",
-                "end",
-                "fID = fopen('.matlab/buildArtifact.json', 'a');",
-                "end");
+        String buildScript = "buildRunner('"+tasks+"')";
 
         final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + buildScript;
+                "addpath(pwd);cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + buildScript;
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }

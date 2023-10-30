@@ -31,7 +31,7 @@ end
 
 function fID = makeFile()
 if exist('.matlab/buildArtifact.json','file') == 2
-    delete 'buildArtifact.json';
+    delete '.matlab/buildArtifact.json';
 end
 fID = fopen('.matlab/buildArtifact.json', 'a');
 end
