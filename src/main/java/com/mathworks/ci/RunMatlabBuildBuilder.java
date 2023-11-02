@@ -1,7 +1,8 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2022 The MathWorks, Inc.
+ * Copyright 2022-2023 The MathWorks, Inc.
+ *  
  */
 
 import java.io.File;
@@ -22,6 +23,7 @@ import hudson.model.TaskListener;
 import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
+import hudson.Util;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -30,15 +32,26 @@ import static com.mathworks.ci.MatlabBuilderConstants.NEW_LINE;
 public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, MatlabBuild {
     private int buildResult;
     private String tasks;
+    private StartupOptions startupOptions;
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {
+    }
+
+    @DataBoundSetter
+    public void setStartupOptions(StartupOptions startupOptions) {
+        this.startupOptions = startupOptions;
     }
 
     public String getTasks() {
         return this.tasks;
     }
 
+    public StartupOptions getStartupOptions() {
+        return this.startupOptions;
+    }
+    
+   
     // Getter and Setters to access local members
     @DataBoundSetter
     public void setTasks(String tasks) {
@@ -81,7 +94,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         final String uniqueTmpFldrName = getUniqueNameForRunnerFile();
         final String uniqueBuildFile =
                 "build_" + getUniqueNameForRunnerFile().replaceAll("-", "_");
-        final FilePath uniqeTmpFolderPath =
+        final FilePath uniqueTmpFolderPath =
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
@@ -93,7 +106,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         try {
 
             matlabLauncher = getProcessToRunMatlabCommandb(workspace, launcher, listener, envVars,
-                    "cd('" + uniqeTmpFolderPath.getRemote().replaceAll("'", "''") + "');" + uniqueBuildFile, uniqueTmpFldrName, bca);
+                    "cd('" + uniqeTmpFolderPath.getRemote().replaceAll("'", "''") + "');" + uniqueBuildFile, options, uniqueTmpFldrName, bca);
 
             listener.getLogger()
                     .println("#################### Starting command output ####################");
@@ -105,18 +118,17 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         } finally {
             bca.forceEol();
             // Cleanup the tmp directory
-            if (uniqeTmpFolderPath.exists()) {
-                uniqeTmpFolderPath.deleteRecursive();
+            if (uniqueTmpFolderPath.exists()) {
+                uniqueTmpFolderPath.deleteRecursive();
             }
         }
     }
-
 
     private void createMatlabScriptByName(FilePath uniqeTmpFolderPath, String uniqueScriptName, FilePath workspace, @Nonnull Run<?, ?> build, EnvVars envVars) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
-                new FilePath(uniqeTmpFolderPath, uniqueScriptName + ".m");
+                new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = envVars.expand(getTasks());
         String cmd = "buildtool";
 

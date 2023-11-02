@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2023 The MathWorks, Inc.
  *  
  */
 
@@ -40,7 +40,7 @@ public class RunMatlabTestsStepTest {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains("MATLAB_ROOT", build);
+        j.assertLogContains("system path", build);
     }
 
 
@@ -80,6 +80,20 @@ public class RunMatlabTestsStepTest {
                 "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("producingPDF('myresult/result.pdf')", build);
+    }
+
+    /*
+     * Verify appropriate startup options are invoked as in pipeline script
+     *
+     */
+
+    @Test
+    public void verifyStartupOptionsSameAsScript() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node {runMATLABTests(testResultsPDF:'myresult/result.pdf', startupOptions: '-nojvm -uniqueoption')}", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("-nojvm -uniqueoption", build);
     }
     
     /*
