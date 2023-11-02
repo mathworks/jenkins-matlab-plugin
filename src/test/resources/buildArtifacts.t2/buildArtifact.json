@@ -1,25 +1,9 @@
 {
-  "taskDetails": [
-    {
-      "name": "check",
-      "description": "Checks Description",
-      "failed": false,
-      "skipped": false,
-      "duration": "00:00:00"
-    },
-    {
-      "name": "show",
-      "description": "",
-      "failed": false,
-      "skipped": false,
-      "duration": "00:00:00"
-    },
-    {
-      "name": "test",
-      "description": "tests Dscription",
-      "failed": false,
-      "skipped": false,
-      "duration": "00:00:00"
-    }
-  ]
+  "taskDetails": {
+    "name": "show",
+    "description": "Test show",
+    "failed": false,
+    "skipped": true,
+    "duration": "00:02:53"
+  }
 }

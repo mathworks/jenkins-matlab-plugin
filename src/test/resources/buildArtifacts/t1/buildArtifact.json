@@ -10,7 +10,7 @@
     {
       "name": "show",
       "description": "",
-      "failed": false,
+      "failed": true,
       "skipped": false,
       "duration": "00:00:00"
     },
@@ -18,7 +18,7 @@
       "name": "test",
       "description": "tests Dscription",
       "failed": false,
-      "skipped": false,
+      "skipped": true,
       "duration": "00:00:00"
     }
   ]
