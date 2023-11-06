@@ -186,6 +186,10 @@ public class BuildArtifactAction implements Action {
         return this.build;
     }
 
+    public FilePath getWorkspace(){
+        return this.workspace;
+    }
+
     /**
      * @param owner the owner to set
      */
