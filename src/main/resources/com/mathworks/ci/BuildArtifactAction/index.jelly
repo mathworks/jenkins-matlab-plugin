@@ -74,8 +74,6 @@
 
                         <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
-                                <!-- <r:failed-test url="${it.rootUrl}/${it.urlName}"/>/jenkins/job/sidepanel_view/17/buildresults -->
-                                <!-- <r:failed-test url="${it.rootUrl}/job/sidepanel_view/17/${it.urlName}"/> -->
                                 <j:if test="${p.taskStatus !='false'}">
                                     <a href="../console#matlab_${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
                                 </j:if>
