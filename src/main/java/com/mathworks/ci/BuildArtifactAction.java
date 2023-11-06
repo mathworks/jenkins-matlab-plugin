@@ -23,6 +23,7 @@ import org.json.simple.parser.ParseException;
 
 public class BuildArtifactAction implements Action {
     private Run<?, ?> build;
+    private FilePath workspace;
     private int totalcount;
     private int skipcount;
     private int failCount;
