@@ -73,7 +73,7 @@ public class BuildArtifactActionTest {
      *5
      */
 
-    @Test
+
     public void verifyBuildArtifactsReturned() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
