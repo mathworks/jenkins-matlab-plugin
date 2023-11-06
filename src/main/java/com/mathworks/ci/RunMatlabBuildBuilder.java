@@ -5,6 +5,7 @@ package com.mathworks.ci;
  *  
  */
 
+import java.io.File;
 import java.io.IOException;
 import javax.annotation.Nonnull;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -93,8 +94,15 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         // Invoke MATLAB build and transfer output to standard
         // Output Console
 
+        buildResult = execMatlabCommand(workspace, launcher, listener, env, build);
 
-        buildResult = execMatlabCommand(workspace, launcher, listener, env);
+        //Add build result action
+        FilePath jsonFile = new FilePath(workspace, ".matlab/buildArtifact.json");
+        if(jsonFile.exists()){
+            jsonFile.copyTo(new FilePath(new File(build.getRootDir().getAbsolutePath()+"/buildArtifact.json")));
+            jsonFile.delete();
+        }
+        build.addAction(new BuildArtifactAction(build, workspace));
 
         if (buildResult != 0) {
             build.setResult(Result.FAILURE);
@@ -102,7 +110,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     }
 
     private int execMatlabCommand(FilePath workspace, Launcher launcher,
-            TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+            TaskListener listener, EnvVars envVars, @Nonnull Run<?, ?> build) throws IOException, InterruptedException {
 
         /*
          * Handle the case for using MATLAB Axis for multi conf projects by adding appropriate
@@ -117,7 +125,9 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars, build);
+        // Copy buildRunner in temp folder
+        copyFileInWorkspace("buildRunner.m","buildRunner.m",uniqueTmpFolderPath);
         ProcStarter matlabLauncher;
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
@@ -139,7 +149,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars, @Nonnull Run<?, ?> build) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
@@ -151,8 +161,10 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             cmd += " " + tasks;
         }
 
+        String buildScript = "buildRunner('"+tasks+"')";
+
         final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
+                "addpath(pwd);cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + buildScript;
 
         // Display the commands on console output for users reference
         listener.getLogger()
