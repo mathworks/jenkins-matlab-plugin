@@ -1,5 +1,6 @@
 package com.mathworks.ci;
 
+
 import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -18,17 +19,13 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
-import org.jvnet.hudson.test.TemporaryDirectoryAllocator;
 
 public class BuildArtifactActionTest {
     private FreeStyleProject project;
-    private BuildArtifactAction buildAction;
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabBuildBuilder scriptBuilder;
-    private static URL url;
-    private static String FileSeperator;
+
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
-    private TemporaryDirectoryAllocator tempd;
 
     public BuildArtifactActionTest(){
     }
@@ -40,18 +37,14 @@ public class BuildArtifactActionTest {
     @Before
     public void testSetup() throws IOException {
         this.project = jenkins.createFreeStyleProject();
-        this.buildAction = new BuildArtifactAction();
         this.scriptBuilder = new RunMatlabBuildBuilder();
         this.buildWrapper = new UseMatlabVersionBuildWrapper();
-        this.tempd = new TemporaryDirectoryAllocator();
     }
 
     @After
     public void testTearDown() {
         this.project = null;
-        this.buildAction = null;
         this.scriptBuilder = null;
-        this.tempd.disposeAsync();
     }
 
     private String getMatlabroot(String version) throws URISyntaxException {
@@ -60,7 +53,7 @@ public class BuildArtifactActionTest {
         URL matlabRootURL = Optional.ofNullable(getResource(userVersionInfo))
                 .orElseGet(() -> getResource(defaultVersionInfo));
         File matlabRoot = new File(matlabRootURL.toURI());
-        return matlabRoot.getAbsolutePath().replace(FileSeperator + VERSION_INFO_XML_FILE, "")
+        return matlabRoot.getAbsolutePath().replace(File.separator + VERSION_INFO_XML_FILE, "")
                 .replace("R2017a", version);
     }
 
@@ -73,21 +66,15 @@ public class BuildArtifactActionTest {
      *5
      */
 
-
+    @Test
     public void verifyBuildArtifactsReturned() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.setDisplayName("mutest");
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
-        FilePath artifactRoot = new FilePath(build.getWorkspace(), "/.matlab");
+        FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         int expectedSize = ba.size();
         Assert.assertEquals("The build names are not matching",3,expectedSize);
-        delfile(build.getRootDir());
     }
 
     /**
@@ -97,19 +84,13 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyFailedCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.setDisplayName("mutest");
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         String expectedStatus = ba.get(0).getTaskStatus();
         Assert.assertEquals("The task is passed","false",expectedStatus);
-        delfile(build.getRootDir());
     }
 
     /**
@@ -119,17 +100,12 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifySkipCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task is not skipped","true",ba.get(0).getTaskSkipped());
-        delfile(build.getRootDir());
     }
 
     /**
@@ -139,17 +115,12 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyDurationIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task duration is not matching","00:02:53",ba.get(0).getTaskDuration());
-        delfile(build.getRootDir());
     }
 
     /**
@@ -159,17 +130,12 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyTaskDescriptionIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task description is not matching","Test show",ba.get(0).getDescription());
-        delfile(build.getRootDir());
     }
 
     /**
@@ -179,17 +145,12 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyTaskNameIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task name is not matching","show",ba.get(0).getTaskName());
-        delfile(build.getRootDir());
     }
 
     /**
@@ -199,16 +160,11 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyTotalTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         Assert.assertEquals("Total task count is not correct",1,ac.getTotalCount());
-        delfile(build.getRootDir());
     }
 
     /**
@@ -218,16 +174,11 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyTotalTaskCountIsAccurate2() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
-        delfile(build.getRootDir());
     }
 
     /**
@@ -237,18 +188,12 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyTotalFailedTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task failed count is not correct",1,ac.getFailCount());
-        deleteArtifact(artifactRoot);
-        delfile(build.getRootDir());
     }
     /**
      *  Verify if total skipped count returned from artifact file.
@@ -257,17 +202,12 @@ public class BuildArtifactActionTest {
 
     @Test
     public void verifyTotalSkipTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        FreeStyleBuild build = getFreestyleBuild();
         BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task skip count is not correct",1,ac.getSkipCount());
-        delfile(build.getRootDir());
     }
 
 
@@ -282,21 +222,12 @@ public class BuildArtifactActionTest {
         targetFilePath.chmod(0777);
     }
 
-    private void deleteArtifact(FilePath path) throws IOException, InterruptedException {
-        FilePath af = new FilePath(path,"buildArtifact.json");
-        if(af.exists()){
-            System.out.println("***** IN ****");
-            if(af.delete()){
-                System.out.println("$$$$$ FILE DELETED $$$$$");
-            }
-        }
-    }
-    private void delfile(File path) throws IOException {
-        File fl = new File(path.getAbsolutePath(),"buildArtifact.json");
-        if(fl.exists()){
-            fl.setExecutable(true);
-            System.out.println("***** IN ****");
-            fl.delete();
-        }
+    private FreeStyleBuild getFreestyleBuild() throws ExecutionException, InterruptedException, URISyntaxException {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setTasks("");
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        return build;
     }
 }
