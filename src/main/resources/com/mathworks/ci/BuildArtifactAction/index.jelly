@@ -2,13 +2,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
   xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:r="/lib/hudson/test" xmlns:p="/lib/test">
-    <script type="text/javascript">
-        <!-- TODO make sure load doesn't happen every time -->
 
-        function chColor() {
-        document.getElementById("matlab_show").style.backgroundColor = "red";
-        }
-    </script>
     <l:layout title="MATLAB Build Results">
         <st:include  it="${it.owner}" page="sidepanel.jelly"/>
 
@@ -20,7 +14,7 @@
         <div>
             <j:choose>
                 <j:when test="${it.totalCount==0}">
-                    no tasks
+                    No tasks
                 </j:when>
                 <j:otherwise>
                     <div>
@@ -58,24 +52,20 @@
                     <th class="pane-header" style="width:6em">Task Name</th>
                     <th class="pane-header" style="width:6em">Status </th>
                     <th class="pane-header">Description</th>
-                    <th class="pane-header" style="width:6em">Duration (ms)</th>
+                    <th class="pane-header" style="width:6em">Duration (HH:MM:SS)</th>
                 </tr>
             </thead>
 
             <tbody>
-
                 <j:forEach var="p" items="${it.buildArtifact}" varStatus="status">
                     <tr>
                         <td class="pane" align="left">
-
-                            <!-- <r:failed-test url="http://localhost:5000/jenkins/job/sidepanel_view/21/buildresults/"/> -->
-                            <a href="../console#matlab_${p.taskName}">${p.taskName}</a>
+                            <a href="../console#matlab-${p.taskName}">${p.taskName}</a>
                         </td>
-
                         <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskStatus !='false'}">
-                                    <a href="../console#matlab_${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
+                                    <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
                                 </j:if>
                                 <j:if test="${p.taskStatus == 'false'}">
                                     <j:if test="${p.taskSkipped == 'false'}">

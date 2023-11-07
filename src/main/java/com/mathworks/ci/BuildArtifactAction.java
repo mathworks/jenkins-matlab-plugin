@@ -136,7 +136,6 @@ public class BuildArtifactAction implements Action {
         FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + BUILD_ARTIFACT_FILE));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
-            //Object obj = new JSONParser().parse(new FileReader(new File(fl.toURI())));
             JSONObject jo = (JSONObject) obj;
 
             // getting taskDetails
