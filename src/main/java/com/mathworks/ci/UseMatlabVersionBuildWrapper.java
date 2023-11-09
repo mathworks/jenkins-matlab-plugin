@@ -32,6 +32,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import jenkins.tasks.SimpleBuildWrapper;
+import org.kohsuke.stapler.verb.POST;
 
 public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
@@ -138,7 +139,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          * these methods are used to perform basic validation on UI elements associated with this
          * descriptor class.
          */
-
+        @POST
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
             Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             List<Function<String, FormValidation>> listOfCheckMethods =

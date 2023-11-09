@@ -43,6 +43,7 @@ import hudson.util.FormValidation.Kind;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.verb.POST;
 
 public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
@@ -148,7 +149,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
          * descriptor class.
          */
 
-
+        @POST
         public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot) {
             Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             setMatlabRoot(matlabRoot);

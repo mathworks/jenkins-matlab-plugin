@@ -4,7 +4,7 @@
  <font color="red">Using this build step is not recommended and will be removed in a feature release. Use “Run MATLAB Tests” or “Run MATLAB Command” instead.</font>   
  <f:section>
 	  <f:entry title="MATLAB root " field="matlabRoot">
-	        <f:textbox disabled="disabled"/>
+	        <f:textbox disabled="disabled" checkMethod="post" />
 	  </f:entry> 
 </f:section>
 <f:dropdownDescriptorSelector title="Test mode" field="testRunTypeList" descriptors="${descriptor.testRunTypeDescriptor}" selected="${instance.testRunTypeList}" disabled="true"/>
