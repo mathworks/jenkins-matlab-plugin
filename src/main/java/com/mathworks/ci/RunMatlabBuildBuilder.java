@@ -132,7 +132,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);
+                    "addpath('plugins');cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
