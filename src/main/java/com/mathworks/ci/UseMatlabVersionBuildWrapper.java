@@ -17,6 +17,7 @@ import java.util.function.Function;
 
 import hudson.matrix.MatrixProject;
 import hudson.model.Computer;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -139,6 +140,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          */
 
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);

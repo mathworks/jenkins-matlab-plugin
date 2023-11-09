@@ -150,6 +150,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
 
         public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             setMatlabRoot(matlabRoot);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
