@@ -8,6 +8,7 @@ package com.mathworks.ci;
  * nikhil.bhoski@mathworks.in Date : 28/03/2018 (Initial draft)
  */
 
+import hudson.security.Permission;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -151,7 +152,7 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
         @POST
         public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot) {
-            Jenkins.get().checkPermission(Jenkins.RUN_SCRIPTS);
+            Jenkins.get().checkPermission(Permission.CONFIGURE);
             setMatlabRoot(matlabRoot);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();

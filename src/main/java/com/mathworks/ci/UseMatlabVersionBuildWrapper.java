@@ -8,6 +8,7 @@ package com.mathworks.ci;
  *
  */
 
+import hudson.security.Permission;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -141,7 +142,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          */
         @POST
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
-            Jenkins.get().checkPermission(Jenkins.RUN_SCRIPTS);
+            Jenkins.get().checkPermission(Permission.CONFIGURE);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
