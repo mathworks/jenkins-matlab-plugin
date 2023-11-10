@@ -141,7 +141,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          */
         @POST
         public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
-            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            Jenkins.get().checkPermission(Jenkins.RUN_SCRIPTS);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
