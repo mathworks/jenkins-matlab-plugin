@@ -15,7 +15,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v1
         
       - name: Script
-        run: matlab -batch matlabroot
+        run: mvn -Dtest=RunMATLABCommandIT test 
       #   with:
       #     release: R2021b
       # - name: MATLAB-2022a
