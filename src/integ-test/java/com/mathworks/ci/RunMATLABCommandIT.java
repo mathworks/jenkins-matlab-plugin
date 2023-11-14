@@ -64,8 +64,8 @@ public class RunMATLABCommandIT {
 
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
-         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-         project.getBuildWrappersList().add(this.buildWrapper);
+         // this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+         // project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
         tester.setMatlabCommand(TestData.getPropValues("pwd"));
@@ -79,8 +79,8 @@ public class RunMATLABCommandIT {
     */
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
+        // this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        // project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
         tester.setMatlabCommand("version");
@@ -99,8 +99,8 @@ public class RunMATLABCommandIT {
         Axis axes = new Axis("VERSION", "R2018a", "R2018b");
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = TestData.getPropValues("matlab.invalid.root.path") + "VERSION";
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
-        matrixProject.getBuildWrappersList().add(this.buildWrapper);
+        // this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot));
+        // matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
         matrixProject.getBuildersList().add(scriptBuilder);
         Map<String, String> vals = new HashMap<String, String>();
@@ -126,8 +126,8 @@ public class RunMATLABCommandIT {
         Axis axes = new Axis("VERSION", MATLABVersion1, MATLABVersion2);
         matrixProject.setAxes(new AxisList(axes));
         String matlabRoot = MatlabRootSetup.getMatlabRoot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(MATLABVersion1, "$VERSION")));
-        matrixProject.getBuildWrappersList().add(this.buildWrapper);
+        // this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace(MATLABVersion1, "$VERSION")));
+        // matrixProject.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester = new RunMatlabCommandBuilder();
 
         tester.setMatlabCommand("version");
