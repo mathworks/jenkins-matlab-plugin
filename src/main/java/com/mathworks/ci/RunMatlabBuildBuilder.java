@@ -125,7 +125,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars, build);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         // Copy buildRunner in temp folder
         copyFileInWorkspace("buildRunner.m","buildRunner.m",uniqueTmpFolderPath);
         ProcStarter matlabLauncher;
@@ -149,17 +149,12 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars, @Nonnull Run<?, ?> build) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = envVars.expand(getTasks());
-        String cmd = "buildtool";
-
-        if (!tasks.trim().isEmpty()) {
-            cmd += " " + tasks;
-        }
 
         String buildScript = "buildRunner('"+tasks+"')";
 
@@ -168,7 +163,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
 
         // Display the commands on console output for users reference
         listener.getLogger()
-                .println("Generating MATLAB script with content:\n" + cmd + "\n");
+                .println("Generating MATLAB script with content:\n" + buildScript + "\n");
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }

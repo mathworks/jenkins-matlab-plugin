@@ -2,7 +2,7 @@
 % This is the MATLAB script which generates the JSON file.
 function  buildrunner(varargin)
 p= buildfile;
-if isempty(varargin)
+if isempty(varargin) | ''
     res = p.run();
 else
     s = string(varargin);

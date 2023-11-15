@@ -22,18 +22,24 @@ import org.json.simple.parser.ParseException;
 public class BuildArtifactAction implements Action {
     private Run<?, ?> build;
     private FilePath workspace;
-    private int totalcount;
-    private int skipcount;
+    private int totalCount;
+    private int skipCount;
     private int failCount;
     private static String ROOT_ELEMENT = "taskDetails";
-    private static String BUILD_ARTIFACT_FILE = "/buildArtifact.json";
+    private static String BUILD_ARTIFACT_FILE = "buildArtifact.json";
 
-    public BuildArtifactAction(Run<?, ?> build, FilePath workspace) {
+    public BuildArtifactAction(Run<?, ?> build, FilePath workspace)  {
         this.build = build;
         this.workspace = workspace;
-    }
 
-    public BuildArtifactAction() {
+        // Setting the counts of task when Action is created.
+        try{
+            setCounts();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e){
+            e.printStackTrace();
+        }
     }
 
     @CheckForNull
@@ -54,9 +60,9 @@ public class BuildArtifactAction implements Action {
         return "buildresults";
     }
 
-    public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException {
+    public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException, IOException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + BUILD_ARTIFACT_FILE));
+        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" + BUILD_ARTIFACT_FILE));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;
@@ -84,24 +90,21 @@ public class BuildArtifactAction implements Action {
                 artifactData.add(data);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException(e.getLocalizedMessage());
         }
-
         return artifactData;
     }
 
-    public void setTotalcount(int totalcount) {
-        this.totalcount = totalcount;
+    public void setTotalcount(int totalCount) {
+        this.totalCount = totalCount;
     }
 
-    public void setSkipcount(int skipcount) {
-        this.skipcount = skipcount;
+    public void setSkipcount(int skipCount) {
+        this.skipCount = skipCount;
     }
 
-    public int getTotalCount() throws IOException, ParseException, InterruptedException {
-        //calling setCount as this is the first method which gets invoked in index.jelly
-        setCounts();
-        return this.totalcount;
+    public int getTotalCount() {
+        return this.totalCount;
     }
 
     public int getFailCount() {
@@ -113,7 +116,7 @@ public class BuildArtifactAction implements Action {
     }
 
     public int getSkipCount() {
-        return this.skipcount;
+        return this.skipCount;
     }
 
     public Run getOwner() {
@@ -133,7 +136,7 @@ public class BuildArtifactAction implements Action {
 
     private void setCounts() throws InterruptedException, ParseException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + BUILD_ARTIFACT_FILE));
+        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" + BUILD_ARTIFACT_FILE));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;

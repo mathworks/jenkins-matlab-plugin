@@ -161,9 +161,9 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyTotalTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
+        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         Assert.assertEquals("Total task count is not correct",1,ac.getTotalCount());
     }
 
@@ -175,9 +175,9 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyTotalTaskCountIsAccurate2() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
+        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
     }
 
@@ -189,9 +189,9 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyTotalFailedTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
+        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task failed count is not correct",1,ac.getFailCount());
     }
@@ -203,9 +203,9 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyTotalSkipTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
+        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task skip count is not correct",1,ac.getSkipCount());
     }
