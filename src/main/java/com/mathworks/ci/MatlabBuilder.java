@@ -8,6 +8,8 @@ package com.mathworks.ci;
  * nikhil.bhoski@mathworks.in Date : 28/03/2018 (Initial draft)
  */
 
+import hudson.model.Item;
+import hudson.security.Permission;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,6 +21,7 @@ import java.util.function.Function;
 import javax.annotation.Nonnull;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.ArrayUtils;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -43,6 +46,7 @@ import hudson.util.FormValidation.Kind;
 import jenkins.model.Jenkins;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
+import org.kohsuke.stapler.verb.POST;
 
 public class MatlabBuilder extends Builder implements SimpleBuildStep {
 
@@ -148,8 +152,12 @@ public class MatlabBuilder extends Builder implements SimpleBuildStep {
          * descriptor class.
          */
 
-
-        public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot) {
+        @POST
+        public FormValidation doCheckMatlabRoot(@QueryParameter String matlabRoot, @AncestorInPath Item item) {
+            if (item == null) {
+                return FormValidation.ok();
+            }
+            item.checkPermission(Item.CONFIGURE);
             setMatlabRoot(matlabRoot);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
