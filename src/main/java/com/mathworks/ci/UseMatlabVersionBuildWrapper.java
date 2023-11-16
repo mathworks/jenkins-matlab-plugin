@@ -8,6 +8,7 @@ package com.mathworks.ci;
  *
  */
 
+import hudson.model.Item;
 import hudson.security.Permission;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +20,7 @@ import java.util.function.Function;
 import hudson.matrix.MatrixProject;
 import hudson.model.Computer;
 import jenkins.model.Jenkins;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -141,8 +143,11 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          * descriptor class.
          */
         @POST
-        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
-            Jenkins.get().checkPermission(Permission.CONFIGURE);
+        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder, @AncestorInPath Item item) {
+            if (item == null) {
+                return FormValidation.ok();
+            }
+            item.checkPermission(Item.CONFIGURE);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
