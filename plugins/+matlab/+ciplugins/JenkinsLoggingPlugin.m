@@ -11,7 +11,10 @@ classdef JenkinsLoggingPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
     methods (Access=protected)
         function runTask(plugin, pluginData)
             % Get task name and start log group
-            fprintf('<a id="matlab-%s" name="matlab-%s"> </a>', pluginData.Name,pluginData.Name);
+            taskName = pluginData.Name;
+            marker = sprintf("[MATLAB Build - %s]",taskName)
+            backspaces = repmat(char(8), 1, strlength(marker))
+            fprintf("%s%s",marker,backspaces)
             runTask@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
 
         end
