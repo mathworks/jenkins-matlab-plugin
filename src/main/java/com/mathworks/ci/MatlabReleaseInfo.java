@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import org.apache.commons.collections.MapUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,6 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.FilePath;
+import org.xml.sax.SAXException;
 
 public class MatlabReleaseInfo {
     private FilePath matlabRoot;
@@ -82,6 +84,15 @@ public class MatlabReleaseInfo {
                 FilePath versionFile = new FilePath(this.matlabRoot, VERSION_INFO_FILE);
                 if(versionFile.exists()) {
                     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+                    String FEATURE = null;
+                    try{
+                        FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
+                        dbFactory.setFeature(FEATURE, true);
+                        dbFactory.setXIncludeAware(false);
+
+                    } catch (ParserConfigurationException e) {
+                        throw new MatlabVersionNotFoundException("Error parsing verify if XML is valid", e);
+                    }
                     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                     Document doc = dBuilder.parse(versionFile.read());
                     

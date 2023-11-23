@@ -18,7 +18,7 @@
 				<j:choose>
 					<j:when test="${loop.last}">
 						<f:entry title="MATLAB root: " field="matlabRootFolder">
-							<f:textbox/>
+							<f:textbox checkMethod="post"/>
 						</f:entry>
 					</j:when>
 				</j:choose>
