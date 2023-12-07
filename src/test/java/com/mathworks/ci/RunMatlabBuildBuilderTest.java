@@ -131,7 +131,7 @@ public class RunMatlabBuildBuilderTest {
         scriptBuilder.setTasks("");
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("buildRunner('')", build);
+        jenkins.assertLogContains("buildtool", build);
     }
 
     /*
@@ -302,7 +302,7 @@ public class RunMatlabBuildBuilderTest {
 		vals.put("VERSION", "R2018a");
 		Combination c1 = new Combination(vals);
 		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("buildRunner", build);
+		jenkins.assertLogContains("buildtool", build);
 		jenkins.assertBuildStatus(Result.FAILURE, build);
 		vals.put("VERSION", "R2015b");
 		Combination c2 = new Combination(vals);

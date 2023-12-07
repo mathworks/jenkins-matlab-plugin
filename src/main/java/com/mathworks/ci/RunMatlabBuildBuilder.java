@@ -31,6 +31,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     private int buildResult;
     private String tasks;
     private StartupOptions startupOptions;
+    private static String DEFAULT_PLUGIN = "+matlab/+ciplugins/getDefaultPlugins.m";
+    private static String JENKINS_LOGGING_PLUGIN = "+matlab/+ciplugins/JenkinsLoggingPlugin.m";
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -126,8 +128,9 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
 
         // Create MATLAB script
         createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
-        // Copy buildRunner in temp folder
-        copyFileInWorkspace("buildRunner.m","buildRunner.m",uniqueTmpFolderPath);
+        // Copy JenkinsLogging plugin in temp folder
+        copyFileInWorkspace(DEFAULT_PLUGIN,DEFAULT_PLUGIN,uniqueTmpFolderPath);
+        copyFileInWorkspace(JENKINS_LOGGING_PLUGIN,JENKINS_LOGGING_PLUGIN,uniqueTmpFolderPath);
         ProcStarter matlabLauncher;
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
@@ -156,14 +159,21 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = envVars.expand(getTasks());
 
-        String buildScript = "buildRunner('"+tasks+"')";
+        // Set ENV variable to override the default plugin list
+        envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "matlab.ciplugins.getDefaultPlugins");
+
+        String cmd = "buildtool";
+
+        if (!tasks.trim().isEmpty()) {
+            cmd += " " + tasks;
+        }
 
         final String matlabCommandFileContent =
-                "addpath(pwd);cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + buildScript;
+                "addpath(pwd);cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()
-                .println("Generating MATLAB script with content:\n" + buildScript + "\n");
+                .println("Generating MATLAB script with content:\n" + cmd + "\n");
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }
