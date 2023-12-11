@@ -9,8 +9,8 @@
     <p><a href="buildresults">MATLAB Build Results</a></p>
     <p>This build report includes <font color="Blue"><b>${it.totalCount} tasks.</b></font></p>
     <ol>
-      <li><p>Number of failed tasks: <font color="red"><b>${it.failCount} </b></font></p></li>>
-      <li><p>Number of skipped tasks: <font color="orange"><b>${it.skipCount} </b></font></p></li>>
+      <li><p>Number of failed tasks: <font color="red"><b>${it.failCount} </b></font></p></li>
+      <li><p>Number of skipped tasks: <font color="orange"><b>${it.skipCount} </b></font></p></li>
     </ol>
   </t:summary>
 </j:jelly>
