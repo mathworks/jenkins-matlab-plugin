@@ -188,16 +188,25 @@ public class BuildArtifactAction implements Action {
 
     private void iterateAllTaskAttributes(Entry pair, BuildArtifactData data) {
         // Iterates across all task attributes and updates
-        if (pair.getKey().toString().equalsIgnoreCase("duration")) {
-            data.setTaskDuration(pair.getValue().toString());
-        } else if (pair.getKey().toString().equalsIgnoreCase("name")) {
-            data.setTaskName(pair.getValue().toString());
-        } else if (pair.getKey().toString().equalsIgnoreCase("description")) {
-            data.setTaskDescription(pair.getValue().toString());
-        } else if (pair.getKey().toString().equalsIgnoreCase("failed")) {
-            data.setTaskStatus(pair.getValue().toString());
-        } else if (pair.getKey().toString().equalsIgnoreCase("skipped")) {
-            data.setTaskSkipped(pair.getValue().toString());
+        String key = pair.getKey().toString();
+        switch(key.toLowerCase()){
+            case "duration":
+                data.setTaskDuration(pair.getValue().toString());
+                break;
+            case "name" :
+                data.setTaskName(pair.getValue().toString());
+                break;
+            case "description":
+                data.setTaskDescription(pair.getValue().toString());
+                break;
+            case "failed":
+                data.setTaskStatus(pair.getValue().toString());
+                break;
+            case "skipped":
+                data.setTaskSkipped(pair.getValue().toString());
+                break;
+            default :
+                break;
         }
     }
 
