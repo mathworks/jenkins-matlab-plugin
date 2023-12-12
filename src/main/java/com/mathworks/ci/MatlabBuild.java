@@ -9,6 +9,9 @@ package com.mathworks.ci;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang.RandomStringUtils;
 import hudson.EnvVars;
 import hudson.FilePath;
@@ -59,7 +62,12 @@ public interface MatlabBuild {
 
             args.add(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName);
             args.add(matlabCommand);
-            args.add(startupOpts.split(" "));
+            
+            List<String> opts = new ArrayList<String>();
+            opts.addAll(Arrays.asList(startupOpts.split(" ")));
+            opts.removeIf(s -> s.isEmpty());
+
+            args.add(opts);
 
             matlabLauncher = launcher.launch().envs(envVars).cmds(args).stdout(listener);
 
