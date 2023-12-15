@@ -68,12 +68,12 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, listener);
         ProcStarter matlabLauncher;
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueBuildFile, startupOptions, uniqueTmpFldrName);
+                    "setenv('MW_ORIG_WORKING_FOLDER', cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"')); "+ uniqueBuildFile, startupOptions, uniqueTmpFldrName);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();
@@ -86,7 +86,7 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, TaskListener listener) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabBuildFile =
@@ -98,7 +98,7 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
             cmd += " " + tasks;
         }
         final String matlabBuildFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
+                "cd(getenv('MW_ORIG_WORKING_FOLDER'));\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()
