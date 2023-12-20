@@ -1,10 +1,10 @@
-classdef JenkinsLoggingPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
+classdef BuildJsonCreator < matlab.buildtool.plugins.BuildRunnerPlugin
 %
 
 %   Copyright 2023 The MathWorks, Inc.
 
     methods
-        function obj = JenkinsLoggingPlugin()
+        function obj = BuildJsonCreator()
         end
     end
 

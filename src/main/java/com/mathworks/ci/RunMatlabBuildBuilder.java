@@ -23,7 +23,6 @@ import hudson.model.TaskListener;
 import hudson.model.Computer;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import hudson.Util;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
@@ -32,7 +31,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     private String tasks;
     private StartupOptions startupOptions;
     private static String DEFAULT_PLUGIN = "+matlab/+ciplugins/getDefaultPlugins.m";
-    private static String JENKINS_LOGGING_PLUGIN = "+matlab/+ciplugins/JenkinsLoggingPlugin.m";
+    private static String BUILD_JSON_PLUGIN = "+matlab/+ciplugins/BuildJsonCreator.m";
+    private static String JENKINS_LOGGING_PLUGIN = "+matlab/+ciplugins/BuildLogUpdater.m";
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -130,7 +130,9 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
         // Copy JenkinsLogging plugin in temp folder
         copyFileInWorkspace(DEFAULT_PLUGIN,DEFAULT_PLUGIN,uniqueTmpFolderPath);
+        copyFileInWorkspace(BUILD_JSON_PLUGIN,BUILD_JSON_PLUGIN,uniqueTmpFolderPath);
         copyFileInWorkspace(JENKINS_LOGGING_PLUGIN,JENKINS_LOGGING_PLUGIN,uniqueTmpFolderPath);
+
         ProcStarter matlabLauncher;
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
