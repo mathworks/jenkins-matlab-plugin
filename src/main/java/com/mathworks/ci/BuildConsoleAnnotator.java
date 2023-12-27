@@ -18,8 +18,6 @@ public class BuildConsoleAnnotator extends LineTransformationOutputStream {
 
     private final byte[][] antNotes;
 
-    private boolean seenEmptyLine;
-
     public BuildConsoleAnnotator(OutputStream out, Charset charset) {
         this(out, charset, createBuildNotes());
     }
@@ -43,10 +41,6 @@ public class BuildConsoleAnnotator extends LineTransformationOutputStream {
 
     }
 
-    public static ConsoleLogFilter asConsoleLogFilter() {
-        return new ConsoleLogFilterImpl();
-    }
-
     @Override
     protected void eol(byte[] b, int len) throws IOException {
         String line = charset.decode(ByteBuffer.wrap(b, 0, len)).toString();
@@ -55,7 +49,6 @@ public class BuildConsoleAnnotator extends LineTransformationOutputStream {
         if (line.contains("[MATLAB-Build-"))
             out.write(antNotes[0]);
 
-        seenEmptyLine = line.length() == 0;
         out.write(b, 0, len);
     }
 
