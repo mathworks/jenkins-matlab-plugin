@@ -32,9 +32,9 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     private int buildResult;
     private String tasks;
     private StartupOptions startupOptions;
-    private static String DEFAULT_PLUGIN = "+matlab/+ciplugins/getDefaultPlugins.m";
-    private static String BUILD_JSON_PLUGIN = "+matlab/+ciplugins/BuildJsonCreator.m";
-    private static String JENKINS_LOGGING_PLUGIN = "+matlab/+ciplugins/BuildLogUpdater.m";
+    private static String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
+    private static String BUILD_JSON_PLUGIN = "+ciplugins/+jenkins/BuildJsonCreator.m";
+    private static String JENKINS_LOGGING_PLUGIN = "+ciplugins/+jenkins/BuildLogUpdater.m";
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -167,7 +167,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         final String tasks = envVars.expand(getTasks());
 
         // Set ENV variable to override the default plugin list
-        envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "matlab.ciplugins.getDefaultPlugins");
+        envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "ciplugins.jenkins.getDefaultPlugins");
 
         String cmd = "buildtool";
 
