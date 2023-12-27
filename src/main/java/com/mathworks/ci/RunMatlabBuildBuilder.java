@@ -5,6 +5,8 @@ package com.mathworks.ci;
  *  
  */
 
+import hudson.util.ArgumentListBuilder;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import javax.annotation.Nonnull;
@@ -134,9 +136,10 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         copyFileInWorkspace(JENKINS_LOGGING_PLUGIN,JENKINS_LOGGING_PLUGIN,uniqueTmpFolderPath);
 
         ProcStarter matlabLauncher;
+        BuildConsoleAnnotator bca = new BuildConsoleAnnotator(listener.getLogger(), build.getCharset());
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, bca, envVars,
                     "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);
             
             listener.getLogger()
@@ -144,9 +147,11 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             return matlabLauncher.pwd(workspace).join();
 
         } catch (Exception e) {
+            bca.close();
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
+            bca.close();
             // Cleanup the tmp directory
             if (uniqueTmpFolderPath.exists()) {
                 uniqueTmpFolderPath.deleteRecursive();
@@ -178,5 +183,58 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
                 .println("Generating MATLAB script with content:\n" + cmd + "\n");
 
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
+    }
+
+    public ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
+                                                    Launcher launcher, BuildConsoleAnnotator bca, EnvVars envVars, String matlabCommand, String startupOpts, String uniqueName)
+            throws IOException, InterruptedException {
+        // Get node specific temp .matlab directory to copy matlab runner script
+        FilePath targetWorkspace;
+        ProcStarter matlabLauncher;
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        if (launcher.isUnix()) {
+            targetWorkspace = new FilePath(launcher.getChannel(),
+                    workspace.getRemote() + "/" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+
+            // Determine whether we're on Mac on Linux
+            ByteArrayOutputStream kernelStream = new ByteArrayOutputStream();
+            launcher.launch()
+                    .cmds("uname")
+                    .masks(true)
+                    .stdout(kernelStream)
+                    .join();
+
+            String binaryName;
+            String runnerName = uniqueName + "/run-matlab-command";
+            if (kernelStream.toString("UTF-8").contains("Linux")) {
+                binaryName = "glnxa64/run-matlab-command";
+            } else {
+                binaryName = "maci64/run-matlab-command";
+            }
+
+            args.add(MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME + "/" + runnerName);
+            args.add(matlabCommand);
+            args.add(startupOpts.split(" "));
+
+            matlabLauncher = launcher.launch().envs(envVars).cmds(args).stdout(bca);
+
+            // Copy runner for linux platform in workspace.
+            copyFileInWorkspace(binaryName, runnerName, targetWorkspace);
+        } else {
+            targetWorkspace = new FilePath(launcher.getChannel(),
+                    workspace.getRemote() + "\\" + MatlabBuilderConstants.TEMP_MATLAB_FOLDER_NAME);
+
+            final String runnerName = uniqueName + "\\run-matlab-command.exe";
+
+            args.add(targetWorkspace.toString() + "\\" + runnerName, "\"" + matlabCommand + "\"");
+            args.add(startupOpts.split(" "));
+
+            matlabLauncher = launcher.launch().envs(envVars).cmds(args).stdout(bca);
+
+            // Copy runner for Windows platform in workspace.
+            copyFileInWorkspace("win64/run-matlab-command.exe", runnerName,
+                    targetWorkspace);
+        }
+        return matlabLauncher;
     }
 }
