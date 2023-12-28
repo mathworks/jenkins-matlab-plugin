@@ -147,11 +147,10 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             return matlabLauncher.pwd(workspace).join();
 
         } catch (Exception e) {
-            bca.close();
             listener.getLogger().println(e.getMessage());
             return 1;
         } finally {
-            bca.close();
+            bca.forceEol();
             // Cleanup the tmp directory
             if (uniqueTmpFolderPath.exists()) {
                 uniqueTmpFolderPath.deleteRecursive();

@@ -175,9 +175,9 @@ public class BuildArtifactAction implements Action {
         int failCount = 0;
         int skipCount = 0;
         for (BuildArtifactData data : artifactData) {
-            if (data.getTaskStatus().equalsIgnoreCase("true")) {
+            if (data.getTaskStatus()) {
                 failCount = failCount + 1;
-            } else if (data.getTaskStatus().equalsIgnoreCase("false") && data.getTaskSkipped().equalsIgnoreCase("true")) {
+            } else if (!data.getTaskStatus() && data.getTaskSkipped()) {
                 skipCount = skipCount + 1;
             }
         }
@@ -200,10 +200,10 @@ public class BuildArtifactAction implements Action {
                 data.setTaskDescription(pair.getValue().toString());
                 break;
             case "failed":
-                data.setTaskStatus(pair.getValue().toString());
+                data.setTaskStatus((Boolean) pair.getValue());
                 break;
             case "skipped":
-                data.setTaskSkipped(pair.getValue().toString());
+                data.setTaskSkipped((Boolean) pair.getValue());
                 break;
             default :
                 break;
@@ -212,9 +212,9 @@ public class BuildArtifactAction implements Action {
 
     private void iterateFailedSkipped(Entry pair, BuildArtifactData data) {
         if (pair.getKey().toString().equalsIgnoreCase("failed")) {
-            data.setTaskStatus(pair.getValue().toString());
+            data.setTaskStatus((Boolean) pair.getValue());
         } else if (pair.getKey().toString().equalsIgnoreCase("skipped")) {
-            data.setTaskSkipped(pair.getValue().toString());
+            data.setTaskSkipped((Boolean) pair.getValue());
         }
     }
 }

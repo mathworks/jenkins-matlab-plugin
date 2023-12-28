@@ -64,15 +64,15 @@
                         </td>
                         <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
-                                <j:if test="${p.taskStatus !='false'}">
+                                <j:if test="${p.taskStatus != false}">
                                     <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
                                 </j:if>
-                                <j:if test="${p.taskStatus == 'false'}">
-                                    <j:if test="${p.taskSkipped == 'false'}">
+                                <j:if test="${p.taskStatus == false}">
+                                    <j:if test="${p.taskSkipped == false}">
                                         <font color="#729FCF"> PASSED </font>
                                     </j:if>
                                 </j:if>
-                                <j:if test="${p.taskSkipped == 'true'}">
+                                <j:if test="${p.taskSkipped == true}">
                                     <font color="#FCE94F"> SKIPPED </font>
                                 </j:if>
                             </span>

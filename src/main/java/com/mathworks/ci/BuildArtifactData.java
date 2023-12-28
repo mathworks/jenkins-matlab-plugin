@@ -4,10 +4,10 @@ public class BuildArtifactData {
 
     private String taskName;
     private String taskDuration;
-    private String taskStatus;
+    private boolean taskStatus;
 
     private String description;
-    private String skipped;
+    private boolean skipped;
 
     public BuildArtifactData() {
     }
@@ -29,19 +29,19 @@ public class BuildArtifactData {
         this.taskName = taskName;
     }
 
-    public String getTaskSkipped() {
+    public boolean getTaskSkipped() {
         return this.skipped;
     }
 
-    public void setTaskSkipped(String skipped) {
+    public void setTaskSkipped(boolean skipped) {
         this.skipped = skipped;
     }
 
-    public String getTaskStatus() {
+    public boolean getTaskStatus() {
         return this.taskStatus;
     }
 
-    public void setTaskStatus(String taskStatus) {
+    public void setTaskStatus(boolean taskStatus) {
         this.taskStatus = taskStatus;
     }
 
