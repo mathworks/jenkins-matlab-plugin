@@ -105,7 +105,7 @@ public class BuildArtifactActionTest {
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task is not skipped","true",ba.get(0).getTaskSkipped());
+        Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
     }
 
     /**
