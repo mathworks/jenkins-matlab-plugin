@@ -69,12 +69,12 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, workspace, listener);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, listener);
         ProcStarter matlabLauncher;
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'); "+ uniqueCommandFile, startupOptions, uniqueTmpFldrName);
+                    "setenv('MW_ORIG_WORKING_FOLDER', cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"')); "+ uniqueCommandFile, startupOptions, uniqueTmpFldrName);
             listener.getLogger()
                     .println("#################### Starting command output ####################");
             return matlabLauncher.pwd(workspace).join();
@@ -87,14 +87,14 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, TaskListener listener) throws IOException, InterruptedException {
         
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String cmd = getContext().get(EnvVars.class).expand(getCommand());
         final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
+                "cd(getenv('MW_ORIG_WORKING_FOLDER'));\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()

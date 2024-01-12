@@ -8,6 +8,8 @@ package com.mathworks.ci;
  *
  */
 
+import hudson.model.Item;
+import hudson.security.Permission;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.function.Function;
 
 import hudson.matrix.MatrixProject;
 import hudson.model.Computer;
+import jenkins.model.Jenkins;
+import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
@@ -31,6 +35,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildWrapperDescriptor;
 import hudson.util.FormValidation;
 import jenkins.tasks.SimpleBuildWrapper;
+import org.kohsuke.stapler.verb.POST;
 
 public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
@@ -137,8 +142,12 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
          * these methods are used to perform basic validation on UI elements associated with this
          * descriptor class.
          */
-
-        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder) {
+        @POST
+        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder, @AncestorInPath Item item) {
+            if (item == null) {
+                return FormValidation.ok();
+            }
+            item.checkPermission(Item.CONFIGURE);
             List<Function<String, FormValidation>> listOfCheckMethods =
                     new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);

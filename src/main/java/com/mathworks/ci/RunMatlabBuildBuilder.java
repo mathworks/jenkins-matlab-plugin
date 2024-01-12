@@ -134,13 +134,14 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         copyFileInWorkspace(DEFAULT_PLUGIN,DEFAULT_PLUGIN,uniqueTmpFolderPath);
         copyFileInWorkspace(BUILD_JSON_PLUGIN,BUILD_JSON_PLUGIN,uniqueTmpFolderPath);
         copyFileInWorkspace(JENKINS_LOGGING_PLUGIN,JENKINS_LOGGING_PLUGIN,uniqueTmpFolderPath);
-
+      
         ProcStarter matlabLauncher;
         BuildConsoleAnnotator bca = new BuildConsoleAnnotator(listener.getLogger(), build.getCharset());
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, bca, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueBuildFile, options, uniqueTmpFldrName);
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+                    "setenv('MW_ORIG_WORKING_FOLDER', cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'));"+ uniqueBuildFile, options, uniqueTmpFldrName);
+
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
@@ -158,7 +159,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
 
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
@@ -175,7 +176,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         }
 
         final String matlabCommandFileContent =
-                "addpath(pwd);cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
+                "addpath(pwd);cd(getenv('MW_ORIG_WORKING_FOLDER'));\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()
