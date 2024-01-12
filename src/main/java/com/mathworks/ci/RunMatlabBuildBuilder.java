@@ -129,7 +129,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, workspace, listener, envVars);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, listener, envVars);
         // Copy JenkinsLogging plugin in temp folder
         copyFileInWorkspace(DEFAULT_PLUGIN,DEFAULT_PLUGIN,uniqueTmpFolderPath);
         copyFileInWorkspace(BUILD_JSON_PLUGIN,BUILD_JSON_PLUGIN,uniqueTmpFolderPath);
