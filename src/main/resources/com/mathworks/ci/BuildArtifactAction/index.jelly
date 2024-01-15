@@ -22,7 +22,6 @@
                         <j:if test="${prev!=null}">
                             (${h.getDiffString(it.failCount-prev.failCount)})
                         </j:if>
-                        <!-- Only show skips if there are some since they don't make sense for JUnit, only for TestNG. -->
                         <j:if test="${it.skipCount > 0}">
                             , Skipped ${(it.skipCount)}
                             <j:if test="${prev!=null}">
