@@ -152,6 +152,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             return 1;
         } finally {
             bca.forceEol();
+            bca.close();
             // Cleanup the tmp directory
             if (uniqueTmpFolderPath.exists()) {
                 uniqueTmpFolderPath.deleteRecursive();
