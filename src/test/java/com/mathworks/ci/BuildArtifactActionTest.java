@@ -89,7 +89,7 @@ public class BuildArtifactActionTest {
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        boolean expectedStatus = ba.get(0).getTaskStatus();
+        boolean expectedStatus = ba.get(0).getTaskFailed();
         Assert.assertEquals("The task is passed",false,expectedStatus);
     }
 
@@ -135,7 +135,7 @@ public class BuildArtifactActionTest {
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task description is not matching","Test show",ba.get(0).getDescription());
+        Assert.assertEquals("The task description is not matching","Test show",ba.get(0).getTaskDescription());
     }
 
     /**

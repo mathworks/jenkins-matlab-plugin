@@ -25,10 +25,10 @@ public class BuildArtifactAction implements Action {
     private int totalCount;
     private int skipCount;
     private int failCount;
-    private static String ROOT_ELEMENT = "taskDetails";
-    private static String BUILD_ARTIFACT_FILE = "buildArtifact.json";
+    private static final String ROOT_ELEMENT = "taskDetails";
+    private static final String BUILD_ARTIFACT_FILE = "buildArtifact.json";
 
-    public BuildArtifactAction(Run<?, ?> build, FilePath workspace)  {
+    public BuildArtifactAction(Run<?, ?> build, FilePath workspace) {
         this.build = build;
         this.workspace = workspace;
 
@@ -36,9 +36,9 @@ public class BuildArtifactAction implements Action {
         try{
             setCounts();
         } catch (ParseException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         } catch (InterruptedException e){
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
@@ -99,7 +99,7 @@ public class BuildArtifactAction implements Action {
         this.totalCount = totalCount;
     }
 
-    public void setSkipcount(int skipCount) {
+    public void setSkipCount(int skipCount) {
         this.skipCount = skipCount;
     }
 
@@ -175,15 +175,15 @@ public class BuildArtifactAction implements Action {
         int failCount = 0;
         int skipCount = 0;
         for (BuildArtifactData data : artifactData) {
-            if (data.getTaskStatus()) {
+            if (data.getTaskFailed()) {
                 failCount = failCount + 1;
-            } else if (!data.getTaskStatus() && data.getTaskSkipped()) {
+            } else if (data.getTaskSkipped()) {
                 skipCount = skipCount + 1;
             }
         }
         // Set count for each failed and skipped tasks
         setFailCount(failCount);
-        setSkipcount(skipCount);
+        setSkipCount(skipCount);
     }
 
     private void iterateAllTaskAttributes(Entry pair, BuildArtifactData data) {
@@ -200,7 +200,7 @@ public class BuildArtifactAction implements Action {
                 data.setTaskDescription(pair.getValue().toString());
                 break;
             case "failed":
-                data.setTaskStatus((Boolean) pair.getValue());
+                data.setTaskFailed((Boolean) pair.getValue());
                 break;
             case "skipped":
                 data.setTaskSkipped((Boolean) pair.getValue());
@@ -212,7 +212,7 @@ public class BuildArtifactAction implements Action {
 
     private void iterateFailedSkipped(Entry pair, BuildArtifactData data) {
         if (pair.getKey().toString().equalsIgnoreCase("failed")) {
-            data.setTaskStatus((Boolean) pair.getValue());
+            data.setTaskFailed((Boolean) pair.getValue());
         } else if (pair.getKey().toString().equalsIgnoreCase("skipped")) {
             data.setTaskSkipped((Boolean) pair.getValue());
         }
