@@ -33,7 +33,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     private String tasks;
     private StartupOptions startupOptions;
     private static String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
-    private static String BUILD_JSON_PLUGIN = "+ciplugins/+jenkins/BuildJsonCreator.m";
+    private static String BUILD_JSON_PLUGIN = "+ciplugins/+jenkins/BuildReportPlugin.m";
     private static String JENKINS_LOGGING_PLUGIN = "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
 
     @DataBoundConstructor

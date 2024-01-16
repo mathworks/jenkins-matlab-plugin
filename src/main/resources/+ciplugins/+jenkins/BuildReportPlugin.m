@@ -1,22 +1,12 @@
-classdef BuildJsonCreator < matlab.buildtool.plugins.BuildRunnerPlugin
-%
+classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
 
-%   Copyright 2023 The MathWorks, Inc.
-
-    methods
-        function obj = BuildJsonCreator()
-        end
-    end
+%   Copyright 2024 The MathWorks, Inc.
 
     methods (Access=protected)
 
         function runTaskGraph(plugin, pluginData)
-            % Run task graph
             runTaskGraph@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
-            if exist('.matlab/buildArtifact.json','file') == 2
-                delete '.matlab/buildArtifact.json';
-            end
-            fID = fopen('.matlab/buildArtifact.json', 'a');
+            fID = fopen('.matlab/buildArtifact.json', 'w');
             taskDetails = struct();
             for idx = 1:numel(pluginData.TaskResults)
                 taskDetails(idx).name = pluginData.TaskResults(idx).Name;
@@ -32,5 +22,4 @@ classdef BuildJsonCreator < matlab.buildtool.plugins.BuildRunnerPlugin
         end
 
     end
-
-    end
+end
