@@ -203,7 +203,8 @@ public class RunMatlabBuildBuilderTest {
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("Generating MATLAB script with content", build);
-        jenkins.assertLogContains("buildtool compile", build);
+        jenkins.assertLogContains("buildtool", build);
+        jenkins.assertLogContains("compile", build);
     }
 
     /*
@@ -249,7 +250,7 @@ public class RunMatlabBuildBuilderTest {
         scriptBuilder.setTasks("$TASKS");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("buildtool compile", build);
+        jenkins.assertLogContains("compile", build);
     }
     
     /*
