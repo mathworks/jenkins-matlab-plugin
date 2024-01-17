@@ -33,8 +33,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     private String tasks;
     private StartupOptions startupOptions;
     private static String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
-    private static String BUILD_JSON_PLUGIN = "+ciplugins/+jenkins/BuildReportPlugin.m";
-    private static String JENKINS_LOGGING_PLUGIN = "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
+    private static String BUILD_REPORT_PLUGIN = "+ciplugins/+jenkins/BuildReportPlugin.m";
+    private static String TASK_RUN_PROGRESS_PLUGIN = "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
 
     @DataBoundConstructor
     public RunMatlabBuildBuilder() {}
@@ -132,8 +132,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         createMatlabScriptByName(uniqueTmpFolderPath, uniqueBuildFile, listener, envVars);
         // Copy JenkinsLogging plugin in temp folder
         copyFileInWorkspace(DEFAULT_PLUGIN,DEFAULT_PLUGIN,uniqueTmpFolderPath);
-        copyFileInWorkspace(BUILD_JSON_PLUGIN,BUILD_JSON_PLUGIN,uniqueTmpFolderPath);
-        copyFileInWorkspace(JENKINS_LOGGING_PLUGIN,JENKINS_LOGGING_PLUGIN,uniqueTmpFolderPath);
+        copyFileInWorkspace(BUILD_REPORT_PLUGIN,BUILD_REPORT_PLUGIN,uniqueTmpFolderPath);
+        copyFileInWorkspace(TASK_RUN_PROGRESS_PLUGIN,TASK_RUN_PROGRESS_PLUGIN,uniqueTmpFolderPath);
       
         ProcStarter matlabLauncher;
         BuildConsoleAnnotator bca = new BuildConsoleAnnotator(listener.getLogger(), build.getCharset());
