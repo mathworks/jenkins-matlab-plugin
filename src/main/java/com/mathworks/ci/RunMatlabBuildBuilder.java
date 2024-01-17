@@ -151,6 +151,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, bca, envVars,
                     "setenv('MW_ORIG_WORKING_FOLDER', cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'));"+ uniqueBuildFile, options, uniqueTmpFldrName);
+
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
