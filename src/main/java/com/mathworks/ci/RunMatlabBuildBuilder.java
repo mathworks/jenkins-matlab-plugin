@@ -139,7 +139,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         BuildConsoleAnnotator bca = new BuildConsoleAnnotator(listener.getLogger(), build.getCharset());
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
         try {
-            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
+            matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, bca, envVars,
                     "setenv('MW_ORIG_WORKING_FOLDER', cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'));"+ uniqueBuildFile, options, uniqueTmpFldrName);
 
             
@@ -152,7 +152,6 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
             return 1;
         } finally {
             bca.forceEol();
-            bca.close();
             // Cleanup the tmp directory
             if (uniqueTmpFolderPath.exists()) {
                 uniqueTmpFolderPath.deleteRecursive();
@@ -186,7 +185,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         matlabCommandFile.write(matlabCommandFileContent, "UTF-8");
     }
 
-    public ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
+
+    private ProcStarter getProcessToRunMatlabCommand(FilePath workspace,
                                                     Launcher launcher, BuildConsoleAnnotator bca, EnvVars envVars, String matlabCommand, String startupOpts, String uniqueName)
             throws IOException, InterruptedException {
         // Get node specific temp .matlab directory to copy matlab runner script
