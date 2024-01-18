@@ -59,14 +59,14 @@
                 <j:forEach var="p" items="${it.buildArtifact}" varStatus="status">
                     <tr>
                         <td class="pane" align="left">
-                            <a href="../console#matlab-${p.taskName}">${p.taskName}</a>
+                            <a href="../console#matlab-${p.taskName}]">${p.taskName}</a>
                         </td>
                         <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
-                                <j:if test="${p.taskStatus != false}">
-                                    <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
+                                <j:if test="${p.taskFailed != false}">
+                                    <a href="../console#matlab-${p.taskName}]"><font color="#EF2929"> FAILED </font> </a>
                                 </j:if>
-                                <j:if test="${p.taskStatus == false}">
+                                <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">
                                         <font color="#729FCF"> PASSED </font>
                                     </j:if>
@@ -78,7 +78,7 @@
                         </td>
                         <td class="pane" style="width:10em">
                             <span class="${pst.cssClass}">
-                                ${p.description}
+                                ${p.taskDescription}
                             </span>
                         </td>
                         <td class="pane no-wrap" style="width:6em" data="${p.duration}"> ${p.taskDuration}</td>
