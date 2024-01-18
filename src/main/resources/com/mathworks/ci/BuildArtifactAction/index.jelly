@@ -59,7 +59,7 @@
                 <j:forEach var="p" items="${it.buildArtifact}" varStatus="status">
                     <tr>
                         <td class="pane" align="left">
-                            <a href="../console#matlab-${p.taskName}">${p.taskName}</a>
+                            <a href="../console#matlab-${p.taskName}]">${p.taskName}</a>
                         </td>
                         <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
