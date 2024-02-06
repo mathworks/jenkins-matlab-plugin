@@ -6,7 +6,7 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
 
         function runTaskGraph(plugin, pluginData)
             runTaskGraph@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
-            fID = fopen('.matlab/buildArtifact.json', 'w');
+            fID = fopen(fullfile(getenv("WORKSPACE"),'.matlab/buildArtifact.json'), 'w');
             taskDetails = struct();
             for idx = 1:numel(pluginData.TaskResults)
                 taskDetails(idx).name = pluginData.TaskResults(idx).Name;
