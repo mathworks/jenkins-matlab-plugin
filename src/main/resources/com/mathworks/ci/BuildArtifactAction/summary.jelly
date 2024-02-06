@@ -7,6 +7,11 @@
   xmlns:i="jelly:fmt">
   <t:summary icon="document.png">
     <p><a href="buildresults">MATLAB Build Results</a></p>
+    <span class="${pst.cssClass}">
+      <j:if test="${it.totalCount == 0}">
+        <font color="#EF2929"><h5> Zero task indicates either none of the task ran from buildfile or MATLAB version does not support the feature</h5></font>
+      </j:if>
+    </span>
     <p>This build report includes <font color="Blue"><b>${it.totalCount} tasks.</b></font></p>
     <ol>
       <li><p>Number of failed tasks: <font color="red"><b>${it.failCount} </b></font></p></li>
