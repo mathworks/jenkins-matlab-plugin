@@ -9,7 +9,7 @@
     <p><a href="buildresults">MATLAB Build Results</a></p>
     <span class="${pst.cssClass}">
       <j:if test="${it.totalCount == 0}">
-        <font color="#EF2929"><h5> Zero task indicates either none of the task ran from buildfile or MATLAB version does not support the feature</h5></font>
+        <font color="#EF2929"><h5> Make sure that you are using MATLAB R2022b or later and that your build file contains no errors.</h5></font>
       </j:if>
     </span>
     <p>This build report includes <font color="Blue"><b>${it.totalCount} tasks.</b></font></p>
