@@ -9,4 +9,8 @@
             <f:textbox/>
       </f:entry>
 
+      <f:entry field="buildOptions" title="buildOptions: ">
+            <f:textbox/>
+      </f:entry>
+
 </j:jelly>

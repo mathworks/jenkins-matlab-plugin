@@ -32,6 +32,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     private int buildResult;
     private String tasks;
     private StartupOptions startupOptions;
+    private BuildOptions buildOptions;
     private static String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
     private static String BUILD_REPORT_PLUGIN = "+ciplugins/+jenkins/BuildReportPlugin.m";
     private static String TASK_RUN_PROGRESS_PLUGIN = "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
@@ -50,12 +51,21 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         this.startupOptions = startupOptions;
     }
 
+    @DataBoundSetter
+    public void setBuildOptions ( BuildOptions buildOptions) {
+        this.buildOptions = buildOptions;
+    }
+
     public String getTasks() {
         return this.tasks;
     }
 
     public StartupOptions getStartupOptions() {
         return this.startupOptions;
+    }
+
+    public BuildOptions getBuildOptions() {
+        return this.buildOptions;
     }
     
     @Extension
@@ -165,6 +175,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         final FilePath matlabCommandFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = envVars.expand(getTasks());
+        final String buildOptions = getBuildOptions() == null ? "" : getBuildOptions().getOptions();
 
         // Set ENV variable to override the default plugin list
         envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "ciplugins.jenkins.getDefaultPlugins");
@@ -173,6 +184,10 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
 
         if (!tasks.trim().isEmpty()) {
             cmd += " " + tasks;
+        }
+
+        if (!buildOptions.trim().isEmpty()) {
+            cmd += " " + buildOptions;
         }
 
         final String matlabCommandFileContent =
