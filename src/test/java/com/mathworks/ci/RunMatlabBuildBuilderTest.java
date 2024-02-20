@@ -129,6 +129,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("buildtool", build);
@@ -142,6 +143,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String workspace = build.getWorkspace().getName();
@@ -156,6 +158,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "/fake/matlabroot/that/does/not/exist"));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
@@ -171,6 +174,7 @@ public class RunMatlabBuildBuilderTest {
         RunMatlabBuildBuilderTester tester =
                 new RunMatlabBuildBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
@@ -186,6 +190,7 @@ public class RunMatlabBuildBuilderTest {
         RunMatlabBuildBuilderTester tester =
                 new RunMatlabBuildBuilderTester(matlabExecutorAbsolutePath, "-positive");
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
@@ -200,6 +205,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("compile");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("Generating MATLAB script with content", build);
@@ -215,6 +221,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         scriptBuilder.setStartupOptions(new StartupOptions("-nojvm -uniqueoption"));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -238,6 +245,22 @@ public class RunMatlabBuildBuilderTest {
     }
 
     /*
+     * Test to verify builder correctly sets tasks and build options that user entered.
+     */
+    @Test
+    public void verifyBuildPicksTheCorrectTasksAndBuildOptions() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        scriptBuilder.setTasks("compile");
+        scriptBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip test"));
+        project.getBuildersList().add(this.scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("Generating MATLAB script with content", build);
+        jenkins.assertLogContains("compile", build);
+        jenkins.assertLogContains("-continueOnFailure -skip test", build);
+    }
+
+    /*
      * Test to verify if MATLAB scratch file is not generated in workspace for this builder.
      */
     @Test
@@ -245,6 +268,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
@@ -259,13 +283,16 @@ public class RunMatlabBuildBuilderTest {
         EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
         EnvVars var = prop.getEnvVars();
         var.put("TASKS", "compile");
+        var.put("BUILD_OPTIONS", "-continueOnFailure -skip test");
         jenkins.jenkins.getGlobalNodeProperties().add(prop);
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("$TASKS");
+        scriptBuilder.setBuildOptions(new BuildOptions("$BUILD_OPTIONS"));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("compile", build);
+        jenkins.assertLogContains("-continueOnFailure -skip test", build);
     }
     
     /*

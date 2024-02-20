@@ -41,6 +41,10 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         return this.tasks;
     }
 
+    private String getBuildOptions() {
+        return this.buildOptions;
+    }
+
     @Override
     public Void run() throws Exception {
         final Launcher launcher = getContext().get(Launcher.class);
@@ -116,7 +120,7 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         final FilePath matlabBuildFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = getContext().get(EnvVars.class).expand(getTasks());
-        final String buildOptions = this.buildOptions;
+        final String buildOptions = getContext().get(EnvVars.class).expand(getBuildOptions());
 
         // Set ENV variable to override the default plugin list
         envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "ciplugins.jenkins.getDefaultPlugins");
