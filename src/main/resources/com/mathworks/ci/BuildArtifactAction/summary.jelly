@@ -7,10 +7,8 @@
   xmlns:i="jelly:fmt">
   <t:summary icon="document.png">
     <p><a href="buildresults">MATLAB Build Result</a></p>
-    <p>Total task ran:  <font color="Blue"><b>${it.totalCount} </b></font></p>
-    <ul>
-      <li><p>Number of failed tasks: <font color="red"><b>${it.failCount} </b></font></p></li>
-      <li><p>Number of skipped tasks: <font color="orange"><b>${it.skipCount} </b></font></p></li>
-    </ul>
+    <p>Task run: <font color="Blue"><b>${it.totalCount} </b></font></p>
+    <p>Failed: <font color="red"><b>${it.failCount} </b></font></p>
+    <p>Skipped: <font color="orange"><b>${it.skipCount} </b></font></p>
   </t:summary>
 </j:jelly>
