@@ -306,6 +306,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run-matlab-command", build);
@@ -319,6 +320,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2020b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("MatlabNotFoundError", build);
@@ -340,6 +342,7 @@ public class RunMatlabBuildBuilderTest {
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 		scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
 		matrixProject.getBuildersList().add(scriptBuilder);
 		Map<String, String> vals = new HashMap<String, String>();
 		vals.put("VERSION", "R2018a");
@@ -369,6 +372,7 @@ public class RunMatlabBuildBuilderTest {
 				"-positive");
 
 		tester.setTasks("");
+        tester.setBuildOptions(new BuildOptions(""));
 		matrixProject.getBuildersList().add(tester);
 		MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
@@ -385,6 +389,7 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
+        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
