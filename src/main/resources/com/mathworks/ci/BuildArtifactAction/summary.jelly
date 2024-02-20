@@ -1,0 +1,16 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core"
+  xmlns:d="jelly:define"
+  xmlns:l="/lib/layout"
+  xmlns:t="/lib/hudson"
+  xmlns:f="/lib/form"
+  xmlns:i="jelly:fmt">
+  <t:summary icon="document.png">
+    <p><a href="buildresults">MATLAB Build Result</a></p>
+    <p>Total task ran:  <font color="Blue"><b>${it.totalCount} </b></font></p>
+    <ul>
+      <li><p>Number of failed tasks: <font color="red"><b>${it.failCount} </b></font></p></li>
+      <li><p>Number of skipped tasks: <font color="orange"><b>${it.skipCount} </b></font></p></li>
+    </ul>
+  </t:summary>
+</j:jelly>
