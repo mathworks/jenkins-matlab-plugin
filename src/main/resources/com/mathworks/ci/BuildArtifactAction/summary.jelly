@@ -7,6 +7,11 @@
   xmlns:i="jelly:fmt">
   <t:summary icon="document.png">
     <p><a href="buildresults">MATLAB Build Result</a></p>
+    <span class="${pst.cssClass}">
+      <j:if test="${it.totalCount == 0}">
+        <font color="#EF2929"><h5>Unable to run a MATLAB build. </h5></font>
+      </j:if>
+    </span>
     <p>Task run: <font color="Blue"><b>${it.totalCount} </b></font></p>
     <p>Failed: <font color="red"><b>${it.failCount} </b></font></p>
     <p>Skipped: <font color="orange"><b>${it.skipCount} </b></font></p>
