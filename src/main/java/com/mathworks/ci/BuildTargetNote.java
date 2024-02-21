@@ -22,6 +22,7 @@ public class BuildTargetNote extends ConsoleNote {
     public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
         MarkupText.SubText t = text.findToken(Pattern.compile("MATLAB-Build-"));
         String taskName = text.subText(13, text.length()-2).getText();
+        taskName = taskName.replace("]","").trim();
         if (t != null)
             t.addMarkup(0, t.length()-1, "<a id= matlab" + taskName + " name=matlab" + taskName + ">", "</a>");
         return null;
