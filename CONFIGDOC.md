@@ -63,6 +63,8 @@ Specify the tasks you want to execute in the **Tasks** box. If you specify more 
 
 ![run_matlab_build](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/b0df3645-e8df-48fe-8dd3-e429706dd61c)
 
+You can specify build options for your MATLAB build by first selecting **Build options**  and then populating the box that appears in the step configuration interface. For example, specify `-continueOnFailure` to continue running the MATLAB build upon a build environment setup or task failure. If you specify more than one build option, use a space to separate them (for example, `-continueOnFailure -skip test`).  The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command when running a MATLAB build.
+
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the Jenkins build to fail.
 
 When you use this step, a file named `buildfile.m` must be in the root of your repository. For more information about the build tool, see [Create and Run Tasks Using Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/create-and-run-tasks-using-build-tool.html).
@@ -126,7 +128,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Build Envi
 ![build_environment](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/6fa3187a-5674-4435-9c69-4210a21b8d88)
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
-* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks in the **Tasks** box. 
+* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and build options.
 * If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
 * If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. 
 
@@ -170,7 +172,7 @@ You can add several axes in the **Configuration Matrix** section. For example, a
 
 Once you have specified the axes, add the required build steps in the **Build Steps** section:
 
-* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks in the **Tasks** box.
+* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and build options.
 * If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
 * If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. You can use the user-defined axes to specify the contents of the **Command** box. For example:
   ```
@@ -234,7 +236,7 @@ Use the `runMATLABBuild` step in your pipeline to run a build using the [MATLAB 
 Input                     | Description
 ------------------------- | ---------------
 `tasks`                   | <p>(Optional) Tasks to run, specified as a list of task names separated by spaces. If you specify the step without this input (for example, `runMATLABBuild()`),  the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend.</p><p>MATLAB exits with exit code 0 if the tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail.</p><p>**Example:** `tasks: 'test'`<br/>**Example:** `tasks: 'compile test'`</p>
-`buildOptions`           | <p>(Optional) MATLAB build options, specified as a list of options separated by spaces. The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command when running a MATLAB build.<p/><p>**Example:** `build-options: -continueOnFailure`<br/>**Example:** `build-options: -continueOnFailure -skip test`</p>
+`buildOptions`           | <p>(Optional) MATLAB build options, specified as a list of options separated by spaces. The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command when running a MATLAB build.<p/><p>**Example:** `buildOptions: -continueOnFailure`<br/>**Example:** `buildOptions: -continueOnFailure -skip test`</p>
 `startupOptions`         | <p>(Optional) MATLAB startup options, specified as a list of options separated by spaces. For more information about startup options, see [Commonly Used Startup Options](https://www.mathworks.com/help/matlab/matlab_env/commonly-used-startup-options.html).</p><p>Using this input to specify the `-batch` or `-r` option is not supported.</p><p>**Example:** `startupOptions: '-nojvm'`<br/>**Example:** `startupOptions: '-nojvm -logfile "output.log"'`</p>
 
 
