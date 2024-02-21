@@ -33,7 +33,7 @@ In this example, the list includes two registered tools as well as the option fo
 
 ![use_matlab_version_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/1ef811c5-c69a-41c3-8649-55c5f2239776)
 
-When you specify a MATLAB version in the **Build Environment** section, the plugin prepends its `bin` folder to the `PATH` sysetm environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
+When you specify a MATLAB version in the **Build Environment** section, the plugin prepends its `bin` folder to the `PATH` system environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
 You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabroot.html) function to return the full path to your preferred MATLAB root folder. The path depends on the platform, MATLAB version, and installation location. This table shows examples of the root folder path on different platforms. 
 
