@@ -33,7 +33,7 @@ In this example, the list includes two registered tools as well as the option fo
 
 ![use_matlab_version_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/1ef811c5-c69a-41c3-8649-55c5f2239776)
 
-When you specify a MATLAB version in the **Build Environment** section, the plugin prepends its `bin` folder to the system PATH environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
+When you specify a MATLAB version in the **Build Environment** section, the plugin prepends its `bin` folder to the `PATH` sysetm environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
 You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabroot.html) function to return the full path to your preferred MATLAB root folder. The path depends on the platform, MATLAB version, and installation location. This table shows examples of the root folder path on different platforms. 
 
@@ -143,7 +143,7 @@ There are two ways to specify multiple MATLAB versions in a multi-configuration 
 ![add_axis](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/8d134ca1-892e-4014-98e3-14fd8fbb3024)
 
 ### Add MATLAB Axis
-If your Jenkins instance includes MATLAB versions registered as tools, then **MATLAB** appears as an option when you click **Add axis** in the **Configuration Matrix** section. By adding the **MATLAB** axis, you can select MATLAB versions and add them as axis values to your matrix configuration. The list includes all MATLAB versions that have been registered as Jenkins tools. In this example, there are two MATLAB versions registered as tools. In each build iteration, the plugin prepends one of the selected versions to the PATH environment variable and invokes it to run the build. 
+If your Jenkins instance includes MATLAB versions registered as tools, then **MATLAB** appears as an option when you click **Add axis** in the **Configuration Matrix** section. By adding the **MATLAB** axis, you can select MATLAB versions and add them as axis values to your matrix configuration. The list includes all MATLAB versions that have been registered as Jenkins tools. In this example, there are two MATLAB versions registered as tools. In each build iteration, the plugin prepends one of the selected versions to the `PATH` environment variable and invokes it to run the build. 
 
 ![matlab_axis](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/047283bb-782c-4437-af3b-ce296e73cf1a)
 
@@ -193,9 +193,9 @@ To configure the plugin for a pipeline project:
 You can also define your pipeline directly in the project configuration window. If you select `Pipeline script` from the **Definition** list, you can author your pipeline code in the **Script** box. When you define your pipeline this way, it must include an additional stage to check out your code from source control.
 
 ### Add MATLAB to System Path
-When the plugin executes steps that use MATLAB in your pipeline, the plugin uses the topmost MATLAB version on the system path. If the PATH environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
+When the plugin executes steps that use MATLAB in your pipeline, the plugin uses the topmost MATLAB version on the system path. If the `PATH` environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
 
-To update the system PATH environment variable using declarative pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2023b to the system PATH environment variable and use it to run your command.
+To update the `PATH` environment variable using declarative pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2023b to the `PATH` environment variable and use it to run your command.
 
 ```groovy
 // Declarative Pipeline
@@ -216,7 +216,7 @@ pipeline {
 }
 ``` 
 
-If you define your pipeline using scripted pipeline syntax, set the PATH environment variable in the `node` block. For example: 
+If you define your pipeline using scripted pipeline syntax, set the `PATH` environment variable in the `node` block. For example: 
 
 ```groovy
 // Scripted Pipeline
@@ -467,7 +467,7 @@ pipeline {
 }
 ```
 
-If you define your pipeline using scripted pipeline syntax, use the `tool` keyword followed by the name of the tool to retrieve the path to the MATLAB root folder. Then, prepend the MATLAB `bin` folder to the PATH environment variable.
+If you define your pipeline using scripted pipeline syntax, use the `tool` keyword followed by the name of the tool to retrieve the path to the MATLAB root folder. Then, prepend the MATLAB `bin` folder to the `PATH` environment variable.
 
 ```groovy
 // Scripted Pipeline
