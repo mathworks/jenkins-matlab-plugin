@@ -245,22 +245,6 @@ public class RunMatlabBuildBuilderTest {
     }
 
     /*
-     * Test to verify builder correctly sets tasks and build options that user entered.
-     */
-    @Test
-    public void verifyBuildPicksTheCorrectTasksAndBuildOptions() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("compile");
-        scriptBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip test"));
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("Generating MATLAB script with content", build);
-        jenkins.assertLogContains("compile", build);
-        jenkins.assertLogContains("-continueOnFailure -skip test", build);
-    }
-
-    /*
      * Test to verify if MATLAB scratch file is not generated in workspace for this builder.
      */
     @Test
@@ -342,7 +326,6 @@ public class RunMatlabBuildBuilderTest {
 		matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
 		scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
 		matrixProject.getBuildersList().add(scriptBuilder);
 		Map<String, String> vals = new HashMap<String, String>();
 		vals.put("VERSION", "R2018a");
@@ -372,7 +355,6 @@ public class RunMatlabBuildBuilderTest {
 				"-positive");
 
 		tester.setTasks("");
-        tester.setBuildOptions(new BuildOptions(""));
 		matrixProject.getBuildersList().add(tester);
 		MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 

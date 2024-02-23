@@ -52,7 +52,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
     }
 
     @DataBoundSetter
-    public void setBuildOptions ( BuildOptions buildOptions) {
+    public void setBuildOptions (BuildOptions buildOptions) {
         this.buildOptions = buildOptions;
     }
 
@@ -175,7 +175,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep, M
         final FilePath matlabCommandFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String tasks = envVars.expand(getTasks());
-        final String buildOptions = envVars.expand(getBuildOptions().getOptions());
+        final String buildOptions = getBuildOptions() == null ? "": getBuildOptions().getOptions();
 
         // Set ENV variable to override the default plugin list
         envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "ciplugins.jenkins.getDefaultPlugins");

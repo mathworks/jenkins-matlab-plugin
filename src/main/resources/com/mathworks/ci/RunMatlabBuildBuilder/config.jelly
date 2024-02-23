@@ -6,7 +6,7 @@
 	  </f:entry> 
 
       <f:optionalProperty field="startupOptions" title="Startup options" />
-
+	  
 	  <f:optionalProperty field="buildOptions" title="Build options" />
 
 </j:jelly>
