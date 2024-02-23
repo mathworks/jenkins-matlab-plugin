@@ -267,13 +267,16 @@ public class RunMatlabBuildBuilderTest {
         EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
         EnvVars var = prop.getEnvVars();
         var.put("TASKS", "compile");
+        var.put("BUILD_OPTIONS", "-continueOnFailure -skip test");
         jenkins.jenkins.getGlobalNodeProperties().add(prop);
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("$TASKS");
+        scriptBuilder.setBuildOptions(new BuildOptions("$BUILD_OPTIONS"));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("compile", build);
+        jenkins.assertLogContains("-continueOnFailure -skip test", build);
     }
     
     /*
