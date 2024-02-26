@@ -46,15 +46,17 @@ You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabr
 ### Specify Build Steps
 When you set up the **Build Steps** section of the project configuration window, the plugin provides you with three build steps:
 
-* To run a MATLAB build, use the [Run MATLAB Build](#run-matlab-build) step.
+* To run a MATLAB build using the MATLAB build tool, use the [Run MATLAB Build](#run-matlab-build) step.
 * To run MATLAB and Simulink tests and generate artifacts, use the [Run MATLAB Tests](#run-matlab-tests) step.
-* To run a MATLAB script, function, or statement, use the [Run MATLAB Command](#run-matlab-command) step.
+* To run MATLAB scripts, functions, and statements, use the [Run MATLAB Command](#run-matlab-command) step.
 
-You can specify optional MATLAB startup options for a step by first selecting **Startup options**  and then populating the box that appears in the step configuration interface. For example, specify `-nojvm` to start MATLAB without the JVM&trade; software. If you specify more than one startup option, use a space to separate them (for example, `-nojvm -logfile "output.log"`). For more information about MATLAB startup options, see [Commonly Used Startup Options](https://www.mathworks.com/help/matlab/matlab_env/commonly-used-startup-options.html).
+You can specify MATLAB startup options for a step by first selecting **Startup options**  and then populating the box that appears in the step configuration interface. For example, specify `-nojvm` to start MATLAB without the JVM&trade; software. If you specify more than one startup option, use a space to separate them (for example, `-nojvm -logfile "output.log"`). For more information about MATLAB startup options, see [Commonly Used Startup Options](https://www.mathworks.com/help/matlab/matlab_env/commonly-used-startup-options.html).
 
 > :information_source: **Note:** Selecting **Startup options** to specify the `-batch` or `-r` option is not supported.
 
 If you use a source code management (SCM) system such as Git&trade;, then your project should include the appropriate SCM configuration to check out the code before it can invoke the plugin. If you do not use any SCM systems to manage your code, then an additional build step might be required to ensure that the code is available in the project workspace before the build starts.
+
+> :information_source: **Note:** By default, when you use the **Run MATLAB Build**, **Run MATLAB Tests**, or **Run MATLAB Command** step, the root of your repository serves as the MATLAB startup folder. To run your MATLAB code using a different folder, include the `-sd` startup option or the `cd` command in the step.
 
 #### Run MATLAB Build
 The **Run MATLAB Build** step lets you run a build using the [MATLAB build tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html). You can use this step to run the tasks specified in a file named `buildfile.m` in the root of your repository. To use the **Run MATLAB Build** step, you need MATLAB R2022b or a later release.
@@ -63,16 +65,14 @@ Specify the tasks you want to execute in the **Tasks** box. If you specify more 
 
 ![run_matlab_build](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/b0df3645-e8df-48fe-8dd3-e429706dd61c)
 
-You can specify build options for your MATLAB build by first selecting **Build options**  and then populating the box that appears in the step configuration interface. For example, specify `-continueOnFailure` to continue running the MATLAB build upon a build environment setup or task failure. If you specify more than one build option, use a space to separate them (for example, `-continueOnFailure -skip test`).  The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command when running a MATLAB build.
+You can specify build options for your MATLAB build by first selecting **Build options**  and then populating the box that appears in the step configuration interface. For example, specify `-continueOnFailure` to continue running the MATLAB build upon a build environment setup or task failure. If you specify more than one build option, use a space to separate them (for example, `-continueOnFailure -skip test`).  The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command.
 
-MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the Jenkins build to fail.
-
-When you use this step, a file named `buildfile.m` must be in the root of your repository. For more information about the build tool, see [Create and Run Tasks Using Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/create-and-run-tasks-using-build-tool.html).
+MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
  
-You can customize the **Run MATLAB Tests** build step in the step configuration interface. For example, you can add source folders to the MATLAB search path, control which tests to run, and generate various test and coverage artifacts. If you do not select any of the existing options, all the tests in your project run, and any test failure causes the build to fail.
+You can customize the **Run MATLAB Tests** build step in the step configuration interface. For example, you can add source folders to the MATLAB search path, control which tests to run, and generate test and coverage artifacts. If you do not select any of the existing options, all the tests in your project run, and any test failure causes the step to fail.
  
 Select **Source folder** if you want to specify the location of a folder containing source code, relative to the project root folder. The plugin adds the specified folder and its subfolders to the top of the MATLAB search path. If you specify a source folder and then generate coverage results, the plugin uses only the source code in the specified folder and its subfolders to generate the results. You can specify more than one folder by clicking **Add folder**.
 
@@ -114,7 +114,7 @@ For example, enter `myscript` in the **Command** box to run a script named `mysc
 
 ![run_matlab_command](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/45a99722-d872-403b-8c1a-90e23199ba47)
 
-MATLAB exits with exit code 0 if the specified script, function, or statement executes without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the Jenkins build to fail. To fail the build in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) function.
+MATLAB exits with exit code 0 if the specified script, function, or statement executes without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail. To fail the step in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) function.
 
 When you use this step, all the required files must be on the MATLAB search path. If your script or function is not in the root of your repository, you can use the [`addpath`](https://www.mathworks.com/help/matlab/ref/addpath.html), [`cd`](https://www.mathworks.com/help/matlab/ref/cd.html), or [`run`](https://www.mathworks.com/help/matlab/ref/run.html) function to ensure that it is on the path when invoked. For example, to run `myscript.m` in a folder named `myfolder` located in the root of the repository, you can specify the contents of the **Command** box like this:
 
@@ -128,8 +128,8 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Build Envi
 ![build_environment](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/6fa3187a-5674-4435-9c69-4210a21b8d88)
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
-* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and build options.
-* If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
+* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
+* If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to generate.
 * If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. 
 
   
@@ -172,8 +172,8 @@ You can add several axes in the **Configuration Matrix** section. For example, a
 
 Once you have specified the axes, add the required build steps in the **Build Steps** section:
 
-* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and build options.
-* If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to be generated in the project workspace.
+* If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
+* If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to generate.
 * If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. You can use the user-defined axes to specify the contents of the **Command** box. For example:
   ```
   results = runtests(pwd,"Tag","$TEST_TAG"); assertSuccess(results);
@@ -182,9 +182,9 @@ Once you have specified the axes, add the required build steps in the **Build St
 ## Set Up Pipeline Project
 When you define your pipeline with a `Jenkinsfile`, the plugin provides you with three build steps:
 
-* To run a MATLAB build, use the [`runMATLABBuild`](#use-the-runmatlabbuild-step) step.
+* To run a MATLAB build using the MATLAB build tool, use the [`runMATLABBuild`](#use-the-runmatlabbuild-step) step.
 * To run MATLAB and Simulink tests and generate artifacts, use the [`runMATLABTests`](#use-the-runmatlabtests-step) step.
-* To run a MATLAB script, function, or statement, use the [`runMATLABCommand`](#use-the-runmatlabcommand-step) step.
+* To run MATLAB scripts, functions, and statements, use the [`runMATLABCommand`](#use-the-runmatlabcommand-step) step.
 
 To configure the plugin for a pipeline project:
 1) Define your pipeline in a `Jenkinsfile` in the root of your repository.
@@ -193,6 +193,8 @@ To configure the plugin for a pipeline project:
 4) Paste your repository URL into the **Repository URL** box.
 
 You can also define your pipeline directly in the project configuration window. If you select `Pipeline script` from the **Definition** list, you can author your pipeline code in the **Script** box. When you define your pipeline this way, it must include an additional stage to check out your code from source control.
+
+> :information_source: **Note:** By default, when you use the `runMATLABBuild`, `runMATLABTests`, or `runMATLABCommand` step, the root of your repository serves as the MATLAB startup folder. To run your MATLAB code using a different folder, include the `-sd` startup option or the `cd` command in the step.
 
 ### Add MATLAB to System Path
 When the plugin executes steps that use MATLAB in your pipeline, the plugin uses the topmost MATLAB version on the system path. If the `PATH` environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
@@ -235,7 +237,7 @@ Use the `runMATLABBuild` step in your pipeline to run a build using the [MATLAB 
 
 Input                     | Description
 ------------------------- | ---------------
-`tasks`                   | <p>(Optional) Tasks to run, specified as a list of task names separated by spaces. If you specify the step without this input (for example, `runMATLABBuild()`),  the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend.</p><p>MATLAB exits with exit code 0 if the tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail.</p><p>**Example:** `tasks: 'test'`<br/>**Example:** `tasks: 'compile test'`</p>
+`tasks`                   | <p>(Optional) Tasks to run, specified as a list of task names separated by spaces. If you specify the step without this input (for example, `runMATLABBuild()`),  the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend.</p><p>MATLAB exits with exit code 0 if the tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.</p><p>**Example:** `tasks: 'test'`<br/>**Example:** `tasks: 'compile test'`</p>
 `buildOptions`           | <p>(Optional) MATLAB build options, specified as a list of options separated by spaces. The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command when running a MATLAB build.<p/><p>**Example:** `buildOptions: -continueOnFailure`<br/>**Example:** `buildOptions: -continueOnFailure -skip test`</p>
 `startupOptions`         | <p>(Optional) MATLAB startup options, specified as a list of options separated by spaces. For more information about startup options, see [Commonly Used Startup Options](https://www.mathworks.com/help/matlab/matlab_env/commonly-used-startup-options.html).</p><p>Using this input to specify the `-batch` or `-r` option is not supported.</p><p>**Example:** `startupOptions: '-nojvm'`<br/>**Example:** `startupOptions: '-nojvm -logfile "output.log"'`</p>
 
@@ -265,11 +267,8 @@ node {
 }
 ``` 
 
-When you use this step, a file named `buildfile.m` must be in the root of your repository. For more information about the build tool, see [Create and Run Tasks Using Build Tool](https://www.mathworks.com/help/matlab/matlab_prog/create-and-run-tasks-using-build-tool.html).
-
-
 ### Use the `runMATLABTests` Step
-Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate various test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
+Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
 
 For example, in your `Jenkinsfile`, define a declarative pipeline to run the tests in your project.
 
@@ -297,9 +296,9 @@ node {
 }
 ``` 
 
-MATLAB exits with exit code 0 if the test suite runs without any failures. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail.
+MATLAB exits with exit code 0 if the test suite runs without any failures. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
-You can customize the `runMATLABTests` step using optional inputs. For example, you can add source folders to the MATLAB search path, control which tests to run, and generate various artifacts.
+You can customize the `runMATLABTests` step using optional inputs. For example, you can add source folders to the MATLAB search path, control which tests to run, and generate test and coverage artifacts.
 
 Input                     | Description    
 ------------------------- | ---------------
@@ -353,7 +352,7 @@ Use the `runMATLABCommand` step in your pipeline to run MATLAB scripts, function
 
 Input                     | Description
 ------------------------- | ---------------
-`command`                 | <p>(Required) Script, function, or statement to execute. If the value of `command` is the name of a MATLAB script or function, do not specify the file extension. If you specify more than one script, function, or statement, use a comma or semicolon to separate them.</p><p>MATLAB exits with exit code 0 if the specified script, function, or statement executes without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the stage to fail. To fail the stage in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) function.</p><p>**Example:** `command: 'myscript'`<br/>**Example:** `command: 'results = runtests, assertSuccess(results);'`</p>
+`command`                 | <p>(Required) Script, function, or statement to execute. If the value of `command` is the name of a MATLAB script or function, do not specify the file extension. If you specify more than one script, function, or statement, use a comma or semicolon to separate them.</p><p>MATLAB exits with exit code 0 if the specified script, function, or statement executes without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail. To fail the step in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) function.</p><p>**Example:** `command: 'myscript'`<br/>**Example:** `command: 'results = runtests, assertSuccess(results);'`</p>
 `startupOptions`         | <p>(Optional) MATLAB startup options, specified as a list of options separated by spaces. For more information about startup options, see [Commonly Used Startup Options](https://www.mathworks.com/help/matlab/matlab_env/commonly-used-startup-options.html).</p><p>Using this input to specify the `-batch` or `-r` option is not supported.</p><p>**Example:** `startupOptions: '-nojvm'`<br/>**Example:** `startupOptions: '-nojvm -logfile "output.log"'`</p>
 
 For example, in your `Jenkinsfile`, define a declarative pipeline to run a script named `myscript.m`.
