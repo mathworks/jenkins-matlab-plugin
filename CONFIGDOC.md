@@ -69,6 +69,8 @@ You can specify build options for your MATLAB build by first selecting **Build o
 
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
+You can access the result of running a MATLAB build interactively in your Jenkins Interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table gives you access to relevant build log information in **Console Output**.
+
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
  
@@ -241,7 +243,6 @@ Input                     | Description
 `buildOptions`           | <p>(Optional) MATLAB build options, specified as a list of options separated by spaces. The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command when running a MATLAB build.<p/><p>**Example:** `buildOptions: -continueOnFailure`<br/>**Example:** `buildOptions: -continueOnFailure -skip test`</p>
 `startupOptions`         | <p>(Optional) MATLAB startup options, specified as a list of options separated by spaces. For more information about startup options, see [Commonly Used Startup Options](https://www.mathworks.com/help/matlab/matlab_env/commonly-used-startup-options.html).</p><p>Using this input to specify the `-batch` or `-r` option is not supported.</p><p>**Example:** `startupOptions: '-nojvm'`<br/>**Example:** `startupOptions: '-nojvm -logfile "output.log"'`</p>
 
-
 For example, in your `Jenkinsfile`, define a declarative pipeline to run a task named `mytask` as well as all the tasks on which it depends.
 
 ```groovy
@@ -266,6 +267,8 @@ node {
     runMATLABBuild(tasks: 'mytask')
 }
 ``` 
+
+You can access the result of running a MATLAB build interactively in your Jenkins Interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table gives you access to relevant build log information in **Console Output**.
 
 ### Use the `runMATLABTests` Step
 Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
