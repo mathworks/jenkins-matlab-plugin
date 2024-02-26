@@ -135,7 +135,7 @@ To run MATLAB code and Simulink models, specify the appropriate build steps in t
   
 ## Set Up Multi-Configuration Project
 The plugin supports [multi-configuration (matrix) projects](https://plugins.jenkins.io/matrix-project/). Multi-configuration projects are useful when builds include similar steps. For example:
-* The same test suite runs across different platforms (such as Windows, Linux, and macOS).
+* The same test suite runs on different platforms (such as Windows, Linux, and macOS).
 * The same test suite runs against different versions of MATLAB.
 
 To configure the plugin for a multi-configuration project, specify the MATLAB versions to use as well as the required build steps. You can add axes in the **Configuration Matrix** section to specify the duplicating build steps. 
@@ -385,7 +385,7 @@ When you use the `runMATLABCommand` step, all the required files must be on the 
 `runMATLABCommand(command: 'addpath("myfolder"), myscript')` 
 
 ### Use MATLAB in Matrix Build
-Like multi-configuration projects, you can use MATLAB as part of a [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) build in pipeline projects. For example, you can define a pipeline to run your test suite across different platforms or against different versions of MATLAB.
+Like multi-configuration projects, you can use MATLAB as part of a [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) build in pipeline projects. For example, you can define a pipeline to run your test suite on different platforms or against different versions of MATLAB.
 
 This example defines a declarative pipeline to run your MATLAB code and generate artifacts using MATLAB R2022b, R2023a, and R2023b. The pipeline has a `matrix` block to define the possible name-value combinations that should run in parallel. 
 
