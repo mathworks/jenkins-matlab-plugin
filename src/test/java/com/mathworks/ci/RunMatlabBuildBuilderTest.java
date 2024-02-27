@@ -129,7 +129,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("buildtool", build);
@@ -143,7 +142,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         String workspace = build.getWorkspace().getName();
@@ -158,7 +156,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), "/fake/matlabroot/that/does/not/exist"));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
@@ -174,7 +171,6 @@ public class RunMatlabBuildBuilderTest {
         RunMatlabBuildBuilderTester tester =
                 new RunMatlabBuildBuilderTester(matlabExecutorAbsolutePath, "-positiveFail");
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.FAILURE, build);
@@ -190,7 +186,6 @@ public class RunMatlabBuildBuilderTest {
         RunMatlabBuildBuilderTester tester =
                 new RunMatlabBuildBuilderTester(matlabExecutorAbsolutePath, "-positive");
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(tester);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
@@ -205,7 +200,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("compile");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("Generating MATLAB script with content", build);
@@ -221,7 +215,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         scriptBuilder.setStartupOptions(new StartupOptions("-nojvm -uniqueoption"));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -252,7 +245,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
@@ -290,7 +282,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("run-matlab-command", build);
@@ -304,7 +295,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2020b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("MatlabNotFoundError", build);
@@ -371,7 +361,6 @@ public class RunMatlabBuildBuilderTest {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
-        scriptBuilder.setBuildOptions(new BuildOptions(""));
         project.getBuildersList().add(this.scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
