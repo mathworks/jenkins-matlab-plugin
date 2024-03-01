@@ -56,7 +56,7 @@ You can specify MATLAB startup options for a step by first selecting **Startup o
 
 If you use a source code management (SCM) system such as Git&trade;, then your project should include the appropriate SCM configuration to check out the code before it can invoke the plugin. If you do not use any SCM systems to manage your code, then an additional build step might be required to ensure that the code is available in the project workspace before the build starts.
 
-> :information_source: **Note:** By default, when you use the **Run MATLAB Build**, **Run MATLAB Tests**, or **Run MATLAB Command** step, the root of your repository serves as the MATLAB startup folder. To run your MATLAB code using a different folder, include the `-sd` startup option or the `cd` command in the step.
+> :information_source: **Note:** By default, when you use the **Run MATLAB Build**, **Run MATLAB Tests**, or **Run MATLAB Command** step, the root of your repository serves as the MATLAB startup folder. To run your MATLAB code using a different folder, specify the `-sd` startup option or include the `cd` command when using the **Run MATLAB Command** step.
 
 #### Run MATLAB Build
 The **Run MATLAB Build** step lets you run a build using the [MATLAB build tool](https://www.mathworks.com/help/matlab/matlab_prog/overview-of-matlab-build-tool.html). You can use this step to run the tasks specified in a file named `buildfile.m` in the root of your repository. To use the **Run MATLAB Build** step, you need MATLAB R2022b or a later release.
@@ -196,7 +196,7 @@ To configure the plugin for a pipeline project:
 
 You can also define your pipeline directly in the project configuration window. If you select `Pipeline script` from the **Definition** list, you can author your pipeline code in the **Script** box. When you define your pipeline this way, it must include an additional stage to check out your code from source control.
 
-> :information_source: **Note:** By default, when you use the `runMATLABBuild`, `runMATLABTests`, or `runMATLABCommand` step, the root of your repository serves as the MATLAB startup folder. To run your MATLAB code using a different folder, include the `-sd` startup option or the `cd` command in the step.
+> :information_source: **Note:** By default, when you use the `runMATLABBuild`, `runMATLABTests`, or `runMATLABCommand` step, the root of your repository serves as the MATLAB startup folder. To run your MATLAB code using a different folder, specify the `-sd` startup option or include the `cd` command when using the `runMATLABCommand` step.
 
 ### Add MATLAB to System Path
 When the plugin executes steps that use MATLAB in your pipeline, the plugin uses the topmost MATLAB version on the system path. If the `PATH` environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
