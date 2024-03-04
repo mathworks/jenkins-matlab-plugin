@@ -63,7 +63,7 @@ The **Run MATLAB Build** step lets you run a build using the [MATLAB build tool]
 
 Specify the tasks you want to execute in the **Tasks** box. If you specify more than one task, use a space to separate them. If you do not specify any tasks, the plugin runs the default tasks in `buildfile.m` as well as all the tasks on which they depend. For example, enter `mytask` in the **Tasks** box to run a task named `mytask` as well as all the tasks on which it depends.
 
-<img width="full" alt="run_matlab_build" src="https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/76429047-7c4d-4a2a-81ac-51001370a1b5">
+<img width="full" alt="run_matlab_build" src="https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/920ad089-3d72-4462-95ae-849457047481">
 
 You can specify build options for your MATLAB build by first selecting **Build options**  and then populating the box that appears in the step configuration interface. For example, specify `-continueOnFailure` to continue running the MATLAB build upon a build environment setup or task failure. If you specify more than one build option, use a space to separate them (for example, `-continueOnFailure -skip test`).  The plugin supports the same [options](https://www.mathworks.com/help/matlab/ref/buildtool.html#mw_50c0f35e-93df-4579-963d-f59f2fba1dba) that you can pass to the `buildtool` command.
 
@@ -114,7 +114,7 @@ Specify the MATLAB script, function, or statement you want to execute in the **C
 
 For example, enter `myscript` in the **Command** box to run a script named `myscript.m` in the root of your repository.
 
-![run_matlab_command](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/45a99722-d872-403b-8c1a-90e23199ba47)
+<img width="full" alt="run_matlab_command" src="https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/d07f830c-78b9-4242-8988-6ab7b4f078a3">
 
 MATLAB exits with exit code 0 if the specified script, function, or statement executes without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail. To fail the step in certain conditions, use the [`assert`](https://www.mathworks.com/help/matlab/ref/assert.html) or [`error`](https://www.mathworks.com/help/matlab/ref/error.html) function.
 
