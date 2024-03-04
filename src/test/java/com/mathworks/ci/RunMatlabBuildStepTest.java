@@ -124,6 +124,18 @@ public class RunMatlabBuildStepTest {
     }
 
     /*
+     * Verify appropriate build options are invoked as in pipeline script
+     */
+    @Test
+    public void verifyBuildOptionsSameAsScript() throws Exception {
+        project.setDefinition(
+                new CpsFlowDefinition("node { runMATLABBuild(buildOptions: '-continueOnFailure -skip compile') }", true));
+
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("-continueOnFailure -skip compile", build);
+    }
+
+    /*
      * Verify script can run Matrix build
      */
     @Test

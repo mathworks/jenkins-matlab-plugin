@@ -25,18 +25,16 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
     
     private String tasks;
     private String startupOptions;
+    private String buildOptions;
     private static String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
     private static String BUILD_REPORT_PLUGIN = "+ciplugins/+jenkins/BuildReportPlugin.m";
     private static String TASK_RUN_PROGRESS_PLUGIN = "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
 
-    public MatlabBuildStepExecution(StepContext context, String tasks, String startupOptions) {
+    public MatlabBuildStepExecution(StepContext context, String tasks, String startupOptions, String buildOptions) {
         super(context);
         this.tasks = tasks;
         this.startupOptions = startupOptions;
-    }
-
-    private String getTasks() {
-        return this.tasks;
+        this.buildOptions = buildOptions;
     }
 
     @Override
@@ -113,7 +111,8 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         // Create a new command runner script in the temp folder.
         final FilePath matlabBuildFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
-        final String tasks = getContext().get(EnvVars.class).expand(getTasks());
+        final String tasks = getContext().get(EnvVars.class).expand(this.tasks);
+        final String buildOptions = getContext().get(EnvVars.class).expand(this.buildOptions);
 
         // Set ENV variable to override the default plugin list
         envVars.put("MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE", "ciplugins.jenkins.getDefaultPlugins");
@@ -122,6 +121,11 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
         if (!tasks.trim().isEmpty()) {
             cmd += " " + tasks;
         }
+
+        if (!buildOptions.trim().isEmpty()) {
+            cmd += " " + buildOptions;
+        }
+
         final String matlabBuildFileContent =
                 "addpath(pwd);cd(getenv('MW_ORIG_WORKING_FOLDER'));\n" + cmd;
 
