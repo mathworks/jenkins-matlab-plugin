@@ -69,7 +69,7 @@ You can specify build options for your MATLAB build by first selecting **Build o
 
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
-You can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table gives you access to relevant build log information in **Console Output**.
+You can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -100,7 +100,7 @@ To generate test and coverage artifacts, select options in the **Generate Test A
 
 ![run_matlab_tests_artifacts](https://user-images.githubusercontent.com/48831250/217651806-1c8a6e9a-13a8-4d05-819b-e97533cc7bae.png)
 
-The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log in **Console Output** to understand the testing workflow.
+The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
  
 Artifacts that the plugin generates are subject to these restrictions: 
 * Producing a PDF test report on macOS platforms is supported in MATLAB R2020b and later.
@@ -132,7 +132,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Build Envi
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
 * If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
 * If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to generate.
-* If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. 
+* If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement. 
 
   
 ## Set Up Multi-Configuration Project
@@ -176,7 +176,7 @@ Once you have specified the axes, add the required build steps in the **Build St
 
 * If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
 * If you add the [**Run MATLAB Tests**](#run-matlab-tests) step, specify your source code, test suite filters, run customization options, and test and coverage artifacts to generate.
-* If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement in the **Command** box. You can use the user-defined axes to specify the contents of the **Command** box. For example:
+* If you add the [**Run MATLAB Command**](#run-matlab-command) step, specify your MATLAB script, function, or statement. You can use the user-defined axes to specify the contents of the **Command** box. For example:
   ```
   results = runtests(pwd,"Tag","$TEST_TAG"); assertSuccess(results);
   ```
@@ -268,7 +268,7 @@ node {
 }
 ``` 
 
-You can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table gives you access to relevant build log information in **Console Output**.
+You can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
 
 ### Use the `runMATLABTests` Step
 Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
