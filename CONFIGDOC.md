@@ -71,7 +71,7 @@ MATLAB exits with exit code 0 if the specified tasks run without error. Otherwis
 
 Starting in R2024a, you can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
 
-![matlab_build_results](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/8259926c-901f-426a-8100-f1f80df37cfc)
+![matlab_build_results](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/bf3a8f01-12d6-436e-8a9e-10f465a98f6a)
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
