@@ -39,9 +39,9 @@ You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabr
 
 | Platform     | Path to MATLAB Root Folder      |
 |--------------|---------------------------------|
-| Windows      | C:\Program Files\MATLAB\R2023b  |
-| Linux&reg;   | /usr/local/MATLAB/R2023b        |
-| macOS        | /Applications/MATLAB_R2023b.app |
+| Windows      | C:\Program Files\MATLAB\R2024a  |
+| Linux&reg;   | /usr/local/MATLAB/R2024a        |
+| macOS        | /Applications/MATLAB_R2024a.app |
 
 ### Specify Build Steps
 When you set up the **Build Steps** section of the project configuration window, the plugin provides you with three build steps:
@@ -69,7 +69,9 @@ You can specify build options for your MATLAB build by first selecting **Build o
 
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
-You can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
+Starting in R2024a, you can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. You can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
+
+![matlab_build_results](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/bf3a8f01-12d6-436e-8a9e-10f465a98f6a)
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -201,16 +203,16 @@ You can also define your pipeline directly in the project configuration window. 
 ### Add MATLAB to System Path
 When the plugin executes steps that use MATLAB in your pipeline, the plugin uses the topmost MATLAB version on the system path. If the `PATH` environment variable of the build agent does not include any MATLAB versions, you must update the variable with the MATLAB root folder that should be used for the build.
 
-To update the `PATH` environment variable using declarative pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2023b to the `PATH` environment variable and use it to run your command.
+To update the `PATH` environment variable using declarative pipeline syntax, use an `environment` block in your `Jenkinsfile`. For example, prepend MATLAB R2024a to the `PATH` environment variable and use it to run your command.
 
 ```groovy
 // Declarative Pipeline
 pipeline {
    agent any
    environment {
-       PATH = "C:\\Program Files\\MATLAB\\R2023b\\bin;${PATH}"   // Windows agent
-    // PATH = "/usr/local/MATLAB/R2023b/bin:${PATH}"   // Linux agent
-    // PATH = "/Applications/MATLAB_R2023b.app/bin:${PATH}"   // macOS agent    
+       PATH = "C:\\Program Files\\MATLAB\\R2024a\\bin;${PATH}"   // Windows agent
+    // PATH = "/usr/local/MATLAB/R2024a/bin:${PATH}"   // Linux agent
+    // PATH = "/Applications/MATLAB_R2024a.app/bin:${PATH}"   // macOS agent    
    }
     stages {
         stage('Run MATLAB Command') {
@@ -227,9 +229,9 @@ If you define your pipeline using scripted pipeline syntax, set the `PATH` envir
 ```groovy
 // Scripted Pipeline
 node {
-    env.PATH = "C:\\Program Files\\MATLAB\\R2023b\\bin;${env.PATH}"   // Windows agent
-    // env.PATH = "/usr/local/MATLAB/R2023b/bin:${env.PATH}"   // Linux agent
-    // env.PATH = "/Applications/MATLAB_R2023b.app/bin:${env.PATH}"   // macOS agent
+    env.PATH = "C:\\Program Files\\MATLAB\\R2024a\\bin;${env.PATH}"   // Windows agent
+    // env.PATH = "/usr/local/MATLAB/R2024a/bin:${env.PATH}"   // Linux agent
+    // env.PATH = "/Applications/MATLAB_R2024a.app/bin:${env.PATH}"   // macOS agent
     runMATLABCommand(command: 'disp("Hello World!")')
 }
 ``` 
@@ -268,7 +270,7 @@ node {
 }
 ``` 
 
-You can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. If your build ran successfully, you can click the **MATLAB Build Result** link on the page to access the table of task results. This table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
+Starting in R2024a, you can access the result of running a MATLAB build interactively in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. You can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Clicking a task name in the table displays relevant build log information on the **Console Output** page.
 
 ### Use the `runMATLABTests` Step
 Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -390,7 +392,7 @@ When you use the `runMATLABCommand` step, all the required files must be on the 
 ### Use MATLAB in Matrix Build
 Like multi-configuration projects, you can use MATLAB as part of a [matrix](https://www.jenkins.io/doc/book/pipeline/syntax/#declarative-matrix) build in pipeline projects. For example, you can define a pipeline to run your test suite on different platforms or against different versions of MATLAB.
 
-This example defines a declarative pipeline to run your MATLAB code and generate artifacts using MATLAB R2022b, R2023a, and R2023b. The pipeline has a `matrix` block to define the possible name-value combinations that should run in parallel. 
+This example defines a declarative pipeline to run your MATLAB code and generate artifacts using MATLAB R2022b, R2023b, and R2024a. The pipeline has a `matrix` block to define the possible name-value combinations that should run in parallel. 
 
 ```groovy
 // Declarative Pipeline
@@ -406,7 +408,7 @@ pipeline {
                 axes {
                     axis {
                         name 'MATLAB_VERSION'
-                        values 'R2022b', 'R2023a', 'R2023b'
+                        values 'R2022b', 'R2023b', 'R2024a'
                     }
                 }
                 stages {
@@ -440,11 +442,11 @@ To register a MATLAB version as a Jenkins tool:
 3) Specify the name you want to assign to the MATLAB version in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. To register the MATLAB version as a tool, do not select **Install automatically**. 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register MATLAB R2023b as a Jenkins tool on your Windows local agent.
+For example, register MATLAB R2024a as a Jenkins tool on your Windows local agent.
 
-![matlab_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/50cb92d2-7b46-4bb7-822d-073e746e1d92)
+![matlab_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/8e3625a8-96a9-424a-b675-c5a13643e85b)
 
-If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you specified on the local agent. For example, if you registered MATLAB R2023b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
+If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you specified on the local agent. For example, if you registered MATLAB R2024a as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
 
 1) Navigate to the **Node Properties** interface of the agent. You can access this interface by selecting **Manage Jenkins > Nodes**, following the link corresponding to the agent, and then selecting **Configure** on the left.
 2) Select **Tool Locations**. Then, select the tool name from the **Name** list. The list contains the names assigned to the registered MATLAB versions on the local agent.  
@@ -452,14 +454,14 @@ If your Jenkins instance includes remote agents, you can register MATLAB as a to
 4) Click **Save** to confirm your choices.
 
 ### Use MATLAB as a Tool in Pipeline Project
-To invoke MATLAB as a Jenkins tool using declarative pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Tools** page. For example, run `myscript.m` using the MATLAB version that has been registered as a tool named R2023b.  
+To invoke MATLAB as a Jenkins tool using declarative pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Tools** page. For example, run `myscript.m` using the MATLAB version that has been registered as a tool named R2024a.  
 
 ```groovy
 // Declarative Pipeline
 pipeline {
    agent any
    tools {
-       matlab 'R2023b'
+       matlab 'R2024a'
    }
     stages {
         stage('Run MATLAB Command') {
@@ -478,7 +480,7 @@ If you define your pipeline using scripted pipeline syntax, use the `tool` keywo
 node {
     def matlabver
     stage('Run MATLAB Command') {
-        matlabver = tool 'R2023b'
+        matlabver = tool 'R2024a'
         if (isUnix()) {
             env.PATH = "${matlabver}/bin:${env.PATH}"   // Linux or macOS agent
         } else {
@@ -501,7 +503,7 @@ pipeline {
                 axes {
                     axis {
                         name 'MATLAB_VERSION'
-                        values 'R2022b', 'R2023a', 'R2023b'
+                        values 'R2022b', 'R2023b', 'R2024a'
                     }
                 }
                 tools {
