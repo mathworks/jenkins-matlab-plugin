@@ -25,6 +25,7 @@ public class RunMatlabBuildStep extends Step {
 
     private String tasks;
     private String startupOptions;
+    private String buildOptions;
 
     @DataBoundConstructor
     public RunMatlabBuildStep() {
@@ -39,6 +40,10 @@ public class RunMatlabBuildStep extends Step {
         return Util.fixNull(startupOptions);
     }
 
+    public String getBuildOptions() {
+        return Util.fixNull(buildOptions);
+    }
+
     @DataBoundSetter
     public void setTasks(String tasks) {
         this.tasks = tasks;
@@ -49,9 +54,14 @@ public class RunMatlabBuildStep extends Step {
         this.startupOptions = startupOptions;
     }
 
+    @DataBoundSetter
+    public void setBuildOptions (String buildOptions) {
+        this.buildOptions = buildOptions;
+    }
+
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabBuildStepExecution(context, getTasks(), getStartupOptions());
+        return new MatlabBuildStepExecution(context, getTasks(), getStartupOptions(), getBuildOptions());
     }
 
     @Extension
