@@ -6,7 +6,7 @@ public class MatlabExecutionException extends Exception {
 
     private final int exitCode;
 
-    MatlabExecutionException(int exitCode) {
+    public MatlabExecutionException(int exitCode) {
         super(String.format(Message.getValue("matlab.execution.exception.prefix"), exitCode));
         this.exitCode = exitCode;
     }
