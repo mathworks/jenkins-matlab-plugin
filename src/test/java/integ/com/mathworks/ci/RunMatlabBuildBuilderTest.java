@@ -104,7 +104,7 @@ public class RunMatlabBuildBuilderTest {
     }
 
     private URL getResource(String resource) {
-        return RunMatlabTestsBuilderTest.class.getClassLoader().getResource(resource);
+        return RunMatlabBuildBuilderTest.class.getClassLoader().getResource(resource);
     }
 
     /*
