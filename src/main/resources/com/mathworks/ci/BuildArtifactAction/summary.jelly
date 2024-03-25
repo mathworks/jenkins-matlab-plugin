@@ -1,0 +1,23 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core"
+  xmlns:d="jelly:define"
+  xmlns:l="/lib/layout"
+  xmlns:t="/lib/hudson"
+  xmlns:f="/lib/form"
+  xmlns:i="jelly:fmt">
+  <t:summary icon="document.png">
+    <p><a href="buildresults">MATLAB Build Results</a></p>
+    <span class="${pst.cssClass}">
+      <j:if test="${it.totalCount == 0}">
+        <font color="#EF2929"><h5>Unable to run a MATLAB build. </h5></font>
+      </j:if>
+    </span>
+    <p><b>Tasks run: <font color="Blue">${it.totalCount}</font></b></p>
+    <br>
+    <b>Failed: <font color="red">${it.failCount}</font></b>
+    </br>
+    <br>
+    <b>Skipped: <font color="orange">${it.skipCount}</font></b>
+    </br>
+  </t:summary>
+</j:jelly>

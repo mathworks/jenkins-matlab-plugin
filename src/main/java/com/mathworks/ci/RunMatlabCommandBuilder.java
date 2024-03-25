@@ -122,13 +122,13 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
                 getFilePathForUniqueFolder(launcher, uniqueTmpFldrName, workspace);
 
         // Create MATLAB script
-        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, workspace, listener, envVars);
+        createMatlabScriptByName(uniqueTmpFolderPath, uniqueCommandFile, listener, envVars);
         ProcStarter matlabLauncher;
         String options = getStartupOptions() == null ? "" : getStartupOptions().getOptions();
 
         try {
             matlabLauncher = getProcessToRunMatlabCommand(workspace, launcher, listener, envVars,
-                    "cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"');"+ uniqueCommandFile, options, uniqueTmpFldrName);
+                    "setenv('MW_ORIG_WORKING_FOLDER', cd('"+ uniqueTmpFolderPath.getRemote().replaceAll("'", "''") +"'));"+ uniqueCommandFile, options, uniqueTmpFldrName);
             
             listener.getLogger()
                     .println("#################### Starting command output ####################");
@@ -145,14 +145,14 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep,
         }
     }
     
-    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, FilePath workspace, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
+    private void createMatlabScriptByName(FilePath uniqueTmpFolderPath, String uniqueScriptName, TaskListener listener, EnvVars envVars) throws IOException, InterruptedException {
      
         // Create a new command runner script in the temp folder.
         final FilePath matlabCommandFile =
                 new FilePath(uniqueTmpFolderPath, uniqueScriptName + ".m");
         final String cmd = envVars.expand(getMatlabCommand());
         final String matlabCommandFileContent =
-                "cd '" + workspace.getRemote().replaceAll("'", "''") + "';\n" + cmd;
+                "cd(getenv('MW_ORIG_WORKING_FOLDER'));\n" + cmd;
 
         // Display the commands on console output for users reference
         listener.getLogger()
