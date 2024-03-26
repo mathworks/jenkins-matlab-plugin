@@ -38,7 +38,6 @@ public class BuildConsoleAnnotator extends LineTransformationOutputStream {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
