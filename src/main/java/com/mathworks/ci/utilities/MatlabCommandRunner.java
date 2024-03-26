@@ -5,6 +5,7 @@ package com.mathworks.ci.utilities;
  *
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -36,7 +37,10 @@ public class MatlabCommandRunner {
         this.additionalEnvVars = new HashMap<String,String>();
 
         // Create MATLAB folder
-        FilePath matlabFolder = new FilePath(params.getLauncher().getChannel(), params.getWorkspace().getRemote() + "/.matlab");
+        FilePath matlabFolder = new FilePath(
+                params.getLauncher().getChannel(), params.getWorkspace().getRemote() 
+                + File.separator 
+                + ".matlab");
         matlabFolder.mkdirs();
 
         // Create temp folder

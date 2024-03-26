@@ -95,10 +95,11 @@ public class MatlabCommandRunnerTest {
     public void correctTempFolderLocation() throws IOException, InterruptedException {
         runner = new MatlabCommandRunner(params);
         FilePath tmp = runner.getTempFolder();
+        FilePath expected = new FilePath(new File(tempDir.getRoot(), ".matlab"));
         
         Assert.assertThat(
                 tmp.getRemote(),
-                startsWith(new File(tempDir.getRoot(), ".matlab").getAbsolutePath()));
+                startsWith(expected.getRemote()));
     }
 
     @Test
@@ -123,7 +124,8 @@ public class MatlabCommandRunnerTest {
         Assert.assertTrue(f.exists());
         Assert.assertEquals(
                 runner.getTempFolder().getRemote() 
-                + "/run-matlab-command",
+                + File.separator
+                + "run-matlab-command",
                 f.getRemote());
     }
 
@@ -138,7 +140,8 @@ public class MatlabCommandRunnerTest {
         Assert.assertTrue(f.exists());
         Assert.assertEquals(
                 runner.getTempFolder().getRemote() 
-                + "/run-matlab-command",
+                + File.separator
+                + "run-matlab-command",
                 f.getRemote());
     }
 
@@ -151,7 +154,8 @@ public class MatlabCommandRunnerTest {
         Assert.assertTrue(f.exists());
         Assert.assertEquals(
                 runner.getTempFolder().getRemote()
-                + "/run-matlab-command.exe",
+                + File.separator
+                + "run-matlab-command.exe",
                 f.getRemote());
     }
 
@@ -178,7 +182,7 @@ public class MatlabCommandRunnerTest {
         FilePath f = runner.copyFileToTempFolder("testcontent.txt", "target.txt");
 
         Assert.assertTrue(f.exists());
-        Assert.assertEquals("This has text!\n", f.readToString()); 
+        Assert.assertThat(f.readToString(), startsWith("This has text!")); 
     }
 
     @Test
@@ -189,7 +193,8 @@ public class MatlabCommandRunnerTest {
         runner.runMatlabCommand(myCommand);
 
         String exe = runner.getTempFolder().getRemote()
-            + "/run-matlab-command.exe";
+            + File.separator
+            + "run-matlab-command.exe";
         String cmd = "setenv('MW_ORIG_WORKING_FOLDER', cd('"
             + runner.getTempFolder().getRemote()
             + "'));script_";
