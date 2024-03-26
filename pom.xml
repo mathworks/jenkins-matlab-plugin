@@ -46,7 +46,7 @@
 		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/matlab-plugin.git</developerConnection>
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
-		<tag>HEAD</tag>
+		<tag>matlab-2.13.0</tag>
 	</scm>
 	<dependencyManagement>
 		<dependencies>
