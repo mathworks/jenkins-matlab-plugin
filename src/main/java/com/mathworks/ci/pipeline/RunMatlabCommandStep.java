@@ -1,10 +1,11 @@
 package com.mathworks.ci.pipeline;
 
 /**
- * Copyright 2020-2023 The MathWorks, Inc.
+ * Copyright 2020-2024 The MathWorks, Inc.
  *  
  */
 
+import java.io.Serializable;
 import java.util.Set;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -23,8 +24,10 @@ import hudson.Util;
 
 import com.mathworks.ci.Message;
 
-public class RunMatlabCommandStep extends Step {
+public class RunMatlabCommandStep extends Step implements Serializable {
     
+    private static final long serialVersionUID = 1L;
+
     private String command;
     private String startupOptions = "";
 
@@ -32,7 +35,6 @@ public class RunMatlabCommandStep extends Step {
     public RunMatlabCommandStep(String command) {
         this.command = command;
     }
-
 
     public String getCommand() {
         return this.command;
@@ -49,7 +51,7 @@ public class RunMatlabCommandStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabCommandStepExecution(context, getCommand(), getStartupOptions());
+        return new MatlabCommandStepExecution(context, this);
     }
 
     @Extension

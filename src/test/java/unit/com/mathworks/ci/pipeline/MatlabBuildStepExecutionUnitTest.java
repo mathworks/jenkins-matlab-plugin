@@ -37,7 +37,7 @@ public class MatlabBuildStepExecutionUnitTest {
 
     @Test
     public void shouldHandleNullCases() throws Exception, IOException, InterruptedException, MatlabExecutionException {
-        MatlabBuildStepExecution ex = new MatlabBuildStepExecution(factory, context, null, null, null);
+        MatlabBuildStepExecution ex = new MatlabBuildStepExecution(factory, context, new RunMatlabBuildStep());
 
         ArgumentCaptor<BuildActionParameters> captor = ArgumentCaptor.forClass(BuildActionParameters.class);
 
@@ -46,16 +46,21 @@ public class MatlabBuildStepExecutionUnitTest {
         verify(factory).createAction(captor.capture());
 
         BuildActionParameters params = captor.getValue();
-        assertEquals(null, params.getStartupOptions());
-        assertEquals(null, params.getTasks());
-        assertEquals(null, params.getBuildOptions());
+        assertEquals("", params.getStartupOptions());
+        assertEquals("", params.getTasks());
+        assertEquals("", params.getBuildOptions());
 
         verify(action).run();
     }
 
     @Test
     public void shouldHandleMaximalCases() throws Exception, IOException, InterruptedException, MatlabExecutionException {
-        MatlabBuildStepExecution ex = new MatlabBuildStepExecution(factory, context, "mytask", "-nojvm -nodisplay", "-continueOnFailure");
+        RunMatlabBuildStep step = new RunMatlabBuildStep();
+        step.setStartupOptions("-nojvm -logfile file");
+        step.setTasks("vacuum bills");
+        step.setBuildOptions("-continueOnFailure");
+
+        MatlabBuildStepExecution ex = new MatlabBuildStepExecution(factory, context, step);
 
         ex.run();
 
@@ -64,8 +69,8 @@ public class MatlabBuildStepExecutionUnitTest {
         verify(factory).createAction(captor.capture());
 
         BuildActionParameters params = captor.getValue();
-        assertEquals("-nojvm -nodisplay", params.getStartupOptions());
-        assertEquals("mytask", params.getTasks());
+        assertEquals("-nojvm -logfile file", params.getStartupOptions());
+        assertEquals("vacuum bills", params.getTasks());
         assertEquals("-continueOnFailure", params.getBuildOptions());
 
         verify(action).run();
@@ -73,7 +78,7 @@ public class MatlabBuildStepExecutionUnitTest {
 
     @Test
     public void shouldHandleActionThrowing() throws Exception, IOException, InterruptedException, MatlabExecutionException {
-        MatlabBuildStepExecution ex = new MatlabBuildStepExecution(factory, context, null, null, null);
+        MatlabBuildStepExecution ex = new MatlabBuildStepExecution(factory, context, new RunMatlabBuildStep());
 
         doThrow(new MatlabExecutionException(12)).when(action).run();
 

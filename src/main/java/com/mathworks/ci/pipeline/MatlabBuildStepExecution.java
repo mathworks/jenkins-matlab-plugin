@@ -19,25 +19,28 @@ public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecutio
     
     private static final long serialVersionUID = 4771831219402275744L;
 
-    private BuildActionParameters params;
     private MatlabActionFactory factory;
-    public MatlabBuildStepExecution(MatlabActionFactory factory, StepContext context, String tasks, String startupOptions, String buildOptions) throws IOException, InterruptedException {
-        super(context);
+    private RunMatlabBuildStep step;
 
-        this.params = new BuildActionParameters(context, startupOptions, tasks, buildOptions);
+    public MatlabBuildStepExecution(MatlabActionFactory factory, StepContext ctx, RunMatlabBuildStep step) throws IOException, InterruptedException {
+        super(ctx);
+
         this.factory = factory;
+        this.step = step;
     }
     
-    public MatlabBuildStepExecution(StepContext context, String tasks, String startupOptions, String buildOptions) throws IOException, InterruptedException {
-        this(new MatlabActionFactory(), context, tasks, startupOptions, buildOptions);
-    }
-
-    public BuildActionParameters getParameters() {
-        return this.params;
+    public MatlabBuildStepExecution(StepContext ctx, RunMatlabBuildStep step) throws IOException, InterruptedException {
+        this(new MatlabActionFactory(), ctx, step);
     }
 
     @Override
     public Void run() throws Exception {
+        BuildActionParameters params = new BuildActionParameters(
+                getContext(),
+                step.getStartupOptions(),
+                step.getTasks(),
+                step.getBuildOptions());
+
         RunMatlabBuildAction action = factory.createAction(params);
         try {
             action.run();

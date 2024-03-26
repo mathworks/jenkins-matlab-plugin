@@ -14,12 +14,12 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
  *
  */
 
-public class MatlabActionParameters implements Serializable {
-    private transient Run build;
+public class MatlabActionParameters {
+    private Run build;
     private FilePath workspace;
     private EnvVars env;
-    private transient Launcher launcher;
-    private transient TaskListener listener;
+    private Launcher launcher;
+    private TaskListener listener;
 
     private String startupOptions;
 

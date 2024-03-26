@@ -5,6 +5,7 @@ package com.mathworks.ci.pipeline;
  *  
  */
 
+import java.io.Serializable;
 import java.util.Set;
 import org.jenkinsci.plugins.workflow.steps.Step;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
@@ -23,7 +24,9 @@ import hudson.Util;
 
 import com.mathworks.ci.Message;
 
-public class RunMatlabBuildStep extends Step {
+public class RunMatlabBuildStep extends Step implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private String tasks;
     private String startupOptions;
@@ -63,7 +66,7 @@ public class RunMatlabBuildStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        return new MatlabBuildStepExecution(context, getTasks(), getStartupOptions(), getBuildOptions());
+        return new MatlabBuildStepExecution(context, this);
     }
 
     @Extension

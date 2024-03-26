@@ -4,6 +4,7 @@ package com.mathworks.ci.pipeline;
  *  
  */
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +28,9 @@ import hudson.Util;
 import com.mathworks.ci.Message;
 import com.mathworks.ci.parameters.TestActionParameters;
 
-public class RunMatlabTestsStep extends Step {
+public class RunMatlabTestsStep extends Step implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private String testResultsPDF;
     private String testResultsTAP;
@@ -179,23 +182,7 @@ public class RunMatlabTestsStep extends Step {
 
     @Override
     public StepExecution start(StepContext context) throws Exception {
-        TestActionParameters params = new TestActionParameters(
-                context,
-                this.getStartupOptions(),
-                this.getTestResultsPDF(),
-                this.getTestResultsTAP(),
-                this.getTestResultsJUnit(),
-                this.getCodeCoverageCobertura(),
-                this.getTestResultsSimulinkTest(),
-                this.getModelCoverageCobertura(),
-                this.getSelectByTag(),
-                this.getLoggingLevel(),
-                this.getOutputDetail(),
-                this.getUseParallel(),
-                this.getStrict(),
-                this.getSourceFolder(),
-                this.getSelectByFolder());
-        return new MatlabRunTestsStepExecution(context, params);
+        return new MatlabRunTestsStepExecution(context, this);
     }
 
     @Extension

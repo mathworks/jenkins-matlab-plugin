@@ -18,30 +18,26 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
     
     private static final long serialVersionUID = 1957239693658914450L;
     
-    private String command;
-    private String startupOptions;
-
-    private RunActionParameters params;
-
     private MatlabActionFactory factory;
+    private RunMatlabCommandStep step;
 
-    public MatlabCommandStepExecution(MatlabActionFactory factory, StepContext context, String command, String startupOptions) throws IOException, InterruptedException {
+    public MatlabCommandStepExecution(MatlabActionFactory factory, StepContext context, RunMatlabCommandStep step) throws IOException, InterruptedException {
         super(context);
 
-        this.params = new RunActionParameters(context, startupOptions, command);
         this.factory = factory;
+        this.step = step;
     }
 
-    public MatlabCommandStepExecution(StepContext context, String command, String startupOptions) throws IOException, InterruptedException {
-        this(new MatlabActionFactory(), context, command, startupOptions);
-    }
-
-    public RunActionParameters getParameters() {
-        return this.params;
+    public MatlabCommandStepExecution(StepContext context, RunMatlabCommandStep step) throws IOException, InterruptedException {
+        this(new MatlabActionFactory(), context, step);
     }
 
     @Override
     public Void run() throws Exception {
+        RunActionParameters params = new RunActionParameters(
+                getContext(),
+                step.getStartupOptions(),
+                step.getCommand());
         RunMatlabCommandAction action = factory.createAction(params);        
 
         try {

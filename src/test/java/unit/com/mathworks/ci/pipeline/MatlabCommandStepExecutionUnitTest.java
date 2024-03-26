@@ -37,16 +37,18 @@ public class MatlabCommandStepExecutionUnitTest {
 
     @Test
     public void shouldHandleNullCases() throws Exception, IOException, InterruptedException, MatlabExecutionException {
-        MatlabCommandStepExecution ex = new MatlabCommandStepExecution(factory, context, null, null);
-
-        ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
+        MatlabCommandStepExecution ex = new MatlabCommandStepExecution(
+                factory, 
+                context, 
+                new RunMatlabCommandStep(null));
 
         ex.run();
 
+        ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
         verify(factory).createAction(captor.capture());
 
         RunActionParameters params = captor.getValue();
-        assertEquals(null, params.getStartupOptions());
+        assertEquals("", params.getStartupOptions());
         assertEquals(null, params.getCommand());
 
         verify(action).run();
@@ -54,16 +56,18 @@ public class MatlabCommandStepExecutionUnitTest {
 
     @Test
     public void shouldHandleMaximalCases() throws Exception, IOException, InterruptedException, MatlabExecutionException {
-        MatlabCommandStepExecution ex = new MatlabCommandStepExecution(factory, context, "mycommand", "-nojvm -nodisplay");
+        RunMatlabCommandStep step = new RunMatlabCommandStep("mycommand");
+        step.setStartupOptions("-nojvm -logfile file");
+
+        MatlabCommandStepExecution ex = new MatlabCommandStepExecution(factory, context, step);
 
         ex.run();
 
         ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
-
         verify(factory).createAction(captor.capture());
 
         RunActionParameters params = captor.getValue();
-        assertEquals("-nojvm -nodisplay", params.getStartupOptions());
+        assertEquals("-nojvm -logfile file", params.getStartupOptions());
         assertEquals("mycommand", params.getCommand());
 
         verify(action).run();
@@ -71,7 +75,10 @@ public class MatlabCommandStepExecutionUnitTest {
 
     @Test
     public void shouldHandleActionThrowing() throws Exception, IOException, InterruptedException, MatlabExecutionException {
-        MatlabCommandStepExecution ex = new MatlabCommandStepExecution(factory, context, null, null);
+        MatlabCommandStepExecution ex = new MatlabCommandStepExecution(
+                factory, 
+                context, 
+                new RunMatlabCommandStep(null));
 
         doThrow(new MatlabExecutionException(12)).when(action).run();
 

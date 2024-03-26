@@ -48,7 +48,9 @@ public class MatlabCommandRunner {
                 new Thread(() -> {
                     try {
                         tempFolder.deleteRecursive();
-                    } catch(Exception e) {}
+                    } catch(Exception e) {
+                        System.err.println(e.toString());
+                    }
                 }));
     }
 

@@ -20,26 +20,39 @@ public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecu
 
     private static final long serialVersionUID = 6704588180717665100L;
     
-    private TestActionParameters params;
     private MatlabActionFactory factory;
+    private RunMatlabTestsStep step;
 
-    public MatlabRunTestsStepExecution(MatlabActionFactory factory, StepContext context, TestActionParameters params) throws IOException, InterruptedException {
+    public MatlabRunTestsStepExecution(MatlabActionFactory factory, StepContext context, RunMatlabTestsStep step) throws IOException, InterruptedException {
         super(context);
 
-        this.params = params;
         this.factory = factory;
+        this.step = step;
     }
 
-    public MatlabRunTestsStepExecution(StepContext context, TestActionParameters params) throws IOException, InterruptedException {
-        this(new MatlabActionFactory(), context, params);
+    public MatlabRunTestsStepExecution(StepContext context, RunMatlabTestsStep step) throws IOException, InterruptedException {
+        this(new MatlabActionFactory(), context, step);
     }
 
-    public TestActionParameters getParameters() {
-        return this.params;
-    }
 
     @Override
     public Void run() throws Exception {
+        TestActionParameters params = new TestActionParameters(
+                getContext(),
+                step.getStartupOptions(),
+                step.getTestResultsPDF(),
+                step.getTestResultsTAP(),
+                step.getTestResultsJUnit(),
+                step.getCodeCoverageCobertura(),
+                step.getTestResultsSimulinkTest(),
+                step.getModelCoverageCobertura(),
+                step.getSelectByTag(),
+                step.getLoggingLevel(),
+                step.getOutputDetail(),
+                step.getUseParallel(),
+                step.getStrict(),
+                step.getSourceFolder(),
+                step.getSelectByFolder());
         RunMatlabTestsAction action = factory.createAction(params);
         try {
             action.run();
