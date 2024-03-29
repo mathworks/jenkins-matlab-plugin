@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2024 The MathWorks, Inc.
  *
  * Utility class for common methods.
  *
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 public class Utilities {
 
-    public static String getCellArrayFrmList(List<String> listOfStr){
+    public static String getCellArrayFromList(List<String> listOfStr){
         // Ignore empty string values in the list
         Predicate<String> isEmpty = String::isEmpty;
         Predicate<String> isNotEmpty = isEmpty.negate();
@@ -35,7 +35,7 @@ public class Utilities {
         return "{" + String.join(",", filteredListOfStr) + "}";
     }
 
-    public static void addMatlabToEnvPathFrmAxis(Computer cmp, TaskListener listener, EnvVars env)
+    public static void addMatlabToEnvPathFromAxis(Computer cmp, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
         String name = env.get(Message.getValue("Axis.matlab.key"));
 

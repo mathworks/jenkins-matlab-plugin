@@ -70,14 +70,14 @@ public class RunMatlabTestsAction {
         if (this.params.getSourceFolder() != null) {
             sourceFolders = this.params.getSourceFolder().size() == 0
                 ? null
-                : Utilities.getCellArrayFrmList(this.params.getSourceFolder());
+                : Utilities.getCellArrayFromList(this.params.getSourceFolder());
         }
 
         String selectFolders = null;
         if (this.params.getSelectByFolder() != null) {
             selectFolders = this.params.getSelectByFolder().size() == 0
                 ? null
-                : Utilities.getCellArrayFrmList(this.params.getSelectByFolder());
+                : Utilities.getCellArrayFromList(this.params.getSelectByFolder());
         }
 
         // All string-based fields

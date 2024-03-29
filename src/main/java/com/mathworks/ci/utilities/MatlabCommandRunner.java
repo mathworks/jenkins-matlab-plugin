@@ -86,7 +86,7 @@ public class MatlabCommandRunner {
 
         // Add custom environment vars
         EnvVars env = getEnvVars();
-        Utilities.addMatlabToEnvPathFrmAxis(
+        Utilities.addMatlabToEnvPathFromAxis(
                 Computer.currentComputer(), 
                 this.params.getTaskListener(), 
                 env);
