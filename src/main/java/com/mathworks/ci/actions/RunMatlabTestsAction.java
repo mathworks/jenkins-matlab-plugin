@@ -54,7 +54,7 @@ public class RunMatlabTestsAction {
     }
 
     private String singleQuotify(String in) {
-        return "'" + in + "'";
+        return "'" + in.replace("'", "''") + "'";
     }
 
     // Concatenate the input arguments, try to keep this function as

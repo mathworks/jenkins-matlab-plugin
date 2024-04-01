@@ -204,7 +204,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
     	return this.selectByTag;
     }
 
-    public String getSelectByTagPath() {
+    public String getSelectByTagAsString() {
         return this.selectByTag == null
             ? null
             : selectByTag.getTestTag();
@@ -381,7 +381,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
                 this.getCoberturaReportFilePath(),
                 this.getStmResultsFilePath(),
                 this.getModelCoverageFilePath(),
-                this.getSelectByTagPath(),
+                this.getSelectByTagAsString(),
                 this.getLoggingLevel(),
                 this.getOutputDetail(),
                 this.getUseParallel(),

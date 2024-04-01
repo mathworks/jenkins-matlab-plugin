@@ -85,13 +85,14 @@ public class RunMatlabBuildAction {
 
         // Handle build result
         Run<?,?> build = this.params.getBuild();
-        FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab/buildArtifact.json");
+        FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + "buildArtifact.json");
         if (jsonFile.exists()) {
             FilePath rootLocation = new FilePath(
                     new File(
                         build.getRootDir()
                         .getAbsolutePath()
-                        + "/buildArtifact.json"));
+                        + File.separator
+                        + "buildArtifact.json"));
             jsonFile.copyTo(rootLocation);
             jsonFile.delete();
             build.addAction(new BuildArtifactAction(build, this.params.getWorkspace()));
