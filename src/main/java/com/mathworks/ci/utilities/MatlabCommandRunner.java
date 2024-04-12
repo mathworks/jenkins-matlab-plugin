@@ -36,6 +36,11 @@ public class MatlabCommandRunner {
         this.params = params;
         this.additionalEnvVars = new HashMap<String,String>();
 
+        // Handle case where workspace doesn't exist
+        if (!params.getWorkspace().exists()) {
+            params.getWorkspace().mkdirs();
+        }
+
         // Create MATLAB folder
         FilePath matlabFolder = new FilePath(
                 params.getLauncher().getChannel(), params.getWorkspace().getRemote() 

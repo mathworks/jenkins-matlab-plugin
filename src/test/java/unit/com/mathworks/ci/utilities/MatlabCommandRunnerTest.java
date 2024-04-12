@@ -88,7 +88,7 @@ public class MatlabCommandRunnerTest {
     public void constructorUsesParamsForTempFolder() throws IOException, InterruptedException {
         MatlabCommandRunner runner = new MatlabCommandRunner(params);
         verify(params, times(1)).getLauncher();
-        verify(params, times(1)).getWorkspace();
+        verify(params, times(3)).getWorkspace();
     }
 
     @Test 
