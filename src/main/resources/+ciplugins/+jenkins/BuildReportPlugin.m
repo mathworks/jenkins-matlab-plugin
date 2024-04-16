@@ -18,11 +18,11 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
                     taskDetails(idx).failed = pluginData.TaskResults(idx).Failed;
                     taskDetails(idx).skipped = pluginData.TaskResults(idx).Skipped;
                     taskDetails(idx).duration = string(pluginData.TaskResults(idx).Duration);
-               end
-               a = struct("taskDetails",taskDetails);
-               s = jsonencode(a,"PrettyPrint",true);
-               fprintf(fID, '%s',s);
-               fclose(fID);
+                end
+                a = struct("taskDetails",taskDetails);
+                s = jsonencode(a,"PrettyPrint",true);
+                fprintf(fID, '%s',s);
+                fclose(fID);
             end
         end
     end
