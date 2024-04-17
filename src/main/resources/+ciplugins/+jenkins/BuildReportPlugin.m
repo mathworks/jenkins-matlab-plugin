@@ -6,11 +6,12 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
 
         function runTaskGraph(plugin, pluginData)
             runTaskGraph@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
-            [fID, msg] = fopen(fullfile(getenv("WORKSPACE"),'.matlab/buildArtifact.json'), 'w');
+            [fID, msg] = fopen(fullfile(getenv("WORKSPACE"),".matlab/buildArtifact.json"), "w");
 
             if fID == -1
-                warning('BuildTool:artifactFileWarnning','Could not open a file for Jenkins build result table due to: %s', msg);
+                warning('ciplugins:jenkins:BuildReportPlugin:UnableToOpenFile','Could not open a file for Jenkins build result table due to: %s', msg);
             else
+                closeFile = onCleanup(@()fclose(fID));
                 taskDetails = struct();
                 for idx = 1:numel(pluginData.TaskResults)
                     taskDetails(idx).name = pluginData.TaskResults(idx).Name;
@@ -22,7 +23,6 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
                 a = struct("taskDetails",taskDetails);
                 s = jsonencode(a,"PrettyPrint",true);
                 fprintf(fID, '%s',s);
-                fclose(fID);
             end
         end
     end
