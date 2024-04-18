@@ -9,7 +9,7 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
             [fID, msg] = fopen(fullfile(getenv("WORKSPACE"),".matlab/buildArtifact.json"), "w");
 
             if fID == -1
-                warning('ciplugins:jenkins:BuildReportPlugin:UnableToOpenFile','Could not open a file for Jenkins build result table due to: %s', msg);
+                warning("ciplugins:jenkins:BuildReportPlugin:UnableToOpenFile","Could not open a file for Jenkins build result table due to: %s", msg);
             else
                 closeFile = onCleanup(@()fclose(fID));
                 taskDetails = struct();
@@ -21,8 +21,8 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
                     taskDetails(idx).duration = string(pluginData.TaskResults(idx).Duration);
                 end
                 a = struct("taskDetails",taskDetails);
-                s = jsonencode(a,"PrettyPrint",true);
-                fprintf(fID, '%s',s);
+                s = jsonencode(a,PrettyPrint=true);
+                fprintf(fID, "%s",s);
             end
         end
     end
