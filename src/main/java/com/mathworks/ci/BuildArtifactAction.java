@@ -136,7 +136,7 @@ public class BuildArtifactAction implements Action {
 
     private void setCounts() throws InterruptedException, ParseException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" + BUILD_ARTIFACT_FILE));
+        FilePath fl = new FilePath(new File(build.getRootDir(), BUILD_ARTIFACT_FILE));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;
