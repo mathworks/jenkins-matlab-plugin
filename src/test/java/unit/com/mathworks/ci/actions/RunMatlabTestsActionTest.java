@@ -40,6 +40,7 @@ public class RunMatlabTestsActionTest {
     private boolean setup = false;
     private RunMatlabTestsAction action;
 
+    // Not using @BeforeClass to avoid static fields.
     @Before
     public void init() throws IOException, InterruptedException {
         if (!setup) {

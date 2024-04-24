@@ -44,6 +44,7 @@ public class RunMatlabBuildActionTest {
     private boolean setup = false;
     private RunMatlabBuildAction action;
 
+    // Not using @BeforeClass to avoid static fields.
     @Before
     public void init() {
         if (!setup) {

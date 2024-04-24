@@ -33,6 +33,7 @@ public class RunMatlabCommandActionTest {
     private boolean setup = false;
     private RunMatlabCommandAction action;
 
+    // Not using @BeforeClass to avoid static fields.
     @Before
     public void init() {
         if (!setup) {
