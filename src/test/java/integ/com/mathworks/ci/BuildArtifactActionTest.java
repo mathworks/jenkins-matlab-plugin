@@ -71,7 +71,7 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyBuildArtifactsReturned() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
@@ -87,7 +87,7 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyFailedCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
@@ -103,7 +103,7 @@ public class BuildArtifactActionTest {
     @Test
     public void verifySkipCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
@@ -118,7 +118,7 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyDurationIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
@@ -133,7 +133,7 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyTaskDescriptionIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
@@ -148,7 +148,7 @@ public class BuildArtifactActionTest {
     @Test
     public void verifyTaskNameIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
@@ -165,7 +165,7 @@ public class BuildArtifactActionTest {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json","buildArtifact.json",artifactRoot);
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         Assert.assertEquals("Total task count is not correct",1,ac.getTotalCount());
     }
 
@@ -179,7 +179,7 @@ public class BuildArtifactActionTest {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
     }
 
@@ -193,7 +193,7 @@ public class BuildArtifactActionTest {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task failed count is not correct",1,ac.getFailCount());
     }
@@ -207,7 +207,7 @@ public class BuildArtifactActionTest {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json","buildArtifact.json",artifactRoot);
-        BuildArtifactAction ac = new BuildArtifactAction(build,build.getWorkspace());
+        BuildArtifactAction ac = new BuildArtifactAction(build);
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task skip count is not correct",1,ac.getSkipCount());
     }

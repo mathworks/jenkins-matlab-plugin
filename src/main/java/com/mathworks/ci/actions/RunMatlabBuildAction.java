@@ -95,7 +95,7 @@ public class RunMatlabBuildAction {
                         + "buildArtifact.json"));
             jsonFile.copyTo(rootLocation);
             jsonFile.delete();
-            build.addAction(new BuildArtifactAction(build, this.params.getWorkspace()));
+            build.addAction(new BuildArtifactAction(build));
         }
     }
 }
