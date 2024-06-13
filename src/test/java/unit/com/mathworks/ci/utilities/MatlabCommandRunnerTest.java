@@ -40,7 +40,6 @@ import com.mathworks.ci.parameters.MatlabActionParameters;
 @RunWith(MockitoJUnitRunner.class)
 public class MatlabCommandRunnerTest {
     
-    @Mock private FilePath workspace;
     @Mock private Launcher launcher;
     @Mock private ProcStarter procStarter;
     private EnvVars env;
@@ -57,14 +56,12 @@ public class MatlabCommandRunnerTest {
     public void initialize() throws IOException, InterruptedException {
        env = new EnvVars();
 
-       when(params.getWorkspace()).thenReturn(workspace);
+       doReturn(new FilePath(tempDir.getRoot())).when(params).getWorkspace();
        when(params.getLauncher()).thenReturn(launcher);
        when(params.getEnvVars()).thenReturn(env);
        when(params.getTaskListener()).thenReturn(listener);
        when(params.getStartupOptions()).thenReturn("");
 
-       when(launcher.getChannel()).thenReturn(null);
-       when(workspace.getRemote()).thenReturn(tempDir.getRoot().getAbsolutePath());
        when(listener.getLogger()).thenReturn(logger);
 
        doReturn(false).when(launcher).isUnix();
@@ -87,8 +84,7 @@ public class MatlabCommandRunnerTest {
     @Test
     public void constructorUsesParamsForTempFolder() throws IOException, InterruptedException {
         MatlabCommandRunner runner = new MatlabCommandRunner(params);
-        verify(params, times(1)).getLauncher();
-        verify(params, times(3)).getWorkspace();
+        verify(params, times(1)).getWorkspace();
     }
 
     @Test 
@@ -214,7 +210,7 @@ public class MatlabCommandRunnerTest {
         
         runner.runMatlabCommand("COMMAND");
 
-        verify(procStarter).pwd(workspace);
+        verify(procStarter).pwd(new FilePath(tempDir.getRoot()));
     }
 
     @Test
