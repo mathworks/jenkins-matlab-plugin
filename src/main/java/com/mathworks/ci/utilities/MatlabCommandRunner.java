@@ -68,6 +68,8 @@ public class MatlabCommandRunner {
      */
     public void runMatlabCommand(String command) throws IOException, InterruptedException, MatlabExecutionException {
 
+        System.err.println("START");
+
         this.params.getTaskListener().getLogger()
             .println("\n#################### Starting command output ####################");
 
@@ -191,15 +193,24 @@ public class MatlabCommandRunner {
         if (launcher.isUnix()) {
             // Run uname to check if we're on Linux
             ByteArrayOutputStream kernelStream = new ByteArrayOutputStream();
+
+            ArgumentListBuilder args = new ArgumentListBuilder();
+            args.add("uname");
+            args.add("-s");
+            args.add("-m");
+
             launcher.launch()
-                .cmds("uname")
-                .masks(true)
+                .cmds(args)
+                .masks(true, true, true)
                 .stdout(kernelStream)
                 .join();
 
             String runnerSource;
-            if (kernelStream.toString("UTF-8").contains("Linux")) {
+            String kernelArch = kernelStream.toString("UTF-8");
+            if (kernelArch.contains("Linux")) {
                 runnerSource = "glnxa64/run-matlab-command";
+            } else if (kernelArch.contains("arm64")) {
+                runnerSource = "maca64/run-matlab-command"; 
             } else {
                 runnerSource = "maci64/run-matlab-command";
             }
