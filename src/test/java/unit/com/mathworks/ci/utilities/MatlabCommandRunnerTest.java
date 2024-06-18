@@ -66,9 +66,9 @@ public class MatlabCommandRunnerTest {
 
        doReturn(false).when(launcher).isUnix();
        when(launcher.launch()).thenReturn(procStarter);
-       when(procStarter.cmds(anyString())).thenReturn(procStarter);
        when(procStarter.cmds(any(ArgumentListBuilder.class))).thenReturn(procStarter);
-       when(procStarter.masks(anyBoolean())).thenReturn(procStarter);
+       when(procStarter.masks(anyBoolean(), anyBoolean(), anyBoolean()))
+           .thenReturn(procStarter);
        when(procStarter.envs(any(EnvVars.class))).thenReturn(procStarter);
        doReturn(procStarter).when(procStarter)
            .stdout(any(OutputStream.class));
@@ -99,7 +99,23 @@ public class MatlabCommandRunnerTest {
     }
 
     @Test
-    public void prepareRunnerExecutableLinux() throws IOException, InterruptedException {
+    public void prepareRunnerExecutableMaci() throws IOException, InterruptedException {
+        runner = new MatlabCommandRunner(params);
+
+        doReturn(true).when(launcher).isUnix();
+
+        FilePath f = runner.prepareRunnerExecutable();
+
+        Assert.assertTrue(f.exists());
+        Assert.assertEquals(
+                runner.getTempFolder().getRemote() 
+                + File.separator
+                + "run-matlab-command",
+                f.getRemote());
+    }
+
+    @Test
+    public void prepareRunnerExecutableMaca() throws IOException, InterruptedException {
         runner = new MatlabCommandRunner(params);
 
         doReturn(true).when(launcher).isUnix();    
@@ -109,7 +125,7 @@ public class MatlabCommandRunnerTest {
                        Object[] args = invocation.getArguments();
                        OutputStream s = (OutputStream)args[0];
 
-                       String tag = "Linux";
+                       String tag = "arm64";
                        s.write(tag.getBytes());
                     return procStarter;
                    }
@@ -126,10 +142,21 @@ public class MatlabCommandRunnerTest {
     }
 
     @Test
-    public void prepareRunnerExecutableMac() throws IOException, InterruptedException {
+    public void prepareRunnerExecutableLinux() throws IOException, InterruptedException {
         runner = new MatlabCommandRunner(params);
 
-        doReturn(true).when(launcher).isUnix();
+        doReturn(true).when(launcher).isUnix();    
+        when(procStarter.stdout(any(OutputStream.class))).thenAnswer(
+               new Answer() {
+                   public Object answer(InvocationOnMock invocation) throws IOException {
+                       Object[] args = invocation.getArguments();
+                       OutputStream s = (OutputStream)args[0];
+
+                       String tag = "Linux";
+                       s.write(tag.getBytes());
+                    return procStarter;
+                   }
+               });
 
         FilePath f = runner.prepareRunnerExecutable();
 
