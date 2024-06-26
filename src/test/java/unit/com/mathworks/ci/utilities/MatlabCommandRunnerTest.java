@@ -99,6 +99,22 @@ public class MatlabCommandRunnerTest {
     }
 
     @Test
+    public void removeTempFolderDeletesContents() throws IOException, InterruptedException {
+        runner = new MatlabCommandRunner(params);
+
+        FilePath t = runner.getTempFolder();
+        FilePath f = runner.copyFileToTempFolder("testcontent.txt", "target.txt");
+
+        Assert.assertTrue(t.exists());
+        Assert.assertTrue(f.exists());
+
+        runner.removeTempFolder();
+
+        Assert.assertFalse(t.exists());
+        Assert.assertFalse(f.exists());
+    }
+
+    @Test
     public void prepareRunnerExecutableMaci() throws IOException, InterruptedException {
         runner = new MatlabCommandRunner(params);
 
