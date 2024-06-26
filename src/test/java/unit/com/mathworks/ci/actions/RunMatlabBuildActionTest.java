@@ -168,4 +168,11 @@ public class RunMatlabBuildActionTest {
         // Should have copied file to root dir
         assertTrue(new File(tmp, "buildArtifact.json").exists());
     }
+
+    @Test
+    public void shouldRemoveTempFolder() throws IOException, InterruptedException, MatlabExecutionException {
+        action.run();
+
+        verify(runner).removeTempFolder();
+    }
 }
