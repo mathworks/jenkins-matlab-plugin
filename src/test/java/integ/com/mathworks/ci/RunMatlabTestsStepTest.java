@@ -156,18 +156,6 @@ public class RunMatlabTestsStepTest {
         j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
     
-    /*
-     * Verify .matlab folder created 
-     */
-
-    @Test
-    public void verifyMATLABtempFolderGenerated() throws Exception {
-        project.setDefinition(new CpsFlowDefinition(
-                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains(".matlab", build);
-    }
-    
     /*@Integ Test
      * Verify default command options for test Filter using selectByFolder option 
      */

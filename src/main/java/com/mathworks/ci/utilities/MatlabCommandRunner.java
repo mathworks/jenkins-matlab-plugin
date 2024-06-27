@@ -18,6 +18,7 @@ import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.model.Computer;
+import hudson.slaves.WorkspaceList;
 import hudson.util.ArgumentListBuilder;
 
 import com.mathworks.ci.Utilities;
@@ -43,11 +44,11 @@ public class MatlabCommandRunner {
         }
 
         // Create MATLAB folder
-        FilePath matlabFolder = new FilePath(workspace, ".matlab");
-        matlabFolder.mkdirs();
+        FilePath tmpRoot = WorkspaceList.tempDir(workspace);
+        tmpRoot.mkdirs();
 
         // Create temp folder
-        this.tempFolder = matlabFolder.createTempDir("tempDir", null);
+        this.tempFolder = tmpRoot.createTempDir("matlab", null);
     }
 
     /** 

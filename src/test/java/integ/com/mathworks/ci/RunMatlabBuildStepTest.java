@@ -176,16 +176,4 @@ public class RunMatlabBuildStepTest {
         j.assertBuildStatus(Result.FAILURE, build);
         j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
-    
-    /*
-     * Verify .matlab folder is generated 
-     */
-    @Test
-    public void verifyMATLABtempFolderGenerated() throws Exception {
-        project.setDefinition(
-                new CpsFlowDefinition("node { runMATLABBuild() }", true));
-
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains(".matlab", build);
-    }
 }
