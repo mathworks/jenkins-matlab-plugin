@@ -81,6 +81,14 @@ public class RunMatlabBuildAction {
             throw(e);
         } finally {
             annotator.forceEol();
+
+            try {
+                this.runner.removeTempFolder();
+            } catch (Exception e) {
+                // Don't want to override more important error
+                // thrown in catch block
+                System.err.println(e.toString());
+            }
         }
 
         // Handle build result

@@ -48,17 +48,6 @@ public class MatlabCommandRunner {
 
         // Create temp folder
         this.tempFolder = matlabFolder.createTempDir("tempDir", null);
-        
-        // If we hit an error during shutdown while cleaning up
-        // there's not too much that we can do.
-        Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> {
-                    try {
-                        tempFolder.deleteRecursive();
-                    } catch(Exception e) {
-                        System.err.println(e.toString());
-                    }
-                }));
     }
 
     /** 
@@ -67,9 +56,6 @@ public class MatlabCommandRunner {
      * @param command The command to run
      */
     public void runMatlabCommand(String command) throws IOException, InterruptedException, MatlabExecutionException {
-
-        System.err.println("START");
-
         this.params.getTaskListener().getLogger()
             .println("\n#################### Starting command output ####################");
 
@@ -157,6 +143,12 @@ public class MatlabCommandRunner {
 
     public FilePath getTempFolder() {
         return tempFolder;
+    }
+
+    public void removeTempFolder() throws IOException, InterruptedException {
+        if (tempFolder.exists()) {
+            tempFolder.deleteRecursive();
+        }
     }
 
     /**
