@@ -311,6 +311,25 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             Items.XSTREAM2.addCompatibilityAlias("com.mathworks.ci.RunMatlabTestsBuilder", RunMatlabTestsBuilder.class);
             Items.XSTREAM2.addCompatibilityAlias("com.mathworks.ci.SourceFolderPaths", SourceFolderPaths.class);
             Items.XSTREAM2.addCompatibilityAlias("com.mathworks.ci.TestFolders", TestFolders.class);
+
+            Items.XSTREAM2.addCompatibilityAlias(
+                    "com.mathworks.ci.RunMatlabTestsBuilder$PdfArtifact", 
+                    RunMatlabTestsBuilder.PdfArtifact.class);
+            Items.XSTREAM2.addCompatibilityAlias(
+                    "com.mathworks.ci.RunMatlabTestsBuilder$JunitArtifact", 
+                    RunMatlabTestsBuilder.JunitArtifact.class);
+            Items.XSTREAM2.addCompatibilityAlias(
+                    "com.mathworks.ci.RunMatlabTestsBuilder$TapArtifact", 
+                    RunMatlabTestsBuilder.TapArtifact.class);
+            Items.XSTREAM2.addCompatibilityAlias(
+                    "com.mathworks.ci.RunMatlabTestsBuilder$CoberturaArtifact", 
+                    RunMatlabTestsBuilder.CoberturaArtifact.class);
+            Items.XSTREAM2.addCompatibilityAlias(
+                    "com.mathworks.ci.RunMatlabTestsBuilder$StmResultsArtifact", 
+                    RunMatlabTestsBuilder.StmResultsArtifact.class);
+            Items.XSTREAM2.addCompatibilityAlias(
+                    "com.mathworks.ci.RunMatlabTestsBuilder$ModelCovArtifact", 
+                    RunMatlabTestsBuilder.ModelCovArtifact.class);
         }
 
         // Overridden Method used to show the text under build dropdown

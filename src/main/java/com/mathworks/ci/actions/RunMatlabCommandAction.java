@@ -31,6 +31,14 @@ public class RunMatlabCommandAction {
             this.params.getTaskListener().getLogger()
                 .println(e.getMessage());
             throw(e);
-        } 
+        } finally {
+            try {
+                this.runner.removeTempFolder();
+            } catch (Exception e) {
+                // Don't want to override more important error
+                // thrown in catch block
+                System.err.println(e.toString());
+            }
+        }
     }
 }

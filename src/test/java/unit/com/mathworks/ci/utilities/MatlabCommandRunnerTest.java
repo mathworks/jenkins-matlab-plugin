@@ -40,7 +40,6 @@ import com.mathworks.ci.parameters.MatlabActionParameters;
 @RunWith(MockitoJUnitRunner.class)
 public class MatlabCommandRunnerTest {
     
-    @Mock private FilePath workspace;
     @Mock private Launcher launcher;
     @Mock private ProcStarter procStarter;
     private EnvVars env;
@@ -57,21 +56,19 @@ public class MatlabCommandRunnerTest {
     public void initialize() throws IOException, InterruptedException {
        env = new EnvVars();
 
-       when(params.getWorkspace()).thenReturn(workspace);
+       doReturn(new FilePath(tempDir.getRoot())).when(params).getWorkspace();
        when(params.getLauncher()).thenReturn(launcher);
        when(params.getEnvVars()).thenReturn(env);
        when(params.getTaskListener()).thenReturn(listener);
        when(params.getStartupOptions()).thenReturn("");
 
-       when(launcher.getChannel()).thenReturn(null);
-       when(workspace.getRemote()).thenReturn(tempDir.getRoot().getAbsolutePath());
        when(listener.getLogger()).thenReturn(logger);
 
        doReturn(false).when(launcher).isUnix();
        when(launcher.launch()).thenReturn(procStarter);
-       when(procStarter.cmds(anyString())).thenReturn(procStarter);
        when(procStarter.cmds(any(ArgumentListBuilder.class))).thenReturn(procStarter);
-       when(procStarter.masks(anyBoolean())).thenReturn(procStarter);
+       when(procStarter.masks(anyBoolean(), anyBoolean(), anyBoolean()))
+           .thenReturn(procStarter);
        when(procStarter.envs(any(EnvVars.class))).thenReturn(procStarter);
        doReturn(procStarter).when(procStarter)
            .stdout(any(OutputStream.class));
@@ -87,8 +84,7 @@ public class MatlabCommandRunnerTest {
     @Test
     public void constructorUsesParamsForTempFolder() throws IOException, InterruptedException {
         MatlabCommandRunner runner = new MatlabCommandRunner(params);
-        verify(params, times(1)).getLauncher();
-        verify(params, times(3)).getWorkspace();
+        verify(params, times(1)).getWorkspace();
     }
 
     @Test 
@@ -100,6 +96,65 @@ public class MatlabCommandRunnerTest {
         Assert.assertThat(
                 tmp.getRemote(),
                 startsWith(expected.getRemote()));
+    }
+
+    @Test
+    public void removeTempFolderDeletesContents() throws IOException, InterruptedException {
+        runner = new MatlabCommandRunner(params);
+
+        FilePath t = runner.getTempFolder();
+        FilePath f = runner.copyFileToTempFolder("testcontent.txt", "target.txt");
+
+        Assert.assertTrue(t.exists());
+        Assert.assertTrue(f.exists());
+
+        runner.removeTempFolder();
+
+        Assert.assertFalse(t.exists());
+        Assert.assertFalse(f.exists());
+    }
+
+    @Test
+    public void prepareRunnerExecutableMaci() throws IOException, InterruptedException {
+        runner = new MatlabCommandRunner(params);
+
+        doReturn(true).when(launcher).isUnix();
+
+        FilePath f = runner.prepareRunnerExecutable();
+
+        Assert.assertTrue(f.exists());
+        Assert.assertEquals(
+                runner.getTempFolder().getRemote() 
+                + File.separator
+                + "run-matlab-command",
+                f.getRemote());
+    }
+
+    @Test
+    public void prepareRunnerExecutableMaca() throws IOException, InterruptedException {
+        runner = new MatlabCommandRunner(params);
+
+        doReturn(true).when(launcher).isUnix();    
+        when(procStarter.stdout(any(OutputStream.class))).thenAnswer(
+               new Answer() {
+                   public Object answer(InvocationOnMock invocation) throws IOException {
+                       Object[] args = invocation.getArguments();
+                       OutputStream s = (OutputStream)args[0];
+
+                       String tag = "arm64";
+                       s.write(tag.getBytes());
+                    return procStarter;
+                   }
+               });
+
+        FilePath f = runner.prepareRunnerExecutable();
+
+        Assert.assertTrue(f.exists());
+        Assert.assertEquals(
+                runner.getTempFolder().getRemote() 
+                + File.separator
+                + "run-matlab-command",
+                f.getRemote());
     }
 
     @Test
@@ -118,22 +173,6 @@ public class MatlabCommandRunnerTest {
                     return procStarter;
                    }
                });
-
-        FilePath f = runner.prepareRunnerExecutable();
-
-        Assert.assertTrue(f.exists());
-        Assert.assertEquals(
-                runner.getTempFolder().getRemote() 
-                + File.separator
-                + "run-matlab-command",
-                f.getRemote());
-    }
-
-    @Test
-    public void prepareRunnerExecutableMac() throws IOException, InterruptedException {
-        runner = new MatlabCommandRunner(params);
-
-        doReturn(true).when(launcher).isUnix();
 
         FilePath f = runner.prepareRunnerExecutable();
 
@@ -214,7 +253,7 @@ public class MatlabCommandRunnerTest {
         
         runner.runMatlabCommand("COMMAND");
 
-        verify(procStarter).pwd(workspace);
+        verify(procStarter).pwd(new FilePath(tempDir.getRoot()));
     }
 
     @Test

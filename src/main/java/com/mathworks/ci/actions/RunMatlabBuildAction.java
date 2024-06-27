@@ -81,6 +81,14 @@ public class RunMatlabBuildAction {
             throw(e);
         } finally {
             annotator.forceEol();
+
+            try {
+                this.runner.removeTempFolder();
+            } catch (Exception e) {
+                // Don't want to override more important error
+                // thrown in catch block
+                System.err.println(e.toString());
+            }
         }
 
         // Handle build result
@@ -95,7 +103,7 @@ public class RunMatlabBuildAction {
                         + "buildArtifact.json"));
             jsonFile.copyTo(rootLocation);
             jsonFile.delete();
-            build.addAction(new BuildArtifactAction(build, this.params.getWorkspace()));
+            build.addAction(new BuildArtifactAction(build));
         }
     }
 }
