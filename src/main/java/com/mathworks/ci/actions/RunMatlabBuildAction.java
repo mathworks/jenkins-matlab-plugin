@@ -78,20 +78,6 @@ public class RunMatlabBuildAction {
 
         try {
             runner.runMatlabCommand(command);
-
-            // Handle build result
-            Run<?,?> build = this.params.getBuild();
-            FilePath jsonFile = new FilePath(runner.getTempFolder(), "buildArtifact.json");
-            if (jsonFile.exists()) {
-                FilePath rootLocation = new FilePath(
-                        new File(
-                            build.getRootDir().getAbsolutePath(),
-                            "buildArtifact.json")
-                        );
-                jsonFile.copyTo(rootLocation);
-                jsonFile.delete();
-                build.addAction(new BuildArtifactAction(build));
-            }
         } catch (Exception e) {
             this.params.getTaskListener().getLogger()
                 .println(e.getMessage());
@@ -100,11 +86,29 @@ public class RunMatlabBuildAction {
             annotator.forceEol();
 
             try {
-                this.runner.removeTempFolder();
+                // Handle build result
+                Run<?,?> build = this.params.getBuild();
+                FilePath jsonFile = new FilePath(runner.getTempFolder(), "buildArtifact.json");
+                if (jsonFile.exists()) {
+                    FilePath rootLocation = new FilePath(
+                            new File(
+                                build.getRootDir().getAbsolutePath(),
+                                "buildArtifact.json")
+                            );
+                    jsonFile.copyTo(rootLocation);
+                    jsonFile.delete();
+                    build.addAction(new BuildArtifactAction(build));
+                }
             } catch (Exception e) {
                 // Don't want to override more important error
                 // thrown in catch block
                 System.err.println(e.toString());
+            } finally {
+                try {
+                    this.runner.removeTempFolder();
+                } catch (Exception e) {
+                    System.err.println(e.toString());
+                }
             }
         }
     }

@@ -152,15 +152,8 @@ public class RunMatlabBuildActionTest {
         doReturn(new FilePath(tmp)).when(runner).getTempFolder();
         doReturn(dest).when(build).getRootDir();
 
-        boolean runTimeException = false;
-        try {
-            action.run();
-        } catch (RuntimeException e) {
-            runTimeException = true;
-        }
+        action.run();
 
-        // Should throw for invalid file
-        assertTrue(runTimeException);
         // Should have deleted original file
         assertFalse(json.exists());
         // Should have copied file to root dir
