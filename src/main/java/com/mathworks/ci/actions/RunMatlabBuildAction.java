@@ -54,6 +54,9 @@ public class RunMatlabBuildAction {
         runner.addEnvironmentVariable(
                 "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
                 "ciplugins.jenkins.getDefaultPlugins");
+        runner.addEnvironmentVariable(
+                "MW_MATLAB_TEMP_FOLDER",
+                runner.getTempFolder().toString());
 
         // Redirect output to the build annotator
         runner.redirectStdOut(annotator);
@@ -75,6 +78,20 @@ public class RunMatlabBuildAction {
 
         try {
             runner.runMatlabCommand(command);
+
+            // Handle build result
+            Run<?,?> build = this.params.getBuild();
+            FilePath jsonFile = new FilePath(runner.getTempFolder(), "buildArtifact.json");
+            if (jsonFile.exists()) {
+                FilePath rootLocation = new FilePath(
+                        new File(
+                            build.getRootDir().getAbsolutePath(),
+                            "buildArtifact.json")
+                        );
+                jsonFile.copyTo(rootLocation);
+                jsonFile.delete();
+                build.addAction(new BuildArtifactAction(build));
+            }
         } catch (Exception e) {
             this.params.getTaskListener().getLogger()
                 .println(e.getMessage());
@@ -89,21 +106,6 @@ public class RunMatlabBuildAction {
                 // thrown in catch block
                 System.err.println(e.toString());
             }
-        }
-
-        // Handle build result
-        Run<?,?> build = this.params.getBuild();
-        FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + "buildArtifact.json");
-        if (jsonFile.exists()) {
-            FilePath rootLocation = new FilePath(
-                    new File(
-                        build.getRootDir()
-                        .getAbsolutePath()
-                        + File.separator
-                        + "buildArtifact.json"));
-            jsonFile.copyTo(rootLocation);
-            jsonFile.delete();
-            build.addAction(new BuildArtifactAction(build));
         }
     }
 }
