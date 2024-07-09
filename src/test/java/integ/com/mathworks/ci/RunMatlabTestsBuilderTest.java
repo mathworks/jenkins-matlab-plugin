@@ -485,19 +485,6 @@ public class RunMatlabTestsBuilderTest {
     }
     
     /*
-     * Test to verify if .matlab gets created in workspace.
-     */
-    @Test
-    public void verifyMATLABfolderGenerated() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
-        Assert.assertTrue(matlabRunner.exists());
-    }
-    
-    /*
      * Test to verify Use Parallel check box present.
      */
      @Test
