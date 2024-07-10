@@ -16,6 +16,7 @@ import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.model.TaskListener;
+import hudson.slaves.WorkspaceList;
 import hudson.util.ArgumentListBuilder;
 
 import org.junit.Test;
@@ -91,8 +92,10 @@ public class MatlabCommandRunnerTest {
     public void correctTempFolderLocation() throws IOException, InterruptedException {
         runner = new MatlabCommandRunner(params);
         FilePath tmp = runner.getTempFolder();
-        FilePath expected = new FilePath(new File(tempDir.getRoot(), ".matlab"));
+
+        FilePath expected = WorkspaceList.tempDir(new FilePath(tempDir.getRoot()));
         
+        Assert.assertTrue(tmp.exists());
         Assert.assertThat(
                 tmp.getRemote(),
                 startsWith(expected.getRemote()));
