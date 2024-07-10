@@ -5,21 +5,17 @@ package com.mathworks.ci.actions;
  *
  */
 
-import com.mathworks.ci.Utilities;
-import com.sun.javafx.scene.control.skin.Utils;
 import java.io.File;
 import java.io.IOException;
 
 import hudson.FilePath;
 import hudson.model.Run;
-import hudson.console.LineTransformationOutputStream;
 
 import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-import java.util.UUID;
 import org.apache.commons.lang.RandomStringUtils;
 
 public class RunMatlabBuildAction {
@@ -110,7 +106,7 @@ public class RunMatlabBuildAction {
                     FilePath rootLocation = new FilePath(
                             new File(
                                 build.getRootDir().getAbsolutePath(),
-                                "buildArtifact.json")
+                                "buildArtifact" + this.getActionID() + ".json")
                             );
                     jsonFile.copyTo(rootLocation);
                     jsonFile.delete();
