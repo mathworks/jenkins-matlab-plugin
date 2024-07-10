@@ -5,6 +5,8 @@ package com.mathworks.ci.actions;
  *
  */
 
+import com.mathworks.ci.Utilities;
+import com.sun.javafx.scene.control.skin.Utils;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,6 +19,8 @@ import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
+import java.util.UUID;
+import org.apache.commons.lang.RandomStringUtils;
 
 public class RunMatlabBuildAction {
     private BuildActionParameters params; 
@@ -29,6 +33,15 @@ public class RunMatlabBuildAction {
         "+ciplugins/+jenkins/BuildReportPlugin.m";
     private static String TASK_RUN_PROGRESS_PLUGIN = 
         "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
+    private String actionID;
+
+    public String getActionID(){
+        return this.actionID;
+    }
+
+    private void setActionID(){
+        this.actionID = RandomStringUtils.randomAlphanumeric(8);
+    }
 
     public RunMatlabBuildAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, BuildActionParameters params) {
         this.runner = runner;
@@ -45,15 +58,19 @@ public class RunMatlabBuildAction {
     }
 
     public void run() throws IOException, InterruptedException, MatlabExecutionException {
+        // set unique action ID for each build task
+        this.setActionID();
         // Copy plugins and override default plugins function
         runner.copyFileToTempFolder(DEFAULT_PLUGIN, DEFAULT_PLUGIN);
         runner.copyFileToTempFolder(BUILD_REPORT_PLUGIN, BUILD_REPORT_PLUGIN);
         runner.copyFileToTempFolder(TASK_RUN_PROGRESS_PLUGIN, TASK_RUN_PROGRESS_PLUGIN);
+
         
         // Set environment variable
         runner.addEnvironmentVariable(
                 "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
                 "ciplugins.jenkins.getDefaultPlugins");
+        runner.addEnvironmentVariable("MW_BUILD_PLUGIN_ACTION_ID",this.getActionID());
 
         // Redirect output to the build annotator
         runner.redirectStdOut(annotator);
@@ -100,10 +117,10 @@ public class RunMatlabBuildAction {
                         build.getRootDir()
                         .getAbsolutePath()
                         + File.separator
-                        + "buildArtifact.json"));
+                        + "buildArtifact" + this.getActionID() + ".json"));
             jsonFile.copyTo(rootLocation);
             jsonFile.delete();
-            build.addAction(new BuildArtifactAction(build));
+            build.addAction(new BuildArtifactAction(build, this.getActionID()));
         }
     }
 }

@@ -166,7 +166,7 @@ public class RunMatlabBuildActionTest {
         // Should have deleted original file
         assertFalse(json.exists());
         // Should have copied file to root dir
-        assertTrue(new File(tmp, "buildArtifact.json").exists());
+        assertTrue(new File(tmp, "buildArtifact"+ action.getActionID() + ".json").exists());
     }
 
     @Test
