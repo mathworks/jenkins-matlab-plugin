@@ -35,12 +35,9 @@ public class RunMatlabBuildAction {
         return this.actionID;
     }
 
-    private void setActionID(){
-        this.actionID = RandomStringUtils.randomAlphanumeric(8);
-    }
-
     public RunMatlabBuildAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, BuildActionParameters params) {
         this.runner = runner;
+        this.actionID = RandomStringUtils.randomAlphanumeric(8);
         this.annotator = annotator;
         this.params = params;
     }
@@ -54,8 +51,6 @@ public class RunMatlabBuildAction {
     }
 
     public void run() throws IOException, InterruptedException, MatlabExecutionException {
-        // set unique action ID for each build task
-        this.setActionID();
         // Copy plugins and override default plugins function
         runner.copyFileToTempFolder(DEFAULT_PLUGIN, DEFAULT_PLUGIN);
         runner.copyFileToTempFolder(BUILD_REPORT_PLUGIN, BUILD_REPORT_PLUGIN);

@@ -78,7 +78,7 @@ public class BuildArtifactActionTest {
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         int expectedSize = ba.size();
-        Assert.assertEquals("The build names are not matching",3,expectedSize);
+        Assert.assertEquals("Incorrect build artifact",3,expectedSize);
     }
 
     /**
