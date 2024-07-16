@@ -11,7 +11,6 @@ import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 public class StageFailureExceptionIT {
     private WorkflowJob project;

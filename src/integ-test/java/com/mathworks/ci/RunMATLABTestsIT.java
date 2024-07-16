@@ -2,6 +2,11 @@ package com.mathworks.ci;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
+import com.mathworks.ci.freestyle.RunMatlabTestsBuilder;
+import com.mathworks.ci.freestyle.options.SelectByFolder;
+import com.mathworks.ci.freestyle.options.SourceFolder;
+import com.mathworks.ci.freestyle.options.SourceFolderPaths;
+import com.mathworks.ci.freestyle.options.TestFolders;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -26,7 +31,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
@@ -88,7 +92,7 @@ public class RunMATLABTestsIT {
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
         matlabver.setChecked(true);
-        WebAssert.assertTextPresent(configurePage, TestMessage.getValue("Builder.invalid.matlab.root.warning"));
+        WebAssert.assertTextPresent(configurePage, com.mathworks.ci.TestMessage.getValue("Builder.invalid.matlab.root.warning"));
     }
 
     @Test
@@ -114,7 +118,7 @@ public class RunMATLABTestsIT {
         project.getBuildersList().add(this.testBuilder);
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains(TestMessage.getValue("matlab.not.found.error"), build);
+        jenkins.assertLogContains(com.mathworks.ci.TestMessage.getValue("matlab.not.found.error"), build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 

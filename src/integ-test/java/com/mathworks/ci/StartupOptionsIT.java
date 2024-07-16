@@ -1,5 +1,9 @@
 package com.mathworks.ci;
 
+import com.mathworks.ci.freestyle.RunMatlabBuildBuilder;
+import com.mathworks.ci.freestyle.RunMatlabCommandBuilder;
+import com.mathworks.ci.freestyle.RunMatlabTestsBuilder;
+import com.mathworks.ci.freestyle.options.*;
 import hudson.FilePath;
 import hudson.matrix.MatrixBuild;
 import hudson.matrix.MatrixProject;

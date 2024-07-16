@@ -13,7 +13,6 @@ import org.jvnet.hudson.test.JenkinsRule;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.concurrent.TimeUnit;
 
 import static org.jvnet.hudson.test.JenkinsRule.getLog;
 

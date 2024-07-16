@@ -2,6 +2,7 @@ package com.mathworks.ci;
 
 import com.gargoylesoftware.htmlunit.*;
 import com.gargoylesoftware.htmlunit.html.*;
+import com.mathworks.ci.freestyle.RunMatlabCommandBuilder;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
@@ -29,7 +30,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 
 public class RunMATLABCommandIT {
@@ -64,8 +64,8 @@ public class RunMATLABCommandIT {
 
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
-         // this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-         // project.getBuildWrappersList().add(this.buildWrapper);
+          this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+          project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
         tester.setMatlabCommand(TestData.getPropValues("pwd"));
@@ -79,8 +79,8 @@ public class RunMATLABCommandIT {
     */
     @Test
     public void verifyBuildPassesWhenMatlabCommandPasses() throws Exception {
-        // this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
-        // project.getBuildWrappersList().add(this.buildWrapper);
+         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+         project.getBuildWrappersList().add(this.buildWrapper);
         RunMatlabCommandBuilder tester =
                 new RunMatlabCommandBuilder();
         tester.setMatlabCommand("version");
