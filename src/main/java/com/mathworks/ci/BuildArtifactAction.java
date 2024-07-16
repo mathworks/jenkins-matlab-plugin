@@ -21,16 +21,14 @@ import org.json.simple.parser.ParseException;
 
 public class BuildArtifactAction implements Action {
     private Run<?, ?> build;
-    private FilePath workspace;
     private int totalCount;
     private int skipCount;
     private int failCount;
     private static final String ROOT_ELEMENT = "taskDetails";
     private static final String BUILD_ARTIFACT_FILE = "buildArtifact.json";
 
-    public BuildArtifactAction(Run<?, ?> build, FilePath workspace) {
+    public BuildArtifactAction(Run<?, ?> build) {
         this.build = build;
-        this.workspace = workspace;
 
         // Setting the counts of task when Action is created.
         try{
@@ -62,7 +60,7 @@ public class BuildArtifactAction implements Action {
 
     public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException, IOException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" + BUILD_ARTIFACT_FILE));
+        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath(), BUILD_ARTIFACT_FILE));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;
@@ -130,13 +128,10 @@ public class BuildArtifactAction implements Action {
         this.build = owner;
     }
 
-    public FilePath getWorkspace() {
-        return this.workspace;
-    }
 
     private void setCounts() throws InterruptedException, ParseException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" + BUILD_ARTIFACT_FILE));
+        FilePath fl = new FilePath(new File(build.getRootDir(), BUILD_ARTIFACT_FILE));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;
