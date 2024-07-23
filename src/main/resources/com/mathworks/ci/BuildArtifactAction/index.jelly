@@ -59,12 +59,22 @@
                 <j:forEach var="p" items="${it.buildArtifact}" varStatus="status">
                     <tr>
                         <td class="pane" align="left">
-                            <a href="../console#matlab-${p.taskName}-${it.actionID}">${p.taskName}</a>
+                            <j:if test="${it.actionID != ''}">
+                                <a href="../console#matlab-${p.taskName}-${it.actionID}">${p.taskName}</a>
+                            </j:if>
+                            <j:if test="${it.actionID == ''}">
+                                <a href="../console#matlab-${p.taskName}">${p.taskName}</a>
+                            </j:if>
                         </td>
                         <td class="pane" style="width:9em">
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskFailed != false}">
-                                    <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#EF2929"> FAILED </font> </a>
+                                   <j:if test="${it.actionID != ''}">
+                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#EF2929"> FAILED </font> </a>
+                                   </j:if>
+                                   <j:if test="${it.actionID == ''}">
+                                       <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
+                                   </j:if>
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">

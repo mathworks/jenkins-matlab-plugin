@@ -6,7 +6,7 @@
   xmlns:f="/lib/form"
   xmlns:i="jelly:fmt">
   <t:summary icon="document.png">
-    <p><a href="buildresults${it.actionID}">MATLAB Build Results</a></p>
+    <p><a href="${it.urlName}">MATLAB Build Results</a></p>
     <span class="${pst.cssClass}">
       <j:if test="${it.totalCount == 0}">
         <font color="#EF2929"><h5>Unable to generate a build artifact. </h5></font>
