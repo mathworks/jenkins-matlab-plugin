@@ -43,7 +43,7 @@ public class BuildArtifactAction implements Action {
     }
 
     public String getActionID(){
-        return this.actionID;
+        return (this.actionID == null) ? "" : this.actionID;
     }
 
     @CheckForNull
@@ -61,14 +61,19 @@ public class BuildArtifactAction implements Action {
     @CheckForNull
     @Override
     public String getUrlName() {
-        return "buildresults" + this.actionID ;
+        return (this.actionID == null) ? "buildresults" : "buildresults" + this.actionID ;
     }
 
     public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException, IOException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
-                BUILD_ARTIFACT_FILE + this.actionID + ".json"));
+        FilePath fl;
+        if(this.actionID == null){
+            fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
+                    BUILD_ARTIFACT_FILE + ".json"));
+        } else {
+            fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
+                    BUILD_ARTIFACT_FILE + this.actionID + ".json"));
+        }
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;
@@ -139,7 +144,14 @@ public class BuildArtifactAction implements Action {
 
     private void setCounts() throws InterruptedException, ParseException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
-        FilePath fl = new FilePath(new File(build.getRootDir(), BUILD_ARTIFACT_FILE + this.actionID + ".json"));
+        FilePath fl;
+        if(this.actionID == null){
+            fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
+                    BUILD_ARTIFACT_FILE + ".json"));
+        } else {
+            fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
+                    BUILD_ARTIFACT_FILE + this.actionID + ".json"));
+        }
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
             JSONObject jo = (JSONObject) obj;
