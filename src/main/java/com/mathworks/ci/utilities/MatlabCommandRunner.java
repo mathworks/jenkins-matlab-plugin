@@ -5,7 +5,6 @@ package com.mathworks.ci.utilities;
  *
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -19,6 +18,7 @@ import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
 import hudson.model.Computer;
+import hudson.slaves.WorkspaceList;
 import hudson.util.ArgumentListBuilder;
 
 import com.mathworks.ci.Utilities;
@@ -36,31 +36,19 @@ public class MatlabCommandRunner {
         this.params = params;
         this.additionalEnvVars = new HashMap<String,String>();
 
+        FilePath workspace = params.getWorkspace();
+
         // Handle case where workspace doesn't exist
-        if (!params.getWorkspace().exists()) {
-            params.getWorkspace().mkdirs();
+        if (!workspace.exists()) {
+            workspace.mkdirs();
         }
 
         // Create MATLAB folder
-        FilePath matlabFolder = new FilePath(
-                params.getLauncher().getChannel(), params.getWorkspace().getRemote() 
-                + File.separator 
-                + ".matlab");
-        matlabFolder.mkdirs();
+        FilePath tmpRoot = WorkspaceList.tempDir(workspace);
+        tmpRoot.mkdirs();
 
         // Create temp folder
-        this.tempFolder = matlabFolder.createTempDir("tempDir", null);
-        
-        // If we hit an error during shutdown while cleaning up
-        // there's not too much that we can do.
-        Runtime.getRuntime().addShutdownHook(
-                new Thread(() -> {
-                    try {
-                        tempFolder.deleteRecursive();
-                    } catch(Exception e) {
-                        System.err.println(e.toString());
-                    }
-                }));
+        this.tempFolder = tmpRoot.createTempDir("matlab", null);
     }
 
     /** 
@@ -69,7 +57,6 @@ public class MatlabCommandRunner {
      * @param command The command to run
      */
     public void runMatlabCommand(String command) throws IOException, InterruptedException, MatlabExecutionException {
-
         this.params.getTaskListener().getLogger()
             .println("\n#################### Starting command output ####################");
 
@@ -159,6 +146,12 @@ public class MatlabCommandRunner {
         return tempFolder;
     }
 
+    public void removeTempFolder() throws IOException, InterruptedException {
+        if (tempFolder.exists()) {
+            tempFolder.deleteRecursive();
+        }
+    }
+
     /**
      * Creates a file with the specified content in the temporary folder.
      *
@@ -193,15 +186,24 @@ public class MatlabCommandRunner {
         if (launcher.isUnix()) {
             // Run uname to check if we're on Linux
             ByteArrayOutputStream kernelStream = new ByteArrayOutputStream();
+
+            ArgumentListBuilder args = new ArgumentListBuilder();
+            args.add("uname");
+            args.add("-s");
+            args.add("-m");
+
             launcher.launch()
-                .cmds("uname")
-                .masks(true)
+                .cmds(args)
+                .masks(true, true, true)
                 .stdout(kernelStream)
                 .join();
 
             String runnerSource;
-            if (kernelStream.toString("UTF-8").contains("Linux")) {
+            String kernelArch = kernelStream.toString("UTF-8");
+            if (kernelArch.contains("Linux")) {
                 runnerSource = "glnxa64/run-matlab-command";
+            } else if (kernelArch.contains("arm64")) {
+                runnerSource = "maca64/run-matlab-command"; 
             } else {
                 runnerSource = "maci64/run-matlab-command";
             }

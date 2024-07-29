@@ -54,8 +54,6 @@ public class RunMatlabBuildActionTest {
             when(runner.getTempFolder()).thenReturn(tempFolder);
             when(tempFolder.getRemote()).thenReturn("/path/less/traveled");
 
-            when(params.getWorkspace()).thenReturn(tempFolder);
-
             when(params.getTaskListener()).thenReturn(listener);
             when(listener.getLogger()).thenReturn(out);
 
@@ -137,35 +135,35 @@ public class RunMatlabBuildActionTest {
     public void shouldNotAddActionIfNoBuildResult() throws IOException, InterruptedException, MatlabExecutionException {
         action.run();
 
-        verify(build,  never()).addAction(any(BuildArtifactAction.class));
+        verify(build, never()).addAction(any(BuildArtifactAction.class));
     }
 
     @Test
-    public void shouldCopyBuildResultsToRootAndAddsAction() throws IOException, InterruptedException, MatlabExecutionException {
+    public void shouldCopyBuildResultsToRootAndAddAction() throws IOException, InterruptedException, MatlabExecutionException {
         File tmp = Files.createTempDirectory("temp").toFile();
         tmp.deleteOnExit();
-
-        File matlab = new File(tmp, ".matlab");
-        File json = new File(matlab, "buildArtifact.json");
-
-        matlab.mkdirs();
-        json.createNewFile();
         
-        doReturn(new FilePath(tmp)).when(params).getWorkspace();
-        doReturn(tmp).when(build).getRootDir();
+        File dest = Files.createTempDirectory("dest").toFile();
+        dest.deleteOnExit();
 
-        boolean runTimeException = false;
-        try {
-            action.run();
-        } catch (RuntimeException e) {
-            runTimeException = true;
-        }
+        File json = new File(tmp, "buildArtifact.json");
+        json.createNewFile();
 
-        // Should throw for invalid file
-        assertTrue(runTimeException);
+        doReturn(new FilePath(tmp)).when(runner).getTempFolder();
+        doReturn(dest).when(build).getRootDir();
+
+        action.run();
+
         // Should have deleted original file
         assertFalse(json.exists());
         // Should have copied file to root dir
-        assertTrue(new File(tmp, "buildArtifact.json").exists());
+        assertTrue(new File(dest, "buildArtifact"+ action.getActionID() + ".json").exists());
+    }
+
+    @Test
+    public void shouldRemoveTempFolder() throws IOException, InterruptedException, MatlabExecutionException {
+        action.run();
+
+        verify(runner).removeTempFolder();
     }
 }
