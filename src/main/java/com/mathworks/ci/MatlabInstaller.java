@@ -63,9 +63,9 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         FilePath expectedPath = preferredLocation(tool, node);
 
-        Installable installable;
+        MatlabInstallable installable;
         try {
-            installable = getInstallable(node);
+            installable = (MatlabInstallable) getInstallable(node);
             log.getLogger().println("CAME HERE");
         } catch (InstallationFailedException e) {
             throw new InstallationFailedException(e.getMessage());
@@ -84,36 +84,49 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         log.getLogger().println("URL ISSS" + new URL(installable.url).toString());
 
         if (expectedPath.exists()) {
-           return expectedPath;
+            log.getLogger().println("PATH EXISTS NOT installing " + expectedPath.getRemote());
         } else {
-            FilePath mpmPath = new FilePath(expectedPath, "mpm.exe");
-            mpmPath.copyFrom(new URL(installable.url));
-            EnvVars env = node.toComputer().getEnvironment();
-            //env.put("PATH+mpm",expectedPath.getRemote());
 
-            mpmPath.chmod(777);
+            log.getLogger().println("INSIDE else");
+
+            FilePath mpmPath = installable.getMpmInstallable(expectedPath);
+            FilePath mbatchPath = installable.getBatchInstallable(expectedPath);
+            mpmPath.copyFrom(new URL(installable.url));
+            mpmPath.chmod(0777);
+            mbatchPath.copyFrom(new URL(installable.batchURL));
+            mbatchPath.chmod(0777);
+
+            //Add matlab-batch into the PATH varible
+            EnvVars env = node.toComputer().getEnvironment();
+            env.put("PATH+MATLAB_BATCH",expectedPath.getRemote());
+            log.getLogger().println(env.get("PATH"));
+
+
             Launcher matlabInstaller = node.createLauncher(log);
             ProcStarter installerProc = matlabInstaller.launch();
             ArgumentListBuilder args = new ArgumentListBuilder();
-            args.add("cmd.exe");
-            args.add("dir");
-            //args.add(expectedPath.getRemote() + "\\mpm.exe");
-            //args.add("install");
-            //args.add("--release=" + this.id +"");
-            //args.add("--destination="+ this.getHome() +"");
-            //args.add("--products=MATLAB");
+            //args.add("cmd.exe");
+            //args.add("dir");
+            args.add(expectedPath.getRemote() + "/mpm");
+            args.add("install");
+            args.add("--release=" + this.id +"");
+            args.add("--destination="+ this.getHome() +"");
+            args.add("--products=MATLAB");
             installerProc.pwd(expectedPath)
                     //.cmds(expectedPath.getRemote() + "\\mpm.exe","install","--release=" + this.id +"","--destination="+ this.getHome() +"","--products=MATLAB")//cmds(".\\mpm.exe install --release=" + this.id + " --destination="+ this.getHome() +"")
                     .cmds(args)
                     .envs(env).stdout(log);
             int i = installerProc.join();
+
+            log.getLogger().println("Result ===== " + i);
             if (i != 0) {
-                return new FilePath(node.getChannel(),"C:\\Program Files\\MATLAB\\R2023b");
+                log.getLogger().println("NON zero" + i);
             } else {
-                //return new FilePath(node.getChannel(),this.getHome());
-                return new FilePath(node.getChannel(),"C:\\Program Files\\MATLAB\\R2023b");
+                log.getLogger().println("Zero" + i);
+                //return new FilePath(node.getChannel(),"C:\\Program Files\\MATLAB\\R2023b");
             }
         }
+        return new FilePath(node.getChannel(),this.getHome());
 
     }
 
@@ -180,9 +193,46 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 
 
     public class MatlabInstallable extends Installable {
+        public String getBatchURL() {
+            return this.batchURL;
+        }
 
-        public MatlabInstallable(String osName) {
-            this.url =  "https://www.mathworks.com/mpm/" + osName + "/mpm";
+        public String batchURL;
+        private String osName;
+        public MatlabInstallable(String osName) throws InstallationFailedException {
+            this.osName = osName;
+            switch (osName) {
+                case "win64" :
+                    this.url =  "https://www.mathworks.com/mpm/win64/mpm";
+                    this.batchURL = "https://ssd.mathworks.com/supportfiles/ci/matlab-batch/v1/win64/matlab-batch.exe";
+                    break;
+                case "glnxa64" :
+                    this.url =  "https://www.mathworks.com/mpm/glnxa64/mpm";
+                    this.batchURL = "https://ssd.mathworks.com/supportfiles/ci/matlab-batch/v1/glnxa64/matlab-batch";
+                    break;
+                case "maci64" :
+                    this.url =  "https://www.mathworks.com/mpm/maci64/mpm";
+                    this.batchURL = "https://ssd.mathworks.com/supportfiles/ci/matlab-batch/v1/maci64/matlab-batch";
+                    break;
+                default :
+                    throw new InstallationFailedException("Unsupported OS");
+
+            }
+
+        }
+
+        public FilePath getBatchInstallable(FilePath expectedPath)  {
+            if(this.osName == "win64"){
+                return new FilePath(expectedPath,"matlab-batch.exe");
+            }
+            return new FilePath(expectedPath, "matlab-batch");
+        }
+
+        public FilePath getMpmInstallable(FilePath expectedPath)  {
+            if(this.osName == "win64"){
+                return new FilePath(expectedPath,"mpm.exe");
+            }
+            return new FilePath(expectedPath, "mpm");
         }
 
     }
