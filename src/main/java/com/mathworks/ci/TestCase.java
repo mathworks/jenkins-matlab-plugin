@@ -1,0 +1,109 @@
+package com.mathworks.ci;
+
+import java.util.List;
+
+import org.apache.commons.lang.RandomStringUtils;
+
+import java.util.ArrayList;
+
+public class TestCase {
+    private String name;
+    private List<TestDiagnostics> diagnostics;
+    private boolean passed;
+    private boolean failed;
+    private boolean incomplete;
+    private String status;
+    private Double duration;
+    
+    private String id;
+
+    public TestCase() {
+        name = "";
+        diagnostics = new ArrayList<TestDiagnostics>();
+        passed = false;
+        failed = false;
+        incomplete = false;
+        status = "NotRun";
+        duration = 0.0;
+
+        id = RandomStringUtils.randomAlphanumeric(8);
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<TestDiagnostics> getDiagnostics() {
+        return this.diagnostics;
+    }
+
+    public void setDiagnostics(List<TestDiagnostics> diagnostics) {
+        this.diagnostics = diagnostics;
+    }
+
+    public void updateDiagnostics(TestDiagnostics diagnostic) {
+        this.diagnostics.add(diagnostic);
+    }
+
+    public boolean getPassed() {
+        return this.passed;
+    }
+
+    public void setPassed(boolean passed) {
+        this.passed = passed;
+    }
+
+    public boolean getFailed() {
+        return this.failed;
+    }
+
+    public void setFailed(boolean failed) {
+        this.failed = failed;
+    }
+
+    public boolean getIncomplete() {
+        return this.incomplete;
+    }
+
+    public void setIncomplete(boolean incomplete) {
+        this.incomplete = incomplete;
+    }
+
+    public String getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void updateStatus() {
+        if (failed){
+            status = "Failed";
+        }
+        else if (incomplete) {
+            status = "Incomplete";
+        }
+        else if(passed) {
+            status = "Passed";
+        }
+    }
+
+    public Double getDuration() {
+        return this.duration;
+    }
+
+    public void setDuration(Double duration) {
+        this.duration = duration;
+    }
+
+    public String getId() {
+        // String id = this.filePath + "-" + this.name;
+        // return id.replaceAll(File.separator, "-");
+        return id;
+    }
+}

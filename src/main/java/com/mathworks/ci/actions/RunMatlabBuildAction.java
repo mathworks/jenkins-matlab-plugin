@@ -14,7 +14,9 @@ import hudson.console.LineTransformationOutputStream;
 
 import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
+import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabExecutionException;
+import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
@@ -96,6 +98,22 @@ public class RunMatlabBuildAction {
             jsonFile.copyTo(rootLocation);
             jsonFile.delete();
             build.addAction(new BuildArtifactAction(build, this.params.getWorkspace()));
+        }
+
+        // Handle test result
+        jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json");
+        if (jsonFile.exists()) {
+            FilePath rootLocation = new FilePath(
+                    new File(
+                        build.getRootDir()
+                        .getAbsolutePath()
+                        + File.separator
+                        + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT
+                        // + this.id
+                         + ".json"));
+            jsonFile.copyTo(rootLocation);
+            jsonFile.delete();
+            // build.addAction(new TestResultsViewAction(build, this.params.getWorkspace()));
         }
     }
 }

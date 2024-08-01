@@ -85,4 +85,12 @@
 </f:block>
 </f:section>
 
+<!-- Allow opting out of publishing test results -->
+<f:section title="Publish MATLAB Test Results">
+<f:block>
+   <f:optionalBlock name="json" field="json" title="Publish MATLAB Test Results">
+   </f:optionalBlock>
+</f:block>
+</f:section>
+
 </j:jelly>

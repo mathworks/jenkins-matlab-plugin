@@ -43,4 +43,10 @@ public class MatlabBuilderConstants {
         "disp(testScript.Contents);",
     	"fprintf('___________________________________\\n\\n');",
         "run(testScript);");
+
+    //Default and add-on plugins
+    public static final String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
+    public static final String TEST_RESULTS_VIEW_PLUGIN = "+ciplugins/+jenkins/TestResultsViewPlugin.m";
+    // rename artifact to matlabTestResults.json
+    public static final String TEST_RESULTS_VIEW_ARTIFACT = "testArtifact";
 }

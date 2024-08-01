@@ -5,15 +5,18 @@ package com.mathworks.ci.actions;
  *
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
 import hudson.FilePath;
+import hudson.model.Run;
 
 import com.mathworks.ci.Utilities;
 import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabExecutionException;
+import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.parameters.TestActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
@@ -41,6 +44,10 @@ public class RunMatlabTestsAction {
         String command = MatlabBuilderConstants.TEST_RUNNER_SCRIPT;
         command = command.replace("${TEMP_FOLDER}", runner.getTempFolder().getRemote());
         command = command.replace("${PARAMS}", getParameterString());
+
+        // generate json file
+        // command += "fid = fopen('.matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.id + ".json" 
+        //         + "','w');fprintf(fid,'%s',jsonencode(results, 'PrettyPrint', true));fclose(fid);";
         
         // Run the command
         try {
@@ -50,6 +57,23 @@ public class RunMatlabTestsAction {
                 .getLogger()
                 .println(e.getMessage());
             throw(e);
+        }
+
+        // Handle test result
+        Run<?,?> build = this.params.getBuild();
+        FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json");
+        if (jsonFile.exists()) {
+            FilePath rootLocation = new FilePath(
+                    new File(
+                        build.getRootDir()
+                        .getAbsolutePath()
+                        + File.separator
+                        + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT
+                        // + this.id
+                         + ".json"));
+            jsonFile.copyTo(rootLocation);
+            jsonFile.delete();
+            // build.addAction(new TestResultsViewAction(build, this.params.getWorkspace()));
         }
     }
 

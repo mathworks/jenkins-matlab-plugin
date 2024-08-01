@@ -60,6 +60,8 @@ public class BuildArtifactAction implements Action {
         return "buildresults";
     }
 
+    // add link to test results table
+
     public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException, IOException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
         FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" + BUILD_ARTIFACT_FILE));
