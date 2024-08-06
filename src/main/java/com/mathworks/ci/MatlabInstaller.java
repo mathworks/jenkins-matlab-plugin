@@ -91,10 +91,16 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 
             FilePath mpmPath = installable.getMpmInstallable(expectedPath);
             FilePath mbatchPath = installable.getBatchInstallable(expectedPath);
+            FilePath destinatioFolder = new FilePath(node.getChannel(), this.getHome());
             mpmPath.copyFrom(new URL(installable.url));
             mpmPath.chmod(0777);
             mbatchPath.copyFrom(new URL(installable.batchURL));
             mbatchPath.chmod(0777);
+
+            if(!destinatioFolder.exists()){
+                destinatioFolder.mkdirs();
+                destinatioFolder.chmod(0777);
+            }
 
             //Add matlab-batch into the PATH varible
             EnvVars env = node.toComputer().getEnvironment();
@@ -107,7 +113,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             ArgumentListBuilder args = new ArgumentListBuilder();
             //args.add("cmd.exe");
             //args.add("dir");
-            args.add(expectedPath.getRemote() + "/mpm");
+            args.add(expectedPath.getRemote() + "\\mpm.exe");
             args.add("install");
             args.add("--release=" + this.id +"");
             args.add("--destination="+ this.getHome() +"");
@@ -123,7 +129,6 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
                 log.getLogger().println("NON zero" + i);
             } else {
                 log.getLogger().println("Zero" + i);
-                //return new FilePath(node.getChannel(),"C:\\Program Files\\MATLAB\\R2023b");
             }
         }
         return new FilePath(node.getChannel(),this.getHome());
