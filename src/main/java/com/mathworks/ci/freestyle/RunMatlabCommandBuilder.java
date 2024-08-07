@@ -7,10 +7,13 @@ package com.mathworks.ci.freestyle;
  * 
  */
 
+import hudson.util.FormValidation;
 import java.io.IOException;
 import javax.annotation.Nonnull;
+import jenkins.model.Jenkins;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -33,6 +36,7 @@ import com.mathworks.ci.parameters.RunActionParameters;
 import com.mathworks.ci.actions.MatlabActionFactory;
 import com.mathworks.ci.actions.RunMatlabCommandAction;
 import com.mathworks.ci.freestyle.options.StartupOptions;
+import org.kohsuke.stapler.verb.POST;
 
 public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep {
     // Deprecated
@@ -109,6 +113,15 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         public boolean isApplicable(
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
+        }
+
+        @POST
+        public FormValidation doCheckMatlabCommand(@QueryParameter String value) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            if (value.isEmpty()) {
+                return FormValidation.error(Message.getValue("matlab.empty.command.error"));
+            }
+            return FormValidation.ok();
         }
     }
 
