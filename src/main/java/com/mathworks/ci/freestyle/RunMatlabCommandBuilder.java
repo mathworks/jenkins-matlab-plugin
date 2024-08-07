@@ -116,9 +116,9 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         }
 
         @POST
-        public FormValidation doCheckMatlabCommand(@QueryParameter String matlabCommand) {
+        public FormValidation doCheckMatlabCommand(@QueryParameter String value) {
             Jenkins.get().checkPermission(Jenkins.ADMINISTER);
-            if (matlabCommand.isEmpty()) {
+            if (value.isEmpty()) {
                 return FormValidation.error(Message.getValue("matlab.empty.command.error"));
             }
             return FormValidation.ok();
