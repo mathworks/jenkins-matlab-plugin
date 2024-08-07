@@ -114,6 +114,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
                 @SuppressWarnings("rawtypes") Class<? extends AbstractProject> jobtype) {
             return true;
         }
+
         @POST
         public FormValidation doCheckMatlabCommand(@QueryParameter String matlabCommand) {
             Jenkins.get().checkPermission(Jenkins.ADMINISTER);
