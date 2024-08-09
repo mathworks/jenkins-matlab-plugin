@@ -11,6 +11,7 @@ import java.io.IOException;
 import hudson.FilePath;
 import hudson.model.Run;
 
+import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
@@ -22,13 +23,6 @@ public class RunMatlabBuildAction {
     private BuildActionParameters params; 
     private MatlabCommandRunner runner;
     private BuildConsoleAnnotator annotator;
-
-    private static String DEFAULT_PLUGIN = 
-        "+ciplugins/+jenkins/getDefaultPlugins.m";
-    private static String BUILD_REPORT_PLUGIN = 
-        "+ciplugins/+jenkins/BuildReportPlugin.m";
-    private static String TASK_RUN_PROGRESS_PLUGIN = 
-        "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
     private String actionID;
 
     public String getActionID(){
@@ -52,9 +46,9 @@ public class RunMatlabBuildAction {
 
     public void run() throws IOException, InterruptedException, MatlabExecutionException {
         // Copy plugins and override default plugins function
-        runner.copyFileToTempFolder(DEFAULT_PLUGIN, DEFAULT_PLUGIN);
-        runner.copyFileToTempFolder(BUILD_REPORT_PLUGIN, BUILD_REPORT_PLUGIN);
-        runner.copyFileToTempFolder(TASK_RUN_PROGRESS_PLUGIN, TASK_RUN_PROGRESS_PLUGIN);
+        runner.copyFileToTempFolder(MatlabBuilderConstants.DEFAULT_PLUGIN, MatlabBuilderConstants.DEFAULT_PLUGIN);
+        runner.copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN, MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
+        runner.copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN, MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
 
         
         // Set environment variable
@@ -119,6 +113,5 @@ public class RunMatlabBuildAction {
                 }
             }
         }
-
     }
 }

@@ -18,6 +18,9 @@ import static org.junit.Assert.*;
 import org.mockito.Mock;
 import org.mockito.InOrder;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import hudson.FilePath;
@@ -26,7 +29,9 @@ import hudson.model.TaskListener;
 
 import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
+import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabExecutionException;
+import com.mathworks.ci.actions.RunMatlabBuildAction;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 import com.mathworks.ci.parameters.BuildActionParameters;
 
@@ -65,21 +70,21 @@ public class RunMatlabBuildActionTest {
     public void shouldCopyPluginsToTempDirectory() throws IOException, InterruptedException, MatlabExecutionException {
         action.run();
 
-        String DEFAULT_PLUGIN = 
-            "+ciplugins/+jenkins/getDefaultPlugins.m";
-        String BUILD_REPORT_PLUGIN = 
-            "+ciplugins/+jenkins/BuildReportPlugin.m";
-        String TASK_RUN_PROGRESS_PLUGIN = 
-            "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
+        // String DEFAULT_PLUGIN = 
+        //     "+ciplugins/+jenkins/getDefaultPlugins.m";
+        // String BUILD_REPORT_PLUGIN = 
+        //     "+ciplugins/+jenkins/BuildReportPlugin.m";
+        // String TASK_RUN_PROGRESS_PLUGIN = 
+        //     "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
 
         InOrder inOrder = inOrder(runner);
 
         inOrder.verify(runner)
-            .copyFileToTempFolder(DEFAULT_PLUGIN, DEFAULT_PLUGIN);
+            .copyFileToTempFolder(MatlabBuilderConstants.DEFAULT_PLUGIN, MatlabBuilderConstants.DEFAULT_PLUGIN);
         inOrder.verify(runner)
-            .copyFileToTempFolder(BUILD_REPORT_PLUGIN, BUILD_REPORT_PLUGIN);
+            .copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN, MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
         inOrder.verify(runner)
-            .copyFileToTempFolder(TASK_RUN_PROGRESS_PLUGIN, TASK_RUN_PROGRESS_PLUGIN);
+            .copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN, MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
     }
 
     @Test
