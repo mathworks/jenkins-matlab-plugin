@@ -82,7 +82,12 @@
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
-                                    <font color="#FCE94F"> SKIPPED </font>
+                                    <j:if test="${it.actionID != ''}">
+                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#FCE94F"> SKIPPED </font> </a>
+                                   </j:if>
+                                   <j:if test="${it.actionID == ''}">
+                                       <a href="../console#matlab-${p.taskName}"><font color="#FCE94F"> SKIPPED </font> </a>
+                                   </j:if>
                                 </j:if>
                             </span>
                         </td>
