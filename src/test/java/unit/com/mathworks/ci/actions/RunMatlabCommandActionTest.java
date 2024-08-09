@@ -101,9 +101,12 @@ public class RunMatlabCommandActionTest {
     public void runsGivenCommand() throws IOException, InterruptedException, MatlabExecutionException {
         when(params.getCommand()).thenReturn("Sit!");
 
+        when(runner.getTempFolder()).thenReturn(tempFolder);
+        when(tempFolder.getRemote()).thenReturn("/path/less/traveled");
+
         action.run();
 
-        verify(runner).runMatlabCommand("addpath('/path/less/traveled'); Sit!");
+        verify(runner).runMatlabCommand("addpath('/path/less/traveled');Sit!");
     }
 
     @Test

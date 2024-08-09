@@ -70,13 +70,6 @@ public class RunMatlabBuildActionTest {
     public void shouldCopyPluginsToTempDirectory() throws IOException, InterruptedException, MatlabExecutionException {
         action.run();
 
-        // String DEFAULT_PLUGIN = 
-        //     "+ciplugins/+jenkins/getDefaultPlugins.m";
-        // String BUILD_REPORT_PLUGIN = 
-        //     "+ciplugins/+jenkins/BuildReportPlugin.m";
-        // String TASK_RUN_PROGRESS_PLUGIN = 
-        //     "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
-
         InOrder inOrder = inOrder(runner);
 
         inOrder.verify(runner)
