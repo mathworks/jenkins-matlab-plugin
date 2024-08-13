@@ -1,12 +1,11 @@
 package com.mathworks.ci.actions;
 
-import java.io.File;
-
 /**
  * Copyright 2024, The MathWorks Inc.
  *
  */
 
+import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -51,7 +50,6 @@ public class RunMatlabCommandAction {
         runner.copyFileToTempFolder(MatlabBuilderConstants.DEFAULT_PLUGIN, MatlabBuilderConstants.DEFAULT_PLUGIN);
         runner.copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN, MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
         runner.copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN, MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
-
         
         // Set environment variable
         runner.addEnvironmentVariable(
