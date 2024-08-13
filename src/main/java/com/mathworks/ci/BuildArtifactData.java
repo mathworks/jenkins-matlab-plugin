@@ -8,6 +8,7 @@ public class BuildArtifactData {
 
     private String taskDescription;
     private boolean taskSkipped;
+    private String skipReason;
 
     public BuildArtifactData() {
     }
@@ -35,6 +36,14 @@ public class BuildArtifactData {
 
     public void setTaskSkipped(boolean taskSkipped) {
         this.taskSkipped = taskSkipped;
+    }
+
+    public String getSkipReason() {
+        return this.skipReason;
+    }
+
+    public void setSkipReason(String skipReason) {
+        this.skipReason = skipReason;
     }
 
     public boolean getTaskFailed() {
