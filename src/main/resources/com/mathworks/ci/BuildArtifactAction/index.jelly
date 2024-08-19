@@ -65,7 +65,7 @@
                                 <a href="../console#matlab-${p.taskName}">${p.taskName}</a>
                             </j:if>
                         </td>
-                        <td class="pane" style="width:9em">
+                        <td class="pane no-wrap" style="width:auto">
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskFailed != false}">
                                    <j:if test="${it.actionID != ''}">
@@ -81,12 +81,11 @@
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
-                                    <font color="#FCE94F" tooltip="${p.skipReason}">
+                                    <font color="#FCE94F">
                                         SKIPPED
-<!--                                        (${p.skipReason})-->
-<!--                                        <j:if test="${p.skipReason != ''}">-->
-<!--                                            ("$p.skipReason")-->
-<!--                                        </j:if>-->
+                                       <j:if test="${p.skipReason != ''}">
+                                           (${p.skipReason})
+                                       </j:if>
                                     </font>
                                 </j:if>
                             </span>

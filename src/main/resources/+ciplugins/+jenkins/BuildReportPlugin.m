@@ -3,24 +3,22 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
 %   Copyright 2024 The MathWorks, Inc.
 
     properties
-        fID
-        taskDetails = [];
+        taskDetails = {};
     end
 
     methods (Access=protected)
-
         function runTaskGraph(plugin, pluginData)
-            [plugin.fID, msg] = fopen(fullfile(getenv("MW_MATLAB_TEMP_FOLDER"),"buildArtifact.json"), "w");
-
             runTaskGraph@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
 
-            if plugin.fID == -1
+            [fID, msg] = fopen(fullfile(getenv("MW_MATLAB_TEMP_FOLDER"),"buildArtifact.json"), "w");
+            if fID == -1
                 warning("ciplugins:jenkins:BuildReportPlugin:UnableToOpenFile","Could not open a file for Jenkins build result table due to: %s", msg);
             else
-                closeFile = onCleanup(@()fclose(plugin.fID));
-                a = struct("taskDetails", plugin.taskDetails);
+                closeFile = onCleanup(@()fclose(fID));
+                a = struct();
+                a.taskDetails = plugin.taskDetails;
                 s = jsonencode(a, PrettyPrint=true);
-                fprintf(plugin.fID, "%s", s);
+                fprintf(fID, "%s", s);
             end
         end
 

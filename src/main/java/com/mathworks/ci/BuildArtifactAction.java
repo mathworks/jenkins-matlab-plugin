@@ -221,7 +221,26 @@ public class BuildArtifactAction implements Action {
                 data.setTaskSkipped((Boolean) pair.getValue());
                 break;
             case "skipReason":
-                data.setSkipReason(pair.getValue().toString());
+                String skipReasonKey = pair.getValue().toString();
+                String skipReason;
+                switch(skipReasonKey){
+                    case "UpToDate":
+                        skipReason = "Up-To-Date";
+                        break;
+                    case "UserSpecified":
+                        skipReason = "User Specified";
+                        break;
+                    case "UserRequested":
+                        skipReason = "User Requested";
+                        break;
+                    case "DependencyFailed":
+                        skipReason = "Dependency Failed";
+                        break;
+                    default:
+                        skipReason = skipReasonKey;
+                        break;
+                }
+                data.setSkipReason(skipReason);
                 break;
             default :
                 break;

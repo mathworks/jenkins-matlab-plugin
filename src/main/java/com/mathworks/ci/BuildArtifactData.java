@@ -11,8 +11,8 @@ public class BuildArtifactData {
     private String skipReason;
 
     public BuildArtifactData() {
+        skipReason = "";
     }
-
 
     public String getTaskDuration() {
         return this.taskDuration;
