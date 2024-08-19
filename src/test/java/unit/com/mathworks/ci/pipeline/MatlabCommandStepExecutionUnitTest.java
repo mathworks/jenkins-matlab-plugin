@@ -22,7 +22,7 @@ import org.jenkinsci.plugins.workflow.steps.StepContext;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.actions.MatlabActionFactory;
 import com.mathworks.ci.actions.RunMatlabCommandAction;
-import com.mathworks.ci.parameters.RunActionParameters;
+import com.mathworks.ci.parameters.CommandActionParameters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatlabCommandStepExecutionUnitTest {
@@ -32,7 +32,7 @@ public class MatlabCommandStepExecutionUnitTest {
     
     @Before
     public void setup() throws IOException, InterruptedException {
-        when(factory.createAction(any(RunActionParameters.class))).thenReturn(action);
+        when(factory.createAction(any(CommandActionParameters.class))).thenReturn(action);
     }
 
     @Test
@@ -44,10 +44,10 @@ public class MatlabCommandStepExecutionUnitTest {
 
         ex.run();
 
-        ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
+        ArgumentCaptor<CommandActionParameters> captor = ArgumentCaptor.forClass(CommandActionParameters.class);
         verify(factory).createAction(captor.capture());
 
-        RunActionParameters params = captor.getValue();
+        CommandActionParameters params = captor.getValue();
         assertEquals("", params.getStartupOptions());
         assertEquals(null, params.getCommand());
 
@@ -63,10 +63,10 @@ public class MatlabCommandStepExecutionUnitTest {
 
         ex.run();
 
-        ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
+        ArgumentCaptor<CommandActionParameters> captor = ArgumentCaptor.forClass(CommandActionParameters.class);
         verify(factory).createAction(captor.capture());
 
-        RunActionParameters params = captor.getValue();
+        CommandActionParameters params = captor.getValue();
         assertEquals("-nojvm -logfile file", params.getStartupOptions());
         assertEquals("mycommand", params.getCommand());
 

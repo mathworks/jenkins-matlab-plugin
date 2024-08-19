@@ -17,12 +17,11 @@ import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.TestActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
-public class RunMatlabTestsAction {
-    private MatlabCommandRunner runner;
+public class RunMatlabTestsAction extends RunMatlabAction {
     private TestActionParameters params;
 
     public RunMatlabTestsAction(MatlabCommandRunner runner, TestActionParameters params) {
-        this.runner = runner;
+        super(runner);
         this.params = params;
     }
 

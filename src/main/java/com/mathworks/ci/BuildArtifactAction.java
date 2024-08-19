@@ -1,5 +1,10 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2024 The MathWorks, Inc.
+ *
+ */
+
 import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.Run;
@@ -17,7 +22,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-
 
 public class BuildArtifactAction implements Action {
     private Run<?, ?> build;

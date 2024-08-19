@@ -1,6 +1,5 @@
 package com.mathworks.ci;
 
-
 /* Copyright 2018 The MathWorks, Inc. 
  * 
  * This Class is wrapper to access the static configuration values across project. Acts as 

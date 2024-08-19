@@ -11,7 +11,7 @@ import org.jenkinsci.plugins.workflow.steps.SynchronousNonBlockingStepExecution;
 import hudson.model.Result;
 
 import com.mathworks.ci.actions.MatlabActionFactory;
-import com.mathworks.ci.parameters.RunActionParameters;
+import com.mathworks.ci.parameters.CommandActionParameters;
 import com.mathworks.ci.actions.RunMatlabCommandAction;
 
 public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecution<Void> {
@@ -34,7 +34,7 @@ public class MatlabCommandStepExecution extends SynchronousNonBlockingStepExecut
 
     @Override
     public Void run() throws Exception {
-        RunActionParameters params = new RunActionParameters(
+        CommandActionParameters params = new CommandActionParameters(
                 getContext(),
                 step.getStartupOptions(),
                 step.getCommand());

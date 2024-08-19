@@ -5,34 +5,19 @@ package com.mathworks.ci.actions;
  *
  */
 
-import java.io.File;
 import java.io.IOException;
 
-import hudson.FilePath;
-import hudson.model.Run;
-
 import com.mathworks.ci.MatlabBuilderConstants;
-import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-import org.apache.commons.lang.RandomStringUtils;
 
-public class RunMatlabBuildAction {
-    private BuildActionParameters params; 
-    private MatlabCommandRunner runner;
-    private BuildConsoleAnnotator annotator;
-    private String actionID;
-
-    public String getActionID(){
-        return this.actionID;
-    }
+public class RunMatlabBuildAction extends RunMatlabAction {
+    private BuildActionParameters params;
 
     public RunMatlabBuildAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, BuildActionParameters params) {
-        this.runner = runner;
-        this.actionID = RandomStringUtils.randomAlphanumeric(8);
-        this.annotator = annotator;
+        super(runner, annotator);
         this.params = params;
     }
 
@@ -45,19 +30,8 @@ public class RunMatlabBuildAction {
     }
 
     public void run() throws IOException, InterruptedException, MatlabExecutionException {
-        // Copy plugins and override default plugins function
-        runner.copyFileToTempFolder(MatlabBuilderConstants.DEFAULT_PLUGIN, MatlabBuilderConstants.DEFAULT_PLUGIN);
-        runner.copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN, MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
-        runner.copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN, MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
-        
-        // Set environment variable
-        runner.addEnvironmentVariable(
-                "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
-                "ciplugins.jenkins.getDefaultPlugins");
-        runner.addEnvironmentVariable("MW_BUILD_PLUGIN_ACTION_ID",this.getActionID());
-        runner.addEnvironmentVariable(
-                "MW_MATLAB_TEMP_FOLDER",
-                runner.getTempFolder().toString());
+        super.copyBuildPluginsToTemp();
+        super.setBuildEnvVars();
 
         // Redirect output to the build annotator
         runner.redirectStdOut(annotator);
@@ -86,31 +60,8 @@ public class RunMatlabBuildAction {
         } finally {
             annotator.forceEol();
 
-            try {
-                // Handle build result
-                Run<?,?> build = this.params.getBuild();
-                FilePath jsonFile = new FilePath(runner.getTempFolder(), "buildArtifact.json");
-                if (jsonFile.exists()) {
-                    FilePath rootLocation = new FilePath(
-                            new File(
-                                build.getRootDir().getAbsolutePath(),
-                                "buildArtifact" + this.getActionID() + ".json")
-                            );
-                    jsonFile.copyTo(rootLocation);
-                    jsonFile.delete();
-                    build.addAction(new BuildArtifactAction(build, this.getActionID()));
-                }
-            } catch (Exception e) {
-                // Don't want to override more important error
-                // thrown in catch block
-                System.err.println(e.toString());
-            } finally {
-                try {
-                    this.runner.removeTempFolder();
-                } catch (Exception e) {
-                    System.err.println(e.toString());
-                }
-            }
+            // Handle build result
+            super.moveArtifactToBuildRoot(this.params.getBuild(), MatlabBuilderConstants.BUILD_ARTIFACT);
         }
     }
 }

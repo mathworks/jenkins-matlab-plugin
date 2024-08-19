@@ -1,7 +1,5 @@
 package com.mathworks.ci.actions;
 
-import java.io.File;
-
 /**
  * Copyright 2024, The MathWorks Inc.
  *
@@ -9,18 +7,15 @@ import java.io.File;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
 
 import org.junit.Test;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
-import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -28,17 +23,14 @@ import hudson.FilePath;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
-import com.mathworks.ci.MatlabBuilderConstants;
-import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
-import com.mathworks.ci.actions.RunMatlabCommandAction;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-import com.mathworks.ci.parameters.RunActionParameters;
+import com.mathworks.ci.parameters.CommandActionParameters;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class RunMatlabCommandActionTest {
-    @Mock RunActionParameters params;
+    @Mock CommandActionParameters params;
     @Mock BuildConsoleAnnotator annotator;
     @Mock MatlabCommandRunner runner;
     @Mock PrintStream out;
@@ -68,21 +60,7 @@ public class RunMatlabCommandActionTest {
     }
 
     @Test
-    public void shouldCopyPluginsToTempDirectory() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        InOrder inOrder = inOrder(runner);
-
-        inOrder.verify(runner)
-            .copyFileToTempFolder(MatlabBuilderConstants.DEFAULT_PLUGIN, MatlabBuilderConstants.DEFAULT_PLUGIN);
-        inOrder.verify(runner)
-            .copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN, MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
-        inOrder.verify(runner)
-            .copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN, MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
-    }
-
-    @Test
-    public void shouldOverrideDefaultPlugins() throws IOException, InterruptedException, MatlabExecutionException {
+    public void shouldOverrideDefaultBuildtoolPlugin() throws IOException, InterruptedException, MatlabExecutionException {
         action.run();
 
         verify(runner).addEnvironmentVariable(
@@ -123,35 +101,6 @@ public class RunMatlabCommandActionTest {
             verify(out).println(e.getMessage());
             assertEquals(12, e.getExitCode());
         };
-    }
-
-    @Test
-    public void shouldNotAddActionIfNoBuildResult() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(build, never()).addAction(any(BuildArtifactAction.class));
-    }
-
-    @Test
-    public void shouldCopyBuildResultsToRootAndAddAction() throws IOException, InterruptedException, MatlabExecutionException {
-        File tmp = Files.createTempDirectory("temp").toFile();
-        tmp.deleteOnExit();
-        
-        File dest = Files.createTempDirectory("dest").toFile();
-        dest.deleteOnExit();
-
-        File json = new File(tmp, "buildArtifact.json");
-        json.createNewFile();
-
-        doReturn(new FilePath(tmp)).when(runner).getTempFolder();
-        doReturn(dest).when(build).getRootDir();
-
-        action.run();
-
-        // Should have deleted original file
-        assertFalse(json.exists());
-        // Should have copied file to root dir
-        assertTrue(new File(dest, "buildArtifact"+ action.getActionID() + ".json").exists());
     }
 
     @Test

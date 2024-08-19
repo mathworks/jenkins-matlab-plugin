@@ -32,7 +32,7 @@ import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 
 import com.mathworks.ci.Message;
-import com.mathworks.ci.parameters.RunActionParameters;
+import com.mathworks.ci.parameters.CommandActionParameters;
 import com.mathworks.ci.actions.MatlabActionFactory;
 import com.mathworks.ci.actions.RunMatlabCommandAction;
 import com.mathworks.ci.freestyle.options.StartupOptions;
@@ -133,7 +133,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         // Get the environment variables specific to the this build
         final EnvVars env = build.getEnvironment(listener);
 
-        RunActionParameters params = new RunActionParameters(
+        CommandActionParameters params = new CommandActionParameters(
                 build, workspace, env, 
                 launcher, listener, 
                 getStartupOptionsAsString(),

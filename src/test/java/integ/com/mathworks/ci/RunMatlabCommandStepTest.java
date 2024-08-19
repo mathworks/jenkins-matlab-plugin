@@ -6,7 +6,6 @@ package com.mathworks.ci.pipeline;
 
 import java.io.IOException;
 
-import hudson.model.Result;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
