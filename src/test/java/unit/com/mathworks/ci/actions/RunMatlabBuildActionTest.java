@@ -60,15 +60,6 @@ public class RunMatlabBuildActionTest {
     }
 
     @Test
-    public void shouldOverrideDefaultBuildtoolPlugin() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(runner).addEnvironmentVariable(
-                "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
-                "ciplugins.jenkins.getDefaultPlugins");
-    }
-
-    @Test
     public void shouldUseCustomAnnotator() throws IOException, InterruptedException, MatlabExecutionException {
         action.run();
 

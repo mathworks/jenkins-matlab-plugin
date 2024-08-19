@@ -170,11 +170,4 @@ public class RunMatlabTestsActionTest {
             assertEquals(12, e.getExitCode());
         };
     }
-
-    @Test
-    public void shouldRemoveTempFolder() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(runner).removeTempFolder();
-    }
 }

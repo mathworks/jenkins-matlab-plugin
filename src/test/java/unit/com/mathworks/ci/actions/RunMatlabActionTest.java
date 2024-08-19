@@ -80,6 +80,15 @@ public class RunMatlabActionTest {
     }
 
     @Test
+    public void shouldOverrideDefaultBuildtoolPlugin() throws IOException, InterruptedException, MatlabExecutionException {
+        action.run();
+
+        verify(runner).addEnvironmentVariable(
+                "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
+                "ciplugins.jenkins.getDefaultPlugins");
+    }
+
+    @Test
     public void shouldCopyBuildResultsToRootAndAddAction() throws IOException, InterruptedException, MatlabExecutionException {
         File tmp = Files.createTempDirectory("temp").toFile();
         tmp.deleteOnExit();
@@ -106,5 +115,12 @@ public class RunMatlabActionTest {
         action.run();
 
         verify(build, never()).addAction(any(BuildArtifactAction.class));
+    }
+
+    @Test
+    public void shouldRemoveTempFolder() throws IOException, InterruptedException, MatlabExecutionException {
+        action.run();
+
+        verify(runner).removeTempFolder();
     }
 }
