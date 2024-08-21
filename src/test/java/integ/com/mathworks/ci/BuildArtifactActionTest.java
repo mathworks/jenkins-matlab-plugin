@@ -121,18 +121,18 @@ public class BuildArtifactActionTest {
      *
      */
 
-     @Test
-     public void verifySkipReasonIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
-         FreeStyleBuild build = getFreestyleBuild();
-         final String actionID = "abc123";
-         final String targetFile = "buildArtifact"+ actionID + ".json";
-         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
-         FilePath artifactRoot = new FilePath(build.getRootDir());
-         copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
-         List<BuildArtifactData> ba = ac.getBuildArtifact();
-         Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
-         Assert.assertEquals("Skip reason absent for skipped task ","User Specified",ba.get(0).getSkipReason());
-     }
+    @Test
+    public void verifySkipReasonIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+        FreeStyleBuild build = getFreestyleBuild();
+        final String actionID = "abc123";
+        final String targetFile = "buildArtifact"+ actionID + ".json";
+        BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
+        FilePath artifactRoot = new FilePath(build.getRootDir());
+        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        List<BuildArtifactData> ba = ac.getBuildArtifact();
+        Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
+        Assert.assertEquals("The skip reason for skipped task is inaccurate","user specified",ba.get(0).getSkipReason());
+    }
 
     /**
      *  Verify if duration returned from artifact file.

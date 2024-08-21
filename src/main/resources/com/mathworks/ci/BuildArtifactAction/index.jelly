@@ -83,9 +83,9 @@
                                 <j:if test="${p.taskSkipped == true}">
                                     <font color="#FCE94F">
                                         SKIPPED
-                                       <j:if test="${p.skipReason != ''}">
-                                           (${p.skipReason})
-                                       </j:if>
+                                        <j:if test="${p.skipReason != ''}">
+                                            (${p.skipReason})
+                                        </j:if>
                                     </font>
                                 </j:if>
                             </span>

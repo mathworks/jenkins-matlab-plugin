@@ -225,16 +225,16 @@ public class BuildArtifactAction implements Action {
                 String skipReason;
                 switch(skipReasonKey){
                     case "UpToDate":
-                        skipReason = "Up-To-Date";
+                        skipReason = "up-to-date";
                         break;
                     case "UserSpecified":
-                        skipReason = "User Specified";
+                        skipReason = "user specified";
                         break;
                     case "UserRequested":
-                        skipReason = "User Requested";
+                        skipReason = "user requested";
                         break;
                     case "DependencyFailed":
-                        skipReason = "Dependency Failed";
+                        skipReason = "dependency failed";
                         break;
                     default:
                         skipReason = skipReasonKey;
