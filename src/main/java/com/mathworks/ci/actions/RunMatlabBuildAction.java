@@ -60,8 +60,7 @@ public class RunMatlabBuildAction extends RunMatlabAction {
         } finally {
             annotator.forceEol();
 
-            // Handle build result
-            super.moveArtifactToBuildRoot(this.params.getBuild(), MatlabBuilderConstants.BUILD_ARTIFACT);
+            super.teardownActions(this.params.getBuild());
         }
     }
 }

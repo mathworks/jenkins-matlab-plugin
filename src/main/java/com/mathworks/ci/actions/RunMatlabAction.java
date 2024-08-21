@@ -53,18 +53,12 @@ public class RunMatlabAction {
                 runner.getTempFolder().toString());
     }
 
-    public void moveArtifactToBuildRoot(Run<?,?> build, String artifactBaseName) {
+    public void teardownActions(Run<?,?> build) {
         try {
-            FilePath jsonFile = new FilePath(runner.getTempFolder(), artifactBaseName + ".json");
-            if (jsonFile.exists()) {
-                FilePath rootLocation = new FilePath(
-                        new File(
-                                build.getRootDir().getAbsolutePath(),
-                                artifactBaseName + this.getActionID() + ".json")
-                );
-                jsonFile.copyTo(rootLocation);
-                jsonFile.delete();
-                build.addAction(new BuildArtifactAction(build, this.getActionID()));
+            // Handle build result
+            FilePath buildArtifactFile = new FilePath(runner.getTempFolder(), MatlabBuilderConstants.BUILD_ARTIFACT + ".json");
+            if (buildArtifactFile.exists()) {
+                moveArtifactToBuildRoot(build, buildArtifactFile, MatlabBuilderConstants.BUILD_ARTIFACT);
             }
         } catch (Exception e) {
             // Don't want to override more important error
@@ -77,5 +71,16 @@ public class RunMatlabAction {
                 System.err.println(e.toString());
             }
         }
+    }
+
+    public void moveArtifactToBuildRoot(Run<?,?> build, FilePath file, String artifactBaseName) throws IOException, InterruptedException {
+        FilePath rootLocation = new FilePath(
+                new File(
+                        build.getRootDir().getAbsolutePath(),
+                        artifactBaseName + this.getActionID() + ".json")
+        );
+        file.copyTo(rootLocation);
+        file.delete();
+        build.addAction(new BuildArtifactAction(build, this.getActionID()));
     }
 }
