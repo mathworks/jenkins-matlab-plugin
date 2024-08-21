@@ -228,8 +228,6 @@ public class BuildArtifactAction implements Action {
                         skipReason = "up-to-date";
                         break;
                     case "UserSpecified":
-                        skipReason = "user specified";
-                        break;
                     case "UserRequested":
                         skipReason = "user requested";
                         break;

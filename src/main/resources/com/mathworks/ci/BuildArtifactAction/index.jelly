@@ -69,20 +69,20 @@
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskFailed != false}">
                                    <j:if test="${it.actionID != ''}">
-                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#EF2929"> FAILED </font> </a>
+                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#EF2929"> Failed </font> </a>
                                    </j:if>
                                    <j:if test="${it.actionID == ''}">
-                                       <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
+                                       <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> Failed </font> </a>
                                    </j:if>
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">
-                                        <font color="#729FCF"> PASSED </font>
+                                        <font color="#729FCF"> Passed </font>
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
                                     <font color="#FCE94F">
-                                        SKIPPED
+                                        Skipped
                                         <j:if test="${p.skipReason != ''}">
                                             (${p.skipReason})
                                         </j:if>
