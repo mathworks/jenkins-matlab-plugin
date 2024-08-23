@@ -96,7 +96,7 @@ public class MatlabActionTest {
         File dest = Files.createTempDirectory("dest").toFile();
         dest.deleteOnExit();
 
-        File json = new File(tmp, "buildArtifact" + action.getActionID() + ".json");
+        File json = new File(tmp, "buildArtifact.json");
         json.createNewFile();
 
         doReturn(new FilePath(tmp)).when(runner).getTempFolder();

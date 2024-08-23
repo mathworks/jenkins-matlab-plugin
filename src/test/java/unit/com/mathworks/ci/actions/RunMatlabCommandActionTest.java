@@ -75,7 +75,7 @@ public class RunMatlabCommandActionTest {
 
         action.run();
 
-        verify(runner).runMatlabCommand("addpath('/path/less/traveled');Sit!");
+        verify(runner).runMatlabCommand("addpath('/path/less/traveled'); Sit!");
     }
 
     @Test
