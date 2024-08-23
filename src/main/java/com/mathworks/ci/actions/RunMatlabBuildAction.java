@@ -13,7 +13,9 @@ import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
-public class RunMatlabBuildAction extends RunMatlabAction {
+import hudson.model.Run;
+
+public class RunMatlabBuildAction extends MatlabAction {
     private BuildActionParameters params;
 
     public RunMatlabBuildAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, BuildActionParameters params) {
@@ -60,7 +62,17 @@ public class RunMatlabBuildAction extends RunMatlabAction {
         } finally {
             annotator.forceEol();
 
-            super.teardownActions(this.params.getBuild());
+            teardownAction();
         }
+    }
+
+    @Override
+    public void teardownAction() {
+        Run<?, ?> build = this.params.getBuild();
+        
+        // Handle build result
+        super.moveJsonArtifactToBuildRoot(build, MatlabBuilderConstants.BUILD_ARTIFACT);
+        
+        super.teardownAction();
     }
 }

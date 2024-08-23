@@ -16,20 +16,20 @@ import org.apache.commons.lang.RandomStringUtils;
 import java.io.File;
 import java.io.IOException;
 
-public class RunMatlabAction {
+public class MatlabAction {
     MatlabCommandRunner runner;
     BuildConsoleAnnotator annotator;
     String actionID;
 
     public String getActionID(){
-        return this.actionID;
+        return (this.actionID == null) ? "" : this.actionID;
     }
 
-    public RunMatlabAction(MatlabCommandRunner runner) {
+    public MatlabAction(MatlabCommandRunner runner) {
         this.runner = runner;
     }
 
-    public RunMatlabAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator) {
+    public MatlabAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator) {
         this.runner = runner;
         this.actionID = RandomStringUtils.randomAlphanumeric(8);
         this.annotator = annotator;
@@ -53,34 +53,31 @@ public class RunMatlabAction {
                 runner.getTempFolder().toString());
     }
 
-    public void teardownActions(Run<?,?> build) {
+    public void teardownAction() {
         try {
-            // Handle build result
-            FilePath buildArtifactFile = new FilePath(runner.getTempFolder(), MatlabBuilderConstants.BUILD_ARTIFACT + ".json");
-            if (buildArtifactFile.exists()) {
-                moveArtifactToBuildRoot(build, buildArtifactFile, MatlabBuilderConstants.BUILD_ARTIFACT);
+            this.runner.removeTempFolder();
+        } catch (Exception e) {
+            System.err.println(e.toString());
+        }
+    }
+
+    public void moveJsonArtifactToBuildRoot(Run<?,?> build, String artifactBaseName) {
+        try {
+            FilePath file = new FilePath(runner.getTempFolder(), artifactBaseName + ".json");
+            if (file.exists()) {
+                FilePath rootLocation = new FilePath(
+                        new File(
+                                build.getRootDir().getAbsolutePath(),
+                                artifactBaseName + this.getActionID() + ".json")
+                );
+                file.copyTo(rootLocation);
+                file.delete();
+                build.addAction(new BuildArtifactAction(build, this.getActionID()));
             }
         } catch (Exception e) {
             // Don't want to override more important error
             // thrown in catch block
             System.err.println(e.toString());
-        } finally {
-            try {
-                this.runner.removeTempFolder();
-            } catch (Exception e) {
-                System.err.println(e.toString());
-            }
         }
-    }
-
-    public void moveArtifactToBuildRoot(Run<?,?> build, FilePath file, String artifactBaseName) throws IOException, InterruptedException {
-        FilePath rootLocation = new FilePath(
-                new File(
-                        build.getRootDir().getAbsolutePath(),
-                        artifactBaseName + this.getActionID() + ".json")
-        );
-        file.copyTo(rootLocation);
-        file.delete();
-        build.addAction(new BuildArtifactAction(build, this.getActionID()));
     }
 }

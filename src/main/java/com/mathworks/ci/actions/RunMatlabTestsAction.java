@@ -17,7 +17,7 @@ import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.TestActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
-public class RunMatlabTestsAction extends RunMatlabAction {
+public class RunMatlabTestsAction extends MatlabAction {
     private TestActionParameters params;
 
     public RunMatlabTestsAction(MatlabCommandRunner runner, TestActionParameters params) {
@@ -50,13 +50,7 @@ public class RunMatlabTestsAction extends RunMatlabAction {
                 .println(e.getMessage());
             throw(e);
         } finally {
-            try {
-                this.runner.removeTempFolder();
-            } catch (Exception e) {
-                // Don't want to override more important error
-                // thrown in catch block
-                System.err.println(e.toString());
-            }
+            super.teardownAction();
         } 
     }
 
