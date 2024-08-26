@@ -63,7 +63,7 @@ public class MatlabAction {
 
     public void moveJsonArtifactToBuildRoot(Run<?,?> build, String artifactBaseName) {
         try {
-            FilePath file = new FilePath(runner.getTempFolder(), artifactBaseName + ".json");
+            FilePath file = new FilePath(this.runner.getTempFolder(), artifactBaseName + ".json");
             if (file.exists()) {
                 FilePath rootLocation = new FilePath(
                         new File(

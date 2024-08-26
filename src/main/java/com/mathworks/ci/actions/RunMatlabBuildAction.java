@@ -68,11 +68,10 @@ public class RunMatlabBuildAction extends MatlabAction {
 
     @Override
     public void teardownAction() {
-        Run<?, ?> build = this.params.getBuild();
-        
         // Handle build result
+        Run<?, ?> build = this.params.getBuild();
         super.moveJsonArtifactToBuildRoot(build, MatlabBuilderConstants.BUILD_ARTIFACT);
-        
+
         super.teardownAction();
     }
 }
