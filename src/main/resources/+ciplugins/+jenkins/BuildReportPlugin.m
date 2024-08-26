@@ -25,21 +25,21 @@ classdef BuildReportPlugin < matlab.buildtool.plugins.BuildRunnerPlugin
         function runTask(plugin, pluginData)
             runTask@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
 
-            taskDetail = getCommonTaskData(pluginData);
+            taskDetail = getCommonTaskDetail(pluginData);
             plugin.TaskDetails = [plugin.TaskDetails, taskDetail];
         end
 
         function skipTask(plugin, pluginData)
             skipTask@matlab.buildtool.plugins.BuildRunnerPlugin(plugin, pluginData);
 
-            taskDetail = getCommonTaskData(pluginData);
+            taskDetail = getCommonTaskDetail(pluginData);
             taskDetail.skipReason = pluginData.SkipReason;
             plugin.TaskDetails = [plugin.TaskDetails, taskDetail];
         end
     end
 end
 
-function taskDetail = getCommonTaskData(pluginData)
+function taskDetail = getCommonTaskDetail(pluginData)
     taskDetail = struct();
     taskDetail.name = pluginData.TaskResults.Name;
     taskDetail.description = pluginData.TaskGraph.Tasks.Description;
