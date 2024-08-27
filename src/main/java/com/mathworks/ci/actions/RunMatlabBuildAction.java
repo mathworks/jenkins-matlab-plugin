@@ -62,7 +62,7 @@ public class RunMatlabBuildAction extends MatlabAction {
             annotator.forceEol();
 
             Run<?, ?> build = this.params.getBuild();
-            teardownAction(build);
+            super.teardownAction(build);
         }
     }
 }

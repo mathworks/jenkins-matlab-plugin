@@ -52,7 +52,7 @@ public class RunMatlabTestsAction extends MatlabAction {
             throw(e);
         } finally {
             Run<?, ?> build = this.params.getBuild();
-            teardownAction(build);
+            super.teardownAction(build);
         } 
     }
 
