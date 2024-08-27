@@ -8,7 +8,6 @@ package com.mathworks.ci.actions;
 import java.io.IOException;
 
 import com.mathworks.ci.BuildConsoleAnnotator;
-import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.CommandActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
@@ -52,16 +51,8 @@ public class RunMatlabCommandAction extends MatlabAction {
         } finally {
             annotator.forceEol();
 
-            teardownAction();
+            Run<?, ?> build = this.params.getBuild();
+            teardownAction(build);
         }
-    }
-
-    @Override
-    public void teardownAction() {
-        // Handle build result
-        Run<?, ?> build = this.params.getBuild();
-        super.moveJsonArtifactToBuildRoot(build, MatlabBuilderConstants.BUILD_ARTIFACT);
-
-        super.teardownAction();
     }
 }

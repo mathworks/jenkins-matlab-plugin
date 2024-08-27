@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import hudson.FilePath;
+import hudson.model.Run;
 
 import com.mathworks.ci.Utilities;
 import com.mathworks.ci.MatlabBuilderConstants;
@@ -50,7 +51,8 @@ public class RunMatlabTestsAction extends MatlabAction {
                 .println(e.getMessage());
             throw(e);
         } finally {
-            super.teardownAction();
+            Run<?, ?> build = this.params.getBuild();
+            teardownAction(build);
         } 
     }
 

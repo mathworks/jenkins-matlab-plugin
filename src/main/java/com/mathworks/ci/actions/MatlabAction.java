@@ -53,7 +53,12 @@ public class MatlabAction {
                 runner.getTempFolder().toString());
     }
 
-    public void teardownAction() {
+    public void teardownAction(Run<?, ?> build) {
+        // Handle build result
+        if(this.annotator != null) {
+            moveJsonArtifactToBuildRoot(build, MatlabBuilderConstants.BUILD_ARTIFACT);
+        }
+
         try {
             this.runner.removeTempFolder();
         } catch (Exception e) {
@@ -61,7 +66,7 @@ public class MatlabAction {
         }
     }
 
-    public void moveJsonArtifactToBuildRoot(Run<?,?> build, String artifactBaseName) {
+    private void moveJsonArtifactToBuildRoot(Run<?,?> build, String artifactBaseName) {
         try {
             FilePath file = new FilePath(this.runner.getTempFolder(), artifactBaseName + ".json");
             if (file.exists()) {
