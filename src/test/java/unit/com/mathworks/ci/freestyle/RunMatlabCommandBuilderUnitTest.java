@@ -27,7 +27,7 @@ import com.mathworks.ci.freestyle.options.StartupOptions;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.actions.MatlabActionFactory;
 import com.mathworks.ci.actions.RunMatlabCommandAction;
-import com.mathworks.ci.parameters.RunActionParameters;
+import com.mathworks.ci.parameters.CommandActionParameters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunMatlabCommandBuilderUnitTest {
@@ -51,7 +51,7 @@ public class RunMatlabCommandBuilderUnitTest {
 
     @Before
     public void setup() throws IOException, InterruptedException {
-        doReturn(action).when(factory).createAction(any(RunActionParameters.class));
+        doReturn(action).when(factory).createAction(any(CommandActionParameters.class));
     }
 
     @Test
@@ -60,10 +60,10 @@ public class RunMatlabCommandBuilderUnitTest {
 
         builder.perform(build, workspace, launcher, listener);
         
-        ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
+        ArgumentCaptor<CommandActionParameters> captor = ArgumentCaptor.forClass(CommandActionParameters.class);
         verify(factory).createAction(captor.capture());
 
-        RunActionParameters actual = captor.getValue();
+        CommandActionParameters actual = captor.getValue();
         
         assertEquals("", actual.getStartupOptions());
         assertEquals(null, actual.getCommand());
@@ -78,10 +78,10 @@ public class RunMatlabCommandBuilderUnitTest {
 
         builder.perform(build, workspace, launcher, listener);
         
-        ArgumentCaptor<RunActionParameters> captor = ArgumentCaptor.forClass(RunActionParameters.class);
+        ArgumentCaptor<CommandActionParameters> captor = ArgumentCaptor.forClass(CommandActionParameters.class);
         verify(factory).createAction(captor.capture());
 
-        RunActionParameters actual = captor.getValue();
+        CommandActionParameters actual = captor.getValue();
         
         assertEquals("-nojvm -logfile mylog", actual.getStartupOptions());
         assertEquals("SHAKE", actual.getCommand());

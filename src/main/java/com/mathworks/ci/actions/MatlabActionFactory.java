@@ -10,7 +10,7 @@ import java.io.IOException;
 import com.mathworks.ci.parameters.*;
 
 public class MatlabActionFactory implements Serializable {
-    public RunMatlabCommandAction createAction(RunActionParameters params) throws IOException, InterruptedException {
+    public RunMatlabCommandAction createAction(CommandActionParameters params) throws IOException, InterruptedException {
         return new RunMatlabCommandAction(params);
     }
 
