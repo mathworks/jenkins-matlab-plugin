@@ -96,7 +96,7 @@ public class BuildArtifactActionTest {
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         boolean expectedStatus = ba.get(0).getTaskFailed();
-        Assert.assertEquals("The task is passed",false,expectedStatus);
+        Assert.assertEquals("The task is successful",false,expectedStatus);
     }
 
     /**
