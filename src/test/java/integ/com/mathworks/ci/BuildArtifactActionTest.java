@@ -132,7 +132,7 @@ public class BuildArtifactActionTest {
         final String targetFile = "buildArtifact"+ actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
         Assert.assertEquals("The skip reason for skipped task is inaccurate","user requested",ba.get(0).getSkipReason());
