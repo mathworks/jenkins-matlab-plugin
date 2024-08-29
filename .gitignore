@@ -7,4 +7,6 @@ src/main/resources/matlab-script-generator.zip
 src/main/resources/**/run-matlab-command*
 src/main/resources/license.txt
 
+.idea/
+
 **/.DS_Store

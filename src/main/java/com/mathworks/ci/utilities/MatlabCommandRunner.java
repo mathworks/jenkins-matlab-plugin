@@ -23,7 +23,6 @@ import hudson.util.ArgumentListBuilder;
 
 import com.mathworks.ci.Utilities;
 import com.mathworks.ci.MatlabExecutionException;
-import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.parameters.MatlabActionParameters;
 
 public class MatlabCommandRunner {

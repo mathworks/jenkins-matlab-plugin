@@ -1,5 +1,10 @@
 package com.mathworks.ci.freestyle.options;
 
+/**
+ * Copyright 2020-2024 The MathWorks, Inc.
+ *  
+ */
+
 import org.kohsuke.stapler.DataBoundConstructor;
 
 import hudson.Extension;

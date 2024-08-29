@@ -1,5 +1,10 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2024 The MathWorks, Inc.
+ *
+ */
+
 import hudson.FilePath;
 import hudson.model.Action;
 import hudson.model.Run;
@@ -18,7 +23,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
 public class BuildArtifactAction implements Action {
     private Run<?, ?> build;
     private int totalCount;
@@ -26,7 +30,6 @@ public class BuildArtifactAction implements Action {
     private int failCount;
     private String actionID;
     private static final String ROOT_ELEMENT = "taskDetails";
-    private static final String BUILD_ARTIFACT_FILE = "buildArtifact";
 
     public BuildArtifactAction(Run<?, ?> build, String actionID) {
         this.build = build;
@@ -69,10 +72,10 @@ public class BuildArtifactAction implements Action {
         FilePath fl;
         if(this.actionID == null){
             fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
-                    BUILD_ARTIFACT_FILE + ".json"));
+                    MatlabBuilderConstants.BUILD_ARTIFACT + ".json"));
         } else {
             fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
-                    BUILD_ARTIFACT_FILE + this.actionID + ".json"));
+                    MatlabBuilderConstants.BUILD_ARTIFACT + this.actionID + ".json"));
         }
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);
@@ -141,16 +144,15 @@ public class BuildArtifactAction implements Action {
         this.build = owner;
     }
 
-
     private void setCounts() throws InterruptedException, ParseException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
         FilePath fl;
         if(this.actionID == null){
             fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
-                    BUILD_ARTIFACT_FILE + ".json"));
+                    MatlabBuilderConstants.BUILD_ARTIFACT + ".json"));
         } else {
             fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
-                    BUILD_ARTIFACT_FILE + this.actionID + ".json"));
+                    MatlabBuilderConstants.BUILD_ARTIFACT + this.actionID + ".json"));
         }
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             Object obj = new JSONParser().parse(reader);

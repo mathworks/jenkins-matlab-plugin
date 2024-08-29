@@ -1,5 +1,10 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2024 The MathWorks, Inc.
+ *
+ */
+
 import com.google.common.base.Charsets;
 import hudson.console.ConsoleLogFilter;
 import hudson.console.LineTransformationOutputStream;

@@ -5,10 +5,8 @@ package com.mathworks.ci.actions;
  *
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.nio.file.Files;
 
 import org.junit.Test;
 import org.junit.Before;
@@ -16,15 +14,15 @@ import org.junit.runner.RunWith;
 import static org.junit.Assert.*;
 
 import org.mockito.Mock;
-import org.mockito.InOrder;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import hudson.FilePath;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 
-import com.mathworks.ci.BuildArtifactAction;
 import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
@@ -59,36 +57,6 @@ public class RunMatlabBuildActionTest {
 
             when(params.getBuild()).thenReturn(build);
         }
-    }
-
-    @Test
-    public void shouldCopyPluginsToTempDirectory() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        String DEFAULT_PLUGIN = 
-            "+ciplugins/+jenkins/getDefaultPlugins.m";
-        String BUILD_REPORT_PLUGIN = 
-            "+ciplugins/+jenkins/BuildReportPlugin.m";
-        String TASK_RUN_PROGRESS_PLUGIN = 
-            "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
-
-        InOrder inOrder = inOrder(runner);
-
-        inOrder.verify(runner)
-            .copyFileToTempFolder(DEFAULT_PLUGIN, DEFAULT_PLUGIN);
-        inOrder.verify(runner)
-            .copyFileToTempFolder(BUILD_REPORT_PLUGIN, BUILD_REPORT_PLUGIN);
-        inOrder.verify(runner)
-            .copyFileToTempFolder(TASK_RUN_PROGRESS_PLUGIN, TASK_RUN_PROGRESS_PLUGIN);
-    }
-
-    @Test
-    public void shouldOverrideDefaultPlugins() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(runner).addEnvironmentVariable(
-                "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
-                "ciplugins.jenkins.getDefaultPlugins");
     }
 
     @Test
@@ -129,41 +97,5 @@ public class RunMatlabBuildActionTest {
             verify(out).println(e.getMessage());
             assertEquals(12, e.getExitCode());
         };
-    }
-
-    @Test
-    public void shouldNotAddActionIfNoBuildResult() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(build, never()).addAction(any(BuildArtifactAction.class));
-    }
-
-    @Test
-    public void shouldCopyBuildResultsToRootAndAddAction() throws IOException, InterruptedException, MatlabExecutionException {
-        File tmp = Files.createTempDirectory("temp").toFile();
-        tmp.deleteOnExit();
-        
-        File dest = Files.createTempDirectory("dest").toFile();
-        dest.deleteOnExit();
-
-        File json = new File(tmp, "buildArtifact.json");
-        json.createNewFile();
-
-        doReturn(new FilePath(tmp)).when(runner).getTempFolder();
-        doReturn(dest).when(build).getRootDir();
-
-        action.run();
-
-        // Should have deleted original file
-        assertFalse(json.exists());
-        // Should have copied file to root dir
-        assertTrue(new File(dest, "buildArtifact"+ action.getActionID() + ".json").exists());
-    }
-
-    @Test
-    public void shouldRemoveTempFolder() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(runner).removeTempFolder();
     }
 }

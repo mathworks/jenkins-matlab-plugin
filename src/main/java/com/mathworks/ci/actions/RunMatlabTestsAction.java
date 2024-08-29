@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 import hudson.FilePath;
+import hudson.model.Run;
 
 import com.mathworks.ci.Utilities;
 import com.mathworks.ci.MatlabBuilderConstants;
@@ -17,12 +18,11 @@ import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.TestActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
-public class RunMatlabTestsAction {
-    private MatlabCommandRunner runner;
+public class RunMatlabTestsAction extends MatlabAction {
     private TestActionParameters params;
 
     public RunMatlabTestsAction(MatlabCommandRunner runner, TestActionParameters params) {
-        this.runner = runner;
+        super(runner);
         this.params = params;
     }
 
@@ -51,13 +51,8 @@ public class RunMatlabTestsAction {
                 .println(e.getMessage());
             throw(e);
         } finally {
-            try {
-                this.runner.removeTempFolder();
-            } catch (Exception e) {
-                // Don't want to override more important error
-                // thrown in catch block
-                System.err.println(e.toString());
-            }
+            Run<?, ?> build = this.params.getBuild();
+            super.teardownAction(build);
         } 
     }
 

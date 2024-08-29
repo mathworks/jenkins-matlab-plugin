@@ -1,10 +1,14 @@
 package com.mathworks.ci.freestyle.options;
 
+/**
+ * Copyright 2020-2024 The MathWorks, Inc.
+ *  
+ */
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.DataBoundSetter;
 
 import hudson.Extension;
 import hudson.Util;
