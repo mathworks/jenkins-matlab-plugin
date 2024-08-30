@@ -68,27 +68,25 @@
                         <td class="pane no-wrap" style="width:auto">
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskFailed != false}">
-                                   <j:if test="${it.actionID != ''}">
-                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="crimson"> Failed </font> </a>
-                                   </j:if>
-                                   <j:if test="${it.actionID == ''}">
-                                       <a href="../console#matlab-${p.taskName}"><font color="crimson"> Failed </font> </a>
-                                   </j:if>
+                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: crimson;">
+                                            Failed 
+                                            <j:if test="${p.skipReason != ''}">
+                                                (${p.skipReason})
+                                            </j:if>
+                                        </a>
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">
-                                        <font color="mediumseagreen"> Successful </font>
+                                        <font color="mediumseagreen"> Succeeded </font>
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
-                                    <font color="steelblue">
-                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}">
+                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: steelblue;">
                                              Skipped 
                                             <j:if test="${p.skipReason != ''}">
                                                 (${p.skipReason})
                                             </j:if>
                                         </a>
-                                    </font>
                                 </j:if>
                             </span>
                         </td>
