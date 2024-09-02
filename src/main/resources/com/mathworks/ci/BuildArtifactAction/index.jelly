@@ -70,9 +70,6 @@
                                 <j:if test="${p.taskFailed != false}">
                                         <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: crimson;">
                                             Failed 
-                                            <j:if test="${p.skipReason != ''}">
-                                                (${p.skipReason})
-                                            </j:if>
                                         </a>
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">

@@ -16,7 +16,6 @@ public class BuildArtifactData {
     private String skipReason;
 
     public BuildArtifactData() {
-        skipReason = "";
     }
 
     public String getTaskDuration() {
@@ -44,7 +43,7 @@ public class BuildArtifactData {
     }
 
     public String getSkipReason() {
-        return this.skipReason;
+        return (this.skipReason == null) ? "" : this.skipReason;
     }
 
     public void setSkipReason(String skipReason) {
