@@ -12,40 +12,55 @@ import org.apache.commons.lang.RandomStringUtils;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.TestFile;
 import com.mathworks.ci.TestResultsViewAction;
-import com.mathworks.ci.parameters.RunActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
+import com.mathworks.ci.BuildConsoleAnnotator;
+import com.mathworks.ci.parameters.CommandActionParameters;
+import com.mathworks.ci.MatlabBuilderConstants;
 
 import java.io.File;
 import hudson.FilePath;
 import hudson.model.Run;
 
-import com.mathworks.ci.MatlabBuilderConstants;
+public class RunMatlabCommandAction extends MatlabAction {
+    private CommandActionParameters params;
 
-public class RunMatlabCommandAction {
-    private RunActionParameters params; 
-    private MatlabCommandRunner runner;
-    private String id;
-
-    public RunMatlabCommandAction(MatlabCommandRunner runner, RunActionParameters params) {
-        this.runner = runner;
+    public RunMatlabCommandAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, CommandActionParameters params) {
+        super(runner, annotator);
         this.params = params;
-        id = RandomStringUtils.randomAlphanumeric(8);
     }
 
-    public RunMatlabCommandAction(RunActionParameters params) throws IOException, InterruptedException {
-        this(new MatlabCommandRunner(params), params);
+    public RunMatlabCommandAction(CommandActionParameters params) throws IOException, InterruptedException {
+        this(new MatlabCommandRunner(params), 
+                new BuildConsoleAnnotator(
+                    params.getTaskListener().getLogger(), 
+                    params.getBuild().getCharset()),
+                params);
     }
 
     public void run() throws IOException, InterruptedException, MatlabExecutionException {
+        super.copyBuildPluginsToTemp();
+        super.setBuildEnvVars();
+
+        // Redirect output to the build annotator
+        runner.redirectStdOut(annotator);
+
+        // Prepare MATLAB command
+        String command = "addpath('" 
+            + runner.getTempFolder().getRemote()
+            + "'); " + this.params.getCommand();
+
         try {
-            runner.runMatlabCommand(this.params.getCommand());
+            runner.runMatlabCommand(command);
         } catch (Exception e) {
             this.params.getTaskListener().getLogger()
                 .println(e.getMessage());
             throw(e);
         } finally{
-        
-            Run<?,?> build = this.params.getBuild();
+            annotator.forceEol();
+
+            Run<?, ?> build = this.params.getBuild();
+            super.teardownAction(build);
+
             FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json");
 
             if (jsonFile.exists()) {
@@ -59,6 +74,7 @@ public class RunMatlabCommandAction {
                 jsonFile.delete();
                 TestResultsViewAction testResultsViewAction = new TestResultsViewAction(build, this.id, this.params.getWorkspace(), this.params.getTaskListener());
                 build.addAction(testResultsViewAction);
+
                 // try{
                     
                 //     for(TestFile testFile : testResultsViewAction.getTestResults()){
@@ -76,9 +92,5 @@ public class RunMatlabCommandAction {
                 // }
             }
         }
-    }
-
-    public String getId() {
-        return id;
     }
 }

@@ -1,18 +1,17 @@
 package com.mathworks.ci.parameters;
 
+/**
+ * Copyright 2024 The MathWorks, Inc.
+ *
+ */
+
 import java.io.IOException;
-import java.io.Serializable;
 import hudson.FilePath;
 import hudson.EnvVars;
 import hudson.Launcher;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import org.jenkinsci.plugins.workflow.steps.StepContext;
-
-/**
- * Copyright 2024 The MathWorks, Inc.
- *
- */
 
 public class MatlabActionParameters {
     private Run build;

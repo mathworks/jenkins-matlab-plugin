@@ -6,18 +6,21 @@
   xmlns:f="/lib/form"
   xmlns:i="jelly:fmt">
   <t:summary icon="document.png">
-    <p><a href="buildresults">MATLAB Build Results</a></p>
+    <p><a href="${it.urlName}">MATLAB Build Results</a></p>
     <span class="${pst.cssClass}">
       <j:if test="${it.totalCount == 0}">
         <font color="#EF2929"><h5>Unable to generate a build artifact. </h5></font>
       </j:if>
     </span>
-    <p><b>Tasks run: <font color="Blue">${it.totalCount}</font></b></p>
-    <br>
-    <b>Failed: <font color="red">${it.failCount}</font></b>
-    </br>
-    <br>
-    <b>Skipped: <font color="orange">${it.skipCount}</font></b>
-    </br>
+    <p>
+      <b>Tasks run: <font color="Blue">${it.totalCount}</font></b>
+      <br></br>
+      <br>
+      <b>Failed: <font color="red">${it.failCount}</font></b>
+      </br>
+      <br>
+      <b>Skipped: <font color="orange">${it.skipCount}</font></b>
+      </br>
+    </p>
   </t:summary>
 </j:jelly>

@@ -20,12 +20,11 @@ import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.parameters.TestActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
-public class RunMatlabTestsAction {
-    private MatlabCommandRunner runner;
+public class RunMatlabTestsAction extends MatlabAction {
     private TestActionParameters params;
 
     public RunMatlabTestsAction(MatlabCommandRunner runner, TestActionParameters params) {
-        this.runner = runner;
+        super(runner);
         this.params = params;
     }
 
@@ -57,23 +56,9 @@ public class RunMatlabTestsAction {
                 .getLogger()
                 .println(e.getMessage());
             throw(e);
-        }
-
-        // Handle test result
-        Run<?,?> build = this.params.getBuild();
-        FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json");
-        if (jsonFile.exists()) {
-            FilePath rootLocation = new FilePath(
-                    new File(
-                        build.getRootDir()
-                        .getAbsolutePath()
-                        + File.separator
-                        + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT
-                        // + this.id
-                         + ".json"));
-            jsonFile.copyTo(rootLocation);
-            jsonFile.delete();
-            // build.addAction(new TestResultsViewAction(build, this.params.getWorkspace()));
+        } finally {
+            Run<?, ?> build = this.params.getBuild();
+            super.teardownAction(build);
         }
     }
 

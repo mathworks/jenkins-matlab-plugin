@@ -7,6 +7,9 @@ package com.mathworks.ci;
  * 
  */
 
+import com.gargoylesoftware.htmlunit.WebAssert;
+import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -377,18 +380,34 @@ public class RunMatlabCommandBuilderTest {
         jenkins.assertLogContains("Generating MATLAB script with content", build);
         jenkins.assertLogContains(expectedCommand, build);
     }
-    
+
     /*
-     * Test to verify if .matlab temp folder generated in workspace.
+     * Test to verify error message when command is empty.
      */
+
     @Test
-    public void verifyMATLABtmpFolderGenerated() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
+    public void verifyErrorMessageOnEmptyCommand() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
         project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
-        Assert.assertTrue(matlabRunner.exists());
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+
+        WebAssert.assertTextPresent(page,"Specify at least one script, function, or statement to execute.");
     }
+
+    /*
+     * Test to verify no error message when command is provided.
+     */
+
+    @Test
+    public void verifyWhenCommandNonEmpty() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        this.scriptBuilder.setMatlabCommand("NONEMPTY");
+        project.getBuildersList().add(this.scriptBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+
+        WebAssert.assertTextNotPresent(page,"Specify at least one script, function, or statement to execute.");
+    }
+
 }

@@ -1,4 +1,5 @@
 package com.mathworks.ci;
+
 /**
  * Copyright 2019-2020 The MathWorks, Inc.
  * 
@@ -24,7 +25,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.tasks.BuildWrapper;
-
 
 public class UseMatlabVersionBuildWrapperTest {
     

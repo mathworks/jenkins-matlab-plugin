@@ -1,4 +1,5 @@
 package com.mathworks.ci;
+
 /*
  * Copyright 2019-2020 The MathWorks, Inc.
  */
@@ -32,6 +33,12 @@ public class MatlabBuilderConstants {
     
     //Temporary MATLAB folder name in workspace 
     public static final String TEMP_MATLAB_FOLDER_NAME = ".matlab";
+
+    // MATLAB default function/plugin paths
+    public static final String DEFAULT_PLUGIN = "+ciplugins/+jenkins/getDefaultPlugins.m";
+    public static final String BUILD_REPORT_PLUGIN = "+ciplugins/+jenkins/BuildReportPlugin.m";
+    public static final String TASK_RUN_PROGRESS_PLUGIN = "+ciplugins/+jenkins/TaskRunProgressPlugin.m";
+    public static final String BUILD_ARTIFACT = "buildArtifact";
     
     public static final String NEW_LINE = System.getProperty("line.separator");
 

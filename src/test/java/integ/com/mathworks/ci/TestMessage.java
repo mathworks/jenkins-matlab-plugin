@@ -1,13 +1,13 @@
 package com.mathworks.ci;
 
-import java.util.ResourceBundle;
-
 /*
  * Copyright 2018 The MathWorks, Inc.
  * 
  * This Class is wrapper to access the static configuration values used across test classes. Acts as
  * Utility class to access key & value pairs from testconfig.properties
  */
+
+import java.util.ResourceBundle;
 
 public class TestMessage {
 

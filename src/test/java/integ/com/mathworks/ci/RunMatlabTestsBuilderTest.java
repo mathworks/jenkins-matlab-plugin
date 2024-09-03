@@ -21,11 +21,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 import com.gargoylesoftware.htmlunit.WebAssert;
-import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
-import com.gargoylesoftware.htmlunit.javascript.host.html.HTMLSelectElement;
 import com.mathworks.ci.freestyle.RunMatlabTestsBuilder.CoberturaArtifact;
 import com.mathworks.ci.freestyle.RunMatlabTestsBuilder.JunitArtifact;
 import com.mathworks.ci.freestyle.RunMatlabTestsBuilder.ModelCovArtifact;
@@ -482,19 +480,6 @@ public class RunMatlabTestsBuilderTest {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         File matlabRunner = new File(build.getWorkspace() + File.separator + "runnerScript.m");
         Assert.assertFalse(matlabRunner.exists());
-    }
-    
-    /*
-     * Test to verify if .matlab gets created in workspace.
-     */
-    @Test
-    public void verifyMATLABfolderGenerated() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2018b")));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + ".matlab");
-        Assert.assertTrue(matlabRunner.exists());
     }
     
     /*

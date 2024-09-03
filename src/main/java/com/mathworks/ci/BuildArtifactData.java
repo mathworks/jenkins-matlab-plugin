@@ -1,5 +1,10 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2024 The MathWorks, Inc.
+ *
+ */
+
 public class BuildArtifactData {
 
     private String taskName;
@@ -11,7 +16,6 @@ public class BuildArtifactData {
 
     public BuildArtifactData() {
     }
-
 
     public String getTaskDuration() {
         return this.taskDuration;

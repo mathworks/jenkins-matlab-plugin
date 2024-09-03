@@ -6,7 +6,6 @@ package com.mathworks.ci.pipeline;
 
 import java.io.IOException;
 
-import hudson.model.Result;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -148,19 +147,5 @@ public class RunMatlabCommandStepTest {
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
         j.assertBuildStatusSuccess(build);
-    }
-    
-    /*
-     * Verify .matlab folder is generated 
-     *
-     */
-
-    @Test
-    public void verifyMATLABtempFolderGenerated() throws Exception {
-        project.setDefinition(
-                new CpsFlowDefinition("node { runMATLABCommand(command: 'pwd')}", true));
-
-        WorkflowRun build = project.scheduleBuild2(0).get();
-        j.assertLogContains(".matlab", build);
     }
 }
