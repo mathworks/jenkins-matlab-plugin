@@ -19,6 +19,7 @@
       "description": "tests Dscription",
       "failed": false,
       "skipped": true,
+      "skipReason": "UserSpecified",
       "duration": "00:00:00"
     }
   ]
