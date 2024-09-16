@@ -208,7 +208,7 @@ public class BuildArtifactAction implements Action {
     private void iterateAllTaskAttributes(Entry pair, BuildArtifactData data) {
         // Iterates across all task attributes and updates
         String key = pair.getKey().toString();
-        switch(key.toLowerCase()){
+        switch(key){
             case "duration":
                 data.setTaskDuration(pair.getValue().toString());
                 break;
@@ -223,6 +223,26 @@ public class BuildArtifactAction implements Action {
                 break;
             case "skipped":
                 data.setTaskSkipped((Boolean) pair.getValue());
+                break;
+            case "skipReason":
+                String skipReasonKey = pair.getValue().toString();
+                String skipReason;
+                switch(skipReasonKey){
+                    case "UpToDate":
+                        skipReason = "up-to-date";
+                        break;
+                    case "UserSpecified":
+                    case "UserRequested":
+                        skipReason = "user requested";
+                        break;
+                    case "DependencyFailed":
+                        skipReason = "dependency failed";
+                        break;
+                    default:
+                        skipReason = skipReasonKey;
+                        break;
+                }
+                data.setSkipReason(skipReason);
                 break;
             default :
                 break;
