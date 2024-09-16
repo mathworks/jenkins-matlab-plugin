@@ -55,42 +55,9 @@ public class RunMatlabCommandAction extends MatlabAction {
             this.params.getTaskListener().getLogger()
                 .println(e.getMessage());
             throw(e);
-        } finally{
+        } finally {
             annotator.forceEol();
-
-            Run<?, ?> build = this.params.getBuild();
-            super.teardownAction(build);
-
-            FilePath jsonFile = new FilePath(params.getWorkspace(), ".matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json");
-
-            if (jsonFile.exists()) {
-                FilePath rootLocation = new FilePath(
-                        new File(
-                            build.getRootDir()
-                            .getAbsolutePath()
-                            + File.separator
-                            + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.id + ".json"));
-                jsonFile.copyTo(rootLocation);
-                jsonFile.delete();
-                TestResultsViewAction testResultsViewAction = new TestResultsViewAction(build, this.id, this.params.getWorkspace(), this.params.getTaskListener());
-                build.addAction(testResultsViewAction);
-
-                // try{
-                    
-                //     for(TestFile testFile : testResultsViewAction.getTestResults()){
-                //         this.params.getTaskListener().getLogger().println(testFile.getName());
-                //     }
-                // }
-                // catch(Exception e){
-                //     String whatYouWant = testResultsViewAction.getWhatYouWant();
-                //     this.params.getTaskListener().getLogger().println(whatYouWant);
-                //     String[] whatYouWantSplit = whatYouWant.split("/");
-                //     this.params.getTaskListener().getLogger().println(whatYouWantSplit[0]);
-                //     this.params.getTaskListener().getLogger().println(whatYouWantSplit[1]);
-                //     this.params.getTaskListener().getLogger().println(e.getMessage());
-                //     // throw(e);
-                // }
-            }
+            super.teardownAction(params);
         }
     }
 }

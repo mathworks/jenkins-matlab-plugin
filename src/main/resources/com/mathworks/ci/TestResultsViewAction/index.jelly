@@ -39,127 +39,129 @@
                 </br><br></br>Not Run</p>
             </button>
 
-            <table class="jenkins-table sortable" id="testResultsTable">
-                <thead>
-                    <tr>
-                        <th class="pane-header" style="width: auto; min-width: 20em;">
-                            Test Name
-                        </th>
-                        <th class="pane-header" style="width: auto; min-width: 10em; text-align: right;">
-                            Duration (seconds)
-                        </th>
-                    </tr>
-                </thead>
+            <j:forEach var="testSession" items="${it.testResults}" varStatus="status">
+                <table class="jenkins-table sortable" id="testResultsTable">
+                    <thead>
+                        <tr>
+                            <th class="pane-header" style="width: auto; min-width: 20em;">
+                                Test Name
+                            </th>
+                            <th class="pane-header" style="width: auto; min-width: 10em; text-align: right;">
+                                Duration (seconds)
+                            </th>
+                        </tr>
+                    </thead>
 
-                <tbody id="testResultsTableBody">
-                    <j:forEach var="p" items="${it.testResults}" varStatus="status">
-                        <tr id="${p.name}" class="test-file-row">
-                            <td id="${p.name}-${p.id}" class="pane" colspan="1" style="padding-right: calc(var(--table-padding) * 2);">
-                                <!-- <a href="../console#matlab-${p.taskName}"> -->
-                                <j:if test="${p.status.contains('Passed')}">
-                                    <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
-                                </j:if>
-                                <j:if test="${p.status.contains('Failed')}">
-                                    <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color" tooltip="Failed" />
-                                </j:if>
-                                <j:if test="${p.status.contains('Incomplete')}">
-                                    <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color" tooltip="Incomplete" />
-                                </j:if>
-                                <j:if test="${p.status.contains('NotRun')}">
-                                    <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
-                                </j:if>
-                                <div style="display: inline;" tooltip="${p.filePath}">
-                                    <j:whitespace trim="false"> ${p.name} </j:whitespace> 
-                                </div>
-                                <!-- </a> -->
+                    <tbody id="testResultsTableBody">
+                        <j:forEach var="testFile" items="${testSession}" varStatus="status">
+                            <tr id="${testFile.name}" class="test-file-row">
+                                <td id="${testFile.name}-${testFile.id}" class="pane" colspan="1" style="padding-right: calc(var(--table-padding) * 2);">
+                                    <!-- <a href="../console#matlab-${testFile.taskName}"> -->
+                                    <j:if test="${testFile.status.contains('Passed')}">
+                                        <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
+                                    </j:if>
+                                    <j:if test="${testFile.status.contains('Failed')}">
+                                        <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color" tooltip="Failed" />
+                                    </j:if>
+                                    <j:if test="${testFile.status.contains('Incomplete')}">
+                                        <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color" tooltip="Incomplete" />
+                                    </j:if>
+                                    <j:if test="${testFile.status.contains('NotRun')}">
+                                        <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
+                                    </j:if>
+                                    <div style="display: inline;" tooltip="${testFile.filePath}">
+                                        <j:whitespace trim="false"> ${testFile.name} </j:whitespace> 
+                                    </div>
+                                    <!-- </a> -->
 
-                                <a id="plus-${p.name}-${p.id}" onclick="toggleVisibilty('${p.name}-${p.id}');" style="display: inline;">
-                                    <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show tests" />
-                                </a>
-                                <a id="minus-${p.name}-${p.id}" onclick="toggleVisibilty('${p.name}-${p.id}');" style="display: none">
-                                    <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide tests" />
-                                </a>
+                                    <a id="plus-${testFile.name}-${testFile.id}" onclick="toggleVisibilty('${testFile.name}-${testFile.id}');" style="display: inline;">
+                                        <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show tests" />
+                                    </a>
+                                    <a id="minus-${testFile.name}-${testFile.id}" onclick="toggleVisibilty('${testFile.name}-${testFile.id}');" style="display: none">
+                                        <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide tests" />
+                                    </a>
 
-                            <div id="testCases-${p.name}-${p.id}" style="display: none;">
-                                <br />
-                                <br />
-                                <table class="jenkins-table">
-                                    <thead>
-                                        <tr>
-                                            <th class="pane-header" style="width: max-content;">
-                                                Test Case
-                                            </th>
-                                            <th class="pane-header" style="width: 100%;">
-                                                Diagnostics
-                                            </th>
-                                            <th class="pane-header" style="text-align: right; text-wrap:nowrap;">
-                                                Duration = ${p.duration}
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="testCasesTableBody">
-                                        <j:forEach var="q" items="${p.testCases}" varStatus="status">
-                                            <tr id="${q.name}-${q.id}" class="${q.status}">
-                                                <td style="vertical-align: text-top; text-wrap:nowrap;">
-                                                    <j:if test="${q.status.contains('Passed')}">
-                                                        <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
-                                                    </j:if>
-                                                    <j:if test="${q.status.contains('Failed')}">
-                                                        <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color" tooltip="Failed" />
-                                                    </j:if>
-                                                    <j:if test="${q.status.contains('Incomplete')}">
-                                                        <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color" tooltip="Incomplete" />
-                                                    </j:if>
-                                                    <j:if test="${q.status.contains('NotRun')}">
-                                                        <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
-                                                    </j:if>
-                                                    ${q.name}
-                                                </td>
-                                                <td style="vertical-align: text-top;">
-                                                    <!-- make these unique -->
-                                                    <j:forEach var="r" items="${q.diagnostics}" varStatus="status">
-                                                        <div style="display: block;">
-                                                            <a class='jenkins-!-accent-color;'>${r.event} </a>
-                                                            <a id="plus-${q.name}-${r.id}" onclick="stackTrace('${q.name}-${r.id}');" style="display: inline;">
+                                <div id="testCases-${testFile.name}-${testFile.id}" style="display: none;">
+                                    <br />
+                                    <br />
+                                    <table class="jenkins-table">
+                                        <thead>
+                                            <tr>
+                                                <th class="pane-header" style="width: max-content;">
+                                                    Test Case
+                                                </th>
+                                                <th class="pane-header" style="width: 100%;">
+                                                    Diagnostics
+                                                </th>
+                                                <th class="pane-header" style="text-align: right; text-wrap:nowrap;">
+                                                    Duration = ${testFile.duration}
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="testCasesTableBody">
+                                            <j:forEach var="testCase" items="${testFile.testCases}" varStatus="status">
+                                                <tr id="${testCase.name}-${testCase.id}" class="${testCase.status}">
+                                                    <td style="vertical-align: text-top; text-wrap:nowrap;">
+                                                        <j:if test="${testCase.status.contains('Passed')}">
+                                                            <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
+                                                        </j:if>
+                                                        <j:if test="${testCase.status.contains('Failed')}">
+                                                            <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color" tooltip="Failed" />
+                                                        </j:if>
+                                                        <j:if test="${testCase.status.contains('Incomplete')}">
+                                                            <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color" tooltip="Incomplete" />
+                                                        </j:if>
+                                                        <j:if test="${testCase.status.contains('NotRun')}">
+                                                            <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
+                                                        </j:if>
+                                                        ${testCase.name}
+                                                    </td>
+                                                    <td style="vertical-align: text-top;">
+                                                        <!-- make these unique -->
+                                                        <j:forEach var="diagnostic" items="${testCase.diagnostics}" varStatus="status">
+                                                            <div style="display: block;">
+                                                                <a class='jenkins-!-accent-color;'>${diagnostic.event} </a>
+                                                                <a id="plus-${testCase.name}-${diagnostic.id}" onclick="stackTrace('${testCase.name}-${diagnostic.id}');" style="display: inline;">
+                                                                    <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show stack trace" />
+                                                                </a>
+                                                                <a id="minus-${testCase.name}-${diagnostic.id}" onclick="stackTrace('${testCase.name}-${diagnostic.id}');" style="display: none">
+                                                                    <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide stack trace" />
+                                                                </a>
+                                                                <div id="stack-${testCase.name}-${diagnostic.id}" style="display: none; white-space: pre-line;">
+                                                                    <br></br><pre>${diagnostic.report}</pre>
+                                                                </div>
+                                                            </div>
+                                                        </j:forEach>
+                                                        <!-- <j:if test="${testCase.diagnostics.contains('-')}">
+                                                            <a class='jenkins-!-accent-color;'>Stack trace </a>
+                                                            <a id="plus-${testCase.name}" onclick="stackTrace('${testCase.name}');" style="display: inline;">
                                                                 <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show stack trace" />
                                                             </a>
-                                                            <a id="minus-${q.name}-${r.id}" onclick="stackTrace('${q.name}-${r.id}');" style="display: none">
+                                                            <a id="minus-${testCase.name}" onclick="stackTrace('${testCase.name}');" style="display: none">
                                                                 <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide stack trace" />
                                                             </a>
-                                                            <div id="stack-${q.name}-${r.id}" style="display: none; white-space: pre-line;">
-                                                                <br></br><pre>${r.report}</pre>
+                                                            <div id="stack-${testCase.name}" style="display: none; white-space: pre-line;">
+                                                                <br></br><pre>${testCase.diagnostics}</pre>
                                                             </div>
-                                                        </div>
-                                                    </j:forEach>
-                                                    <!-- <j:if test="${q.diagnostics.contains('-')}">
-                                                        <a class='jenkins-!-accent-color;'>Stack trace </a>
-                                                        <a id="plus-${q.name}" onclick="stackTrace('${q.name}');" style="display: inline;">
-                                                            <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show stack trace" />
-                                                        </a>
-                                                        <a id="minus-${q.name}" onclick="stackTrace('${q.name}');" style="display: none">
-                                                            <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide stack trace" />
-                                                        </a>
-                                                        <div id="stack-${q.name}" style="display: none; white-space: pre-line;">
-                                                            <br></br><pre>${q.diagnostics}</pre>
-                                                        </div>
-                                                    </j:if> -->
-                                                </td>
-                                                <td style="vertical-align: text-top; text-align: right;" id="duration-${q.name}-${q.id}">
-                                                    ${q.duration}
-                                                </td>
-                                            </tr>
-                                        </j:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                            </td>
-                            <td style="text-align: right;" id="duration-${p.name}-${p.id}">
-                                ${p.duration}
-                            </td>
-                        </tr>
-                    </j:forEach>
-                </tbody>
-            </table>
+                                                        </j:if> -->
+                                                    </td>
+                                                    <td style="vertical-align: text-top; text-align: right;" id="duration-${testCase.name}-${testCase.id}">
+                                                        ${testCase.duration}
+                                                    </td>
+                                                </tr>
+                                            </j:forEach>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                </td>
+                                <td style="text-align: right;" id="duration-${testFile.name}-${testFile.id}">
+                                    ${testFile.duration}
+                                </td>
+                            </tr>
+                        </j:forEach>
+                    </tbody>
+                </table>
+            </j:forEach>
         </l:main-panel>
     </l:layout>
     <script type="text/javascript">

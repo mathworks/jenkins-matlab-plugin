@@ -57,8 +57,7 @@ public class RunMatlabTestsAction extends MatlabAction {
                 .println(e.getMessage());
             throw(e);
         } finally {
-            Run<?, ?> build = this.params.getBuild();
-            super.teardownAction(build);
+            super.teardownAction(params);
         }
     }
 
