@@ -7,19 +7,10 @@ package com.mathworks.ci.actions;
 
 import java.io.IOException;
 
-import org.apache.commons.lang.RandomStringUtils;
-
 import com.mathworks.ci.MatlabExecutionException;
-import com.mathworks.ci.TestFile;
-import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.parameters.CommandActionParameters;
-import com.mathworks.ci.MatlabBuilderConstants;
-
-import java.io.File;
-import hudson.FilePath;
-import hudson.model.Run;
 
 public class RunMatlabCommandAction extends MatlabAction {
     private CommandActionParameters params;

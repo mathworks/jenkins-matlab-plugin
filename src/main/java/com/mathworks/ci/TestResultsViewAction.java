@@ -1,8 +1,9 @@
 package com.mathworks.ci;
 
-import hudson.FilePath;
-import jenkins.model.RunAction2;
-import hudson.model.Run;
+/**
+ * Copyright 2024, The MathWorks Inc.
+ *
+ */
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,11 +16,18 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.CheckForNull;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import hudson.FilePath;
+import hudson.model.Run;
+
+import jenkins.model.RunAction2;
 
 public class TestResultsViewAction implements RunAction2 {
     private Run<?, ?> build;

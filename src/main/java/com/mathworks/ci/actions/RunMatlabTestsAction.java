@@ -5,18 +5,15 @@ package com.mathworks.ci.actions;
  *
  */
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 
 import hudson.FilePath;
-import hudson.model.Run;
 
 import com.mathworks.ci.Utilities;
 import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabExecutionException;
-import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.parameters.TestActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 

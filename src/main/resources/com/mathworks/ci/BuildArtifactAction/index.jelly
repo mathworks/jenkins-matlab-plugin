@@ -29,11 +29,11 @@
                             </j:if>
                         </j:if>
                     </div>
-                    <div style="width:100%; height:1em; background-color: #729FCF; border-radius: 6px; overflow: hidden;">
+                    <div style="width:100%; height:1em; background-color: var(--success-color); border-radius: 6px; overflow: hidden;">
                         <!-- Failed task part of the bar. -->
-                        <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: #EF2929; float: right;"></div>
+                        <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: var(--error-color); float: right;"></div>
                         <!-- Skipped task part of the bar. -->
-                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: #FCE94F; float: right;"></div>
+                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: var(--light-blue); float: right;"></div>
                     </div>
                     <div align="right">
                         ${(it.failCount)} Failures
@@ -70,23 +70,23 @@
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskFailed != false}">
                                    <j:if test="${it.actionID != ''}">
-                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#EF2929"> FAILED </font> </a>
+                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font class="jenkins-!-error-color"> FAILED </font> </a>
                                    </j:if>
                                    <j:if test="${it.actionID == ''}">
-                                       <a href="../console#matlab-${p.taskName}"><font color="#EF2929"> FAILED </font> </a>
+                                       <a href="../console#matlab-${p.taskName}"><font class="jenkins-!-error-color"> FAILED </font> </a>
                                    </j:if>
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">
-                                        <font color="#729FCF"> PASSED </font>
+                                        <font class="jenkins-!-success-color"> PASSED </font>
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
                                     <j:if test="${it.actionID != ''}">
-                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font color="#FCE94F"> SKIPPED </font> </a>
+                                       <a href="../console#matlab-${p.taskName}-${it.actionID}"><font class="jenkins-!-color-light-blue"> SKIPPED </font> </a>
                                    </j:if>
                                    <j:if test="${it.actionID == ''}">
-                                       <a href="../console#matlab-${p.taskName}"><font color="#FCE94F"> SKIPPED </font> </a>
+                                       <a href="../console#matlab-${p.taskName}"><font class="jenkins-!-color-light-blue"> SKIPPED </font> </a>
                                    </j:if>
                                 </j:if>
                             </span>

@@ -1,5 +1,10 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2024, The MathWorks Inc.
+ *
+ */
+
 import org.apache.commons.lang.RandomStringUtils;
 
 public class TestDiagnostics {

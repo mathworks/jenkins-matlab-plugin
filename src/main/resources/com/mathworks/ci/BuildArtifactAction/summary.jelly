@@ -13,13 +13,13 @@
       </j:if>
     </span>
     <p>
-      <b>Tasks run: <font color="Blue">${it.totalCount}</font></b>
+      <b>Tasks run: <font class="jenkins-!-success-color">${it.totalCount}</font></b>
       <br></br>
       <br>
-      <b>Failed: <font color="red">${it.failCount}</font></b>
+      <b>Failed: <font class="jenkins-!-error-color">${it.failCount}</font></b>
       </br>
       <br>
-      <b>Skipped: <font color="orange">${it.skipCount}</font></b>
+      <b>Skipped: <font class="jenkins-!-color-light-blue">${it.skipCount}</font></b>
       </br>
     </p>
   </t:summary>

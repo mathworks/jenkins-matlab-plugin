@@ -6,7 +6,7 @@
         </l:side-panel>
 
         <l:app-bar title="MATLAB Test Results">
-            <button class="jenkins-button" onclick="window.open('https://matlab.mathworks.com/open/github/v1?repo=${GIT_URL}')" tooltip="Open in MATLAB Online">Debug</button>
+            <button class="jenkins-button" onclick="window.open('https://matlab.mathworks.com/open/github/v1?repo=${GIT_URL}')" tooltip="View source in MATLAB Online">Open in MATLAB Online</button>
             <t:help href="https://github.com/jenkinsci/matlab-plugin/blob/master/CONFIGDOC.md" tooltip="MATLAB Plugin Configuration Guide" />
         </l:app-bar>
         

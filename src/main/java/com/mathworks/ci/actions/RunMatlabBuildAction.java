@@ -8,13 +8,9 @@ package com.mathworks.ci.actions;
 import java.io.IOException;
 
 import com.mathworks.ci.BuildConsoleAnnotator;
-import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabExecutionException;
-import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-
-import hudson.model.Run;
 
 public class RunMatlabBuildAction extends MatlabAction {
     private BuildActionParameters params;
