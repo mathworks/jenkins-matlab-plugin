@@ -11,29 +11,29 @@
         </l:app-bar>
         
         <l:main-panel>
-            <button id="Total" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0 jenkins-!-padding-left-2 jenkins-!-padding-right-2" style="display: inline" tooltip="Total tests">
+            <button id="Total" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Total tests">
                 <p>${it.totalCount}<br></br><br></br>Total Tests</p>
             </button>
 
-            <button id="Passed" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0 jenkins-!-padding-left-2 jenkins-!-padding-right-2" style="display: inline" tooltip="Passed tests">
+            <button id="Passed" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Passed tests">
                 <p>${it.passedCount}<br>
                     <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color"/>
                 </br><br></br>Passed</p>
             </button>
 
-            <button id="Failed" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0 jenkins-!-padding-left-2 jenkins-!-padding-right-2" style="display: inline" tooltip="Failed tests">
+            <button id="Failed" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Failed tests">
                 <p>${it.failedCount}<br>
                     <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color"/>
                 </br><br></br>Failed</p>
             </button>
 
-            <button id="Incomplete" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0 jenkins-!-padding-left-2 jenkins-!-padding-right-2" style="display: inline" tooltip="Incomplete tests">
+            <button id="Incomplete" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Incomplete tests">
                 <p>${it.incompleteCount}<br>
                     <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color"/>
                 </br><br></br>Incomplete</p>
             </button>
 
-            <button id="NotRun" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0 jenkins-!-padding-left-2 jenkins-!-padding-right-2" style="display: inline" tooltip="Not run tests">
+            <button id="NotRun" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Not run tests">
                 <p>${it.notRunCount}<br>
                     <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg"/>
                 </br><br></br>Not Run</p>
@@ -56,7 +56,6 @@
                         <j:forEach var="testFile" items="${testSession}" varStatus="status">
                             <tr id="${testFile.name}" class="test-file-row">
                                 <td id="${testFile.name}-${testFile.id}" class="pane" colspan="1" style="padding-right: calc(var(--table-padding) * 2);">
-                                    <!-- <a href="../console#matlab-${testFile.taskName}"> -->
                                     <j:if test="${testFile.status.contains('Passed')}">
                                         <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
                                     </j:if>
@@ -72,7 +71,6 @@
                                     <div style="display: inline;" tooltip="${testFile.filePath}">
                                         <j:whitespace trim="false"> ${testFile.name} </j:whitespace> 
                                     </div>
-                                    <!-- </a> -->
 
                                     <a id="plus-${testFile.name}-${testFile.id}" onclick="toggleVisibilty('${testFile.name}-${testFile.id}');" style="display: inline;">
                                         <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show tests" />
@@ -117,7 +115,6 @@
                                                         ${testCase.name}
                                                     </td>
                                                     <td style="vertical-align: text-top;">
-                                                        <!-- make these unique -->
                                                         <j:forEach var="diagnostic" items="${testCase.diagnostics}" varStatus="status">
                                                             <div style="display: block;">
                                                                 <a class='jenkins-!-accent-color;'>${diagnostic.event} </a>
@@ -132,18 +129,6 @@
                                                                 </div>
                                                             </div>
                                                         </j:forEach>
-                                                        <!-- <j:if test="${testCase.diagnostics.contains('-')}">
-                                                            <a class='jenkins-!-accent-color;'>Stack trace </a>
-                                                            <a id="plus-${testCase.name}" onclick="stackTrace('${testCase.name}');" style="display: inline;">
-                                                                <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show stack trace" />
-                                                            </a>
-                                                            <a id="minus-${testCase.name}" onclick="stackTrace('${testCase.name}');" style="display: none">
-                                                                <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide stack trace" />
-                                                            </a>
-                                                            <div id="stack-${testCase.name}" style="display: none; white-space: pre-line;">
-                                                                <br></br><pre>${testCase.diagnostics}</pre>
-                                                            </div>
-                                                        </j:if> -->
                                                     </td>
                                                     <td style="vertical-align: text-top; text-align: right;" id="duration-${testCase.name}-${testCase.id}">
                                                         ${testCase.duration}
@@ -172,7 +157,6 @@
             const minusSymbol = document.getElementById("minus-"+id);
             const duration = document.getElementById("duration-"+id);
 
-            // if (plusSymbol.style.display == "inline" and testCasesTable.style.display == "none"){
             if (testCasesTable.style.display == "none"){
                 testFile.colSpan = "2";
                 testCasesTable.style.display = "inline";
@@ -189,12 +173,10 @@
         }
 
         function stackTrace(id){
-            // const testCase = document.getElementById(testCaseName);
             const testCaseStack = document.getElementById("stack-"+id);
             const plusSymbol = document.getElementById("plus-"+id);
             const minusSymbol = document.getElementById("minus-"+id);
 
-            // if (plusSymbol.style.display == "inline" and testCasesTable.style.display == "none"){
             if (testCaseStack.style.display == "none"){
                 testCaseStack.style.display = "block";
                 plusSymbol.style.display = "none";
@@ -230,11 +212,6 @@
                 }
             });
         }
-
-        // Run the function when the page loads
-        // window.onload = iterateTable;
-            ]]>
+        ]]>
     </script>
 </j:jelly>
-
-<!-- td.pane:hover .symbol-add -->
