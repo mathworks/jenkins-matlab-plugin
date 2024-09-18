@@ -10,13 +10,11 @@ import org.apache.commons.lang.RandomStringUtils;
 public class TestDiagnostics {
     private String event;
     private String report;
-
     private String id;
 
     public TestDiagnostics() {
         event = "";
         report = "";
-
         id = RandomStringUtils.randomAlphanumeric(8);
     }
 
@@ -37,9 +35,6 @@ public class TestDiagnostics {
     }
 
     public String getId() {
-        // String id = this.filePath + "-" + this.name;
-        // return id.replaceAll(File.separator, "-");
         return id;
     }
-
 }

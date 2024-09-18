@@ -40,10 +40,6 @@ public class RunMatlabTestsAction extends MatlabAction {
         String command = MatlabBuilderConstants.TEST_RUNNER_SCRIPT;
         command = command.replace("${TEMP_FOLDER}", runner.getTempFolder().getRemote());
         command = command.replace("${PARAMS}", getParameterString());
-
-        // generate json file
-        // command += "fid = fopen('.matlab" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.id + ".json" 
-        //         + "','w');fprintf(fid,'%s',jsonencode(results, 'PrettyPrint', true));fclose(fid);";
         
         // Run the command
         try {

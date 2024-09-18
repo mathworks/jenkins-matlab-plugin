@@ -2,7 +2,7 @@
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:st="jelly:stapler" xmlns:c="/charts">
     <l:layout title="MATLAB Test Results">
         <l:side-panel>
-            <st:include page="sidepanel.jelly" it="${it.run}" optional="true" />
+            <st:include page="sidepanel.jelly" it="${it.build}" optional="true" />
         </l:side-panel>
 
         <l:app-bar title="MATLAB Test Results">
@@ -92,7 +92,7 @@
                                                     Diagnostics
                                                 </th>
                                                 <th class="pane-header" style="text-align: right; text-wrap:nowrap;">
-                                                    Duration = ${testFile.duration}
+                                                    Duration (seconds) = ${testFile.duration}
                                                 </th>
                                             </tr>
                                         </thead>
@@ -112,12 +112,12 @@
                                                         <j:if test="${testCase.status.contains('NotRun')}">
                                                             <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
                                                         </j:if>
-                                                        ${testCase.name}
+                                                        <j:whitespace trim="false"> ${testCase.name} </j:whitespace>
                                                     </td>
                                                     <td style="vertical-align: text-top;">
                                                         <j:forEach var="diagnostic" items="${testCase.diagnostics}" varStatus="status">
                                                             <div style="display: block;">
-                                                                <a class='jenkins-!-accent-color;'>${diagnostic.event} </a>
+                                                                <j:whitespace trim="false"> ${diagnostic.event} </j:whitespace>
                                                                 <a id="plus-${testCase.name}-${diagnostic.id}" onclick="stackTrace('${testCase.name}-${diagnostic.id}');" style="display: inline;">
                                                                     <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show stack trace" />
                                                                 </a>

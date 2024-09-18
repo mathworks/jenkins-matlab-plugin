@@ -12,7 +12,8 @@ classdef TestResultsViewPlugin < matlab.unittest.plugins.TestRunnerPlugin
                 testDetails(idx).BaseFolder = pluginData.TestSuite(idx).BaseFolder;
             end
 
-            testArtifactFile = fullfile(getenv("MW_MATLAB_TEMP_FOLDER"),"testArtifact.json");
+            % If test results artifact exists, update the same file
+            testArtifactFile = fullfile(getenv("MW_MATLAB_TEMP_FOLDER"),"matlabTestResults.json");
             if isfile(testArtifactFile)
                 testResults = {jsondecode(fileread(testArtifactFile))};
             else

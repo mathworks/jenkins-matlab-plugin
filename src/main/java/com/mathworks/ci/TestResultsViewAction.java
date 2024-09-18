@@ -30,7 +30,7 @@ import hudson.model.Run;
 import jenkins.model.RunAction2;
 
 public class TestResultsViewAction implements RunAction2 {
-    private Run<?, ?> build;
+    private transient Run<?, ?> build;
     private FilePath workspace;
     private String actionID;
     private int totalCount;
@@ -44,120 +44,124 @@ public class TestResultsViewAction implements RunAction2 {
         this.workspace = workspace;
         this.actionID = actionID;
         
-        // check again at last
         totalCount = 0;
         passedCount = 0;
         failedCount = 0;
         incompleteCount = 0;
         notRunCount = 0;
 
-        try{
-            getTestResults();
-        } catch (InterruptedException | IOException e) {
-            e.printStackTrace();
-            throw e;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+         try{
+             getTestResults();
+         } catch (InterruptedException | IOException e) {
+             e.printStackTrace();
+             throw e;
+         } catch (ParseException e) {
+             e.printStackTrace();
+         }
     }
 
     public List<List<TestFile>> getTestResults() throws ParseException, InterruptedException, IOException {
         List<List<TestFile>> testResults = new ArrayList<>();
         FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.actionID + ".json"));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
-            Object obj = new JSONParser().parse(reader);
-
             totalCount = 0;
             passedCount = 0;
             failedCount = 0;
             incompleteCount = 0;
             notRunCount = totalCount;
 
-            JSONArray jsonTestArtifact = (JSONArray) obj;
-            Iterator<JSONArray> testArtifactIterator = jsonTestArtifact.iterator();
+            JSONArray testArtifact = (JSONArray) new JSONParser().parse(reader);
+            Iterator<JSONArray> testArtifactIterator = testArtifact.iterator();
 
             while(testArtifactIterator.hasNext()){
-                JSONArray jsonTestSessionResults = testArtifactIterator.next();
-                Iterator<JSONObject> testSessionIterator = jsonTestSessionResults.iterator();
+                Object jsonTestSessionResults = testArtifactIterator.next();
 
                 List<TestFile> testSessionResults = new ArrayList<>();
                 Map<String, TestFile> map = new HashMap<>();
-                while(testSessionIterator.hasNext()){
-                    JSONObject jsonTestCase = testSessionIterator.next();
-                    String baseFolder = jsonTestCase.get("BaseFolder").toString();
-                    JSONObject testCaseResult = (JSONObject) jsonTestCase.get("TestResult");
 
-                    // add single element test case
+                if(jsonTestSessionResults instanceof JSONArray){
+                    JSONArray jsonTestSessionResultsArray = (JSONArray) jsonTestSessionResults;
+                    Iterator<JSONObject> testSessionResultsIterator = jsonTestSessionResultsArray.iterator();
 
-                    // Not OS dependent
-                    String[] testNameSplit = testCaseResult.get("Name").toString().split("/");
-                    String testFileName = testNameSplit[0];
-                    String testCaseName = testNameSplit[1];
-
-                    // handle same test file name
-                    TestFile testFile = map.get(baseFolder + File.separator + testFileName);
-                    if(testFile == null) {
-                        testFile = new TestFile();
-                        testFile.setName(testFileName);
-
-                        map.put(baseFolder + File.separator + testFileName, testFile);
-                        testSessionResults.add(testFile);
+                    while(testSessionResultsIterator.hasNext()){
+                        JSONObject jsonTestCase = testSessionResultsIterator.next();
+                        getTestSessionResults(testSessionResults, jsonTestCase, map);
                     }
-
-                    // Calculate the relative path
-                    Path path1 = Paths.get(baseFolder);
-                    Path path2 = Paths.get(this.workspace.toURI());
-                    Path filePath = path2.relativize(path1);
-                    testFile.setFilePath(this.workspace.getName() + File.separator + filePath.toString());
-
-                    // re-evaluate casting if necessary or not
-                    TestCase testCase = new TestCase();
-                    testCase.setName(testCaseName);
-                    testCase.setPassed((boolean) testCaseResult.get("Passed"));
-                    testCase.setFailed((boolean) testCaseResult.get("Failed"));
-                    testCase.setIncomplete((boolean) testCaseResult.get("Incomplete"));
-                    if (testCaseResult.get("Duration") instanceof Long) {
-                        testCase.setDuration(((Long) testCaseResult.get("Duration")).doubleValue());
-                    } else if (testCaseResult.get("Duration") instanceof Double) {
-                        testCase.setDuration(((Double) testCaseResult.get("Duration")));
-                    }
-                    testCase.updateStatus();
-
-                    // should we instead check for non-empty?
-                    Object diagnostics = ((JSONObject)testCaseResult.get("Details")).get("DiagnosticRecord");
-                    if(diagnostics instanceof JSONObject) {
-                        TestDiagnostics testDiagnostics = new TestDiagnostics();
-                        testDiagnostics.setEvent(((JSONObject)diagnostics).get("Event").toString());
-                        testDiagnostics.setReport(((JSONObject)diagnostics).get("Report").toString());
-                        testCase.updateDiagnostics(testDiagnostics);
-                    }
-                    else if(diagnostics instanceof JSONArray && ((JSONArray)diagnostics).size() > 0) {
-                        // diagnostics = (JSONArray)diagnostics;
-                        Iterator<JSONObject> diagnosticsIterator = ((JSONArray)diagnostics).iterator();
-                        while(diagnosticsIterator.hasNext()) {
-                            JSONObject diagnosticItem = diagnosticsIterator.next();
-
-                            TestDiagnostics testDiagnostics = new TestDiagnostics();
-                            testDiagnostics.setEvent(diagnosticItem.get("Event").toString());
-                            testDiagnostics.setReport(diagnosticItem.get("Report").toString());
-                            testCase.updateDiagnostics(testDiagnostics);
-                        }
-                    }
-
-                    testFile.incrementDuration(testCase.getDuration());
-                    testFile.updateStatus(testCase);
-                    testFile.addTestCase(testCase);
-                    updateCount(testCase);
                 }
+                else if(jsonTestSessionResults instanceof JSONObject) {
+                    JSONObject jsonTestCase = (JSONObject) jsonTestSessionResults;
+                    getTestSessionResults(testSessionResults, jsonTestCase, map);
+                }
+
                 testResults.add(testSessionResults);
             }
         }
         catch (Exception e) {
-            // TODO: handle exception
-            // throw new IOException(e.getLocalizedMessage());
+            throw new IOException(e.getLocalizedMessage());
         }
 
         return testResults;
+    }
+
+    private void getTestSessionResults(List<TestFile> testSessionResults, JSONObject jsonTestCase, Map<String, TestFile> map) throws IOException, InterruptedException {
+        String baseFolder = jsonTestCase.get("BaseFolder").toString();
+        JSONObject testCaseResult = (JSONObject) jsonTestCase.get("TestResult");
+
+        // Not OS dependent
+        String[] testNameSplit = testCaseResult.get("Name").toString().split("/");
+        String testFileName = testNameSplit[0];
+        String testCaseName = testNameSplit[1];
+
+        TestFile testFile = map.get(baseFolder + File.separator + testFileName);
+        if(testFile == null) {
+            testFile = new TestFile();
+            testFile.setName(testFileName);
+
+            map.put(baseFolder + File.separator + testFileName, testFile);
+            testSessionResults.add(testFile);
+        }
+
+        // Calculate the relative path
+        Path path1 = Paths.get(baseFolder);
+        Path path2 = Paths.get(this.workspace.toURI());
+        Path filePath = path2.relativize(path1);
+        testFile.setFilePath(this.workspace.getName() + File.separator + filePath.toString());
+
+        TestCase testCase = new TestCase();
+        testCase.setName(testCaseName);
+        testCase.setPassed((boolean) testCaseResult.get("Passed"));
+        testCase.setFailed((boolean) testCaseResult.get("Failed"));
+        testCase.setIncomplete((boolean) testCaseResult.get("Incomplete"));
+        if (testCaseResult.get("Duration") instanceof Long) {
+            testCase.setDuration(((Long) testCaseResult.get("Duration")).doubleValue());
+        } else if (testCaseResult.get("Duration") instanceof Double) {
+            testCase.setDuration(((Double) testCaseResult.get("Duration")));
+        }
+        testCase.updateStatus();
+
+        Object diagnostics = ((JSONObject)testCaseResult.get("Details")).get("DiagnosticRecord");
+        if(diagnostics instanceof JSONObject) {
+            TestDiagnostics testDiagnostics = new TestDiagnostics();
+            testDiagnostics.setEvent(((JSONObject)diagnostics).get("Event").toString());
+            testDiagnostics.setReport(((JSONObject)diagnostics).get("Report").toString());
+            testCase.getDiagnostics().add(testDiagnostics);
+        }
+        else if(diagnostics instanceof JSONArray && ((JSONArray)diagnostics).size() > 0) {
+            Iterator<JSONObject> diagnosticsIterator = ((JSONArray)diagnostics).iterator();
+            while(diagnosticsIterator.hasNext()) {
+                JSONObject diagnosticItem = diagnosticsIterator.next();
+
+                TestDiagnostics testDiagnostics = new TestDiagnostics();
+                testDiagnostics.setEvent(diagnosticItem.get("Event").toString());
+                testDiagnostics.setReport(diagnosticItem.get("Report").toString());
+                testCase.getDiagnostics().add(testDiagnostics);
+            }
+        }
+
+        testFile.incrementDuration(testCase.getDuration());
+        testFile.updateStatus(testCase);
+        testFile.getTestCases().add(testCase);
+        updateCount(testCase);
     }
 
     private void updateCount(TestCase testCase) {
@@ -176,20 +180,18 @@ public class TestResultsViewAction implements RunAction2 {
         }
     }
 
-    private transient Run run;
-    
-    public Run getRun() {
-        return run;
-    }
-
     @Override
     public void onAttached(Run<?, ?> run) {
-        this.run = run;
+        this.build = run;
     }
 
     @Override
     public void onLoad(Run<?, ?> run) {
-        this.run = run;
+        onAttached(run);
+    }
+
+    public Run getBuild() {
+        return build;
     }
 
     @CheckForNull
@@ -208,17 +210,6 @@ public class TestResultsViewAction implements RunAction2 {
     @Override
     public String getIconFileName() {
         return "document.png";
-    }
-
-    public Run getOwner() {
-        return this.build;
-    }
-
-    /**
-     * @param owner the owner to set
-     */
-    public void setOwner(Run owner) {
-        this.build = owner;
     }
 
     public FilePath getWorkspace() {

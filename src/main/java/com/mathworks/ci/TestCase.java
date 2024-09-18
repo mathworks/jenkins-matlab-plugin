@@ -18,7 +18,6 @@ public class TestCase {
     private boolean incomplete;
     private String status;
     private Double duration;
-    
     private String id;
 
     public TestCase() {
@@ -29,8 +28,19 @@ public class TestCase {
         incomplete = false;
         status = "NotRun";
         duration = 0.0;
-
         id = RandomStringUtils.randomAlphanumeric(8);
+    }
+    
+    public void updateStatus() {
+        if (failed){
+            status = "Failed";
+        }
+        else if (incomplete) {
+            status = "Incomplete";
+        }
+        else if(passed) {
+            status = "Passed";
+        }
     }
 
     public String getName() {
@@ -47,10 +57,6 @@ public class TestCase {
 
     public void setDiagnostics(List<TestDiagnostics> diagnostics) {
         this.diagnostics = diagnostics;
-    }
-
-    public void updateDiagnostics(TestDiagnostics diagnostic) {
-        this.diagnostics.add(diagnostic);
     }
 
     public boolean getPassed() {
@@ -85,18 +91,6 @@ public class TestCase {
         this.status = status;
     }
 
-    public void updateStatus() {
-        if (failed){
-            status = "Failed";
-        }
-        else if (incomplete) {
-            status = "Incomplete";
-        }
-        else if(passed) {
-            status = "Passed";
-        }
-    }
-
     public Double getDuration() {
         return this.duration;
     }
@@ -106,8 +100,6 @@ public class TestCase {
     }
 
     public String getId() {
-        // String id = this.filePath + "-" + this.name;
-        // return id.replaceAll(File.separator, "-");
         return id;
     }
 }

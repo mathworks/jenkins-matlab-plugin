@@ -41,8 +41,7 @@ public class MatlabBuilderConstants {
     public static final String TEST_RESULTS_VIEW_PLUGIN = "+ciplugins/+jenkins/TestResultsViewPlugin.m";
     public static final String TEST_RESULTS_VIEW_PLUGIN_SERVICE = "+matlab/+unittest/+internal/+services/+plugins/TestResultsViewPluginService.m";
     
-    // rename artifact to matlabTestResults.json
-    public static final String TEST_RESULTS_VIEW_ARTIFACT = "testArtifact";
+    public static final String TEST_RESULTS_VIEW_ARTIFACT = "matlabTestResults";
     public static final String BUILD_ARTIFACT = "buildArtifact";
     
     public static final String NEW_LINE = System.getProperty("line.separator");

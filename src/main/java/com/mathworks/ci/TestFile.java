@@ -16,7 +16,6 @@ public class TestFile {
     private Double duration;
     private String status;
     private List<TestCase> testCases;
-
     private String id;
 
     public TestFile() {
@@ -27,6 +26,26 @@ public class TestFile {
         testCases = new ArrayList<TestCase>();
 
         id = RandomStringUtils.randomAlphanumeric(8);
+    }
+
+    public void incrementDuration(Double testCaseDuration) {
+        this.duration += testCaseDuration;
+    }
+
+    public void updateStatus(TestCase testCase) {
+        if (!status.equals("Failed")){
+            if (testCase.getFailed()){
+                status = "Failed";
+            }
+            else if (!status.equals("Incomplete")){
+                if (testCase.getIncomplete()){
+                    status = "Incomplete";
+                }
+                else if (testCase.getPassed()){
+                    status = "Passed";
+                }
+            }
+        }
     }
 
     public String getFilePath() {
@@ -70,32 +89,6 @@ public class TestFile {
     }
 
     public String getId() {
-        // String id = this.filePath + "-" + this.name;
-        // return id.replaceAll(File.separator, "-");
         return id;
-    }
-
-    public void incrementDuration(Double testCaseDuration) {
-        this.duration += testCaseDuration;
-    }
-
-    public void updateStatus(TestCase testCase) {
-        if (!status.equals("Failed")){
-            if (testCase.getFailed()){
-                status = "Failed";
-            }
-            else if (!status.equals("Incomplete")){
-                if (testCase.getIncomplete()){
-                    status = "Incomplete";
-                }
-                else if (testCase.getPassed()){
-                    status = "Passed";
-                }
-            }
-        }
-    }
-
-    public void addTestCase(TestCase testCase) {
-        this.testCases.add(testCase);
     }
 }

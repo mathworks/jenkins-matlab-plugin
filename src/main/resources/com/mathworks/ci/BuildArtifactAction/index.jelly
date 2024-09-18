@@ -32,7 +32,7 @@
                         <!-- Failed task part of the bar. -->
                         <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: var(--error-color); float: right;"></div>
                         <!-- Skipped task part of the bar. -->
-                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: var(--light-blue); float: right;"></div>
+                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: var(--dark-blue); float: right;"></div>
                     </div>
                     <div align="right">
                         ${(it.failCount)} Failed
@@ -74,11 +74,11 @@
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">
-                                        <font class="jenkins-!-success-color"> Succeeded </font>
+                                        <font style="color: var(--success-color)"> Succeeded </font>
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
-                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: var(--light-blue);">
+                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: var(--dark-blue);">
                                              Skipped 
                                             <j:if test="${p.skipReason != ''}">
                                                 (${p.skipReason})
