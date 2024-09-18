@@ -271,8 +271,6 @@ public class BuildArtifactActionTest {
         Assert.assertEquals("Incorrect ActionID",actionID,ac.getActionID());
     }
 
-
-
     private void copyFileInWorkspace(String sourceFile, String targetFile, FilePath targetWorkspace)
             throws IOException, InterruptedException {
         final ClassLoader classLoader = getClass().getClassLoader();

@@ -67,8 +67,6 @@ public class BuildArtifactAction implements Action {
         return (this.actionID == null) ? "buildresults" : "buildresults" + this.actionID ;
     }
 
-    // add link to test results table
-
     public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException, IOException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
         FilePath fl;
