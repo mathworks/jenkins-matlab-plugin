@@ -9,7 +9,6 @@ package com.mathworks.ci;
  */
 
 import hudson.model.Item;
-import hudson.security.Permission;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,7 +18,6 @@ import java.util.function.Function;
 
 import hudson.matrix.MatrixProject;
 import hudson.model.Computer;
-import jenkins.model.Jenkins;
 import org.kohsuke.stapler.AncestorInPath;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;

@@ -1,7 +1,7 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
- <font color="red">Using this build step is not recommended and will be removed in a feature release. Use “Run MATLAB Tests” or “Run MATLAB Command” instead.</font>   
+ <font color="crimson">Using this build step is not recommended and will be removed in a feature release. Use “Run MATLAB Tests” or “Run MATLAB Command” instead.</font>   
  <f:section>
 	  <f:entry title="MATLAB root " field="matlabRoot">
 	        <f:textbox disabled="disabled" checkMethod="post" />

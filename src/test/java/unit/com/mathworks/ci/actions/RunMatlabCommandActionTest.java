@@ -15,20 +15,29 @@ import static org.junit.Assert.*;
 
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
+import hudson.FilePath;
+import hudson.model.Run;
 import hudson.model.TaskListener;
 
+import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-import com.mathworks.ci.parameters.RunActionParameters;
+import com.mathworks.ci.parameters.CommandActionParameters;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class RunMatlabCommandActionTest {
-    @Mock RunActionParameters params;
+    @Mock CommandActionParameters params;
+    @Mock BuildConsoleAnnotator annotator;
     @Mock MatlabCommandRunner runner;
     @Mock PrintStream out;
     @Mock TaskListener listener;
+    @Mock Run build;
+
+    @Mock FilePath tempFolder;
 
     private boolean setup = false;
     private RunMatlabCommandAction action;
@@ -38,17 +47,35 @@ public class RunMatlabCommandActionTest {
     public void init() {
         if (!setup) {
             setup = true;
-            action = new RunMatlabCommandAction(runner, params);
+            action = new RunMatlabCommandAction(runner, annotator, params);
+
+            when(runner.getTempFolder()).thenReturn(tempFolder);
+            when(tempFolder.getRemote()).thenReturn("/path/less/traveled");
+
+            when(params.getTaskListener()).thenReturn(listener);
+            when(listener.getLogger()).thenReturn(out);
+
+            when(params.getBuild()).thenReturn(build);
         }
+    }
+
+    @Test
+    public void shouldUseCustomAnnotator() throws IOException, InterruptedException, MatlabExecutionException {
+        action.run();
+
+        verify(runner).redirectStdOut(annotator);
     }
 
     @Test
     public void runsGivenCommand() throws IOException, InterruptedException, MatlabExecutionException {
         when(params.getCommand()).thenReturn("Sit!");
 
+        when(runner.getTempFolder()).thenReturn(tempFolder);
+        when(tempFolder.getRemote()).thenReturn("/path/less/traveled");
+
         action.run();
 
-        verify(runner).runMatlabCommand("Sit!");
+        verify(runner).runMatlabCommand("addpath('/path/less/traveled'); Sit!");
     }
 
     @Test
@@ -65,12 +92,5 @@ public class RunMatlabCommandActionTest {
             verify(out).println(e.getMessage());
             assertEquals(12, e.getExitCode());
         };
-    }
-
-    @Test
-    public void shouldRemoveTempFolder() throws IOException, InterruptedException, MatlabExecutionException {
-        action.run();
-
-        verify(runner).removeTempFolder();
     }
 }

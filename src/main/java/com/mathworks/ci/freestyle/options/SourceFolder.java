@@ -13,7 +13,6 @@ import hudson.model.AbstractDescribableImpl;
 import hudson.model.Descriptor;
 import org.kohsuke.stapler.DataBoundConstructor;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {

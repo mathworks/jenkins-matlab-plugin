@@ -4,6 +4,7 @@
     "description": "Test show",
     "failed": false,
     "skipped": true,
+    "skipReason": "UserSpecified",
     "duration": "00:02:53"
   }
 }

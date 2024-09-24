@@ -1,5 +1,9 @@
 package com.mathworks.ci;
 
+/**
+ * Copyright 2024 The MathWorks, Inc.
+ *
+ */
 
 import hudson.FilePath;
 import hudson.model.FreeStyleBuild;
@@ -96,7 +100,7 @@ public class BuildArtifactActionTest {
         copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         boolean expectedStatus = ba.get(0).getTaskFailed();
-        Assert.assertEquals("The task is passed",false,expectedStatus);
+        Assert.assertEquals("The task succeeded",false,expectedStatus);
     }
 
     /**
@@ -111,9 +115,27 @@ public class BuildArtifactActionTest {
         final String targetFile = "buildArtifact"+ actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
+    }
+
+    /**
+     *  Verify if skip reason is returned from artifact file.
+     *
+     */
+
+    @Test
+    public void verifySkipReasonIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+        FreeStyleBuild build = getFreestyleBuild();
+        final String actionID = "abc123";
+        final String targetFile = "buildArtifact"+ actionID + ".json";
+        BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
+        FilePath artifactRoot = new FilePath(build.getRootDir());
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        List<BuildArtifactData> ba = ac.getBuildArtifact();
+        Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
+        Assert.assertEquals("The skip reason for skipped task is inaccurate","user requested",ba.get(0).getSkipReason());
     }
 
     /**
@@ -128,7 +150,7 @@ public class BuildArtifactActionTest {
         final String targetFile = "buildArtifact"+ actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task duration is not matching","00:02:53",ba.get(0).getTaskDuration());
     }
@@ -145,7 +167,7 @@ public class BuildArtifactActionTest {
         final String targetFile = "buildArtifact"+ actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task description is not matching","Test show",ba.get(0).getTaskDescription());
     }
@@ -162,7 +184,7 @@ public class BuildArtifactActionTest {
         final String targetFile = "buildArtifact"+ actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         Assert.assertEquals("The task name is not matching","show",ba.get(0).getTaskName());
     }
@@ -178,7 +200,7 @@ public class BuildArtifactActionTest {
         FilePath artifactRoot = new FilePath(build.getRootDir());
         final String actionID = "abc123";
         final String targetFile = "buildArtifact"+ actionID + ".json";
-        copyFileInWorkspace("buildArtifacts.t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         Assert.assertEquals("Total task count is not correct",1,ac.getTotalCount());
     }
@@ -215,6 +237,7 @@ public class BuildArtifactActionTest {
         Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
         Assert.assertEquals("Total task failed count is not correct",1,ac.getFailCount());
     }
+    
     /**
      *  Verify if total skipped count returned from artifact file.
      *
