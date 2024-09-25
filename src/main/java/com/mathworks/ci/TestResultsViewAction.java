@@ -63,7 +63,7 @@ public class TestResultsViewAction implements RunAction2 {
 
     public List<List<TestFile>> getTestResults() throws ParseException, InterruptedException, IOException {
         List<List<TestFile>> testResults = new ArrayList<>();
-        System.out.println("Line 66");
+//        throw new Exception("Line 66");
         FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.actionID + ".json"));
         try (InputStreamReader reader = new InputStreamReader(new FileInputStream(new File(fl.toURI())), "UTF-8")) {
             totalCount = 0;
@@ -72,7 +72,7 @@ public class TestResultsViewAction implements RunAction2 {
             incompleteCount = 0;
             notRunCount = totalCount;
 
-            System.out.println("Line 75");
+            // throw new Exception("Line 75");
             JSONArray testArtifact = (JSONArray) new JSONParser().parse(reader);
             Iterator<JSONArray> testArtifactIterator = testArtifact.iterator();
 
@@ -88,17 +88,17 @@ public class TestResultsViewAction implements RunAction2 {
 
                     while(testSessionResultsIterator.hasNext()){
                         JSONObject jsonTestCase = testSessionResultsIterator.next();
-                        System.out.println("Line 91");
+                        throw new Exception("Line 91");
                         getTestSessionResults(testSessionResults, jsonTestCase, map);
                     }
                 }
                 else if(jsonTestSessionResults instanceof JSONObject) {
                     JSONObject jsonTestCase = (JSONObject) jsonTestSessionResults;
-                    System.out.println("Line 97");
+                    throw new Exception("Line 97");
                     getTestSessionResults(testSessionResults, jsonTestCase, map);
                 }
 
-                System.out.println("Line 101");
+                throw new Exception("Line 101");
                 testResults.add(testSessionResults);
             }
         }
