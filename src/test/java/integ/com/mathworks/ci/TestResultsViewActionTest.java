@@ -1,12 +1,11 @@
 package com.mathworks.ci;
 
-import java.io.File;
-
 /**
  * Copyright 2024 The MathWorks, Inc.
  *
  */
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -163,7 +162,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts" + File.separator + "t1" + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getIncompleteCount();
         Assert.assertEquals("Incorrect incomplete tests count",0,actualCount);
