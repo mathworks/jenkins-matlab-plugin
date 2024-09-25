@@ -127,8 +127,8 @@ public class TestResultsViewAction implements RunAction2 {
         }
 
         // Calculate the relative path
-        Path path1 = Paths.get(baseFolder);
-        Path path2 = Paths.get(this.workspace.toURI());
+        Path path1 = Paths.get(baseFolder).toAbsolutePath();
+        Path path2 = Paths.get(this.workspace.toURI()).toAbsolutePath();
         Path filePath = path2.relativize(path1);
         testFile.setFilePath(this.workspace.getName() + File.separator + filePath.toString());
 
