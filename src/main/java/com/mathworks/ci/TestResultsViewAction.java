@@ -89,17 +89,17 @@ public class TestResultsViewAction implements RunAction2 {
                     while(testSessionResultsIterator.hasNext()){
                         JSONObject jsonTestCase = testSessionResultsIterator.next();
                         throw new Exception("Line 91");
-                        getTestSessionResults(testSessionResults, jsonTestCase, map);
+//                        getTestSessionResults(testSessionResults, jsonTestCase, map);
                     }
                 }
                 else if(jsonTestSessionResults instanceof JSONObject) {
                     JSONObject jsonTestCase = (JSONObject) jsonTestSessionResults;
                     throw new Exception("Line 97");
-                    getTestSessionResults(testSessionResults, jsonTestCase, map);
+//                    getTestSessionResults(testSessionResults, jsonTestCase, map);
                 }
 
                 throw new Exception("Line 101");
-                testResults.add(testSessionResults);
+//                testResults.add(testSessionResults);
             }
         }
         catch (Exception e) {
