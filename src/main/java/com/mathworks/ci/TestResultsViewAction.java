@@ -51,6 +51,7 @@ public class TestResultsViewAction implements RunAction2 {
         notRunCount = 0;
 
          try{
+            // Set test results counts
              getTestResults();
          } catch (InterruptedException | IOException e) {
              e.printStackTrace();
