@@ -30,7 +30,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
 public class MatlabInstaller extends DownloadFromUrlInstaller {
-    private String home;
+    private String version;
+    private String products;
 
     @DataBoundConstructor
     public MatlabInstaller(String id) {
@@ -38,13 +39,19 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
     }
 
 
-    public String getHome(){
-        return this.home;
+    public String getVersion(){
+        return this.version;
+    }
+    public String getProducts() { return this.products; }
+
+    @DataBoundSetter
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     @DataBoundSetter
-    public void setHome(String home) {
-        this.home = home;
+    public void setProducts(String products) {
+        this.products = products;
     }
 
     @Extension
@@ -91,7 +98,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 
             FilePath mpmPath = installable.getMpmInstallable(expectedPath);
             FilePath mbatchPath = installable.getBatchInstallable(expectedPath);
-            FilePath destinatioFolder = new FilePath(node.getChannel(), this.getHome());
+            FilePath destinatioFolder = new FilePath(node.getChannel(), this.getVersion());
             mpmPath.copyFrom(new URL(installable.url));
             mpmPath.chmod(0777);
             mbatchPath.copyFrom(new URL(installable.batchURL));
@@ -116,7 +123,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             args.add(expectedPath.getRemote() + "\\mpm.exe");
             args.add("install");
             args.add("--release=" + this.id +"");
-            args.add("--destination="+ this.getHome() +"");
+            args.add("--destination="+ this.getVersion() +"");
             args.add("--products=MATLAB");
             installerProc.pwd(expectedPath)
                     //.cmds(expectedPath.getRemote() + "\\mpm.exe","install","--release=" + this.id +"","--destination="+ this.getHome() +"","--products=MATLAB")//cmds(".\\mpm.exe install --release=" + this.id + " --destination="+ this.getHome() +"")
@@ -131,7 +138,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
                 log.getLogger().println("Zero" + i);
             }
         }
-        return new FilePath(node.getChannel(),this.getHome());
+        return new FilePath(node.getChannel(),this.getVersion());
 
     }
 
