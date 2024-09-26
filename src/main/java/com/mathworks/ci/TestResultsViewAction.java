@@ -6,9 +6,9 @@ package com.mathworks.ci;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -64,17 +64,14 @@ public class TestResultsViewAction implements RunAction2 {
 
     public List<List<TestFile>> getTestResults() throws ParseException, InterruptedException, IOException {
         List<List<TestFile>> testResults = new ArrayList<>();
-//        throw new Exception("Line 66");
         FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.actionID + ".json"));
-        Path path = Paths.get(fl.toURI());
-        try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(path), "UTF-8")) {
+        try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(Paths.get(fl.toURI())), StandardCharsets.UTF_8)) {
             totalCount = 0;
             passedCount = 0;
             failedCount = 0;
             incompleteCount = 0;
             notRunCount = totalCount;
 
-            // throw new Exception("Line 75");
             JSONArray testArtifact = (JSONArray) new JSONParser().parse(reader);
             Iterator<JSONArray> testArtifactIterator = testArtifact.iterator();
 
@@ -109,7 +106,7 @@ public class TestResultsViewAction implements RunAction2 {
     }
 
     private void getTestSessionResults(List<TestFile> testSessionResults, JSONObject jsonTestCase, Map<String, TestFile> map) throws IOException, InterruptedException {
-        String baseFolder = jsonTestCase.get("BaseFolder").toString();
+        FilePath baseFolder = new FilePath(new File(jsonTestCase.get("BaseFolder").toString()));
         JSONObject testCaseResult = (JSONObject) jsonTestCase.get("TestResult");
 
         // Not OS dependent
@@ -127,9 +124,11 @@ public class TestResultsViewAction implements RunAction2 {
         }
 
         // Calculate the relative path
-        Path path1 = Paths.get(baseFolder).toAbsolutePath();
+        Path path1 = Paths.get(baseFolder.toURI()).toAbsolutePath();
         Path path2 = Paths.get(this.workspace.toURI()).toAbsolutePath();
         Path filePath = path2.relativize(path1);
+
+        // String filePath = baseFolder.toString().replace(this.workspace.getRemote(), "");
         testFile.setFilePath(this.workspace.getName() + File.separator + filePath.toString());
 
         TestCase testCase = new TestCase();

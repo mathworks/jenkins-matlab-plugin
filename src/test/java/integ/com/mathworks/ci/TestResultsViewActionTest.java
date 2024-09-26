@@ -158,7 +158,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyIncompleteTestsCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = build.getWorkspace();
+        final FilePath workspace = new FilePath(new File( "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -194,7 +194,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestFilePath() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
