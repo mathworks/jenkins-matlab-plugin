@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 import hudson.FilePath;
-import hudson.model.Run;
 
 import com.mathworks.ci.Utilities;
 import com.mathworks.ci.MatlabBuilderConstants;
@@ -51,9 +50,8 @@ public class RunMatlabTestsAction extends MatlabAction {
                 .println(e.getMessage());
             throw(e);
         } finally {
-            Run<?, ?> build = this.params.getBuild();
-            super.teardownAction(build);
-        } 
+            super.teardownAction(params);
+        }
     }
 
     private String singleQuotify(String in) {
