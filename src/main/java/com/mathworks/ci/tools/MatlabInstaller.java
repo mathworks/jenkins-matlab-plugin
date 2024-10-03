@@ -2,7 +2,6 @@ package com.mathworks.ci.tools;
 
 import com.mathworks.ci.MatlabInstallation;
 import com.mathworks.ci.Message;
-import com.sun.akuma.CLibrary.FILE;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -14,7 +13,6 @@ import hudson.tools.DownloadFromUrlInstaller;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
 import hudson.util.ArgumentListBuilder;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
@@ -47,12 +45,13 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         this.products = products;
     }
 
+    @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log) throws IOException, InterruptedException {
         FilePath expectedPath = preferredLocation(tool, node);
         MatlabInstallable installable;
         try {
             installable = (MatlabInstallable) getInstallable(node);
-        } catch (InstallationFailedException e) {
+        } catch (Exception e) {
             throw new InstallationFailedException(e.getMessage());
         }
 
@@ -61,93 +60,91 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             return expectedPath;
         }
 
-        if (isUpToDate(expectedPath, installable)) {
-            return expectedPath;
+        getFreshCopyOfExecutables(installable, expectedPath);
+
+        int result = installUsingMpm(node,expectedPath,log);
+        if(result == 0) {
+            log.getLogger().println("MATLAB installation for version " + this.getVersion() +" using mpm is completed successfully !");
         }
-
-        FilePath matlabVersionFile = new FilePath(expectedPath, "VersionInfo.xml");
-        if(matlabVersionFile.exists()) {
-            // If MTALB found at given location then just pull matlab-bacth and mpm executables.
-            getFreshCopyOfExecutables(installable, expectedPath);
-        } else {
-            // Cleanup before initial installation if last install was incomplete for any reason
-            performCleanup(expectedPath);
-            getFreshCopyOfExecutables(installable, expectedPath);
-
-            // Create installation process
-            EnvVars env = node.toComputer().getEnvironment();
-            Launcher matlabInstaller = node.createLauncher(log);
-            ProcStarter installerProc = matlabInstaller.launch();
-
-            ArgumentListBuilder args = new ArgumentListBuilder();
-            args.add(expectedPath.getRemote() + getNodeSpecificMPMExecutor(node)); // can use installable here
-            args.add("install");
-            args.add("--release=" + this.getVersion());
-            args.add("--destination="+ expectedPath.getRemote());
-            args.add(getMatlabProducts());
-            installerProc.pwd(expectedPath)
-                    .cmds(args)
-                    .envs(env).stdout(log);
-            try{
-                int result = installerProc.join();
-            } catch (Exception e) {
-                throw new InstallationFailedException(e.getMessage());
-            }
-        }
-        return new FilePath(node.getChannel(), expectedPath.getRemote());
+        return expectedPath;
     }
 
-    private void performCleanup(FilePath preferedLocation) throws IOException, InterruptedException {
-        preferedLocation.deleteContents();
+  private int installUsingMpm(Node node, FilePath expectedPath, TaskListener log)
+      throws IOException, InterruptedException {
+
+        // Create installation process
+        EnvVars env = node.toComputer().getEnvironment();
+        Launcher matlabInstaller = node.createLauncher(log);
+        ProcStarter installerProc = matlabInstaller.launch();
+
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(expectedPath.getRemote() + getNodeSpecificMPMExecutor(node)); // can use installable here
+        args.add("install");
+        args.add("--release=" + this.getVersion());
+        args.add("--destination="+ expectedPath.getRemote());
+        addMatlabProductsToArgs(args);
+        installerProc.pwd(expectedPath)
+                .cmds(args)
+                .envs(env).stdout(log);
+        int result;
+        try {
+            result = installerProc.join();
+        } catch (Exception e) {
+            throw new InstallationFailedException(e.getMessage());
+        }
+        return result;
     }
+
     private void getFreshCopyOfExecutables(MatlabInstallable installable, FilePath expectedPath) throws IOException, InterruptedException {
         FilePath mpmPath = installable.getMpmInstallable(expectedPath);
         FilePath mbatchPath = installable.getBatchInstallable(expectedPath);
-        mpmPath.copyFrom(new URL(installable.url));
+        mpmPath.copyFrom(new URL(installable.url).openStream());
         mpmPath.chmod(0777);
-        mbatchPath.copyFrom(new URL(installable.batchURL));
+        mbatchPath.copyFrom(new URL(installable.batchURL).openStream());
         mbatchPath.chmod(0777);
     }
 
   private String getNodeSpecificMPMExecutor(Node node) {
-      final String osName;
-      if (node.toComputer().isUnix()) {
-          osName = "/mpm";
-      } else {
-          osName = "\\mpm.exe";
-      }
-      return osName;
+        final String osName;
+        if(node.toComputer().isUnix()){
+            osName = "/mpm";
+        } else {
+            osName = "\\mpm.exe";
+        }
+        return osName;
   }
 
-  private String getMatlabProducts(){
+  private void addMatlabProductsToArgs(ArgumentListBuilder args) {
+        args.add("--products");
         if(!this.getProducts().isEmpty()){
-            return "--products=MATLAB "+ this.getProducts().trim();
+            args.add("MATLAB");
+            String[] productList = this.getProducts().split(" ");
+            for(String prod:productList){
+                args.add(prod);
+            }
         } else {
-            return "--products=MATLAB";
+            args.add("MATLAB");
         }
   }
 
-    private Installable getInstallable(Node node) throws IOException, InterruptedException {
-        // Get the GMATLAB release version that we want to install
-        String release = this.getVersion();//this.id;
+    public Installable getInstallable(Node node) throws IOException, InterruptedException {
+        // Get appropriate installable version for MATLAB.
+        String release = this.getVersion();
         if (release == null) {
             return null;
         }
 
         // Gather properties for the node to install on
         String[] properties = node.getChannel().call(new GetSystemProperties("os.name", "os.arch", "os.version"));
-
-        // Get the best matching install candidate for this node
         return getInstallCandidate(properties[0]);
     }
 
   public MatlabInstallable getInstallCandidate(String osName) throws InstallationFailedException {
-    String platform = getPlatform(osName);
-
-    return new MatlabInstallable(platform);
+        String platform = getPlatform(osName);
+        return new MatlabInstallable(platform);
   }
 
-    private String getPlatform(String os) throws InstallationFailedException {
+    public String getPlatform(String os) throws InstallationFailedException {
         String value = os.toLowerCase(Locale.ENGLISH);
         if (value.contains("linux")) {
             return "glnxa64";

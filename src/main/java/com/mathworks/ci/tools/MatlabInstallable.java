@@ -1,6 +1,7 @@
 package com.mathworks.ci.tools;
 
 
+import com.mathworks.ci.Message;
 import hudson.FilePath;
 import hudson.tools.DownloadFromUrlInstaller.Installable;
 
@@ -15,16 +16,16 @@ public class MatlabInstallable extends Installable {
         this.osName = osName;
         switch (osName) {
             case "win64" :
-                this.url =  "https://www.mathworks.com/mpm/win64/mpm";
-                this.batchURL = "https://ssd.mathworks.com/supportfiles/ci/matlab-batch/v1/win64/matlab-batch.exe";
+                this.url = Message.getValue("tools.matlab.mpm.installer.win");
+                this.batchURL = Message.getValue("tools.matlab.batch.executable.win");
                 break;
             case "glnxa64" :
-                this.url =  "https://www.mathworks.com/mpm/glnxa64/mpm";
-                this.batchURL = "https://ssd.mathworks.com/supportfiles/ci/matlab-batch/v1/glnxa64/matlab-batch";
+                this.url =  Message.getValue("tools.matlab.mpm.installer.linux");
+                this.batchURL = Message.getValue("tools.matlab.batch.executable.linux");
                 break;
             case "maci64" :
-                this.url =  "https://www.mathworks.com/mpm/maci64/mpm";
-                this.batchURL = "https://ssd.mathworks.com/supportfiles/ci/matlab-batch/v1/maci64/matlab-batch";
+                this.url =  Message.getValue("tools.matlab.mpm.installer.mac");
+                this.batchURL = Message.getValue("tools.matlab.batch.executable.mac");
                 break;
             default :
                 throw new InstallationFailedException("Unsupported OS");
