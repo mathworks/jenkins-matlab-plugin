@@ -3,6 +3,7 @@ package com.mathworks.ci.tools;
 import com.mathworks.ci.MatlabInstallation;
 import com.mathworks.ci.Message;
 import com.mathworks.ci.utilities.GetSystemProperties;
+
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -14,10 +15,11 @@ import hudson.tools.DownloadFromUrlInstaller;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
 import hudson.util.ArgumentListBuilder;
+
 import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
-import jenkins.security.MasterToSlaveCallable;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -79,7 +81,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         ProcStarter installerProc = matlabInstaller.launch();
 
         ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(expectedPath.getRemote() + getNodeSpecificMPMExecutor(node)); // can use installable here
+        args.add(expectedPath.getRemote() + getNodeSpecificMPMExecutor(node));
         args.add("install");
         args.add("--release=" + this.getVersion());
         args.add("--destination="+ expectedPath.getRemote());
@@ -146,20 +148,15 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
   }
 
     public String getPlatform(String os) throws InstallationFailedException {
-        if (os == null) {
-            throw new InstallationFailedException("OS cannot be null");
-        }
-
         String value = os.toLowerCase(Locale.ENGLISH);
-        switch (value) {
-            case "linux":
-                return "glnxa64";
-            case "os x":
-                return "maci64";
-            case "windows":
-                return "win64";
-            default:
-                throw new InstallationFailedException("Unsupported OS");
+        if (value.contains("linux")) {
+            return "glnxa64";
+        } else if (value.contains("os x")){
+            return "maci64";
+        } else if (value.contains("windows")){
+            return "win64";
+        } else {
+            throw new InstallationFailedException("Unsupported OS");
         }
     }
 

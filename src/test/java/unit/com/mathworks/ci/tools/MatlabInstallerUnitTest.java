@@ -67,8 +67,8 @@ public class MatlabInstallerUnitTest {
 
     @Test
     public void testGetPlatform() throws InstallationFailedException {
-        assertEquals("glnxa64", installer.getPlatform("linux"));
-        assertEquals("maci64", installer.getPlatform("os x"));
-        assertEquals("win64", installer.getPlatform("windows"));
+        assertEquals("glnxa64", installer.getPlatform("Linux"));
+        assertEquals("maci64", installer.getPlatform("Mac OS X"));
+        assertEquals("win64", installer.getPlatform("Windows 10"));
     }
 }
