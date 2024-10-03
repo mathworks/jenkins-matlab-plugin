@@ -2,10 +2,12 @@ package unit.com.mathworks.ci.tools;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 import com.mathworks.ci.tools.InstallationFailedException;
-
 import com.mathworks.ci.tools.MatlabInstaller;
+
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.model.Node;
@@ -14,8 +16,8 @@ import hudson.tools.ToolInstallation;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+
+
 
 
 public class MatlabInstallerUnitTest {
@@ -65,8 +67,8 @@ public class MatlabInstallerUnitTest {
 
     @Test
     public void testGetPlatform() throws InstallationFailedException {
-        assertEquals("glnxa64", installer.getPlatform("Linux"));
-        assertEquals("maci64", installer.getPlatform("Mac OS X"));
-        assertEquals("win64", installer.getPlatform("Windows 10"));
+        assertEquals("glnxa64", installer.getPlatform("linux"));
+        assertEquals("maci64", installer.getPlatform("os x"));
+        assertEquals("win64", installer.getPlatform("windows"));
     }
 }

@@ -2,6 +2,7 @@ package com.mathworks.ci.tools;
 
 import com.mathworks.ci.MatlabInstallation;
 import com.mathworks.ci.Message;
+import com.mathworks.ci.utilities.GetSystemProperties;
 import hudson.EnvVars;
 import hudson.Extension;
 import hudson.FilePath;
@@ -145,17 +146,21 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
   }
 
     public String getPlatform(String os) throws InstallationFailedException {
+        if (os == null) {
+            throw new InstallationFailedException("OS cannot be null");
+        }
+
         String value = os.toLowerCase(Locale.ENGLISH);
-        if (value.contains("linux")) {
-            return "glnxa64";
+        switch (value) {
+            case "linux":
+                return "glnxa64";
+            case "os x":
+                return "maci64";
+            case "windows":
+                return "win64";
+            default:
+                throw new InstallationFailedException("Unsupported OS");
         }
-        if (value.contains("os x")) {
-            return "maci64";
-        }
-        if (value.contains("windows")) {
-            return "win64";
-        }
-        throw new InstallationFailedException("Unsupported OS");
     }
 
     @Extension
@@ -167,24 +172,6 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         @Override
         public boolean isApplicable(Class<? extends ToolInstallation> toolType) {
             return toolType == MatlabInstallation.class;
-        }
-    }
-
-    private class GetSystemProperties extends MasterToSlaveCallable<String[], InterruptedException> {
-        private static final long serialVersionUID = 1L;
-
-        private final String[] properties;
-
-        GetSystemProperties(String... properties) {
-            this.properties = properties;
-        }
-
-        public String[] call() {
-            String[] values = new String[properties.length];
-            for (int i = 0; i < properties.length; i++) {
-                values[i] = System.getProperty(properties[i]);
-            }
-            return values;
         }
     }
 }
