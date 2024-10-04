@@ -1,33 +1,35 @@
-package unit.com.mathworks.ci.utilities;
+package com.mathworks.ci.utilities;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
 
-import com.mathworks.ci.utilities.GetSystemProperties;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.mathworks.ci.utilities.GetSystemProperties;
+
 public class GetSystemPropertiesUnitTest {
-    @Mock
-    private GetSystemProperties getSystemProperties;
 
-    @Before
-    public void setUp() {
-        // Initialize with the properties
-        getSystemProperties = spy(new GetSystemProperties("os.name", "os.arch", "os.version"));
-    }
+	@Mock
+	private GetSystemProperties getSystemProperties;
 
-    @Test
-    public void testCall() {
-        doReturn(new String[] { "MockOS", "MockArch", "MockVersion" }).when(getSystemProperties).call();
+	@Before
+	public void setUp() {
+		// Initialize with the properties
+		getSystemProperties = spy(new GetSystemProperties("os.name", "os.arch", "os.version"));
+	}
 
-        // Call the method under test
-        String[] result = getSystemProperties.call();
+	@Test
+	public void testCall() {
+		doReturn(new String[] { "MockOS", "MockArch", "MockVersion" }).when(getSystemProperties).call();
 
-        // Define the expected result
-        String[] expected = { "MockOS", "MockArch", "MockVersion" };
-        assertArrayEquals(expected, result);
-    }
+		// Call the method under test
+		String[] result = getSystemProperties.call();
+
+		// Define the expected result
+		String[] expected = { "MockOS", "MockArch", "MockVersion" };
+		assertArrayEquals(expected, result);
+	}
 }
