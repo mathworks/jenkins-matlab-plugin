@@ -17,9 +17,6 @@ import hudson.tools.ToolInstallation;
 import org.junit.Before;
 import org.junit.Test;
 
-
-
-
 public class MatlabInstallerUnitTest {
 
     private MatlabInstaller installer;

@@ -9,4 +9,3 @@ public class InstallationFailedException extends IOException {
         super(message);
     }
 }
-

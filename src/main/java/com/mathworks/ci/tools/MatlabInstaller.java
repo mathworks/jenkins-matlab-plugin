@@ -18,8 +18,10 @@ import hudson.util.ArgumentListBuilder;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.Locale;
 
+import org.apache.commons.io.IOUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -67,7 +69,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 
         int result = installUsingMpm(node,expectedPath,log);
         if(result == 0) {
-            log.getLogger().println("MATLAB installation for version " + this.getVersion() +" using mpm is completed successfully !");
+            log.getLogger().println("MATLAB installation for version " + this.getRelease() +" using mpm is completed successfully !");
         }
         return expectedPath;
     }
@@ -83,7 +85,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(expectedPath.getRemote() + getNodeSpecificMPMExecutor(node));
         args.add("install");
-        args.add("--release=" + this.getVersion());
+        args.add("--release=" + this.getRelease());
         args.add("--destination="+ expectedPath.getRemote());
         addMatlabProductsToArgs(args);
         installerProc.pwd(expectedPath)
@@ -98,6 +100,16 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         return result;
     }
 
+    private String getRelease() throws IOException {
+        String trimmedRelease  = this.getVersion().trim();
+        if (trimmedRelease.equalsIgnoreCase("latest") || trimmedRelease.equalsIgnoreCase("latest-including-prerelease")) {
+            String getReleaseVersion = Message.getValue("matlab.release.info.url") + trimmedRelease;
+            String releaseVersion = IOUtils.toString(new URL(getReleaseVersion), Charset.defaultCharset());
+            return releaseVersion.trim();
+        }
+        return trimmedRelease;
+    }
+
     private void getFreshCopyOfExecutables(MatlabInstallable installable, FilePath expectedPath) throws IOException, InterruptedException {
         FilePath mpmPath = installable.getMpmInstallable(expectedPath);
         FilePath mbatchPath = installable.getBatchInstallable(expectedPath);
@@ -107,7 +119,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         mbatchPath.chmod(0777);
     }
 
-  private String getNodeSpecificMPMExecutor(Node node) {
+    private String getNodeSpecificMPMExecutor(Node node) {
         final String osName;
         if(node.toComputer().isUnix()){
             osName = "/mpm";
@@ -115,9 +127,9 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             osName = "\\mpm.exe";
         }
         return osName;
-  }
+    }
 
-  private void addMatlabProductsToArgs(ArgumentListBuilder args) {
+   private void addMatlabProductsToArgs(ArgumentListBuilder args) {
         args.add("--products");
         if(!this.getProducts().isEmpty()){
             args.add("MATLAB");
@@ -128,7 +140,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         } else {
             args.add("MATLAB");
         }
-  }
+   }
 
     public Installable getInstallable(Node node) throws IOException, InterruptedException {
         // Get appropriate installable version for MATLAB.

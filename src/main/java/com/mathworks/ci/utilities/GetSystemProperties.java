@@ -1,6 +1,5 @@
 package com.mathworks.ci.utilities;
 
-
 import jenkins.security.MasterToSlaveCallable;
 
 public class GetSystemProperties extends MasterToSlaveCallable<String[], InterruptedException> {
@@ -8,7 +7,7 @@ public class GetSystemProperties extends MasterToSlaveCallable<String[], Interru
 
     private final String[] properties;
 
-   public GetSystemProperties(String... properties) {
+    public GetSystemProperties(String... properties) {
         this.properties = properties;
     }
 

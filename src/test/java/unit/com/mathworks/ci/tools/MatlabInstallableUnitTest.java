@@ -17,8 +17,10 @@ public class MatlabInstallableUnitTest {
         assertEquals(TestMessage.getValue("tools.matlab.batch.executable.win"), installable.getBatchURL());
 
         FilePath expectedPath = new FilePath(new File("C:/install"));
-        assertEquals(new FilePath(expectedPath, "matlab-batch.exe").getRemote(), installable.getBatchInstallable(expectedPath).getRemote());
-        assertEquals(new FilePath(expectedPath, "mpm.exe").getRemote(), installable.getMpmInstallable(expectedPath).getRemote());
+        assertEquals(new FilePath(expectedPath, "matlab-batch.exe").getRemote(),
+                installable.getBatchInstallable(expectedPath).getRemote());
+        assertEquals(new FilePath(expectedPath, "mpm.exe").getRemote(),
+                installable.getMpmInstallable(expectedPath).getRemote());
     }
 
     @Test
@@ -28,8 +30,10 @@ public class MatlabInstallableUnitTest {
         assertEquals(TestMessage.getValue("tools.matlab.batch.executable.linux"), installable.getBatchURL());
 
         FilePath expectedPath = new FilePath(new File("/usr/local/install"));
-        assertEquals(new FilePath(expectedPath, "matlab-batch").getRemote(), installable.getBatchInstallable(expectedPath).getRemote());
-        assertEquals(new FilePath(expectedPath, "mpm").getRemote(), installable.getMpmInstallable(expectedPath).getRemote());
+        assertEquals(new FilePath(expectedPath, "matlab-batch").getRemote(),
+                installable.getBatchInstallable(expectedPath).getRemote());
+        assertEquals(new FilePath(expectedPath, "mpm").getRemote(),
+                installable.getMpmInstallable(expectedPath).getRemote());
     }
 
     @Test
@@ -39,7 +43,9 @@ public class MatlabInstallableUnitTest {
         assertEquals(TestMessage.getValue("tools.matlab.batch.executable.mac"), installable.getBatchURL());
 
         FilePath expectedPath = new FilePath(new File("/Applications/install"));
-        assertEquals(new FilePath(expectedPath, "matlab-batch").getRemote(), installable.getBatchInstallable(expectedPath).getRemote());
-        assertEquals(new FilePath(expectedPath, "mpm").getRemote(), installable.getMpmInstallable(expectedPath).getRemote());
+        assertEquals(new FilePath(expectedPath, "matlab-batch").getRemote(),
+                installable.getBatchInstallable(expectedPath).getRemote());
+        assertEquals(new FilePath(expectedPath, "mpm").getRemote(),
+                installable.getMpmInstallable(expectedPath).getRemote());
     }
 }
