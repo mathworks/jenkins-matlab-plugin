@@ -63,12 +63,6 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 		} catch (Exception e) {
 			throw new InstallationFailedException(e.getMessage());
 		}
-
-		/*if (installable == null) {
-			log.getLogger().println(Message.getValue("matlab.tools.auto.install.matlab.installable.error"));
-			return expectedPath;
-		}*/
-
 		getFreshCopyOfExecutables(installable, expectedPath);
 
 		int result = installUsingMpm(node, expectedPath, log);
