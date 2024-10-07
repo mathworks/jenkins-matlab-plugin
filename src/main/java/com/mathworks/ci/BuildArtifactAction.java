@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2024 The MathWorks, Inc.
+ * Copyright 2024 The MathWorks, Inc..
  *
  */
 
