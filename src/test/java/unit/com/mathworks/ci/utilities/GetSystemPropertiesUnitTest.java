@@ -1,4 +1,9 @@
 package com.mathworks.ci.utilities;
+/**
+ * Copyright 2024, The MathWorks, Inc.
+ *
+ */
+
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.Mockito.doReturn;
