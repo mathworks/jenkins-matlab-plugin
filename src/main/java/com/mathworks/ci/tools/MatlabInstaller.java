@@ -5,7 +5,7 @@ import com.mathworks.ci.Message;
 import com.mathworks.ci.utilities.GetSystemProperties;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import hudson.EnvVars;
+
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -19,10 +19,11 @@ import hudson.util.ArgumentListBuilder;
 
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 
@@ -68,23 +69,21 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 		int result = installUsingMpm(node, expectedPath, log);
 		if (result == 0) {
 			log.getLogger().println(
-					"MATLAB installation for version " + this.getRelease() + " using mpm is completed successfully !");
+					"MATLAB installation for version " + this.getVersion() + " using mpm is completed successfully !");
 		}
 		return expectedPath;
 	}
 
 	private int installUsingMpm(Node node, FilePath expectedPath, TaskListener log)
-			throws IOException, InterruptedException {
+			throws IOException {
 
-		// Create installation process
-		//EnvVars env = node.toComputer().getEnvironment();
 		Launcher matlabInstaller = node.createLauncher(log);
 		ProcStarter installerProc = matlabInstaller.launch();
 
 		ArgumentListBuilder args = new ArgumentListBuilder();
 		args.add(expectedPath.getRemote() + getNodeSpecificMPMExecutor(node));
 		args.add("install");
-		args.add("--release=" + this.getRelease());
+		appendReleaseToArguments(args);
 		args.add("--destination=" + expectedPath.getRemote());
 		addMatlabProductsToArgs(args);
 		installerProc.pwd(expectedPath).cmds(args).stdout(log);
@@ -97,16 +96,28 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 		return result;
 	}
 
-	private String getRelease() throws IOException {
-		String trimmedRelease = this.getVersion().trim();
-		if (trimmedRelease.equalsIgnoreCase("latest")
-				|| trimmedRelease.equalsIgnoreCase("latest-including-prerelease")) {
-			String getReleaseVersion = Message.getValue("matlab.release.info.url") + trimmedRelease;
-			String releaseVersion = IOUtils.toString(new URL(getReleaseVersion), Charset.defaultCharset());
-			return releaseVersion.trim();
-		}
-		return trimmedRelease;
-	}
+    private void appendReleaseToArguments(ArgumentListBuilder args) {
+        try {
+            String trimmedRelease = this.getVersion().trim();
+            String actualRelease = trimmedRelease;
+
+            if (trimmedRelease.equalsIgnoreCase("latest") || trimmedRelease.equalsIgnoreCase("latest-including-prerelease")) {
+                String releaseInfoUrl = Message.getValue("matlab.release.info.url") + trimmedRelease;
+                String releaseVersion = IOUtils.toString(new URL(releaseInfoUrl), StandardCharsets.UTF_8).trim();
+
+                if (releaseVersion.contains("prerelease")) {
+                    actualRelease = releaseVersion.replace("prerelease", "");
+                    args.add("--release-status=Prerelease");
+                } else {
+                    actualRelease = releaseVersion;
+                }
+            }
+            args.add("--release=" + actualRelease);
+        } catch (IOException e) {
+            System.err.println("Failed to fetch release version: " + e.getMessage());
+
+        }
+    }
 
 	private void getFreshCopyOfExecutables(MatlabInstallable installable, FilePath expectedPath)
 			throws IOException, InterruptedException {
