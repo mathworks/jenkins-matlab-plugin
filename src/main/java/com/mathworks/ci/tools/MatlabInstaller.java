@@ -89,7 +89,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         ArgumentListBuilder args = new ArgumentListBuilder ();
         args.add (expectedPath.getRemote () + getNodeSpecificMPMExecutor (node));
         args.add ("install");
-        appendReleaseToArguments (args);
+        appendReleaseToArguments (args, log);
         args.add ("--destination=" + expectedPath.getRemote ());
         addMatlabProductsToArgs (args);
         installerProc.pwd (expectedPath).cmds (args).stdout (log);
@@ -97,12 +97,13 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         try {
             result = installerProc.join ();
         } catch (Exception e) {
+            log.getLogger ().println ("MATLAB installation failed" + e.getMessage ());
             throw new InstallationFailedException (e.getMessage ());
         }
         return result;
     }
 
-    private void appendReleaseToArguments (ArgumentListBuilder args) {
+    private void appendReleaseToArguments (ArgumentListBuilder args, TaskListener log) {
         try {
             String trimmedRelease = this.getVersion ().trim ();
             String actualRelease = trimmedRelease;
@@ -123,8 +124,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             }
             args.add ("--release=" + actualRelease);
         } catch (IOException e) {
-            System.err.println ("Failed to fetch release version: " + e.getMessage ());
-
+            log.getLogger().println("Failed to fetch release version: " + e.getMessage ());
         }
     }
 
