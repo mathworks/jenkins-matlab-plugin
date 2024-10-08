@@ -17,15 +17,19 @@ import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
 import hudson.util.ArgumentListBuilder;
 
+import hudson.util.FormValidation;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
+import org.kohsuke.stapler.QueryParameter;
+import org.kohsuke.stapler.verb.POST;
 
 public class MatlabInstaller extends DownloadFromUrlInstaller {
 
@@ -198,6 +202,15 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         @Override
         public boolean isApplicable (Class<? extends ToolInstallation> toolType) {
             return toolType == MatlabInstallation.class;
+        }
+
+        @POST
+        public FormValidation doCheckVersion (@QueryParameter String value) {
+            Jenkins.get ().checkPermission (Jenkins.ADMINISTER);
+            if (value.isEmpty ()) {
+                return FormValidation.error (Message.getValue ("tools.matlab.empty.version.error"));
+            }
+            return FormValidation.ok ();
         }
     }
 }
