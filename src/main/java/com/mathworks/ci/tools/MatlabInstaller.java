@@ -15,19 +15,28 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Launcher.ProcStarter;
+
 import hudson.model.Node;
 import hudson.model.TaskListener;
 import hudson.tools.DownloadFromUrlInstaller;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
+
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
+
 import java.nio.charset.StandardCharsets;
+
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 
+import java.util.Set;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 
@@ -77,11 +86,23 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 
         getFreshCopyOfExecutables (installable, expectedPath);
 
-        int result = installUsingMpm (node, expectedPath, log);
-        if (result == 0) {
-            log.getLogger ().println (
-                "MATLAB installation for version " + this.getVersion ()
-                    + " using mpm is completed successfully !");
+        FilePath versionInfo = new FilePath (expectedPath,"VersionInfo.xml");
+        FilePath installedProducts = new FilePath (expectedPath,"installed_matlab_product_list.txt");
+        if (versionInfo.exists () && isSameProduct(installedProducts)) {
+            return expectedPath;
+        } else {
+            int result = installUsingMpm (node, expectedPath, log);
+            if (result == 0) {
+                log.getLogger ().println (
+                    "MATLAB installation for version " + this.getVersion ()
+                        + " using mpm is completed successfully !");
+                String productList = this.getProducts ();
+                if(productList.isEmpty ()){
+                    installedProducts.write ("MATLAB", StandardCharsets.UTF_8.name());
+                } else {
+                    installedProducts.write ("MATLAB "+ this.getProducts (), StandardCharsets.UTF_8.name());
+                }
+            }
         }
         return expectedPath;
     }
@@ -107,6 +128,34 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             throw new InstallationFailedException (e.getMessage ());
         }
         return result;
+    }
+
+    private boolean isSameProduct (FilePath installedProducts)
+        throws IOException, InterruptedException {
+        if (installedProducts.exists ()) {
+            Set<String> productSet;
+            if (this.getProducts().isEmpty ()) {
+                // Add default product if no products are provided
+                productSet = new HashSet<>(Arrays.asList("MATLAB"));
+            } else {
+                productSet = new HashSet<>(Arrays.asList(this.getProducts().trim().split(" ")));
+            }
+
+            try (BufferedReader reader = new BufferedReader (
+                new InputStreamReader (installedProducts.read ()))) {
+                String line;
+                Set<String> foundProducts = new HashSet<> ();
+                while ((line = reader.readLine()) != null) {
+                    for (String product : productSet) {
+                        if (line.trim().contains (product)) {
+                            foundProducts.add (product);
+                        }
+                    }
+                }
+                return foundProducts.containsAll(productSet);
+            }
+        }
+        return false;
     }
 
     private void appendReleaseToArguments (ArgumentListBuilder args, TaskListener log) {
