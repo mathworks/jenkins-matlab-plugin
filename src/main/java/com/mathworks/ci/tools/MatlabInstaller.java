@@ -96,12 +96,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
                 log.getLogger ().println (
                     "MATLAB installation for version " + this.getVersion ()
                         + " using mpm is completed successfully !");
-                String productList = this.getProducts ();
-                if(productList.isEmpty ()){
-                    installedProducts.write ("MATLAB", StandardCharsets.UTF_8.name());
-                } else {
-                    installedProducts.write ("MATLAB "+ this.getProducts (), StandardCharsets.UTF_8.name());
-                }
+                updateProductList (installedProducts);
             }
         }
         return expectedPath;
@@ -142,7 +137,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             }
 
             try (BufferedReader reader = new BufferedReader (
-                new InputStreamReader (installedProducts.read ()))) {
+                new InputStreamReader (installedProducts.read (), StandardCharsets.UTF_8.name ()))) {
                 String line;
                 Set<String> foundProducts = new HashSet<> ();
                 while ((line = reader.readLine()) != null) {
@@ -156,6 +151,31 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             }
         }
         return false;
+    }
+
+    private void updateProductList (FilePath installedProducts)
+        throws IOException, InterruptedException {
+        String productList = this.getProducts ();
+        if (installedProducts.exists ()) {
+            try (BufferedReader reader = new BufferedReader (
+                new InputStreamReader (installedProducts.read (), StandardCharsets.UTF_8.name ()))) {
+                String line;
+                Set<String> productSet;
+                while ((line = reader.readLine ()) != null) {
+                    productSet = new HashSet<> (
+                        Arrays.asList (line.trim () + " " + this.getProducts ().trim ()));
+                    installedProducts.write (String.join (" ", productSet),
+                        StandardCharsets.UTF_8.name ());
+                }
+            }
+        } else {
+            if (productList.isEmpty ()) {
+                installedProducts.write ("MATLAB", StandardCharsets.UTF_8.name ());
+            } else {
+                installedProducts.write ("MATLAB " + this.getProducts (),
+                    StandardCharsets.UTF_8.name ());
+            }
+        }
     }
 
     private void appendReleaseToArguments (ArgumentListBuilder args, TaskListener log) {
