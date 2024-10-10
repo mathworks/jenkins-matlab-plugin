@@ -74,6 +74,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         } catch (Exception e) {
             throw new InstallationFailedException (e.getMessage ());
         }
+
         getFreshCopyOfExecutables (installable, expectedPath);
 
         int result = installUsingMpm (node, expectedPath, log);
