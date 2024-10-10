@@ -91,7 +91,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         if (versionInfo.exists () && isSameProduct(installedProducts)) {
             return expectedPath;
         } else {
-            int result = installUsingMpm (node, expectedPath, log);
+            int result = installUsingMpm (node, expectedPath, log, installedProducts);
             if (result == 0) {
                 log.getLogger ().println (
                     "MATLAB installation for version " + this.getVersion ()
@@ -102,8 +102,8 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         return expectedPath;
     }
 
-    private int installUsingMpm (Node node, FilePath expectedPath, TaskListener log)
-        throws IOException {
+    private int installUsingMpm (Node node, FilePath expectedPath, TaskListener log, FilePath installedProducts)
+        throws IOException, InterruptedException {
 
         Launcher matlabInstaller = node.createLauncher (log);
         ProcStarter installerProc = matlabInstaller.launch ();
@@ -113,7 +113,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         args.add ("install");
         appendReleaseToArguments (args, log);
         args.add ("--destination=" + expectedPath.getRemote ());
-        addMatlabProductsToArgs (args);
+        addMatlabProductsToArgs (args, installedProducts);
         installerProc.pwd (expectedPath).cmds (args).stdout (log);
         int result;
         try {
@@ -163,7 +163,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
                 Set<String> productSet;
                 while ((line = reader.readLine ()) != null) {
                     productSet = new HashSet<> (
-                        Arrays.asList (line.trim () + " " + this.getProducts ().trim ()));
+                        Arrays.asList ((line.trim () + " " + this.getProducts ().trim()).split (" ")));
                     installedProducts.write (String.join (" ", productSet),
                         StandardCharsets.UTF_8.name ());
                 }
@@ -224,16 +224,21 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         return "/mpm";
     }
 
-    private void addMatlabProductsToArgs (ArgumentListBuilder args) {
+    private void addMatlabProductsToArgs (ArgumentListBuilder args, FilePath installedProducts)
+        throws IOException, InterruptedException {
         args.add ("--products");
         if (!this.getProducts ().isEmpty ()) {
-            args.add ("MATLAB");
+            if(!installedProducts.exists ()){
+                args.add ("MATLAB");
+            }
             String[] productList = this.getProducts ().split (" ");
             for (String prod : productList) {
                 args.add (prod);
             }
         } else {
-            args.add ("MATLAB");
+            if(!installedProducts.exists ()){
+                args.add ("MATLAB");
+            }
         }
     }
 
