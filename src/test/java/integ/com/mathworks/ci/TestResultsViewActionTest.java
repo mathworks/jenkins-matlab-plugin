@@ -77,7 +77,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyAllTestsReturned() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -104,7 +104,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTotalTestsCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -122,7 +122,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyPassedTestsCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -140,7 +140,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyFailedTestsCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -158,7 +158,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyIncompleteTestsCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -176,7 +176,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyNotRunTestsCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -194,7 +194,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestFilePath() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("C:\\workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -215,7 +215,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestFileName() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -236,7 +236,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestFileDuration() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -257,7 +257,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestFileStatus() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -278,7 +278,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestCaseName() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -303,7 +303,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestCaseStatus() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -328,7 +328,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestCaseDuration() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -353,7 +353,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestCaseDiagnostics() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
@@ -375,7 +375,7 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyActionID() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("", "workspace"));
+        final FilePath workspace = new FilePath(new File("C:", "workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
