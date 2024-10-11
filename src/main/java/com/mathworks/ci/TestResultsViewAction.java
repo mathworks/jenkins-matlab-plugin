@@ -128,6 +128,8 @@ public class TestResultsViewAction implements RunAction2 {
         Path path2 = Paths.get(this.workspace.getParent().toURI()).toAbsolutePath();
         Path filePath = path2.relativize(path1);
 
+        // System.out.println(String.format("%s, %s, %s", path1, path2, filePath));
+
         // String filePath = baseFolder.toString().replace(this.workspace.getRemote(), "");
         testFile.setFilePath(filePath.toString());
 
