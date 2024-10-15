@@ -194,17 +194,38 @@ public class TestResultsViewActionTest {
     @Test
     public void verifyTestFilePath() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
-        final FilePath workspace = new FilePath(new File("C:\\workspace"));
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+
+        String os = System.getProperty("os.name").toLowerCase();
+        String testFolder = "testArtifacts/t1/";
+        String workspaceParent = "";
+        String expectedParentPath = "";
+        if (os.contains("win")) {
+            testFolder += "windows/";
+            workspaceParent = "C:\\";
+            expectedParentPath = "workspace\\visualization\\";
+        } else if (os.contains("nix") || os.contains("nux") || os.contains("aix")) {
+            testFolder += "linux/";
+            workspaceParent = "/home/user/";
+            expectedParentPath = "workspace/visualization/";
+        } else if (os.contains("mac")) {
+            testFolder += "mac/";
+            workspaceParent = "/Users/username/";
+            expectedParentPath = "workspace/visualization/";
+        } else {
+            throw new RuntimeException("Unsupported OS: " + os);
+        }
+        copyFileInWorkspace(testFolder + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        final FilePath workspace = new FilePath(new File(workspaceParent + "workspace"));
+
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         String actualPath1 = ta.get(0).get(0).getFilePath();
-        Assert.assertEquals("Incorrect test file path","workspace\\visualization\\tests",actualPath1);
+        Assert.assertEquals("Incorrect test file path",expectedParentPath + "tests",actualPath1);
         String actualPath2 = ta.get(1).get(0).getFilePath();
-        Assert.assertEquals("Incorrect test file path","workspace\\visualization\\duplicate tests",actualPath2);
+        Assert.assertEquals("Incorrect test file path",expectedParentPath + "duplicate_tests",actualPath2);
     }
 
     /**

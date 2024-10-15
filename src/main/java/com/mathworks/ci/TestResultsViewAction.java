@@ -30,8 +30,6 @@ import hudson.model.Run;
 
 import jenkins.model.RunAction2;
 
-import java.util.logging.Logger;
-
 public class TestResultsViewAction implements RunAction2 {
     private transient Run<?, ?> build;
     private FilePath workspace;
@@ -108,8 +106,6 @@ public class TestResultsViewAction implements RunAction2 {
     }
 
     private void getTestSessionResults(List<TestFile> testSessionResults, JSONObject jsonTestCase, Map<String, TestFile> map) throws IOException, InterruptedException {
-        final Logger logger = Logger.getLogger(TestResultsViewAction.class.getName());
-        
         FilePath baseFolder = new FilePath(new File(jsonTestCase.get("BaseFolder").toString()));
         JSONObject testCaseResult = (JSONObject) jsonTestCase.get("TestResult");
 
@@ -127,19 +123,10 @@ public class TestResultsViewAction implements RunAction2 {
             testSessionResults.add(testFile);
         }
 
-        logger.info(baseFolder.toString());
-        logger.info(baseFolder.toURI().toString());
-        logger.info(this.workspace.toString());
-        logger.info(this.workspace.toURI().toString() + "\n");
-
         // Calculate the relative path
         Path path1 = Paths.get(baseFolder.toURI());
         Path path2 = Paths.get(this.workspace.toURI());
         Path filePath = path2.relativize(path1);
-
-        logger.info(filePath.toString() + "\n");
-
-        logger.info(this.workspace.getName() + File.separator + filePath.toString() + "\n");
 
         testFile.setFilePath(this.workspace.getName() + File.separator + filePath.toString());
 
