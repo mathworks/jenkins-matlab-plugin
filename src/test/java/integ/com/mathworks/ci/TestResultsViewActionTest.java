@@ -81,7 +81,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         int actualTestSessions = ta.size();
@@ -108,7 +108,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getTotalCount();
         Assert.assertEquals("Incorrect total tests count",4,actualCount);
@@ -126,7 +126,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getPassedCount();
         Assert.assertEquals("Incorrect passed tests count",2,actualCount);
@@ -144,7 +144,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getFailedCount();
         Assert.assertEquals("Incorrect failed tests count",1,actualCount);
@@ -162,7 +162,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getIncompleteCount();
         Assert.assertEquals("Incorrect incomplete tests count",0,actualCount);
@@ -180,7 +180,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getNotRunCount();
         Assert.assertEquals("Incorrect not run tests count",1,actualCount);
@@ -240,7 +240,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         String actualName1 = ta.get(0).get(0).getName();
@@ -261,7 +261,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         Double actualDuration1 = ta.get(0).get(0).getDuration();
@@ -282,7 +282,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         String actualStatus1 = ta.get(0).get(0).getStatus();
@@ -303,7 +303,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         String actualName1_1 = ta.get(0).get(0).getTestCases().get(0).getName();
@@ -328,7 +328,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         String actualStatus1_1 = ta.get(0).get(0).getTestCases().get(0).getStatus();
@@ -353,7 +353,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         Double actualDuration1_1 = ta.get(0).get(0).getTestCases().get(0).getDuration();
@@ -378,7 +378,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<TestFile>> ta = ac.getTestResults();
         TestDiagnostics diagnostics = ta.get(0).get(0).getTestCases().get(1).getDiagnostics().get(0);
@@ -400,7 +400,7 @@ public class TestResultsViewActionTest {
         final String actionID = "abc123";
         final String targetFile = MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + actionID + ".json";
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("testArtifacts/t1/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
+        copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         String actualActionID = ac.getActionID();
         Assert.assertEquals("Incorrect action ID",actionID,actualActionID);
