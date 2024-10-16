@@ -25,8 +25,12 @@ public class MatlabInstallable extends Installable {
                 this.batchURL = Message.getValue ("tools.matlab.batch.executable.linux");
                 break;
             case "maci64":
-                this.url = Message.getValue ("tools.matlab.mpm.installer.mac");
-                this.batchURL = Message.getValue ("tools.matlab.batch.executable.mac");
+                this.url = Message.getValue ("tools.matlab.mpm.installer.maci64");
+                this.batchURL = Message.getValue ("tools.matlab.batch.executable.maci64");
+                break;
+            case "maca64":
+                this.url = Message.getValue ("tools.matlab.mpm.installer.maca64");
+                this.batchURL = Message.getValue ("tools.matlab.batch.executable.maca64");
                 break;
             default:
                 throw new InstallationFailedException ("Unsupported OS");

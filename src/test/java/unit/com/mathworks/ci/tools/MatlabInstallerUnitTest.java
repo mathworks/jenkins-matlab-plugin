@@ -71,13 +71,14 @@ public class MatlabInstallerUnitTest {
 
     @Test(expected = InstallationFailedException.class)
     public void testUnsupportedOS () throws Exception {
-        installer.getPlatform ("unsupportedOS");
+        installer.getPlatform ("unsupportedOS", "unsupportedArch");
     }
 
     @Test
     public void testGetPlatform () throws InstallationFailedException {
-        assertEquals ("glnxa64", installer.getPlatform ("Linux"));
-        assertEquals ("maci64", installer.getPlatform ("Mac OS X"));
-        assertEquals ("win64", installer.getPlatform ("Windows 10"));
+        assertEquals ("glnxa64", installer.getPlatform ("Linux", "i686"));
+        assertEquals ("maci64", installer.getPlatform ("Mac OS X", "amd64"));
+        assertEquals ("maca64", installer.getPlatform ("Mac OS X", "arm64"));
+        assertEquals ("win64", installer.getPlatform ("Windows 10", "x86"));
     }
 }

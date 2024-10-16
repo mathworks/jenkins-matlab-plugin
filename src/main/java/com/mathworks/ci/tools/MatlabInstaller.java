@@ -102,19 +102,19 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         return expectedPath;
     }
 
-    private int installUsingMpm (Node node, FilePath expectedPath, TaskListener log, FilePath installedProducts)
+    private int installUsingMpm (Node node, FilePath destination, TaskListener log, FilePath installedProducts)
         throws IOException, InterruptedException {
 
         Launcher matlabInstaller = node.createLauncher (log);
         ProcStarter installerProc = matlabInstaller.launch ();
 
         ArgumentListBuilder args = new ArgumentListBuilder ();
-        args.add (expectedPath.getRemote () + getNodeSpecificMPMExecutor (node));
+        args.add (destination.getRemote () + getNodeSpecificMPMExecutor (node));
         args.add ("install");
         appendReleaseToArguments (args, log);
-        args.add ("--destination=" + expectedPath.getRemote ());
+        args.add ("--destination=" + destination.getRemote ());
         addMatlabProductsToArgs (args, installedProducts);
-        installerProc.pwd (expectedPath).cmds (args).stdout (log);
+        installerProc.pwd (destination).cmds (args).stdout (log);
         int result;
         try {
             result = installerProc.join ();
@@ -179,28 +179,29 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
     }
 
     private void appendReleaseToArguments (ArgumentListBuilder args, TaskListener log) {
-        try {
-            String trimmedRelease = this.getVersion ().trim ();
-            String actualRelease = trimmedRelease;
+        String trimmedRelease = this.getVersion ().trim ();
+        String actualRelease = trimmedRelease;
 
-            if (trimmedRelease.equalsIgnoreCase ("latest") || trimmedRelease.equalsIgnoreCase (
-                "latest-including-prerelease")) {
-                String releaseInfoUrl =
-                    Message.getValue ("matlab.release.info.url") + trimmedRelease;
-                String releaseVersion = IOUtils.toString (new URL (releaseInfoUrl),
+        if (trimmedRelease.equalsIgnoreCase ("latest") || trimmedRelease.equalsIgnoreCase (
+            "latest-including-prerelease")) {
+            String releaseInfoUrl =
+                Message.getValue ("matlab.release.info.url") + trimmedRelease;
+            String releaseVersion = null;
+            try {
+                releaseVersion = IOUtils.toString (new URL (releaseInfoUrl),
                     StandardCharsets.UTF_8).trim ();
-
-                if (releaseVersion.contains ("prerelease")) {
-                    actualRelease = releaseVersion.replace ("prerelease", "");
-                    args.add ("--release-status=Prerelease");
-                } else {
-                    actualRelease = releaseVersion;
-                }
+            } catch (IOException e) {
+                log.getLogger ().println ("Failed to fetch release version: " + e.getMessage ());
             }
-            args.add ("--release=" + actualRelease);
-        } catch (IOException e) {
-            log.getLogger().println("Failed to fetch release version: " + e.getMessage ());
+
+            if (releaseVersion != null && releaseVersion.contains ("prerelease")) {
+                actualRelease = releaseVersion.replace ("prerelease", "");
+                args.add ("--release-status=Prerelease");
+            } else {
+                actualRelease = releaseVersion;
+            }
         }
+        args.add ("--release=" + actualRelease);
     }
 
     private void getFreshCopyOfExecutables (MatlabInstallable installable, FilePath expectedPath)
@@ -250,21 +251,26 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         // Gather properties for the node to install on
         String[] properties = node.getChannel ()
             .call (new GetSystemProperties ("os.name", "os.arch", "os.version"));
-        return getInstallCandidate (properties[0]);
+        return getInstallCandidate (properties[0], properties[1]);
     }
 
-    public MatlabInstallable getInstallCandidate (String osName)
+    public MatlabInstallable getInstallCandidate (String osName, String architecture)
         throws InstallationFailedException {
-        String platform = getPlatform (osName);
+        String platform = getPlatform (osName, architecture);
         return new MatlabInstallable (platform);
     }
 
-    public String getPlatform (String os) throws InstallationFailedException {
+    public String getPlatform (String os, String architecture) throws InstallationFailedException {
         String value = os.toLowerCase (Locale.ENGLISH);
         if (value.contains ("linux")) {
             return "glnxa64";
         } else if (value.contains ("os x")) {
-            return "maci64";
+            if (architecture.equalsIgnoreCase ("aarch64") || architecture.equalsIgnoreCase (
+                "arm64")) {
+                return "maca64";
+            } else {
+                return "maci64";
+            }
         } else if (value.contains ("windows")) {
             return "win64";
         } else {
