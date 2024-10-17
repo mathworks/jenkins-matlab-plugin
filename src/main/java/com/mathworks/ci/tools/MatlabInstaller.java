@@ -196,7 +196,6 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
 
             if (releaseVersion != null && releaseVersion.contains ("prerelease")) {
                 actualRelease = releaseVersion.replace ("prerelease", "");
-                args.add ("--release-status=Prerelease");
             } else {
                 actualRelease = releaseVersion;
             }

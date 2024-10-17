@@ -20,20 +20,13 @@ public class GetSystemPropertiesUnitTest {
 
     @Before
     public void setUp () {
-        // Initialize with the properties
-        getSystemProperties = spy (new GetSystemProperties ("os.name", "os.arch", "os.version"));
+        getSystemProperties = new GetSystemProperties ("os.name","os.arch", "os.version");
     }
 
     @Test
     public void testCall () {
-        doReturn (new String[]{"MockOS", "MockArch", "MockVersion"}).when (getSystemProperties)
-            .call ();
-
-        // Call the method under test
+        String[] expected = {System.getProperty ("os.name"),System.getProperty ("os.arch"),System.getProperty ("os.version")};
         String[] result = getSystemProperties.call ();
-
-        // Define the expected result
-        String[] expected = {"MockOS", "MockArch", "MockVersion"};
         assertArrayEquals (expected, result);
     }
 }
