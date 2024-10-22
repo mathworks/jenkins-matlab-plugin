@@ -55,7 +55,7 @@ public class RunMatlabBuildActionTest {
             when(params.getTaskListener()).thenReturn(listener);
             when(listener.getLogger()).thenReturn(out);
 
-            when(params.getBuild()).thenReturn(build);
+            lenient().when(params.getBuild()).thenReturn(build);
         }
     }
 

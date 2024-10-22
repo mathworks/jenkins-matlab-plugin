@@ -77,13 +77,16 @@ public class RunMatlabBuildStepTest {
     @Test
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
+//        s.setLabelString("slave0");
+
         project.setDefinition(new CpsFlowDefinition(
-                "node('!master') { runMATLABBuild() }", true));
+                "node('!built-in') { runMATLABBuild() }", true));
 
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
 
         j.assertLogNotContains("Running on Jenkins", build);
+        j.assertLogContains("Running on " + s.getNodeName(), build);
     }
 
     /*
