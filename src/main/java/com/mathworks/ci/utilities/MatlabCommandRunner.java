@@ -34,20 +34,29 @@ public class MatlabCommandRunner {
     public MatlabCommandRunner(MatlabActionParameters params) throws IOException, InterruptedException {
         this.params = params;
         this.additionalEnvVars = new HashMap<String,String>();
-
+    
         FilePath workspace = params.getWorkspace();
-
+        if (workspace == null) {
+            throw new IllegalArgumentException("Workspace in MatlabActionParameters cannot be null");
+        }
+    
         // Handle case where workspace doesn't exist
         if (!workspace.exists()) {
             workspace.mkdirs();
         }
-
+    
         // Create MATLAB folder
         FilePath tmpRoot = WorkspaceList.tempDir(workspace);
+        if (tmpRoot == null) {
+            throw new IOException("Failed to create temporary directory");
+        }
         tmpRoot.mkdirs();
-
+    
         // Create temp folder
         this.tempFolder = tmpRoot.createTempDir("matlab", null);
+        if (this.tempFolder == null) {
+            throw new IOException("Failed to create MATLAB temporary directory");
+        }
     }
 
     /** 

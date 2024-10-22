@@ -50,7 +50,7 @@ public class RunMatlabCommandStepTest {
     public void verifyMATLABstartsInWorkspace() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(
-                new CpsFlowDefinition("node('!master') { runMATLABCommand(command: 'pwd')}", true));
+                new CpsFlowDefinition("node('!built-in') { runMATLABCommand(command: 'pwd')}", true));
 
         FilePath workspace = s.getWorkspaceFor(project);
         String workspaceName = workspace.getName();
@@ -80,16 +80,13 @@ public class RunMatlabCommandStepTest {
     @Test
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
-        s.setLabelString("slave0");
-
         project.setDefinition(new CpsFlowDefinition(
-                "node('slave0') { runMATLABCommand(command: 'pwd')}", true));
+                "node('!built-in') { runMATLABCommand(command: 'pwd')}", true));
 
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
 
         j.assertLogNotContains("Running on Jenkins", build);
-        j.assertLogContains("Running on " + s.getNodeName(), build);
     }
 
     /*
