@@ -188,18 +188,34 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Set Environment variable
         setEnv(initialEnvironment);
 
+        String nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener);
+        if (nodeSpecificMatlab == null) {
+            throw new IOException("Failed to get node-specific MATLAB path");
+        }
+
+        String nodeSpecificExecutable = getNodeSpecificExecutable(launcher);
+        if (nodeSpecificExecutable == null) {
+            throw new IOException("Failed to get node-specific MATLAB executable");
+        }
+
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
-                getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher));
+                nodeSpecificMatlab + nodeSpecificExecutable);
 
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
+
+        FilePath matlabBinPath = matlabExecutablePath.getParent();
+        if (matlabBinPath == null) {
+            throw new IOException("Failed to get MATLAB bin directory");
+        }
+        
         // Add "matlabroot" without bin as env variable which will be available across the build.
-        context.env("matlabroot", getNodeSpecificMatlab(Computer.currentComputer(), listener));
+        context.env("matlabroot", nodeSpecificMatlab);
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());
+        context.env("PATH+matlabroot", matlabBinPath.getRemote());
         // Specify which MATLAB was added to path.
-        listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath.getParent().getRemote()) + "\n");
+        listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabBinPath.getRemote()) + "\n");
     }
 
     private String getNodeSpecificExecutable(Launcher launcher) {

@@ -28,11 +28,11 @@
                             </j:if>
                         </j:if>
                     </div>
-                    <div style="width:100%; height:1em; background-color: mediumseagreen; border-radius: 6px; overflow: hidden;">
+                    <div style="width:100%; height:1em; background-color: var(--success-color); border-radius: 6px; overflow: hidden;">
                         <!-- Failed task part of the bar. -->
-                        <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: crimson; float: right;"></div>
+                        <div style="width:${it.failCount*100/it.totalCount}%; height: 1em; background-color: var(--error-color); float: right;"></div>
                         <!-- Skipped task part of the bar. -->
-                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: steelblue; float: right;"></div>
+                        <div style="width:${it.skipCount*100/it.totalCount}%; height: 1em; background-color: var(--dark-blue); float: right;"></div>
                     </div>
                     <div align="right">
                         ${(it.failCount)} Failed
@@ -68,17 +68,17 @@
                         <td class="pane no-wrap" style="width:auto">
                             <span class="${pst.cssClass}">
                                 <j:if test="${p.taskFailed != false}">
-                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: crimson;">
+                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: var(--error-color);">
                                             Failed 
                                         </a>
                                 </j:if>
                                 <j:if test="${p.taskFailed == false}">
                                     <j:if test="${p.taskSkipped == false}">
-                                        <font color="mediumseagreen"> Succeeded </font>
+                                        <font style="color: var(--success-color)"> Succeeded </font>
                                     </j:if>
                                 </j:if>
                                 <j:if test="${p.taskSkipped == true}">
-                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: steelblue;">
+                                        <a href="../console#matlab-${p.taskName}${it.actionID != '' ? '-' + it.actionID : ''}" style="color: var(--dark-blue);">
                                              Skipped 
                                             <j:if test="${p.skipReason != ''}">
                                                 (${p.skipReason})

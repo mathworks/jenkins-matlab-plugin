@@ -1,0 +1,73 @@
+[
+  [
+    {
+      "TestResult": {
+        "Duration": 0.1,
+        "Details": {
+          "SimulinkTestManagerResults": []
+        },
+        "Name": "TestExamples1/testNonLeapYear",
+        "Passed": true,
+        "Failed": false,
+        "Incomplete": false
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.4,
+        "Details": {
+          "SimulinkTestManagerResults": [],
+          "DiagnosticRecord": {
+            "TestDiagnosticResults": [],
+            "FrameworkDiagnosticResults": {
+              "Artifacts": [],
+              "DiagnosticText": "SampleDiagnosticsText"
+            },
+            "AdditionalDiagnosticResults": [],
+            "Stack": {
+              "file": "/Users/username/workspace/visualization/tests/TestExamples1.m",
+              "name": "TestExamples1.testLeapYear",
+              "line": 35
+            },
+            "Event": "SampleDiagnosticsEvent",
+            "EventScope": "TestMethod",
+            "EventLocation": "TestExamples1/testLeapYear",
+            "Report": "SampleDiagnosticsReport"
+          }
+        },
+        "Name": "TestExamples1/testLeapYear",
+        "Passed": false,
+        "Failed": true,
+        "Incomplete": true
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.0,
+        "Details": {
+          "SimulinkTestManagerResults": []
+        },
+        "Name": "TestExamples1/testInvalidDateFormat",
+        "Passed": false,
+        "Failed": false,
+        "Incomplete": false
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    }
+  ],
+  {
+    "TestResult": {
+      "Duration": 0.1,
+      "Details": {
+        "SimulinkTestManagerResults": []
+      },
+      "Name": "TestExamples2/testNonLeapYear",
+      "Passed": true,
+      "Failed": false,
+      "Incomplete": false
+    },
+    "BaseFolder": "/Users/username/workspace/visualization/duplicate_tests"
+  }
+]

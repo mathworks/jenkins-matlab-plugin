@@ -50,7 +50,7 @@ public class RunMatlabCommandStepTest {
     public void verifyMATLABstartsInWorkspace() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(
-                new CpsFlowDefinition("node('!master') { runMATLABCommand(command: 'pwd')}", true));
+                new CpsFlowDefinition("node('!built-in') { runMATLABCommand(command: 'pwd')}", true));
 
         FilePath workspace = s.getWorkspaceFor(project);
         String workspaceName = workspace.getName();
@@ -81,7 +81,7 @@ public class RunMatlabCommandStepTest {
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(new CpsFlowDefinition(
-                "node('!master') { runMATLABCommand(command: 'pwd')}", true));
+                "node('!built-in') { runMATLABCommand(command: 'pwd')}", true));
 
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
