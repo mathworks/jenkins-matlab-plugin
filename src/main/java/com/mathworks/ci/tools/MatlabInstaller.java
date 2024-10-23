@@ -76,7 +76,8 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
     @Override
     public FilePath performInstallation (ToolInstallation tool, Node node, TaskListener log)
         throws IOException, InterruptedException {
-        FilePath expectedPath = preferredLocation (tool, node);
+        FilePath supportingExecutable = preferredLocation (tool, node);
+        FilePath expectedPath = new FilePath (supportingExecutable, this.getVersion ());
         MatlabInstallable installable;
         try {
             installable = (MatlabInstallable) getInstallable (node);
@@ -84,7 +85,8 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             throw new InstallationFailedException (e.getMessage ());
         }
 
-        getFreshCopyOfExecutables (installable, expectedPath);
+        getFreshCopyOfExecutables (installable, supportingExecutable);
+        makeDir (expectedPath);
 
         FilePath versionInfo = new FilePath (expectedPath,"VersionInfo.xml");
         FilePath installedProducts = new FilePath (expectedPath,"installed_matlab_product_list.txt");
@@ -109,7 +111,7 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         ProcStarter installerProc = matlabInstaller.launch ();
 
         ArgumentListBuilder args = new ArgumentListBuilder ();
-        args.add (destination.getRemote () + getNodeSpecificMPMExecutor (node));
+        args.add (destination.getParent ().getRemote () + getNodeSpecificMPMExecutor (node));
         args.add ("install");
         appendReleaseToArguments (args, log);
         args.add ("--destination=" + destination.getRemote ());
@@ -119,10 +121,17 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         try {
             result = installerProc.join ();
         } catch (Exception e) {
-            log.getLogger ().println ("MATLAB installation failed" + e.getMessage ());
+            log.getLogger ().println ("MATLAB installation failed " + e.getMessage ());
             throw new InstallationFailedException (e.getMessage ());
         }
         return result;
+    }
+
+    private void makeDir(FilePath path) throws IOException, InterruptedException {
+        if(!path.exists ()){
+            path.mkdirs ();
+            path.chmod (0777);
+        }
     }
 
     private boolean isSameProduct (FilePath installedProducts)
@@ -250,6 +259,9 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         // Gather properties for the node to install on
         String[] properties = node.getChannel ()
             .call (new GetSystemProperties ("os.name", "os.arch", "os.version"));
+        if(properties[0].contains ("win")) {
+            throw new InstallationFailedException ("Unsupported OS");
+        }
         return getInstallCandidate (properties[0], properties[1]);
     }
 
