@@ -62,6 +62,7 @@ public class RunMatlabBuildBuilderTest {
             url = classLoader.getResource("com/mathworks/ci/linux/bin/matlab.sh");
             try {
                 matlabExecutorAbsolutePath = new File(url.toURI()).getAbsolutePath();
+                System.out.println ("THE EXECUTOR PATH IS" + matlabExecutorAbsolutePath);
 
                 // Need to do this operation due to bug in maven Resource copy plugin [
                 // https://issues.apache.org/jira/browse/MRESOURCES-132 ]
