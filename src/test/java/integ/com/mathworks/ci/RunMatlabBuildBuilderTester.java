@@ -93,13 +93,7 @@ public class RunMatlabBuildBuilderTester extends RunMatlabBuildBuilder {
             TaskListener listener) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
-            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
-                ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(testMatlabBuild()).stderr(outStream);
-            } else {
-                matlabLauncher = matlabLauncher.cmds(testMatlabBuild()).stdout(listener);
-            }
+            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env).cmds(testMatlabBuild()).stdout(listener);
 
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
