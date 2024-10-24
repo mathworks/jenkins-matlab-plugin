@@ -8,6 +8,8 @@ package com.mathworks.ci.tools;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -79,6 +81,5 @@ public class MatlabInstallerUnitTest {
         assertEquals ("glnxa64", installer.getPlatform ("Linux", "i686"));
         assertEquals ("maci64", installer.getPlatform ("Mac OS X", "amd64"));
         assertEquals ("maca64", installer.getPlatform ("Mac OS X", "arm64"));
-        assertEquals ("win64", installer.getPlatform ("Windows 10", "x86"));
     }
 }

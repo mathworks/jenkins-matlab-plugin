@@ -188,13 +188,8 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Set Environment variable
         setEnv(initialEnvironment);
 
-        String nodeSpecificMatlab = "";
-        if(getNodeSpecificMatlab(Computer.currentComputer(), listener) != null) {
-             nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher);
-        } else {
-            throw new IOException ("ERROR***");
-        }
 
+        String nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher);
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(), nodeSpecificMatlab);
 
         if (!matlabExecutablePath.exists()) {

@@ -259,9 +259,6 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         // Gather properties for the node to install on
         String[] properties = node.getChannel ()
             .call (new GetSystemProperties ("os.name", "os.arch", "os.version"));
-        if(properties[0].contains ("win")) {
-            throw new InstallationFailedException ("Unsupported OS");
-        }
         return getInstallCandidate (properties[0], properties[1]);
     }
 
@@ -282,8 +279,6 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             } else {
                 return "maci64";
             }
-        } else if (value.contains ("windows")) {
-            return "win64";
         } else {
             throw new InstallationFailedException ("Unsupported OS");
         }

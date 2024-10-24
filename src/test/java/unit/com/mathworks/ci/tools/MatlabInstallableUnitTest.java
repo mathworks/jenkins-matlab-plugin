@@ -8,26 +8,24 @@ import java.io.File;
  *
  */
 
-
+import org.junit.Rule;
 import org.junit.Test;
 
 import hudson.FilePath;
 import com.mathworks.ci.TestMessage;
+import org.junit.rules.ExpectedException;
 
 public class MatlabInstallableUnitTest {
 
+    @Rule
+    public ExpectedException exceptionRule = ExpectedException.none ();
+
     @Test
     public void testValidWin64OS () throws InstallationFailedException {
+        exceptionRule.expect(InstallationFailedException.class);
+        exceptionRule.expectMessage("Unsupported OS");
         MatlabInstallable installable = new MatlabInstallable ("win64");
-        assertEquals (TestMessage.getValue ("tools.matlab.mpm.installer.win"), installable.url);
-        assertEquals (TestMessage.getValue ("tools.matlab.batch.executable.win"),
-            installable.getBatchURL ());
 
-        FilePath expectedPath = new FilePath (new File ("C:/install"));
-        assertEquals (new FilePath (expectedPath, "matlab-batch.exe").getRemote (),
-            installable.getBatchInstallable (expectedPath).getRemote ());
-        assertEquals (new FilePath (expectedPath, "mpm.exe").getRemote (),
-            installable.getMpmInstallable (expectedPath).getRemote ());
     }
 
     @Test

@@ -15,11 +15,7 @@ public class MatlabInstallable extends Installable {
     private String osName;
     public MatlabInstallable (String osName) throws InstallationFailedException {
         this.osName = osName;
-        switch (osName) {
-            case "win64":
-                this.url = Message.getValue ("tools.matlab.mpm.installer.win");
-                this.batchURL = Message.getValue ("tools.matlab.batch.executable.win");
-                break;
+        switch (this.osName) {
             case "glnxa64":
                 this.url = Message.getValue ("tools.matlab.mpm.installer.linux");
                 this.batchURL = Message.getValue ("tools.matlab.batch.executable.linux");
@@ -42,16 +38,10 @@ public class MatlabInstallable extends Installable {
     }
 
     public FilePath getBatchInstallable (FilePath expectedPath) {
-        if (this.osName == "win64") {
-            return new FilePath (expectedPath, "matlab-batch.exe");
-        }
         return new FilePath (expectedPath, "matlab-batch");
     }
 
     public FilePath getMpmInstallable (FilePath expectedPath) {
-        if (this.osName == "win64") {
-            return new FilePath (expectedPath, "mpm.exe");
-        }
         return new FilePath (expectedPath, "mpm");
     }
 }
