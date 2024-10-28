@@ -96,8 +96,8 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             int result = installUsingMpm (node, expectedPath, log, installedProducts);
             if (result == 0) {
                 log.getLogger ().println (
-                    "MATLAB installation for version " + this.getVersion ()
-                        + " using mpm is completed successfully !");
+                    "MATLAB installation of version " + this.getVersion ()
+                        + " using mpm completed successfully!");
                 updateProductList (installedProducts);
             }
         }

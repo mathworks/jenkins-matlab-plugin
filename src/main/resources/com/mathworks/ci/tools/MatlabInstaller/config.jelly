@@ -3,7 +3,7 @@
   <f:entry title="Version " field="version">
     <f:textbox />
   </f:entry>
-  <f:entry title="Product List " field="products">
+  <f:entry title="Products" field="products">
     <f:textbox />
   </f:entry>
 </j:jelly>
