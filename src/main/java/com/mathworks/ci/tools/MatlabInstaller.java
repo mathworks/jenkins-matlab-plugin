@@ -78,10 +78,16 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
     public FilePath performInstallation (ToolInstallation tool, Node node, TaskListener log)
         throws IOException, InterruptedException {
         FilePath supportingExecutable = preferredLocation (tool, node);
-        FilePath expectedPath = new FilePath (supportingExecutable, this.getVersion ());
+        String[] systemProperties = getSystemProperties(node);
+        FilePath expectedPath;
+        if(systemProperties[0].toLowerCase ().contains ("os x")) {
+            expectedPath = new FilePath (supportingExecutable, this.getVersion ()+".app");
+        } else {
+            expectedPath = new FilePath (supportingExecutable, this.getVersion ());
+        }
         MatlabInstallable installable;
         try {
-            installable = (MatlabInstallable) getInstallable (node);
+            installable = (MatlabInstallable) getInstallable (systemProperties);
         } catch (Exception e) {
             throw new InstallationFailedException (e.getMessage ());
         }
@@ -191,15 +197,9 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         }
     }
 
-    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
-        justification =
-            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
-                + "https://github.com/spotbugs/spotbugs/issues/1843")
-    public Installable getInstallable (Node node) throws IOException, InterruptedException {
+    public Installable getInstallable (String[] systemProperties) throws IOException {
         // Gather properties for the node to install on
-        String[] properties = node.getChannel ()
-            .call (new GetSystemProperties ("os.name", "os.arch", "os.version"));
-        return getInstallCandidate (properties[0], properties[1]);
+        return getInstallCandidate (systemProperties[0], systemProperties[1]);
     }
 
     public MatlabInstallable getInstallCandidate (String osName, String architecture)
@@ -222,6 +222,16 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
         } else {
             throw new InstallationFailedException ("Unsupported OS");
         }
+    }
+
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
+        justification =
+            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
+                + "https://github.com/spotbugs/spotbugs/issues/1843")
+    private String[] getSystemProperties(Node node) throws IOException, InterruptedException {
+        String[] properties = node.getChannel ()
+            .call (new GetSystemProperties ("os.name", "os.arch", "os.version"));
+        return properties;
     }
 
     @Extension
