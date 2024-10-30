@@ -196,8 +196,9 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
         // Add matlab-batch executable in path
-        if(getNthParentFilePath(matlabExecutablePath, 3).exists () || getNthParentFilePath(matlabExecutablePath,3 ) != null){
-            context.env("PATH+matlab_batch", matlabExecutablePath.getParent ().getParent ().getParent().getRemote ());
+        FilePath batchExecutable = getNthParentFilePath(matlabExecutablePath, 3);
+        if(batchExecutable != null && batchExecutable.exists ()){
+            context.env("PATH+matlab_batch", batchExecutable.getRemote ());
         }
 
         // Add "matlabroot" without bin as env variable which will be available across the build.
