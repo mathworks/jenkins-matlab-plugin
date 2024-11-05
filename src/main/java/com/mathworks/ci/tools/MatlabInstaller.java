@@ -129,7 +129,6 @@ public class MatlabInstaller extends ToolInstaller {
     private void appendReleaseToArguments(ArgumentListBuilder args, TaskListener log) {
         String trimmedRelease = this.getVersion().trim();
         String actualRelease = trimmedRelease;
-        boolean isPrerelease = false;
 
         if (trimmedRelease.equalsIgnoreCase("latest") || trimmedRelease.equalsIgnoreCase(
             "latest-including-prerelease")) {
@@ -145,15 +144,12 @@ public class MatlabInstaller extends ToolInstaller {
 
             if (releaseVersion != null && releaseVersion.contains("prerelease")) {
                 actualRelease = releaseVersion.replace("prerelease", "");
-                isPrerelease = true;
+                args.add ("--release-status=Prerelease");
             } else {
                 actualRelease = releaseVersion;
             }
         }
         args.add("--release=" + actualRelease);
-        if (isPrerelease) {
-            args.add("--release-status=Prerelease");
-        }
     }
 
     private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
