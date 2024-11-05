@@ -8,5 +8,6 @@ src/main/resources/**/run-matlab-command*
 src/main/resources/license.txt
 
 .idea/
+matlab.iml
 
 **/.DS_Store

@@ -7,12 +7,10 @@ package com.mathworks.ci.actions;
 
 import java.io.IOException;
 
-import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
-import com.mathworks.ci.parameters.CommandActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-
-import hudson.model.Run;
+import com.mathworks.ci.BuildConsoleAnnotator;
+import com.mathworks.ci.parameters.CommandActionParameters;
 
 public class RunMatlabCommandAction extends MatlabAction {
     private CommandActionParameters params;
@@ -50,9 +48,7 @@ public class RunMatlabCommandAction extends MatlabAction {
             throw(e);
         } finally {
             annotator.forceEol();
-
-            Run<?, ?> build = this.params.getBuild();
-            super.teardownAction(build);
+            super.teardownAction(params);
         }
     }
 }

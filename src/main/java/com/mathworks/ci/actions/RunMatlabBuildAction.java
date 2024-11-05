@@ -12,8 +12,6 @@ import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
 
-import hudson.model.Run;
-
 public class RunMatlabBuildAction extends MatlabAction {
     private BuildActionParameters params;
 
@@ -60,9 +58,7 @@ public class RunMatlabBuildAction extends MatlabAction {
             throw(e);
         } finally {
             annotator.forceEol();
-
-            Run<?, ?> build = this.params.getBuild();
-            super.teardownAction(build);
+            super.teardownAction(params);
         }
     }
 }
