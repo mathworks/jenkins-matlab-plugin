@@ -22,7 +22,7 @@
             "TestDiagnosticResults": [],
             "FrameworkDiagnosticResults": {
               "Artifacts": [],
-              "DiagnosticText": "SampleDiagnosticsText"
+              "DiagnosticText": "SampleDiagnosticsText1"
             },
             "AdditionalDiagnosticResults": [],
             "Stack": {
@@ -30,10 +30,10 @@
               "name": "TestExamples1.testLeapYear",
               "line": 35
             },
-            "Event": "SampleDiagnosticsEvent",
+            "Event": "SampleDiagnosticsEvent1",
             "EventScope": "TestMethod",
             "EventLocation": "TestExamples1/testLeapYear",
-            "Report": "SampleDiagnosticsReport"
+            "Report": "SampleDiagnosticsReport1"
           }
         },
         "Name": "TestExamples1/testLeapYear",
@@ -61,12 +61,29 @@
     "TestResult": {
       "Duration": 0.1,
       "Details": {
-        "SimulinkTestManagerResults": []
+        "SimulinkTestManagerResults": [],
+        "DiagnosticRecord": {
+          "TestDiagnosticResults": [],
+          "FrameworkDiagnosticResults": {
+            "Artifacts": [],
+            "DiagnosticText": "SampleDiagnosticsText2"
+          },
+          "AdditionalDiagnosticResults": [],
+          "Stack": {
+            "file": "C:\\workspace\\visualization\\duplicate_tests\\TestExamples2.m",
+            "name": "TestExamples2.testNonLeapYear",
+            "line": 35
+          },
+          "Event": "SampleDiagnosticsEvent2",
+          "EventScope": "TestMethod",
+          "EventLocation": "TestExamples2/testNonLeapYear",
+          "Report": "SampleDiagnosticsReport2"
+        }
       },
       "Name": "TestExamples2/testNonLeapYear",
-      "Passed": true,
+      "Passed": false,
       "Failed": false,
-      "Incomplete": false
+      "Incomplete": true
     },
     "BaseFolder": "C:\\workspace\\visualization\\duplicate_tests"
   }

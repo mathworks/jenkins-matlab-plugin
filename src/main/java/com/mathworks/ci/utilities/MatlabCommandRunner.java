@@ -37,7 +37,7 @@ public class MatlabCommandRunner {
     
         FilePath workspace = params.getWorkspace();
         if (workspace == null) {
-            throw new IllegalArgumentException("Workspace in MatlabActionParameters cannot be null");
+            throw new IllegalArgumentException("Workspace cannot be null");
         }
     
         // Handle case where workspace doesn't exist
@@ -48,14 +48,14 @@ public class MatlabCommandRunner {
         // Create MATLAB folder
         FilePath tmpRoot = WorkspaceList.tempDir(workspace);
         if (tmpRoot == null) {
-            throw new IOException("Failed to create temporary directory");
+            throw new IOException("Failed to locate temporary directory");
         }
         tmpRoot.mkdirs();
     
         // Create temp folder
         this.tempFolder = tmpRoot.createTempDir("matlab", null);
         if (this.tempFolder == null) {
-            throw new IOException("Failed to create MATLAB temporary directory");
+            throw new IOException("Failed to create a temporary MATLAB directory");
         }
     }
 

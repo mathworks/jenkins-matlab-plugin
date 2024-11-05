@@ -3,19 +3,21 @@ package com.mathworks.ci;
 /**
  * Copyright 2024, The MathWorks Inc.
  *
+ * Class to store MATLAB test diagnostics information
+ * 
  */
 
 import org.apache.commons.lang.RandomStringUtils;
 
-public class TestDiagnostics {
+public class MatlabTestDiagnostics {
     private String event;
     private String report;
     private String id;
 
-    public TestDiagnostics() {
-        event = "";
-        report = "";
-        id = RandomStringUtils.randomAlphanumeric(8);
+    public MatlabTestDiagnostics() {
+        this.event = "";
+        this.report = "";
+        this.id = RandomStringUtils.randomAlphanumeric(8);
     }
 
     public String getEvent() {
@@ -35,6 +37,6 @@ public class TestDiagnostics {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 }

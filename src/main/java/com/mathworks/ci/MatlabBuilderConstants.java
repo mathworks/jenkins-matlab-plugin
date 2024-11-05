@@ -43,6 +43,12 @@ public class MatlabBuilderConstants {
     
     public static final String TEST_RESULTS_VIEW_ARTIFACT = "matlabTestResults";
     public static final String BUILD_ARTIFACT = "buildArtifact";
+
+    // MATLAB Test Result Statuses
+    public static final String PASSED = "Passed";
+    public static final String FAILED = "Failed";
+    public static final String INCOMPLETE = "Incomplete";
+    public static final String NOT_RUN = "NotRun";
     
     public static final String NEW_LINE = System.getProperty("line.separator");
 

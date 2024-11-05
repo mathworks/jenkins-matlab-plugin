@@ -7,7 +7,7 @@
 
         <l:app-bar title="MATLAB Test Results">
             <button class="jenkins-button" onclick="window.open('https://matlab.mathworks.com/open/github/v1?repo=${GIT_URL}')" tooltip="View source in MATLAB Online">Open in MATLAB Online</button>
-            <t:help href="https://github.com/jenkinsci/matlab-plugin/blob/master/CONFIGDOC.md" tooltip="MATLAB Plugin Configuration Guide" />
+            <t:help href="https://github.com/jenkinsci/matlab-plugin/blob/master/CONFIGDOC.md" tooltip="Plugin Configuration Guide" />
         </l:app-bar>
         
         <l:main-panel>
@@ -33,7 +33,7 @@
                 </br><br></br>Incomplete</p>
             </button>
 
-            <button id="NotRun" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Not run tests">
+            <button id="NotRun" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Tests that have not run">
                 <p>${it.notRunCount}<br>
                     <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg"/>
                 </br><br></br>Not Run</p>
@@ -44,94 +44,94 @@
                     <thead>
                         <tr>
                             <th class="pane-header" style="width: auto; min-width: 20em;">
-                                Test Name
+                                Test File
                             </th>
                             <th class="pane-header" style="width: auto; min-width: 10em; text-align: right;">
-                                Duration (seconds)
+                                Duration (s)
                             </th>
                         </tr>
                     </thead>
 
                     <tbody id="testResultsTableBody">
-                        <j:forEach var="testFile" items="${testSession}" varStatus="status">
-                            <tr id="${testFile.name}" class="test-file-row">
-                                <td id="${testFile.name}-${testFile.id}" class="pane" colspan="1" style="padding-right: calc(var(--table-padding) * 2);">
-                                    <j:if test="${testFile.status.contains('Passed')}">
+                        <j:forEach var="matlabTestFile" items="${testSession}" varStatus="status">
+                            <tr id="${matlabTestFile.name}" class="test-file-row">
+                                <td id="${matlabTestFile.name}-${matlabTestFile.id}" class="pane" colspan="1" style="padding-right: calc(var(--table-padding) * 2);">
+                                    <j:if test="${matlabTestFile.status.contains('Passed')}">
                                         <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
                                     </j:if>
-                                    <j:if test="${testFile.status.contains('Failed')}">
+                                    <j:if test="${matlabTestFile.status.contains('Failed')}">
                                         <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color" tooltip="Failed" />
                                     </j:if>
-                                    <j:if test="${testFile.status.contains('Incomplete')}">
+                                    <j:if test="${matlabTestFile.status.contains('Incomplete')}">
                                         <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color" tooltip="Incomplete" />
                                     </j:if>
-                                    <j:if test="${testFile.status.contains('NotRun')}">
+                                    <j:if test="${matlabTestFile.status.contains('NotRun')}">
                                         <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
                                     </j:if>
-                                    <div style="display: inline;" tooltip="${testFile.filePath}">
-                                        <j:whitespace trim="false"> ${testFile.name} </j:whitespace> 
+                                    <div style="display: inline;" tooltip="${matlabTestFile.path}">
+                                        <j:whitespace trim="false"> ${matlabTestFile.name} </j:whitespace> 
                                     </div>
 
-                                    <a id="plus-${testFile.name}-${testFile.id}" onclick="toggleVisibilty('${testFile.name}-${testFile.id}');" style="display: inline;">
+                                    <a id="plus-${matlabTestFile.name}-${matlabTestFile.id}" onclick="toggleVisibilty('${matlabTestFile.name}-${matlabTestFile.id}');" style="display: inline;">
                                         <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show tests" />
                                     </a>
-                                    <a id="minus-${testFile.name}-${testFile.id}" onclick="toggleVisibilty('${testFile.name}-${testFile.id}');" style="display: none">
+                                    <a id="minus-${matlabTestFile.name}-${matlabTestFile.id}" onclick="toggleVisibilty('${matlabTestFile.name}-${matlabTestFile.id}');" style="display: none">
                                         <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide tests" />
                                     </a>
 
-                                <div id="testCases-${testFile.name}-${testFile.id}" style="display: none;">
+                                <div id="matlabTestCases-${matlabTestFile.name}-${matlabTestFile.id}" style="display: none;">
                                     <br />
                                     <br />
                                     <table class="jenkins-table">
                                         <thead>
                                             <tr>
                                                 <th class="pane-header" style="width: max-content;">
-                                                    Test Case
+                                                    Test
                                                 </th>
                                                 <th class="pane-header" style="width: 100%;">
                                                     Diagnostics
                                                 </th>
                                                 <th class="pane-header" style="text-align: right; text-wrap:nowrap;">
-                                                    Duration (seconds) = ${testFile.duration}
+                                                    Duration (s) : ${matlabTestFile.duration}
                                                 </th>
                                             </tr>
                                         </thead>
-                                        <tbody id="testCasesTableBody">
-                                            <j:forEach var="testCase" items="${testFile.testCases}" varStatus="status">
-                                                <tr id="${testCase.name}-${testCase.id}" class="${testCase.status}">
+                                        <tbody id="matlabTestCasesTableBody">
+                                            <j:forEach var="matlabTestCase" items="${matlabTestFile.matlabTestCases}" varStatus="status">
+                                                <tr id="${matlabTestCase.name}-${matlabTestCase.id}" class="${matlabTestCase.status}">
                                                     <td style="vertical-align: text-top; text-wrap:nowrap;">
-                                                        <j:if test="${testCase.status.contains('Passed')}">
+                                                        <j:if test="${matlabTestCase.status.contains('Passed')}">
                                                             <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color" tooltip="Passed" />
                                                         </j:if>
-                                                        <j:if test="${testCase.status.contains('Failed')}">
+                                                        <j:if test="${matlabTestCase.status.contains('Failed')}">
                                                             <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color" tooltip="Failed" />
                                                         </j:if>
-                                                        <j:if test="${testCase.status.contains('Incomplete')}">
+                                                        <j:if test="${matlabTestCase.status.contains('Incomplete')}">
                                                             <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color" tooltip="Incomplete" />
                                                         </j:if>
-                                                        <j:if test="${testCase.status.contains('NotRun')}">
+                                                        <j:if test="${matlabTestCase.status.contains('NotRun')}">
                                                             <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg" tooltip="Not Run" />
                                                         </j:if>
-                                                        <j:whitespace trim="false"> ${testCase.name} </j:whitespace>
+                                                        <j:whitespace trim="false"> ${matlabTestCase.name} </j:whitespace>
                                                     </td>
                                                     <td style="vertical-align: text-top;">
-                                                        <j:forEach var="diagnostic" items="${testCase.diagnostics}" varStatus="status">
+                                                        <j:forEach var="diagnostic" items="${matlabTestCase.diagnostics}" varStatus="status">
                                                             <div style="display: block;">
                                                                 <j:whitespace trim="false"> ${diagnostic.event} </j:whitespace>
-                                                                <a id="plus-${testCase.name}-${diagnostic.id}" onclick="stackTrace('${testCase.name}-${diagnostic.id}');" style="display: inline;">
+                                                                <a id="plus-${matlabTestCase.name}-${diagnostic.id}" onclick="stackTrace('${matlabTestCase.name}-${diagnostic.id}');" style="display: inline;">
                                                                     <l:icon class="symbol-add plugin-ionicons-api icon-sm" tooltip="Show stack trace" />
                                                                 </a>
-                                                                <a id="minus-${testCase.name}-${diagnostic.id}" onclick="stackTrace('${testCase.name}-${diagnostic.id}');" style="display: none">
+                                                                <a id="minus-${matlabTestCase.name}-${diagnostic.id}" onclick="stackTrace('${matlabTestCase.name}-${diagnostic.id}');" style="display: none">
                                                                     <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide stack trace" />
                                                                 </a>
-                                                                <div id="stack-${testCase.name}-${diagnostic.id}" style="display: none; white-space: pre-line;">
+                                                                <div id="stack-${matlabTestCase.name}-${diagnostic.id}" style="display: none; white-space: pre-line;">
                                                                     <br></br><pre>${diagnostic.report}</pre>
                                                                 </div>
                                                             </div>
                                                         </j:forEach>
                                                     </td>
-                                                    <td style="vertical-align: text-top; text-align: right;" id="duration-${testCase.name}-${testCase.id}">
-                                                        ${testCase.duration}
+                                                    <td style="vertical-align: text-top; text-align: right;" id="duration-${matlabTestCase.name}-${matlabTestCase.id}">
+                                                        ${matlabTestCase.duration}
                                                     </td>
                                                 </tr>
                                             </j:forEach>
@@ -139,8 +139,8 @@
                                     </table>
                                 </div>
                                 </td>
-                                <td style="text-align: right;" id="duration-${testFile.name}-${testFile.id}">
-                                    ${testFile.duration}
+                                <td style="text-align: right;" id="duration-${matlabTestFile.name}-${matlabTestFile.id}">
+                                    ${matlabTestFile.duration}
                                 </td>
                             </tr>
                         </j:forEach>
@@ -151,21 +151,21 @@
     </l:layout>
     <script type="text/javascript">
         function toggleVisibilty(id) {
-            const testFile = document.getElementById(id);
-            const testCasesTable = document.getElementById("testCases-"+id);
+            const matlabTestFile = document.getElementById(id);
+            const matlabTestCasesTable = document.getElementById("matlabTestCases-"+id);
             const plusSymbol = document.getElementById("plus-"+id);
             const minusSymbol = document.getElementById("minus-"+id);
             const duration = document.getElementById("duration-"+id);
 
-            if (testCasesTable.style.display == "none"){
-                testFile.colSpan = "2";
-                testCasesTable.style.display = "inline";
+            if (matlabTestCasesTable.style.display == "none"){
+                matlabTestFile.colSpan = "2";
+                matlabTestCasesTable.style.display = "inline";
                 plusSymbol.style.display = "none";
                 minusSymbol.style.display = "inline";
                 duration.style.display = "none";
             } else {
-                testFile.colSpan = "1";
-                testCasesTable.style.display = "none";
+                matlabTestFile.colSpan = "1";
+                matlabTestCasesTable.style.display = "none";
                 plusSymbol.style.display = "inline";
                 minusSymbol.style.display = "none";
                 duration.style.display = "table-cell";
@@ -173,16 +173,16 @@
         }
 
         function stackTrace(id){
-            const testCaseStack = document.getElementById("stack-"+id);
+            const matlabTestCaseStack = document.getElementById("stack-"+id);
             const plusSymbol = document.getElementById("plus-"+id);
             const minusSymbol = document.getElementById("minus-"+id);
 
-            if (testCaseStack.style.display == "none"){
-                testCaseStack.style.display = "block";
+            if (matlabTestCaseStack.style.display == "none"){
+                matlabTestCaseStack.style.display = "block";
                 plusSymbol.style.display = "none";
                 minusSymbol.style.display = "inline";
             } else {
-                testCaseStack.style.display = "none";
+                matlabTestCaseStack.style.display = "none";
                 plusSymbol.style.display = "inline";
                 minusSymbol.style.display = "none";
             }
@@ -190,8 +190,8 @@
 
         <![CDATA[
         function showTests(status) {
-            let allTestCaseRows = document.querySelectorAll('#testCasesTableBody tr');
-            allTestCaseRows.forEach(function(row) {
+            let allMatlabTestCaseRows = document.querySelectorAll('#matlabTestCasesTableBody tr');
+            allMatlabTestCaseRows.forEach(function(row) {
                 if (status === 'Total' || row.classList.contains(status)) {
                     row.style.display = '';
                 } else {
@@ -199,8 +199,8 @@
                 }
             });
 
-            let testFileRows = document.querySelectorAll('#testResultsTable tr.test-file-row')
-            testFileRows.forEach(function(row) {
+            let matlabTestFileRows = document.querySelectorAll('#testResultsTable tr.test-file-row')
+            matlabTestFileRows.forEach(function(row) {
                 allNestedRows = row.querySelector('tbody').querySelectorAll('tr');
                 visibleRows = Array.from(allNestedRows).filter(function(nestedRow) {
                     return nestedRow.style.display === '';

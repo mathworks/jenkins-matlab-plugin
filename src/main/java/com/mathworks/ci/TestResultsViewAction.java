@@ -45,32 +45,31 @@ public class TestResultsViewAction implements RunAction2 {
         this.workspace = workspace;
         this.actionID = actionID;
         
-        totalCount = 0;
-        passedCount = 0;
-        failedCount = 0;
-        incompleteCount = 0;
-        notRunCount = 0;
+        this.totalCount = 0;
+        this.passedCount = 0;
+        this.failedCount = 0;
+        this.incompleteCount = 0;
+        this.notRunCount = 0;
 
          try{
             // Set test results counts
              getTestResults();
          } catch (InterruptedException | IOException e) {
-             e.printStackTrace();
              throw e;
          } catch (ParseException e) {
              e.printStackTrace();
          }
     }
 
-    public List<List<TestFile>> getTestResults() throws ParseException, InterruptedException, IOException {
-        List<List<TestFile>> testResults = new ArrayList<>();
+    public List<List<MatlabTestFile>> getTestResults() throws ParseException, InterruptedException, IOException {
+        List<List<MatlabTestFile>> testResults = new ArrayList<>();
         FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.actionID + ".json"));
         try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(Paths.get(fl.toURI())), StandardCharsets.UTF_8)) {
-            totalCount = 0;
-            passedCount = 0;
-            failedCount = 0;
-            incompleteCount = 0;
-            notRunCount = totalCount;
+            this.totalCount = 0;
+            this.passedCount = 0;
+            this.failedCount = 0;
+            this.incompleteCount = 0;
+            this.notRunCount = totalCount;
 
             JSONArray testArtifact = (JSONArray) new JSONParser().parse(reader);
             Iterator<JSONArray> testArtifactIterator = testArtifact.iterator();
@@ -78,8 +77,8 @@ public class TestResultsViewAction implements RunAction2 {
             while(testArtifactIterator.hasNext()){
                 Object jsonTestSessionResults = testArtifactIterator.next();
 
-                List<TestFile> testSessionResults = new ArrayList<>();
-                Map<String, TestFile> map = new HashMap<>();
+                List<MatlabTestFile> testSessionResults = new ArrayList<>();
+                Map<String, MatlabTestFile> map = new HashMap<>();
 
                 if(jsonTestSessionResults instanceof JSONArray){
                     JSONArray jsonTestSessionResultsArray = (JSONArray) jsonTestSessionResults;
@@ -105,81 +104,82 @@ public class TestResultsViewAction implements RunAction2 {
         return testResults;
     }
 
-    private void getTestSessionResults(List<TestFile> testSessionResults, JSONObject jsonTestCase, Map<String, TestFile> map) throws IOException, InterruptedException {
+    private void getTestSessionResults(List<MatlabTestFile> testSessionResults, JSONObject jsonTestCase, Map<String, MatlabTestFile> map) throws IOException, InterruptedException {
         FilePath baseFolder = new FilePath(new File(jsonTestCase.get("BaseFolder").toString()));
-        JSONObject testCaseResult = (JSONObject) jsonTestCase.get("TestResult");
+        JSONObject matlabTestCaseResult = (JSONObject) jsonTestCase.get("TestResult");
 
         // Not OS dependent
-        String[] testNameSplit = testCaseResult.get("Name").toString().split("/");
-        String testFileName = testNameSplit[0];
-        String testCaseName = testNameSplit[1];
+        String[] testNameSplit = matlabTestCaseResult.get("Name").toString().split("/");
+        String matlabTestFileName = testNameSplit[0];
+        String matlabTestCaseName = testNameSplit[1];
 
-        TestFile testFile = map.get(baseFolder + File.separator + testFileName);
-        if(testFile == null) {
-            testFile = new TestFile();
-            testFile.setName(testFileName);
+        // Check if test's file was known or not
+        MatlabTestFile matlabTestFile = map.get(baseFolder + File.separator + matlabTestFileName);
+        if(matlabTestFile == null) {
+            matlabTestFile = new MatlabTestFile();
+            matlabTestFile.setName(matlabTestFileName);
 
-            map.put(baseFolder + File.separator + testFileName, testFile);
-            testSessionResults.add(testFile);
+            map.put(baseFolder + File.separator + matlabTestFileName, matlabTestFile);
+            testSessionResults.add(matlabTestFile);
         }
 
         // Calculate the relative path
         Path path1 = Paths.get(baseFolder.toURI());
         Path path2 = Paths.get(this.workspace.toURI());
-        Path filePath = path2.relativize(path1);
+        Path relPath = path2.relativize(path1);
 
-        testFile.setFilePath(this.workspace.getName() + File.separator + filePath.toString());
+        matlabTestFile.setPath(this.workspace.getName() + File.separator + relPath.toString());
 
-        TestCase testCase = new TestCase();
-        testCase.setName(testCaseName);
-        testCase.setPassed((boolean) testCaseResult.get("Passed"));
-        testCase.setFailed((boolean) testCaseResult.get("Failed"));
-        testCase.setIncomplete((boolean) testCaseResult.get("Incomplete"));
-        if (testCaseResult.get("Duration") instanceof Long) {
-            testCase.setDuration(((Long) testCaseResult.get("Duration")).doubleValue());
-        } else if (testCaseResult.get("Duration") instanceof Double) {
-            testCase.setDuration(((Double) testCaseResult.get("Duration")));
+        MatlabTestCase matlabTestCase = new MatlabTestCase();
+        matlabTestCase.setName(matlabTestCaseName);
+        matlabTestCase.setPassed((boolean) matlabTestCaseResult.get("Passed"));
+        matlabTestCase.setFailed((boolean) matlabTestCaseResult.get("Failed"));
+        matlabTestCase.setIncomplete((boolean) matlabTestCaseResult.get("Incomplete"));
+        if (matlabTestCaseResult.get("Duration") instanceof Long) {
+            matlabTestCase.setDuration(((Long) matlabTestCaseResult.get("Duration")).doubleValue());
+        } else if (matlabTestCaseResult.get("Duration") instanceof Double) {
+            matlabTestCase.setDuration(((Double) matlabTestCaseResult.get("Duration")));
         }
-        testCase.updateStatus();
+        matlabTestCase.updateStatus();
 
-        Object diagnostics = ((JSONObject)testCaseResult.get("Details")).get("DiagnosticRecord");
+        Object diagnostics = ((JSONObject)matlabTestCaseResult.get("Details")).get("DiagnosticRecord");
         if(diagnostics instanceof JSONObject) {
-            TestDiagnostics testDiagnostics = new TestDiagnostics();
-            testDiagnostics.setEvent(((JSONObject)diagnostics).get("Event").toString());
-            testDiagnostics.setReport(((JSONObject)diagnostics).get("Report").toString());
-            testCase.getDiagnostics().add(testDiagnostics);
+            MatlabTestDiagnostics matlabTestDiagnostics = new MatlabTestDiagnostics();
+            matlabTestDiagnostics.setEvent(((JSONObject)diagnostics).get("Event").toString());
+            matlabTestDiagnostics.setReport(((JSONObject)diagnostics).get("Report").toString());
+            matlabTestCase.getDiagnostics().add(matlabTestDiagnostics);
         }
         else if(diagnostics instanceof JSONArray && ((JSONArray)diagnostics).size() > 0) {
             Iterator<JSONObject> diagnosticsIterator = ((JSONArray)diagnostics).iterator();
             while(diagnosticsIterator.hasNext()) {
                 JSONObject diagnosticItem = diagnosticsIterator.next();
 
-                TestDiagnostics testDiagnostics = new TestDiagnostics();
-                testDiagnostics.setEvent(diagnosticItem.get("Event").toString());
-                testDiagnostics.setReport(diagnosticItem.get("Report").toString());
-                testCase.getDiagnostics().add(testDiagnostics);
+                MatlabTestDiagnostics matlabTestDiagnostics = new MatlabTestDiagnostics();
+                matlabTestDiagnostics.setEvent(diagnosticItem.get("Event").toString());
+                matlabTestDiagnostics.setReport(diagnosticItem.get("Report").toString());
+                matlabTestCase.getDiagnostics().add(matlabTestDiagnostics);
             }
         }
 
-        testFile.incrementDuration(testCase.getDuration());
-        testFile.updateStatus(testCase);
-        testFile.getTestCases().add(testCase);
-        updateCount(testCase);
+        matlabTestFile.incrementDuration(matlabTestCase.getDuration());
+        matlabTestFile.updateStatus(matlabTestCase);
+        matlabTestFile.getMatlabTestCases().add(matlabTestCase);
+        updateCount(matlabTestCase);
     }
 
-    private void updateCount(TestCase testCase) {
-        totalCount += 1;
-        if (testCase.getStatus().equals("NotRun")) {
-            notRunCount += 1;
+    private void updateCount(MatlabTestCase matlabTestCase) {
+        this.totalCount += 1;
+        if (matlabTestCase.getStatus().equals(MatlabBuilderConstants.NOT_RUN)) {
+            this.notRunCount += 1;
         }
-        else if (testCase.getPassed()) {
-            passedCount += 1;
+        else if (matlabTestCase.getPassed()) {
+            this.passedCount += 1;
         }
-        else if (testCase.getFailed()) {
-            failedCount += 1;
+        else if (matlabTestCase.getFailed()) {
+            this.failedCount += 1;
         }
-        else if (testCase.getIncomplete()) {
-            incompleteCount += 1;
+        else if (matlabTestCase.getIncomplete()) {
+            this.incompleteCount += 1;
         }
     }
 
@@ -194,7 +194,7 @@ public class TestResultsViewAction implements RunAction2 {
     }
 
     public Run getBuild() {
-        return build;
+        return this.build;
     }
 
     @CheckForNull
@@ -220,7 +220,7 @@ public class TestResultsViewAction implements RunAction2 {
     }
 
     public String getActionID() {
-        return actionID;
+        return this.actionID;
     }
 
     public void setTotalCount(int totalCount) {

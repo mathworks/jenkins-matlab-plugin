@@ -3,6 +3,8 @@ package com.mathworks.ci;
 /**
  * Copyright 2024, The MathWorks Inc.
  *
+ * Class to store MATLAB test case information
+ * 
  */
 
 import java.util.List;
@@ -10,9 +12,9 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.RandomStringUtils;
 
-public class TestCase {
+public class MatlabTestCase {
     private String name;
-    private List<TestDiagnostics> diagnostics;
+    private List<MatlabTestDiagnostics> diagnostics;
     private boolean passed;
     private boolean failed;
     private boolean incomplete;
@@ -20,26 +22,26 @@ public class TestCase {
     private Double duration;
     private String id;
 
-    public TestCase() {
-        name = "";
-        diagnostics = new ArrayList<TestDiagnostics>();
-        passed = false;
-        failed = false;
-        incomplete = false;
-        status = "NotRun";
-        duration = 0.0;
-        id = RandomStringUtils.randomAlphanumeric(8);
+    public MatlabTestCase() {
+        this.name = "";
+        this.diagnostics = new ArrayList<MatlabTestDiagnostics>();
+        this.passed = false;
+        this.failed = false;
+        this.incomplete = false;
+        this.status = MatlabBuilderConstants.NOT_RUN;
+        this.duration = 0.0;
+        this.id = RandomStringUtils.randomAlphanumeric(8);
     }
     
     public void updateStatus() {
-        if (failed){
-            status = "Failed";
+        if (this.failed){
+            this.status = MatlabBuilderConstants.FAILED;
         }
-        else if (incomplete) {
-            status = "Incomplete";
+        else if (this.incomplete) {
+            this.status = MatlabBuilderConstants.INCOMPLETE;
         }
-        else if(passed) {
-            status = "Passed";
+        else if(this.passed) {
+            this.status = MatlabBuilderConstants.PASSED;
         }
     }
 
@@ -51,11 +53,11 @@ public class TestCase {
         this.name = name;
     }
 
-    public List<TestDiagnostics> getDiagnostics() {
+    public List<MatlabTestDiagnostics> getDiagnostics() {
         return this.diagnostics;
     }
 
-    public void setDiagnostics(List<TestDiagnostics> diagnostics) {
+    public void setDiagnostics(List<MatlabTestDiagnostics> diagnostics) {
         this.diagnostics = diagnostics;
     }
 
@@ -100,6 +102,6 @@ public class TestCase {
     }
 
     public String getId() {
-        return id;
+        return this.id;
     }
 }
