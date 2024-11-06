@@ -58,6 +58,7 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     @Override
     public void buildEnvVars(EnvVars env) {
         String pathToExecutable = getHome() + "/bin";
+        env.put ("PATH+matlab_batch", getHome ());
         env.put("PATH+matlabroot", pathToExecutable);
     }
 

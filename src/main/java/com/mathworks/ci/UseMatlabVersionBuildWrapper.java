@@ -188,21 +188,43 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Set Environment variable
         setEnv(initialEnvironment);
 
-        FilePath matlabExecutablePath = new FilePath(launcher.getChannel(),
-                getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher));
 
+        String nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher);
+        FilePath matlabExecutablePath = new FilePath(launcher.getChannel(), nodeSpecificMatlab);
+        listener.getLogger().println("**The path which is trying to uppend is **" + matlabExecutablePath.getRemote ());
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
+        // Add matlab-batch executable in path
+        FilePath batchExecutable = getNthParentFilePath(matlabExecutablePath, 3);
+        if(batchExecutable != null && batchExecutable.exists ()){
+            context.env("PATH+matlab_batch", batchExecutable.getRemote ());
+        }
+
         // Add "matlabroot" without bin as env variable which will be available across the build.
-        context.env("matlabroot", getNodeSpecificMatlab(Computer.currentComputer(), listener));
+        context.env("matlabroot", nodeSpecificMatlab);
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());
-        // Specify which MATLAB was added to path.
+        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());;
         listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath.getParent().getRemote()) + "\n");
     }
 
     private String getNodeSpecificExecutable(Launcher launcher) {
         return (launcher.isUnix()) ? "/bin/matlab" : "\\bin\\matlab.exe";
     }
+
+    public static FilePath getNthParentFilePath (FilePath path, int levels) {
+        if (path == null || levels < 0) {
+            return null;
+        }
+
+        FilePath currentPath = path;
+        for (int i = 0; i < levels; i++) {
+            if (currentPath == null) {
+                return null;
+            }
+            currentPath = currentPath.getParent ();
+        }
+        return currentPath;
+    }
+
 }
