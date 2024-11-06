@@ -53,8 +53,8 @@ public class MatlabInstallerUnitTest {
     }
 
     @Test
-    public void testGetVersion () {
-        assertEquals ("R2021a", installer.getVersion ());
+    public void testGetRelease () {
+        assertEquals ("R2021a", installer.getRelease ());
     }
 
     @Test
