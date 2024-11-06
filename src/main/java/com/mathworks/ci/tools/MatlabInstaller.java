@@ -18,7 +18,7 @@ import hudson.Launcher.ProcStarter;
 
 import hudson.model.Node;
 import hudson.model.TaskListener;
-import hudson.tools.DownloadFromUrlInstaller;
+import hudson.tools.ToolInstaller;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
 
@@ -45,183 +45,186 @@ import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 
-public class MatlabInstaller extends DownloadFromUrlInstaller {
+public class MatlabInstaller extends ToolInstaller {
 
-    private String version;
+    private String release;
     private String products;
     private static String DEFAULT_PRODUCT = "MATLAB";
 
     @DataBoundConstructor
-    public MatlabInstaller (String id) {
-        super (id);
+    public MatlabInstaller(String id) {
+        super(id);
     }
 
-    public String getVersion () {
-        return this.version;
+    public String getRelease() {
+        return this.release;
     }
 
     @DataBoundSetter
-    public void setVersion (String version) {
-        this.version = version;
+    public void setVersion(String release) {
+        this.release = release;
     }
 
-    public String getProducts () {
+    public String getProducts() {
         return this.products;
     }
 
     @DataBoundSetter
-    public void setProducts (String products) {
+    public void setProducts(String products) {
         this.products = products;
     }
 
     @Override
-    public FilePath performInstallation (ToolInstallation tool, Node node, TaskListener log)
+    public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log)
         throws IOException, InterruptedException {
-        FilePath supportingExecutable = preferredLocation (tool, node);
+        FilePath destination = preferredLocation(tool, node);
         String[] systemProperties = getSystemProperties(node);
-        FilePath expectedPath;
-        if(systemProperties[0].toLowerCase ().contains ("os x")) {
-            expectedPath = new FilePath (supportingExecutable, this.getVersion ()+".app");
+        FilePath matlabRootPath;
+        if(systemProperties[0].toLowerCase().contains("os x")) {
+            matlabRootPath= new FilePath(destination, this.getRelease()+".app");
         } else {
-            expectedPath = new FilePath (supportingExecutable, this.getVersion ());
+            matlabRootPath = new FilePath(destination, this.getRelease());
         }
-        MatlabInstallable installable;
-        try {
-            installable = (MatlabInstallable) getInstallable (systemProperties);
-        } catch (Exception e) {
-            throw new InstallationFailedException (e.getMessage ());
+        String platform = getPlatform(systemProperties[0], systemProperties[1]);
+        getFreshCopyOfExecutables(platform, destination);
+        
+        makeDir(matlabRootPath);
+        int result  = installUsingMpm(node, this.getRelease (), matlabRootPath, this.getProducts (), log);
+        if (result != 0) {
+            throw new InstallationFailedException("Unable to install MATLAB using mpm.");
         }
-
-        getFreshCopyOfExecutables (installable, supportingExecutable);
-        makeDir (expectedPath);
-
-        int result = installUsingMpm (node, expectedPath, log);
-            if (result == 0) {
-                log.getLogger ().println (
-                    "MATLAB installation of version " + this.getVersion ()
-                        + " using mpm completed successfully!");
-            }
-        return expectedPath;
+        return matlabRootPath;
     }
 
-    private int installUsingMpm (Node node, FilePath destination, TaskListener log)
+    private int installUsingMpm(Node node, String release, FilePath destination, String products, TaskListener log)
         throws IOException, InterruptedException {
 
-        Launcher matlabInstaller = node.createLauncher (log);
+        Launcher matlabInstaller = node.createLauncher(log);
         ProcStarter installerProc = matlabInstaller.launch ();
 
-        ArgumentListBuilder args = new ArgumentListBuilder ();
-        args.add (destination.getParent ().getRemote () + getNodeSpecificMPMExecutor (node));
-        args.add ("install");
-        appendReleaseToArguments (args, log);
-        args.add ("--destination=" + destination.getRemote ());
-        addMatlabProductsToArgs (args);
-        installerProc.pwd (destination).cmds (args).stdout (log);
+        ArgumentListBuilder args = new ArgumentListBuilder();
+        args.add(destination.getParent().getRemote() + getNodeSpecificMPMExecutor(node));
+        args.add("install");
+        appendReleaseToArguments(release,args, log);
+        args.add("--destination=" + destination.getRemote());
+        addMatlabProductsToArgs(args, products);
+        installerProc.pwd(destination).cmds(args).stdout(log);
         int result;
         try {
-            result = installerProc.join ();
+            result = installerProc.join();
         } catch (Exception e) {
-            log.getLogger ().println ("MATLAB installation failed " + e.getMessage ());
-            throw new InstallationFailedException (e.getMessage ());
+            log.getLogger().println("MATLAB installation failed " + e.getMessage());
+            throw new InstallationFailedException(e.getMessage ());
         }
         return result;
     }
 
+
     private void makeDir(FilePath path) throws IOException, InterruptedException {
-        if(!path.exists ()){
-            path.mkdirs ();
-            path.chmod (0777);
+        if(!path.exists()){
+            path.mkdirs();
+            path.chmod(0777);
         }
     }
 
-    private void appendReleaseToArguments (ArgumentListBuilder args, TaskListener log) {
-        String trimmedRelease = this.getVersion ().trim ();
+    private void appendReleaseToArguments(String release, ArgumentListBuilder args, TaskListener log) {
+        String trimmedRelease = release.trim();
         String actualRelease = trimmedRelease;
 
-        if (trimmedRelease.equalsIgnoreCase ("latest") || trimmedRelease.equalsIgnoreCase (
+        if (trimmedRelease.equalsIgnoreCase("latest") || trimmedRelease.equalsIgnoreCase(
             "latest-including-prerelease")) {
             String releaseInfoUrl =
-                Message.getValue ("matlab.release.info.url") + trimmedRelease;
+                Message.getValue("matlab.release.info.url") + trimmedRelease;
             String releaseVersion = null;
             try {
-                releaseVersion = IOUtils.toString (new URL (releaseInfoUrl),
-                    StandardCharsets.UTF_8).trim ();
+                releaseVersion = IOUtils.toString(new URL(releaseInfoUrl),
+                    StandardCharsets.UTF_8).trim();
             } catch (IOException e) {
-                log.getLogger ().println ("Failed to fetch release version: " + e.getMessage ());
+                log.getLogger().println("Failed to fetch release version: " + e.getMessage());
             }
 
-            if (releaseVersion != null && releaseVersion.contains ("prerelease")) {
-                actualRelease = releaseVersion.replace ("prerelease", "");
+            if (releaseVersion != null && releaseVersion.contains("prerelease")) {
+                actualRelease = releaseVersion.replace("prerelease", "");
                 args.add ("--release-status=Prerelease");
             } else {
                 actualRelease = releaseVersion;
             }
         }
-        args.add ("--release=" + actualRelease);
+        args.add("--release=" + actualRelease);
     }
 
-    private void getFreshCopyOfExecutables (MatlabInstallable installable, FilePath expectedPath)
+    private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
         throws IOException, InterruptedException {
-        FilePath mpmPath = installable.getMpmInstallable (expectedPath);
-        FilePath mbatchPath = installable.getBatchInstallable (expectedPath);
-        mpmPath.copyFrom (new URL (installable.url).openStream ());
-        mpmPath.chmod (0777);
-        mbatchPath.copyFrom (new URL (installable.batchURL).openStream ());
-        mbatchPath.chmod (0777);
+        FilePath matlabBatchPath = new FilePath(expectedPath, "matlab-batch");
+        FilePath mpmPath = new FilePath(expectedPath, "mpm");
+
+        URL mpmUrl;
+        URL matlabBatchUrl;
+
+        switch (platform) {
+            case "glnxa64":
+                mpmUrl = new URL(Message.getValue("tools.matlab.mpm.installer.linux"));
+                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.linux"));
+                break;
+            case "maci64":
+                mpmUrl = new URL(Message.getValue("tools.matlab.mpm.installer.maci64"));
+                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maci64"));
+                break;
+            case "maca64":
+                mpmUrl = new URL(Message.getValue("tools.matlab.mpm.installer.maca64"));
+                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maca64"));
+                break;
+            default:
+                throw new InstallationFailedException("Unsupported OS");
+        }
+
+        mpmPath.copyFrom(mpmUrl.openStream());
+        mpmPath.chmod(0777);
+        matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
+        matlabBatchPath.chmod(0777);
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
         justification =
             "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
                 + "https://github.com/spotbugs/spotbugs/issues/1843")
-    private String getNodeSpecificMPMExecutor (Node node) {
-        if (!node.toComputer ().isUnix ()) {
+    private String getNodeSpecificMPMExecutor(Node node) {
+        if (!node.toComputer().isUnix()) {
             return "\\mpm.exe";
         }
         return "/mpm";
     }
 
-    private void addMatlabProductsToArgs (ArgumentListBuilder args)
+    private void addMatlabProductsToArgs(ArgumentListBuilder args, String products)
         throws IOException, InterruptedException {
-        args.add ("--products");
-        if (this.getProducts ().isEmpty ()) {
-            args.add (DEFAULT_PRODUCT);
+        args.add("--products");
+        if (products.isEmpty()) {
+            args.add(DEFAULT_PRODUCT);
 
         } else {
-            if (!this.getProducts ().contains (DEFAULT_PRODUCT)) {
-                args.add (DEFAULT_PRODUCT);
+            if (!products.contains(DEFAULT_PRODUCT)) {
+                args.add(DEFAULT_PRODUCT);
             }
-            String[] productList = this.getProducts ().split (" ");
+            String[] productList = products.split(" ");
             for (String prod : productList) {
-                args.add (prod);
+                args.add(prod);
             }
         }
     }
 
-    public Installable getInstallable (String[] systemProperties) throws IOException {
-        // Gather properties for the node to install on
-        return getInstallCandidate (systemProperties[0], systemProperties[1]);
-    }
-
-    public MatlabInstallable getInstallCandidate (String osName, String architecture)
-        throws InstallationFailedException {
-        String platform = getPlatform (osName, architecture);
-        return new MatlabInstallable (platform);
-    }
-
-    public String getPlatform (String os, String architecture) throws InstallationFailedException {
-        String value = os.toLowerCase (Locale.ENGLISH);
-        if (value.contains ("linux")) {
+    public String getPlatform(String os, String architecture) throws InstallationFailedException {
+        String value = os.toLowerCase(Locale.ENGLISH);
+        if (value.contains("linux")) {
             return "glnxa64";
-        } else if (value.contains ("os x")) {
-            if (architecture.equalsIgnoreCase ("aarch64") || architecture.equalsIgnoreCase (
+        } else if (value.contains("os x")) {
+            if (architecture.equalsIgnoreCase("aarch64") || architecture.equalsIgnoreCase (
                 "arm64")) {
                 return "maca64";
             } else {
                 return "maci64";
             }
         } else {
-            throw new InstallationFailedException ("Unsupported OS");
+            throw new InstallationFailedException("Unsupported OS");
         }
     }
 
@@ -230,30 +233,30 @@ public class MatlabInstaller extends DownloadFromUrlInstaller {
             "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
                 + "https://github.com/spotbugs/spotbugs/issues/1843")
     private String[] getSystemProperties(Node node) throws IOException, InterruptedException {
-        String[] properties = node.getChannel ()
-            .call (new GetSystemProperties ("os.name", "os.arch", "os.version"));
+        String[] properties = node.getChannel()
+            .call (new GetSystemProperties("os.name", "os.arch", "os.version"));
         return properties;
     }
 
     @Extension
     public static final class DescriptorImpl extends ToolInstallerDescriptor<MatlabInstaller> {
 
-        public String getDisplayName () {
-            return Message.getValue ("matlab.tools.auto.install.display.name");
+        public String getDisplayName() {
+            return Message.getValue("matlab.tools.auto.install.display.name");
         }
 
         @Override
-        public boolean isApplicable (Class<? extends ToolInstallation> toolType) {
+        public boolean isApplicable(Class<? extends ToolInstallation> toolType) {
             return toolType == MatlabInstallation.class;
         }
 
         @POST
-        public FormValidation doCheckVersion (@QueryParameter String value) {
-            Jenkins.get ().checkPermission (Jenkins.ADMINISTER);
-            if (value.isEmpty ()) {
-                return FormValidation.error (Message.getValue ("tools.matlab.empty.version.error"));
+        public FormValidation doCheckRelease(@QueryParameter String value) {
+            Jenkins.get().checkPermission(Jenkins.ADMINISTER);
+            if (value.isEmpty()) {
+                return FormValidation.error(Message.getValue("tools.matlab.empty.release.error"));
             }
-            return FormValidation.ok ();
+            return FormValidation.ok();
         }
     }
 }
