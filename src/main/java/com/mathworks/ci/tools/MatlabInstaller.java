@@ -61,7 +61,7 @@ public class MatlabInstaller extends ToolInstaller {
     }
 
     @DataBoundSetter
-    public void setVersion(String release) {
+    public void setRelease(String release) {
         this.release = release;
     }
 
