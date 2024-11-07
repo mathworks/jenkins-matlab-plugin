@@ -90,8 +90,12 @@ public class MatlabInstaller extends ToolInstaller {
         
         makeDir(matlabRootPath);
         int result  = installUsingMpm(node, this.getRelease (), matlabRootPath, this.getProducts (), log);
-        if (result != 0) {
-            throw new InstallationFailedException("Unable to install MATLAB using mpm.");
+        if (result == 0) {
+            if (result == 0) {
+                log.getLogger ().println (
+                    "MATLAB installation of version " + this.getRelease()
+                        + " using mpm completed successfully!");
+            }
         }
         return matlabRootPath;
     }
