@@ -48,8 +48,8 @@ public class MatlabInstallerUnitTest {
     public void setUp () throws Exception {
         MockitoAnnotations.initMocks (this);
         installer = spy (new MatlabInstaller ("test-id"));
-        installer.setVersion ("R2021a");
-        installer.setProducts ("MATLAB");
+        installer.setRelease("R2021a");
+        installer.setProducts("MATLAB");
     }
 
     @Test
