@@ -57,7 +57,7 @@ public class MatlabInstaller extends ToolInstaller {
     }
 
     public String getRelease() {
-        return this.release;
+        return this.release.trim();
     }
 
     @DataBoundSetter

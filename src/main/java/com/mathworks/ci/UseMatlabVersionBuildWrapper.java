@@ -191,7 +191,6 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
 
         String nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher);
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(), nodeSpecificMatlab);
-        listener.getLogger().println("**The path which is trying to uppend is **" + matlabExecutablePath.getRemote ());
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
