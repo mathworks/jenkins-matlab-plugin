@@ -25,25 +25,19 @@ import hudson.tools.ToolInstallerDescriptor;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Locale;
 
-import java.util.Set;
 import jenkins.model.Jenkins;
 import org.apache.commons.io.IOUtils;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
-import org.kohsuke.stapler.verb.POST;
 
 public class MatlabInstaller extends ToolInstaller {
 
@@ -252,7 +246,6 @@ public class MatlabInstaller extends ToolInstaller {
             return toolType == MatlabInstallation.class;
         }
 
-        @POST
         public FormValidation doCheckRelease(@QueryParameter String value) {
             Jenkins.get().checkPermission(Jenkins.ADMINISTER);
             if (value.isEmpty()) {
