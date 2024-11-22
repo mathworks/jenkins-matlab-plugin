@@ -149,7 +149,7 @@ public class MatlabInstaller extends ToolInstaller {
         args.add("--release=" + actualRelease);
     }
 
-    private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
+    synchronized private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
         throws IOException, InterruptedException {
         FilePath matlabBatchPath = new FilePath(expectedPath, "matlab-batch");
         FilePath mpmPath = new FilePath(expectedPath, "mpm");

@@ -7,6 +7,7 @@ package com.mathworks.ci;
  *
  */
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -15,6 +16,7 @@ import hudson.Util;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
 import hudson.model.TaskListener;
+import hudson.remoting.VirtualChannel;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
@@ -59,14 +61,23 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
         return new MatlabInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
 
+    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
+        justification =
+            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
+                + "https://github.com/spotbugs/spotbugs/issues/1843")
     @Override
     public void buildEnvVars(EnvVars env) {
-        FilePath batchExecutablePath = new FilePath (Jenkins.get().getChannel(), getHome());
         String pathToExecutable = getHome() + "/bin";
-        if( batchExecutablePath.getParent () != null ){
-            env.put ("PATH+matlab_batch", batchExecutablePath.getParent().getRemote());
-        }
         env.put("PATH+matlabroot", pathToExecutable);
+        Jenkins jenkinsInstance = Jenkins.getInstanceOrNull();
+        if(jenkinsInstance != null){
+            if(jenkinsInstance.getChannel() != null){
+                FilePath batchExecutablePath = new FilePath(jenkinsInstance.getChannel (), getHome());
+                if( batchExecutablePath.getParent() != null ){
+                    env.put ("PATH+matlab_batch", batchExecutablePath.getParent().getRemote());
+                }
+            }
+        }
     }
 
     public static MatlabInstallation[] getAll () {
