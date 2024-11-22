@@ -41,20 +41,28 @@ public class Utilities {
             return;
         }
 
+        FilePath matlabRoot = getNodeSpecificHome(name,
+            cmp.getNode(), listener, env);
+
+        if(matlabRoot != null && matlabRoot.getParent().exists()){
+            env.put("PATH+matlab_batch", matlabRoot.getParent().getRemote());
+        }
+
         String matlabExecutablePath = getNodeSpecificHome(name,
-               cmp.getNode(), listener, env) + ((Boolean.TRUE.equals(cmp.isUnix()))?"/bin" : "\\bin");
+               cmp.getNode(), listener, env).getRemote () + ((Boolean.TRUE.equals(cmp.isUnix()))?"/bin" : "\\bin");
         env.put("PATH+matlabroot", matlabExecutablePath);
+
 
         // Specify which MATLAB was added to path.
         listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath) + "\n");
     }
 
-    public static String getNodeSpecificHome(String instName,Node node, TaskListener listener, EnvVars env)
+    public static FilePath getNodeSpecificHome(String instName,Node node, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
         MatlabInstallation inst = MatlabInstallation.getInstallation(instName);
         if (inst == null || node == null) {
             // Following will error out in BuildWrapper
-            return "";
+            throw new MatlabNotFoundError("MATLAB installations could not be found");
         }
 
         // get installation for node and environment.
@@ -66,6 +74,6 @@ public class Utilities {
             throw new MatlabNotFoundError(String.format(Message.getValue("matlab.not.found.error.for.node"), instName, Objects
                     .requireNonNull(node).getDisplayName()));
         }
-        return matlabExecutablePath.getRemote();
+        return matlabExecutablePath;
     }
 }

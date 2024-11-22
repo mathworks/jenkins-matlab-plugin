@@ -51,7 +51,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     public String getMatlabInstallationHome(Computer cmp, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
         return Utilities.getNodeSpecificHome(this.matlabInstallationName,
-                cmp.getNode(), listener, env);
+                cmp.getNode(), listener, env).getRemote ();
     }
 
     public String getMatlabInstallationName() {
