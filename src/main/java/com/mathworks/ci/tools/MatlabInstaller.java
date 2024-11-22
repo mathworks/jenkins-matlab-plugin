@@ -148,8 +148,7 @@ public class MatlabInstaller extends ToolInstaller {
         }
         args.add("--release=" + actualRelease);
     }
-
-    synchronized private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
+    private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
         throws IOException, InterruptedException {
         FilePath matlabBatchPath = new FilePath(expectedPath, "matlab-batch");
         FilePath mpmPath = new FilePath(expectedPath, "mpm");
@@ -174,10 +173,12 @@ public class MatlabInstaller extends ToolInstaller {
                 throw new InstallationFailedException("Unsupported OS");
         }
 
-        mpmPath.copyFrom(mpmUrl.openStream());
-        mpmPath.chmod(0777);
-        matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
-        matlabBatchPath.chmod(0777);
+        synchronized(this){
+            mpmPath.copyFrom(mpmUrl.openStream());
+            mpmPath.chmod(0777);
+            matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
+            matlabBatchPath.chmod(0777);
+        }
     }
 
     @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
