@@ -10,6 +10,7 @@ package com.mathworks.ci;
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Util;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
@@ -18,7 +19,10 @@ import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.CheckForNull;
@@ -57,8 +61,11 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
 
     @Override
     public void buildEnvVars(EnvVars env) {
+        FilePath batchExecutablePath = new FilePath (Jenkins.get().getChannel(), getHome());
         String pathToExecutable = getHome() + "/bin";
-        env.put ("PATH+matlab_batch", getHome ());
+        if( batchExecutablePath.getParent () != null ){
+            env.put ("PATH+matlab_batch", batchExecutablePath.getParent().getRemote());
+        }
         env.put("PATH+matlabroot", pathToExecutable);
     }
 
