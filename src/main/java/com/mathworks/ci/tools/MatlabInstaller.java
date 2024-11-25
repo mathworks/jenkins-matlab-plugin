@@ -173,11 +173,24 @@ public class MatlabInstaller extends ToolInstaller {
                 throw new InstallationFailedException("Unsupported OS");
         }
 
-        synchronized(this){
-            mpmPath.copyFrom(mpmUrl.openStream());
-            mpmPath.chmod(0777);
-            matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
-            matlabBatchPath.chmod(0777);
+        //Handle the concurrency issues due to same name.
+        FilePath tempMatlabBatchPath = new FilePath(expectedPath, "temp-matlab-batch");
+        FilePath tempMpmPath = new FilePath(expectedPath, "temp-mpm");
+        try{
+            tempMpmPath.copyFrom(mpmUrl.openStream());
+            tempMpmPath.chmod(0777);
+            tempMatlabBatchPath.copyFrom(matlabBatchUrl.openStream());
+            tempMatlabBatchPath.chmod(0777);
+
+            tempMpmPath.renameTo(mpmPath);
+            tempMatlabBatchPath.renameTo(matlabBatchPath);
+
+        } catch(IOException | InterruptedException e){
+            e.printStackTrace();
+        } finally {
+            // Clean up temporary files if they exist
+            tempMatlabBatchPath.delete();
+            tempMpmPath.delete();
         }
     }
 
