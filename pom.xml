@@ -20,7 +20,7 @@
 		<developer>
 			<id>mathworks_ci_team</id>
 			<name>MathWorks</name>
-			<email>nbhoski@mathworks.com</email>
+			<email>continuous-integration@mathworks.com</email>
 		</developer>
 	</developers>
 
