@@ -7,9 +7,9 @@ package com.mathworks.ci;
  * 
  */
 
-import com.gargoylesoftware.htmlunit.WebAssert;
-import com.gargoylesoftware.htmlunit.html.HtmlCheckBoxInput;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import org.htmlunit.WebAssert;
+import org.htmlunit.html.HtmlCheckBoxInput;
+import org.htmlunit.html.HtmlPage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -306,65 +306,63 @@ public class RunMatlabCommandBuilderTest {
         jenkins.assertLogContains("MatlabNotFoundError", build);
     }
     
-	/*
-	 * Test to verify if Matrix build fails when MATLAB is not available.
+    /*
+     * Test to verify if Matrix build fails when MATLAB is not available.
      * 
      * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
      * 
-	 */
-	@Test
-	public void verifyMatrixBuildFails() throws Exception {
-		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
-		matrixProject.setAxes(new AxisList(axes));
-		String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
-		matrixProject.getBuildWrappersList().add(this.buildWrapper);
+     */
+    @Test
+    public void verifyMatrixBuildFails() throws Exception {
+            MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+            Axis axes = new Axis("VERSION", "R2018a", "R2015b");
+            matrixProject.setAxes(new AxisList(axes));
+            String matlabRoot = getMatlabroot("R2018b");
+            this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
+            matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
-		scriptBuilder.setMatlabCommand("pwd");
-		matrixProject.getBuildersList().add(scriptBuilder);
-		Map<String, String> vals = new HashMap<String, String>();
-		vals.put("VERSION", "R2018a");
-		Combination c1 = new Combination(vals);
-		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("run-matlab-command", build);
-		jenkins.assertBuildStatus(Result.FAILURE, build);
-		vals.put("VERSION", "R2015b");
-		Combination c2 = new Combination(vals);
-		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-		jenkins.assertLogContains("MatlabNotFoundError", build2);
-		jenkins.assertBuildStatus(Result.FAILURE, build2);
-	}
+            scriptBuilder.setMatlabCommand("pwd");
+            matrixProject.getBuildersList().add(scriptBuilder);
+            Map<String, String> vals = new HashMap<String, String>();
+            vals.put("VERSION", "R2018a");
+            Combination c1 = new Combination(vals);
+            MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
+            jenkins.assertLogContains("run-matlab-command", build);
+            jenkins.assertBuildStatus(Result.FAILURE, build);
+            vals.put("VERSION", "R2015b");
+            Combination c2 = new Combination(vals);
+            MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+            jenkins.assertLogContains("MatlabNotFoundError", build2);
+            jenkins.assertBuildStatus(Result.FAILURE, build2);
+    }
 
-	/*
-	 * Test to verify if Matrix build passes (mock MATLAB).
-	 */
-	@Test
-	public void verifyMatrixBuildPasses() throws Exception {
-		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
-		matrixProject.setAxes(new AxisList(axes));
-		String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
-		matrixProject.getBuildWrappersList().add(this.buildWrapper);
-		RunMatlabCommandBuilderTester tester = new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath,
-				"-positive");
+    /*
+     * Test to verify if Matrix build passes (mock MATLAB).
+     */
+    @Test
+    public void verifyMatrixBuildPasses() throws Exception {
+            MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+            Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+            matrixProject.setAxes(new AxisList(axes));
+            String matlabRoot = getMatlabroot("R2018b");
+            this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
+            matrixProject.getBuildWrappersList().add(this.buildWrapper);
+            RunMatlabCommandBuilderTester tester = new RunMatlabCommandBuilderTester(matlabExecutorAbsolutePath,
+                            "-positive");
 
-		tester.setMatlabCommand("pwd");
-		matrixProject.getBuildersList().add(tester);
-		MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+            tester.setMatlabCommand("pwd");
+            matrixProject.getBuildersList().add(tester);
+            MatrixBuild build = matrixProject.scheduleBuild2(0).get();
 
-		jenkins.assertLogContains("R2018a completed", build);
-		jenkins.assertLogContains("R2018b completed", build);
-		jenkins.assertBuildStatus(Result.SUCCESS, build);
+            jenkins.assertLogContains("R2018a completed", build);
+            jenkins.assertLogContains("R2018b completed", build);
+            jenkins.assertBuildStatus(Result.SUCCESS, build);
 	}
 	
-	/*
+    /*
      * Test to verify if command parses succesfully when multiple combinations of 
      * characters are passed. (candidate for integ-tests once integrated)
      */
-
-    
     public void verifyMultispecialChar() throws Exception {
         final String actualCommand =
                 "!\"\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
@@ -384,7 +382,6 @@ public class RunMatlabCommandBuilderTest {
     /*
      * Test to verify error message when command is empty.
      */
-
     @Test
     public void verifyErrorMessageOnEmptyCommand() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
