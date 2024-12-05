@@ -4,12 +4,18 @@
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>3.57</version>
+		<version>4.75</version>
 		<relativePath />
 	</parent>
+
 	<artifactId>matlab</artifactId>
 	<version>2.15.1-SNAPSHOT</version>
 	<packaging>hpi</packaging>
+
+	<name>MATLAB Plugin</name>
+	<url>https://github.com/jenkinsci/matlab-plugin</url>
+	<description>Jenkins plugin for MATLAB</description>
+
 	<developers>
 		<developer>
 			<id>mathworks_ci_team</id>
@@ -17,48 +23,55 @@
 			<email>nbhoski@mathworks.com</email>
 		</developer>
 	</developers>
-	<properties>
-		<jenkins.version>2.164.3</jenkins.version>
-		<java.level>8</java.level>
-	</properties>
-	<name>MATLAB Plugin</name>
-	<description>Jenkins plugin for MATLAB</description>
-	<url>https://github.com/jenkinsci/matlab-plugin</url>
+
 	<licenses>
 		<license>
 			<name>MIT License</name>
 			<url>https://opensource.org/licenses/MIT</url>
 		</license>
 	</licenses>
+
 	<repositories>
 		<repository>
 			<id>repo.jenkins-ci.org</id>
 			<url>https://repo.jenkins-ci.org/public/</url>
 		</repository>
 	</repositories>
+
 	<pluginRepositories>
 		<pluginRepository>
 			<id>repo.jenkins-ci.org</id>
 			<url>https://repo.jenkins-ci.org/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
+
 	<scm>
 		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
 		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/matlab-plugin.git</developerConnection>
 		<url>http://github.com/jenkinsci/matlab-plugin</url>
 		<tag>HEAD</tag>
 	</scm>
+
+	<properties>
+		<!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+		<jenkins.baseline>2.387</jenkins.baseline>
+		<jenkins.version>${jenkins.baseline}.3</jenkins.version>
+		<!-- TODO fix violations -->
+		<spotbugs.threshold>High</spotbugs.threshold>
+	</properties>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>io.jenkins.tools.bom</groupId>
-				<artifactId>bom-2.164.x</artifactId>
-				<version>4</version>
-				<scope>import</scope>
+				<artifactId>bom-${jenkins.baseline}.x</artifactId>
+				<version>2543.vfb_1a_5fb_9496d</version>
 				<type>pom</type>
+				<scope>import</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+
 	<dependencies>
 		<!-- JSON Parser -->
 		<dependency>
@@ -100,16 +113,25 @@
 			<artifactId>workflow-job</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <!-- Mockito -->
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>3.1.0</version>
-            <scope>test</scope>
-        </dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.1.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-util</artifactId>
+			<version>11.0.24</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.jenkins-ci.tools</groupId>
+				<artifactId>maven-hpi-plugin</artifactId>
+			</plugin>
 			<!-- Plugin to download the matlab run scripts and keep it under class 
 				resource folder -->
 			<plugin>

@@ -305,56 +305,62 @@ public class RunMatlabBuildBuilderTest {
         jenkins.assertLogContains("MatlabNotFoundError", build);
     }
     
-	/*
-	 * Test to verify if Matrix build fails when MATLAB is not available.
-     * 
+    /*
+     * Test to verify if Matrix build fails when MATLAB is not available.
+     *
      * NOTE: This test assumes there is no MATLAB installed and is not on System Path.
      * 
-	 */
-	@Test
-	public void verifyMatrixBuildFails() throws Exception {
-		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2015b");
-		matrixProject.setAxes(new AxisList(axes));
-		String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
-		matrixProject.getBuildWrappersList().add(this.buildWrapper);
+     */
+    @Test
+    public void verifyMatrixBuildFails() throws Exception {
+            MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+            Axis axes = new Axis("VERSION", "R2018a", "R2015b");
+            matrixProject.setAxes(new AxisList(axes));
+            String matlabRoot = getMatlabroot("R2018b");
+            this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
+            matrixProject.getBuildWrappersList().add(this.buildWrapper);
 
-		scriptBuilder.setTasks("");
-		matrixProject.getBuildersList().add(scriptBuilder);
-		Map<String, String> vals = new HashMap<String, String>();
-		vals.put("VERSION", "R2018a");
-		Combination c1 = new Combination(vals);
-		MatrixRun build = matrixProject.scheduleBuild2(0).get().getRun(c1);
-		jenkins.assertLogContains("buildtool", build);
-		jenkins.assertBuildStatus(Result.FAILURE, build);
-		vals.put("VERSION", "R2015b");
-		Combination c2 = new Combination(vals);
-		MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
-		jenkins.assertLogContains("MatlabNotFoundError", build2);
-		jenkins.assertBuildStatus(Result.FAILURE, build2);
-	}
+            scriptBuilder.setTasks("");
+            matrixProject.getBuildersList().add(scriptBuilder);
 
-	/*
-	 * Test to verify if Matrix build passes (mock MATLAB).
-	 */
-	@Test
-	public void verifyMatrixBuildPasses() throws Exception {
-		MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-		Axis axes = new Axis("VERSION", "R2018a", "R2018b");
-		matrixProject.setAxes(new AxisList(axes));
-		String matlabRoot = getMatlabroot("R2018b");
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
-		matrixProject.getBuildWrappersList().add(this.buildWrapper);
-		RunMatlabBuildBuilderTester tester = new RunMatlabBuildBuilderTester(matlabExecutorAbsolutePath,
-				"-positive");
+            // Check for first matrix combination.
+            Map<String, String> vals = new HashMap<String, String>();
+            vals.put("VERSION", "R2018a");
+            Combination c1 = new Combination(vals);
+            MatrixRun build1 = matrixProject.scheduleBuild2(0).get().getRun(c1);
 
-		tester.setTasks("");
-		matrixProject.getBuildersList().add(tester);
-		MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+            jenkins.assertLogContains("buildtool", build1);
+            jenkins.assertBuildStatus(Result.FAILURE, build1);
 
-		jenkins.assertLogContains("R2018a completed", build);
-		jenkins.assertLogContains("R2018b completed", build);
-		jenkins.assertBuildStatus(Result.SUCCESS, build);
-	}
+            // Check for second Matrix combination
+            vals.put("VERSION", "R2015b");
+            Combination c2 = new Combination(vals);
+            MatrixRun build2 = matrixProject.scheduleBuild2(0).get().getRun(c2);
+
+            jenkins.assertLogContains("MatlabNotFoundError", build2);
+            jenkins.assertBuildStatus(Result.FAILURE, build2);
+    }
+
+    /*
+     * Test to verify if Matrix build passes (mock MATLAB).
+     */
+    @Test
+    public void verifyMatrixBuildPasses() throws Exception {
+            MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
+            Axis axes = new Axis("VERSION", "R2018a", "R2018b");
+            matrixProject.setAxes(new AxisList(axes));
+            String matlabRoot = getMatlabroot("R2018b");
+            this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), matlabRoot.replace("R2018b", "$VERSION")));
+            matrixProject.getBuildWrappersList().add(this.buildWrapper);
+            RunMatlabBuildBuilderTester tester = new RunMatlabBuildBuilderTester(matlabExecutorAbsolutePath,
+                            "-positive");
+
+            tester.setTasks("");
+            matrixProject.getBuildersList().add(tester);
+            MatrixBuild build = matrixProject.scheduleBuild2(0).get();
+
+            jenkins.assertLogContains("R2018a completed", build);
+            jenkins.assertLogContains("R2018b completed", build);
+            jenkins.assertBuildStatus(Result.SUCCESS, build);
+    }
 }
