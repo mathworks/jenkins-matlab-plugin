@@ -1,11 +1,10 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2024 The MathWorks, Inc.
  *
  * Item listener class to provide functionality to check UI element states for a
  * Multi-configuration project.
- *
  */
 
 import hudson.Extension;
@@ -27,28 +26,27 @@ public final class MatlabItemListener extends ItemListener {
     private static final Map<String, Boolean> prjCheckMatlabBuildWrapper = new HashMap<>();
 
     @Override
-    public void onLoaded(){
+    public void onLoaded() {
         checkItems(Jenkins.get().getItems());
     }
 
     @Override
     public void onUpdated(Item item) {
-        if(!(item instanceof MatrixProject)){
+        if (!(item instanceof MatrixProject)) {
             return;
         }
         checkSingleItem(item);
     }
 
-
     private void checkItems(List<TopLevelItem> items) {
-        for(TopLevelItem item : items){
-            if(item instanceof MatrixProject){
+        for (TopLevelItem item : items) {
+            if (item instanceof MatrixProject) {
                 check((MatrixProject) item);
             }
         }
     }
 
-    private void checkSingleItem(Item item){
+    private void checkSingleItem(Item item) {
         check((MatrixProject) item);
     }
 
@@ -60,7 +58,7 @@ public final class MatlabItemListener extends ItemListener {
     private void checkForAxis(MatrixProject prj) {
         boolean checkForAxis = false;
         Collection<MatrixConfiguration> configurations = prj.getActiveConfigurations();
-        for(MatrixConfiguration conf : configurations){
+        for (MatrixConfiguration conf : configurations) {
             String matlabAxisValue = conf.getCombination().get(Message.getValue("Axis.matlab.key"));
             if (matlabAxisValue != null) {
                 checkForAxis = true;
@@ -72,8 +70,8 @@ public final class MatlabItemListener extends ItemListener {
 
     private void checkForBuildWrapper(MatrixProject prj) {
         boolean checkForBuildWrapper = false;
-        for(Object bWrapper : prj.getBuildWrappersList().toArray()) {
-            if(bWrapper instanceof UseMatlabVersionBuildWrapper){
+        for (Object bWrapper : prj.getBuildWrappersList().toArray()) {
+            if (bWrapper instanceof UseMatlabVersionBuildWrapper) {
                 checkForBuildWrapper = ((UseMatlabVersionBuildWrapper) bWrapper).getMatlabInstallationName() != null;
                 break;
             }

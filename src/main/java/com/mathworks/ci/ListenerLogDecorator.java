@@ -1,8 +1,8 @@
 package com.mathworks.ci;
 
-/*
-* Copyright 2018 The MathWorks, Inc.
-*/
+/**
+ * Copyright 2018-2024 The MathWorks, Inc.
+ */
 
 import java.io.IOException;
 import java.io.OutputStream;

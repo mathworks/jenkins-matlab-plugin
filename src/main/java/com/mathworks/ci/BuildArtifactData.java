@@ -2,7 +2,6 @@ package com.mathworks.ci;
 
 /**
  * Copyright 2024 The MathWorks, Inc.
- *
  */
 
 public class BuildArtifactData {

@@ -1,9 +1,8 @@
 package com.mathworks.ci.tools;
+
 /**
  * Copyright 2024, The MathWorks, Inc.
- *
  */
-
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -45,41 +44,41 @@ public class MatlabInstallerUnitTest {
     private Launcher mockLauncher;
 
     @Before
-    public void setUp () throws Exception {
-        MockitoAnnotations.initMocks (this);
-        installer = spy (new MatlabInstaller ("test-id"));
+    public void setUp() throws Exception {
+        MockitoAnnotations.initMocks(this);
+        installer = spy(new MatlabInstaller("test-id"));
         installer.setRelease("R2021a");
         installer.setProducts("MATLAB");
     }
 
     @Test
-    public void testGetRelease () {
-        assertEquals ("R2021a", installer.getRelease ());
+    public void testGetRelease() {
+        assertEquals("R2021a", installer.getRelease());
     }
 
     @Test
-    public void testGetProducts () {
-        assertEquals ("MATLAB", installer.getProducts ());
+    public void testGetProducts() {
+        assertEquals("MATLAB", installer.getProducts());
     }
 
     @Test
-    public void testPerformInstallation () throws Exception {
-        doReturn (mockFilePath).when (installer)
-            .performInstallation (mockTool, mockNode, mockListener);
+    public void testPerformInstallation() throws Exception {
+        doReturn(mockFilePath).when(installer)
+                .performInstallation(mockTool, mockNode, mockListener);
 
-        FilePath result = installer.performInstallation (mockTool, mockNode, mockListener);
-        assertNotNull (result);
+        FilePath result = installer.performInstallation(mockTool, mockNode, mockListener);
+        assertNotNull(result);
     }
 
     @Test(expected = InstallationFailedException.class)
-    public void testUnsupportedOS () throws Exception {
-        installer.getPlatform ("unsupportedOS", "unsupportedArch");
+    public void testUnsupportedOS() throws Exception {
+        installer.getPlatform("unsupportedOS", "unsupportedArch");
     }
 
     @Test
-    public void testGetPlatform () throws InstallationFailedException {
-        assertEquals ("glnxa64", installer.getPlatform ("Linux", "i686"));
-        assertEquals ("maci64", installer.getPlatform ("Mac OS X", "amd64"));
-        assertEquals ("maca64", installer.getPlatform ("Mac OS X", "arm64"));
+    public void testGetPlatform() throws InstallationFailedException {
+        assertEquals("glnxa64", installer.getPlatform("Linux", "i686"));
+        assertEquals("maci64", installer.getPlatform("Mac OS X", "amd64"));
+        assertEquals("maca64", installer.getPlatform("Mac OS X", "arm64"));
     }
 }

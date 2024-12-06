@@ -1,10 +1,9 @@
 package com.mathworks.ci.freestyle.options;
 
 /**
- * Copyright 2023 The MathWorks, Inc.
+ * Copyright 2023-2024 The MathWorks, Inc.
  *
  * Describable class for Startup Options.
- *
  */
 
 import hudson.Extension;
@@ -26,5 +25,7 @@ public class StartupOptions extends AbstractDescribableImpl<StartupOptions> {
         return this.options;
     }
 
-    @Extension public static class DescriptorImpl extends Descriptor<StartupOptions> {}
+    @Extension
+    public static class DescriptorImpl extends Descriptor<StartupOptions> {
+    }
 }

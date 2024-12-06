@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import com.mathworks.ci.BuildArtifactAction;
@@ -21,7 +20,7 @@ public class MatlabAction {
     BuildConsoleAnnotator annotator;
     String actionID;
 
-    public String getActionID(){
+    public String getActionID() {
         return (this.actionID == null) ? "" : this.actionID;
     }
 
@@ -38,8 +37,10 @@ public class MatlabAction {
     public void copyBuildPluginsToTemp() throws IOException, InterruptedException {
         // Copy plugins and override default plugins function
         runner.copyFileToTempFolder(MatlabBuilderConstants.DEFAULT_PLUGIN, MatlabBuilderConstants.DEFAULT_PLUGIN);
-        runner.copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN, MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
-        runner.copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN, MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
+        runner.copyFileToTempFolder(MatlabBuilderConstants.BUILD_REPORT_PLUGIN,
+                MatlabBuilderConstants.BUILD_REPORT_PLUGIN);
+        runner.copyFileToTempFolder(MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN,
+                MatlabBuilderConstants.TASK_RUN_PROGRESS_PLUGIN);
     }
 
     public void setBuildEnvVars() throws IOException, InterruptedException {
@@ -47,7 +48,7 @@ public class MatlabAction {
         runner.addEnvironmentVariable(
                 "MW_MATLAB_BUILDTOOL_DEFAULT_PLUGINS_FCN_OVERRIDE",
                 "ciplugins.jenkins.getDefaultPlugins");
-        runner.addEnvironmentVariable("MW_BUILD_PLUGIN_ACTION_ID",this.getActionID());
+        runner.addEnvironmentVariable("MW_BUILD_PLUGIN_ACTION_ID", this.getActionID());
         runner.addEnvironmentVariable(
                 "MW_MATLAB_TEMP_FOLDER",
                 runner.getTempFolder().toString());
@@ -55,7 +56,7 @@ public class MatlabAction {
 
     public void teardownAction(Run<?, ?> build) {
         // Handle build result
-        if(this.annotator != null) {
+        if (this.annotator != null) {
             moveJsonArtifactToBuildRoot(build, MatlabBuilderConstants.BUILD_ARTIFACT);
         }
 
@@ -66,15 +67,14 @@ public class MatlabAction {
         }
     }
 
-    private void moveJsonArtifactToBuildRoot(Run<?,?> build, String artifactBaseName) {
+    private void moveJsonArtifactToBuildRoot(Run<?, ?> build, String artifactBaseName) {
         try {
             FilePath file = new FilePath(this.runner.getTempFolder(), artifactBaseName + ".json");
             if (file.exists()) {
                 FilePath rootLocation = new FilePath(
                         new File(
                                 build.getRootDir().getAbsolutePath(),
-                                artifactBaseName + this.getActionID() + ".json")
-                );
+                                artifactBaseName + this.getActionID() + ".json"));
                 file.copyTo(rootLocation);
                 file.delete();
                 build.addAction(new BuildArtifactAction(build, this.getActionID()));

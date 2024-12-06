@@ -1,11 +1,10 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2019-2020 The MathWorks, Inc.
+ * Copyright 2019-2024 The MathWorks, Inc.
  *
  * This class is BuildWrapper which accepts the "matlabroot" from user and updates the PATH varible with it.
  * which could be later used across build.
- *
  */
 
 import hudson.model.Item;
@@ -42,7 +41,8 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     private String matlabInstallationName;
 
     @DataBoundConstructor
-    public UseMatlabVersionBuildWrapper() {}
+    public UseMatlabVersionBuildWrapper() {
+    }
 
     public String getMatlabRootFolder() {
         return this.matlabRootFolder;
@@ -51,22 +51,23 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
     public String getMatlabInstallationHome(Computer cmp, TaskListener listener, EnvVars env)
             throws IOException, InterruptedException {
         return Utilities.getNodeSpecificHome(this.matlabInstallationName,
-                cmp.getNode(), listener, env).getRemote ();
+                cmp.getNode(), listener, env).getRemote();
     }
 
     public String getMatlabInstallationName() {
-        /* For backward compatibility assign installation name to custom
+        /*
+         * For backward compatibility assign installation name to custom
          * if matlabRootFolder is not null.
-         * */
-        if(this.matlabRootFolder!=null && !this.matlabRootFolder.isEmpty()){
+         */
+        if (this.matlabRootFolder != null && !this.matlabRootFolder.isEmpty()) {
             this.matlabInstallationName = Message.getValue("matlab.custom.location");
         }
         return matlabInstallationName;
     }
 
     @DataBoundSetter
-    public void setMatlabBuildWrapperContent(MatlabBuildWrapperContent matlabBuildWrapperContent){
-        if (matlabBuildWrapperContent != null){
+    public void setMatlabBuildWrapperContent(MatlabBuildWrapperContent matlabBuildWrapperContent) {
+        if (matlabBuildWrapperContent != null) {
             this.matlabInstallationName = matlabBuildWrapperContent.getMatlabInstallationName();
             this.matlabRootFolder = matlabBuildWrapperContent.getMatlabRootFolder();
         }
@@ -76,7 +77,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             throws IOException, InterruptedException {
         String matlabroot = getMatlabRootFolder();
         // If matlabroot is null use matlab installation path
-        if (matlabroot == null || matlabroot.isEmpty()){
+        if (matlabroot == null || matlabroot.isEmpty()) {
             matlabroot = getMatlabInstallationHome(cmp, listener, this.env);
         }
 
@@ -136,22 +137,24 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         }
 
         /*
-         * Below methods with 'doCheck' prefix gets called by jenkins when this builder is loaded.
-         * these methods are used to perform basic validation on UI elements associated with this
+         * Below methods with 'doCheck' prefix gets called by jenkins when this builder
+         * is loaded.
+         * these methods are used to perform basic validation on UI elements associated
+         * with this
          * descriptor class.
          */
         @POST
-        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder, @AncestorInPath Item item) {
+        public FormValidation doCheckMatlabRootFolder(@QueryParameter String matlabRootFolder,
+                @AncestorInPath Item item) {
             if (item == null) {
                 return FormValidation.ok();
             }
             item.checkPermission(Item.CONFIGURE);
-            List<Function<String, FormValidation>> listOfCheckMethods =
-                    new ArrayList<Function<String, FormValidation>>();
+            List<Function<String, FormValidation>> listOfCheckMethods = new ArrayList<Function<String, FormValidation>>();
             listOfCheckMethods.add(chkMatlabEmpty);
             listOfCheckMethods.add(chkMatlabSupportsRunTests);
 
-            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods,matlabRootFolder);
+            return FormValidationUtil.getFirstErrorOrWarning(listOfCheckMethods, matlabRootFolder);
         }
 
         Function<String, FormValidation> chkMatlabEmpty = (String matlabRootFolder) -> {
@@ -188,30 +191,33 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Set Environment variable
         setEnv(initialEnvironment);
 
-
-        String nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener) + getNodeSpecificExecutable(launcher);
+        String nodeSpecificMatlab = getNodeSpecificMatlab(Computer.currentComputer(), listener)
+                + getNodeSpecificExecutable(launcher);
         FilePath matlabExecutablePath = new FilePath(launcher.getChannel(), nodeSpecificMatlab);
         if (!matlabExecutablePath.exists()) {
             throw new MatlabNotFoundError(Message.getValue("matlab.not.found.error"));
         }
         // Add matlab-batch executable in path
         FilePath batchExecutable = getNthParentFilePath(matlabExecutablePath, 3);
-        if(batchExecutable != null && batchExecutable.exists ()){
-            context.env("PATH+matlab_batch", batchExecutable.getRemote ());
+        if (batchExecutable != null && batchExecutable.exists()) {
+            context.env("PATH+matlab_batch", batchExecutable.getRemote());
         }
 
-        // Add "matlabroot" without bin as env variable which will be available across the build.
+        // Add "matlabroot" without bin as env variable which will be available across
+        // the build.
         context.env("matlabroot", nodeSpecificMatlab);
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());;
-        listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath.getParent().getRemote()) + "\n");
+        context.env("PATH+matlabroot", matlabExecutablePath.getParent().getRemote());
+        ;
+        listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"),
+                matlabExecutablePath.getParent().getRemote()) + "\n");
     }
 
     private String getNodeSpecificExecutable(Launcher launcher) {
         return (launcher.isUnix()) ? "/bin/matlab" : "\\bin\\matlab.exe";
     }
 
-    public static FilePath getNthParentFilePath (FilePath path, int levels) {
+    public static FilePath getNthParentFilePath(FilePath path, int levels) {
         if (path == null || levels < 0) {
             return null;
         }
@@ -221,7 +227,7 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
             if (currentPath == null) {
                 return null;
             }
-            currentPath = currentPath.getParent ();
+            currentPath = currentPath.getParent();
         }
         return currentPath;
     }

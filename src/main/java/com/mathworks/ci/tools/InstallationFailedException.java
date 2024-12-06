@@ -2,7 +2,6 @@ package com.mathworks.ci.tools;
 
 /**
  * Copyright 2024, The MathWorks, Inc.
- *
  */
 
 import java.io.IOException;
@@ -11,7 +10,7 @@ import java.io.IOException;
 
 public class InstallationFailedException extends IOException {
 
-    InstallationFailedException (String message) {
-        super (message);
+    InstallationFailedException(String message) {
+        super(message);
     }
 }
