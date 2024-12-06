@@ -39,13 +39,11 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
-
     // Getter and Setters to access local members
 
     private void setEnv(EnvVars env) {
         this.env = env;
     }
-
 
     @Extension
     public static class Desriptor extends BuildStepDescriptor<Builder> {
@@ -111,4 +109,3 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
         return matlabDefaultArgs;
     }
 }
-

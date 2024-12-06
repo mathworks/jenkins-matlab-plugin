@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2022-2024 The MathWorks, Inc.
- *  
  */
 
 import java.io.Serializable;
@@ -34,7 +33,7 @@ public class RunMatlabBuildStep extends Step implements Serializable {
 
     @DataBoundConstructor
     public RunMatlabBuildStep() {
- 
+
     }
 
     public String getTasks() {
@@ -60,7 +59,7 @@ public class RunMatlabBuildStep extends Step implements Serializable {
     }
 
     @DataBoundSetter
-    public void setBuildOptions (String buildOptions) {
+    public void setBuildOptions(String buildOptions) {
         this.buildOptions = buildOptions;
     }
 
@@ -82,12 +81,10 @@ public class RunMatlabBuildStep extends Step implements Serializable {
         public String getFunctionName() {
             return Message.getValue("matlab.build.build.step.name");
         }
-        
+
         @Override
         public String getDisplayName() {
             return Message.getValue("matlab.build.step.display.name");
         }
     }
 }
-
-

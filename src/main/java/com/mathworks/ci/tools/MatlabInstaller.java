@@ -1,9 +1,8 @@
 package com.mathworks.ci.tools;
+
 /**
  * Copyright 2024, The MathWorks, Inc.
- *
  */
-
 
 import com.mathworks.ci.MatlabInstallation;
 import com.mathworks.ci.Message;
@@ -70,38 +69,38 @@ public class MatlabInstaller extends ToolInstaller {
 
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log)
-        throws IOException, InterruptedException {
+            throws IOException, InterruptedException {
         FilePath destination = preferredLocation(tool, node);
         String[] systemProperties = getSystemProperties(node);
         FilePath matlabRootPath;
-        if(systemProperties[0].toLowerCase().contains("os x")) {
-            matlabRootPath= new FilePath(destination, this.getRelease()+".app");
+        if (systemProperties[0].toLowerCase().contains("os x")) {
+            matlabRootPath = new FilePath(destination, this.getRelease() + ".app");
         } else {
             matlabRootPath = new FilePath(destination, this.getRelease());
         }
         String platform = getPlatform(systemProperties[0], systemProperties[1]);
         getFreshCopyOfExecutables(platform, destination);
-        
+
         makeDir(matlabRootPath);
-        int result  = installUsingMpm(node, this.getRelease (), matlabRootPath, this.getProducts (), log);
+        int result = installUsingMpm(node, this.getRelease(), matlabRootPath, this.getProducts(), log);
         if (result == 0) {
-                log.getLogger ().println (
+            log.getLogger().println(
                     "MATLAB installation of version " + this.getRelease()
-                        + " using mpm completed successfully!");
+                            + " using mpm completed successfully!");
         }
         return matlabRootPath;
     }
 
     private int installUsingMpm(Node node, String release, FilePath destination, String products, TaskListener log)
-        throws IOException, InterruptedException {
+            throws IOException, InterruptedException {
 
         Launcher matlabInstaller = node.createLauncher(log);
-        ProcStarter installerProc = matlabInstaller.launch ();
+        ProcStarter installerProc = matlabInstaller.launch();
 
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(destination.getParent().getRemote() + getNodeSpecificMPMExecutor(node));
         args.add("install");
-        appendReleaseToArguments(release,args, log);
+        appendReleaseToArguments(release, args, log);
         args.add("--destination=" + destination.getRemote());
         addMatlabProductsToArgs(args, products);
         installerProc.pwd(destination).cmds(args).stdout(log);
@@ -110,14 +109,13 @@ public class MatlabInstaller extends ToolInstaller {
             result = installerProc.join();
         } catch (Exception e) {
             log.getLogger().println("MATLAB installation failed " + e.getMessage());
-            throw new InstallationFailedException(e.getMessage ());
+            throw new InstallationFailedException(e.getMessage());
         }
         return result;
     }
 
-
     private void makeDir(FilePath path) throws IOException, InterruptedException {
-        if(!path.exists()){
+        if (!path.exists()) {
             path.mkdirs();
             path.chmod(0777);
         }
@@ -128,28 +126,28 @@ public class MatlabInstaller extends ToolInstaller {
         String actualRelease = trimmedRelease;
 
         if (trimmedRelease.equalsIgnoreCase("latest") || trimmedRelease.equalsIgnoreCase(
-            "latest-including-prerelease")) {
-            String releaseInfoUrl =
-                Message.getValue("matlab.release.info.url") + trimmedRelease;
+                "latest-including-prerelease")) {
+            String releaseInfoUrl = Message.getValue("matlab.release.info.url") + trimmedRelease;
             String releaseVersion = null;
             try {
                 releaseVersion = IOUtils.toString(new URL(releaseInfoUrl),
-                    StandardCharsets.UTF_8).trim();
+                        StandardCharsets.UTF_8).trim();
             } catch (IOException e) {
                 log.getLogger().println("Failed to fetch release version: " + e.getMessage());
             }
 
             if (releaseVersion != null && releaseVersion.contains("prerelease")) {
                 actualRelease = releaseVersion.replace("prerelease", "");
-                args.add ("--release-status=Prerelease");
+                args.add("--release-status=Prerelease");
             } else {
                 actualRelease = releaseVersion;
             }
         }
         args.add("--release=" + actualRelease);
     }
+
     private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
-        throws IOException, InterruptedException {
+            throws IOException, InterruptedException {
         FilePath matlabBatchPath = new FilePath(expectedPath, "matlab-batch");
         FilePath mpmPath = new FilePath(expectedPath, "mpm");
 
@@ -173,10 +171,10 @@ public class MatlabInstaller extends ToolInstaller {
                 throw new InstallationFailedException("Unsupported OS");
         }
 
-        //Handle the concurrency issues due to same name.
+        // Handle the concurrency issues due to same name.
         FilePath tempMatlabBatchPath = new FilePath(expectedPath, "temp-matlab-batch");
         FilePath tempMpmPath = new FilePath(expectedPath, "temp-mpm");
-        try{
+        try {
             tempMpmPath.copyFrom(mpmUrl.openStream());
             tempMpmPath.chmod(0777);
             tempMatlabBatchPath.copyFrom(matlabBatchUrl.openStream());
@@ -185,7 +183,7 @@ public class MatlabInstaller extends ToolInstaller {
             tempMpmPath.renameTo(mpmPath);
             tempMatlabBatchPath.renameTo(matlabBatchPath);
 
-        } catch(IOException | InterruptedException e){
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         } finally {
             // Clean up temporary files if they exist
@@ -194,10 +192,9 @@ public class MatlabInstaller extends ToolInstaller {
         }
     }
 
-    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
-        justification =
-            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
-                + "https://github.com/spotbugs/spotbugs/issues/1843")
+    @SuppressFBWarnings(value = {
+            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" }, justification = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
+                    + "https://github.com/spotbugs/spotbugs/issues/1843")
     private String getNodeSpecificMPMExecutor(Node node) {
         if (!node.toComputer().isUnix()) {
             return "\\mpm.exe";
@@ -206,7 +203,7 @@ public class MatlabInstaller extends ToolInstaller {
     }
 
     private void addMatlabProductsToArgs(ArgumentListBuilder args, String products)
-        throws IOException, InterruptedException {
+            throws IOException, InterruptedException {
         args.add("--products");
         if (products.isEmpty()) {
             args.add(DEFAULT_PRODUCT);
@@ -227,8 +224,8 @@ public class MatlabInstaller extends ToolInstaller {
         if (value.contains("linux")) {
             return "glnxa64";
         } else if (value.contains("os x")) {
-            if (architecture.equalsIgnoreCase("aarch64") || architecture.equalsIgnoreCase (
-                "arm64")) {
+            if (architecture.equalsIgnoreCase("aarch64") || architecture.equalsIgnoreCase(
+                    "arm64")) {
                 return "maca64";
             } else {
                 return "maci64";
@@ -238,13 +235,12 @@ public class MatlabInstaller extends ToolInstaller {
         }
     }
 
-    @SuppressFBWarnings(value = {"NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"},
-        justification =
-            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
-                + "https://github.com/spotbugs/spotbugs/issues/1843")
+    @SuppressFBWarnings(value = {
+            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" }, justification = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
+                    + "https://github.com/spotbugs/spotbugs/issues/1843")
     private String[] getSystemProperties(Node node) throws IOException, InterruptedException {
         String[] properties = node.getChannel()
-            .call (new GetSystemProperties("os.name", "os.arch", "os.version"));
+                .call(new GetSystemProperties("os.name", "os.arch", "os.version"));
         return properties;
     }
 

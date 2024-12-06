@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -26,10 +25,13 @@ import com.mathworks.ci.parameters.CommandActionParameters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatlabCommandStepExecutionUnitTest {
-    @Mock StepContext context;
-    @Mock MatlabActionFactory factory;
-    @Mock RunMatlabCommandAction action;
-    
+    @Mock
+    StepContext context;
+    @Mock
+    MatlabActionFactory factory;
+    @Mock
+    RunMatlabCommandAction action;
+
     @Before
     public void setup() throws IOException, InterruptedException {
         when(factory.createAction(any(CommandActionParameters.class))).thenReturn(action);
@@ -38,8 +40,8 @@ public class MatlabCommandStepExecutionUnitTest {
     @Test
     public void shouldHandleNullCases() throws Exception, IOException, InterruptedException, MatlabExecutionException {
         MatlabCommandStepExecution ex = new MatlabCommandStepExecution(
-                factory, 
-                context, 
+                factory,
+                context,
                 new RunMatlabCommandStep(null));
 
         ex.run();
@@ -55,7 +57,8 @@ public class MatlabCommandStepExecutionUnitTest {
     }
 
     @Test
-    public void shouldHandleMaximalCases() throws Exception, IOException, InterruptedException, MatlabExecutionException {
+    public void shouldHandleMaximalCases()
+            throws Exception, IOException, InterruptedException, MatlabExecutionException {
         RunMatlabCommandStep step = new RunMatlabCommandStep("mycommand");
         step.setStartupOptions("-nojvm -logfile file");
 
@@ -74,10 +77,11 @@ public class MatlabCommandStepExecutionUnitTest {
     }
 
     @Test
-    public void shouldHandleActionThrowing() throws Exception, IOException, InterruptedException, MatlabExecutionException {
+    public void shouldHandleActionThrowing()
+            throws Exception, IOException, InterruptedException, MatlabExecutionException {
         MatlabCommandStepExecution ex = new MatlabCommandStepExecution(
-                factory, 
-                context, 
+                factory,
+                context,
                 new RunMatlabCommandStep(null));
 
         doThrow(new MatlabExecutionException(12)).when(action).run();

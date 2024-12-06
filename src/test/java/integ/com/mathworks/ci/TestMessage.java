@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /*
- * Copyright 2018 The MathWorks, Inc.
+ * Copyright 2018-2024 The MathWorks, Inc.
  * 
  * This Class is wrapper to access the static configuration values used across test classes. Acts as
  * Utility class to access key & value pairs from testconfig.properties

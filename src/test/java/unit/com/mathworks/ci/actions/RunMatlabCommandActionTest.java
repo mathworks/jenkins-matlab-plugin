@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -30,14 +29,21 @@ import com.mathworks.ci.parameters.CommandActionParameters;
 
 @RunWith(MockitoJUnitRunner.Silent.class)
 public class RunMatlabCommandActionTest {
-    @Mock CommandActionParameters params;
-    @Mock BuildConsoleAnnotator annotator;
-    @Mock MatlabCommandRunner runner;
-    @Mock PrintStream out;
-    @Mock TaskListener listener;
-    @Mock Run build;
+    @Mock
+    CommandActionParameters params;
+    @Mock
+    BuildConsoleAnnotator annotator;
+    @Mock
+    MatlabCommandRunner runner;
+    @Mock
+    PrintStream out;
+    @Mock
+    TaskListener listener;
+    @Mock
+    Run build;
 
-    @Mock FilePath tempFolder;
+    @Mock
+    FilePath tempFolder;
 
     private boolean setup = false;
     private RunMatlabCommandAction action;
@@ -91,6 +97,7 @@ public class RunMatlabCommandActionTest {
         } catch (MatlabExecutionException e) {
             verify(out).println(e.getMessage());
             assertEquals(12, e.getExitCode());
-        };
+        }
+        ;
     }
 }

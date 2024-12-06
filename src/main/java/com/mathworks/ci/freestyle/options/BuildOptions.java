@@ -5,7 +5,6 @@ package com.mathworks.ci.freestyle.options;
  * Copyright 2024 The MathWorks, Inc.
  *
  * Describable class for Build Options.
- *
  */
 
 import hudson.Extension;
@@ -27,5 +26,7 @@ public class BuildOptions extends AbstractDescribableImpl<BuildOptions> {
         return this.options;
     }
 
-    @Extension public static class DescriptorImpl extends Descriptor<BuildOptions> {}
+    @Extension
+    public static class DescriptorImpl extends Descriptor<BuildOptions> {
+    }
 }
