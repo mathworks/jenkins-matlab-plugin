@@ -24,7 +24,9 @@ import hudson.tools.ToolInstallerDescriptor;
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
@@ -82,16 +84,11 @@ public class MatlabInstaller extends ToolInstaller {
         getFreshCopyOfExecutables(platform, destination);
 
         makeDir(matlabRootPath);
-        int result = installUsingMpm(node, this.getRelease(), matlabRootPath, this.getProducts(), log);
-        if (result == 0) {
-            log.getLogger().println(
-                    "MATLAB installation of version " + this.getRelease()
-                            + " using mpm completed successfully!");
-        }
+        installUsingMpm(node, this.getRelease(), matlabRootPath, this.getProducts(), log);
         return matlabRootPath;
     }
 
-    private int installUsingMpm(Node node, String release, FilePath destination, String products, TaskListener log)
+    private void installUsingMpm(Node node, String release, FilePath destination, String products, TaskListener log)
             throws IOException, InterruptedException {
 
         Launcher matlabInstaller = node.createLauncher(log);
@@ -103,15 +100,24 @@ public class MatlabInstaller extends ToolInstaller {
         appendReleaseToArguments(release, args, log);
         args.add("--destination=" + destination.getRemote());
         addMatlabProductsToArgs(args, products);
-        installerProc.pwd(destination).cmds(args).stdout(log);
+
+        ByteArrayOutputStream err = new ByteArrayOutputStream();
+        installerProc.pwd(destination).cmds(args).stdout(err);
+
         int result;
         try {
             result = installerProc.join();
         } catch (Exception e) {
-            log.getLogger().println("MATLAB installation failed " + e.getMessage());
             throw new InstallationFailedException(e.getMessage());
         }
-        return result;
+        if (result != 0) {
+            String errString = err.toString(StandardCharsets.UTF_8);
+            if (errString.contains("already installed")) {
+                log.getLogger().println(errString);
+            } else {
+                throw new InstallationFailedException(errString);
+            }
+        }
     }
 
     private void makeDir(FilePath path) throws IOException, InterruptedException {
