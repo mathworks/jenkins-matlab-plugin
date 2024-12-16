@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -17,16 +16,17 @@ import hudson.model.Run;
 public class RunMatlabBuildAction extends MatlabAction {
     private BuildActionParameters params;
 
-    public RunMatlabBuildAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, BuildActionParameters params) {
+    public RunMatlabBuildAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator,
+            BuildActionParameters params) {
         super(runner, annotator);
         this.params = params;
     }
 
     public RunMatlabBuildAction(BuildActionParameters params) throws IOException, InterruptedException {
-        this(new MatlabCommandRunner(params), 
+        this(new MatlabCommandRunner(params),
                 new BuildConsoleAnnotator(
-                    params.getTaskListener().getLogger(), 
-                    params.getBuild().getCharset()),
+                        params.getTaskListener().getLogger(),
+                        params.getBuild().getCharset()),
                 params);
     }
 
@@ -39,10 +39,10 @@ public class RunMatlabBuildAction extends MatlabAction {
 
         // Prepare the build tool command
         // TODO: Devise better solution then prepending the command
-        //   here.
-        String command = "addpath('" 
-            + runner.getTempFolder().getRemote()
-            + "'); buildtool";
+        // here.
+        String command = "addpath('"
+                + runner.getTempFolder().getRemote()
+                + "'); buildtool";
 
         if (params.getTasks() != null) {
             command += " " + params.getTasks();
@@ -56,8 +56,8 @@ public class RunMatlabBuildAction extends MatlabAction {
             runner.runMatlabCommand(command);
         } catch (Exception e) {
             this.params.getTaskListener().getLogger()
-                .println(e.getMessage());
-            throw(e);
+                    .println(e.getMessage());
+            throw (e);
         } finally {
             annotator.forceEol();
 

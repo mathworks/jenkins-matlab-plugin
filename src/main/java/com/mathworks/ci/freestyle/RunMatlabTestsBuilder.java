@@ -5,7 +5,6 @@ package com.mathworks.ci.freestyle;
  *  
  * MATLAB test run builder used to run all MATLAB & Simulink tests automatically and generate   
  * selected test artifacts. 
- *  
  */
 
 import java.io.IOException;
@@ -44,7 +43,6 @@ import com.mathworks.ci.freestyle.options.*;
 
 public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
 
-
     // Make all old values transient which protects them writing back on disk.
     private transient int buildResult;
     private transient boolean tapChkBx;
@@ -53,14 +51,14 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
     private transient boolean stmResultsChkBx;
     private transient boolean modelCoverageChkBx;
     private transient boolean pdfReportChkBx;
-    
+
     private Artifact tapArtifact = new NullArtifact();
     private Artifact junitArtifact = new NullArtifact();
     private Artifact coberturaArtifact = new NullArtifact();
     private Artifact stmResultsArtifact = new NullArtifact();
     private Artifact modelCoverageArtifact = new NullArtifact();
     private Artifact pdfReportArtifact = new NullArtifact();
-    
+
     private SourceFolder sourceFolder;
     private SelectByFolder selectByFolder;
     private SelectByTag selectByTag;
@@ -80,57 +78,57 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
     public RunMatlabTestsBuilder() {
         this(new MatlabActionFactory());
     }
-    
+
     // Getter and Setters to access local members
 
     @DataBoundSetter
     public void setTapArtifact(TapArtifact tapArtifact) {
         this.tapArtifact = tapArtifact;
-    } 
-   
+    }
+
     @DataBoundSetter
     public void setJunitArtifact(JunitArtifact junitArtifact) {
         this.junitArtifact = junitArtifact;
     }
-    
+
     @DataBoundSetter
     public void setCoberturaArtifact(CoberturaArtifact coberturaArtifact) {
         this.coberturaArtifact = coberturaArtifact;
     }
-    
+
     @DataBoundSetter
     public void setStmResultsArtifact(StmResultsArtifact stmResultsArtifact) {
         this.stmResultsArtifact = stmResultsArtifact;
     }
-    
+
     @DataBoundSetter
     public void setModelCoverageArtifact(ModelCovArtifact modelCoverageArtifact) {
         this.modelCoverageArtifact = modelCoverageArtifact;
-    }   
+    }
 
     @DataBoundSetter
     public void setPdfReportArtifact(PdfArtifact pdfReportArtifact) {
         this.pdfReportArtifact = pdfReportArtifact;
     }
-    
+
     @DataBoundSetter
     public void setSelectByTag(SelectByTag selectByTag) {
         this.selectByTag = selectByTag;
     }
-    
+
     @DataBoundSetter
     public void setSourceFolder(SourceFolder sourceFolder) {
         this.sourceFolder = sourceFolder;
     }
-    
+
     @DataBoundSetter
     public void setSelectByFolder(SelectByFolder selectByFolder) {
-    	this.selectByFolder = selectByFolder;
+        this.selectByFolder = selectByFolder;
     }
-    
+
     @DataBoundSetter
     public void setStartupOptions(StartupOptions startupOptions) {
-    	this.startupOptions = startupOptions;
+        this.startupOptions = startupOptions;
     }
 
     @DataBoundSetter
@@ -155,59 +153,60 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
 
     public String getTapReportFilePath() {
         return this.getTapArtifact().getFilePath();
-    }      
-    
+    }
+
     public Artifact getTapArtifact() {
         return this.tapArtifact;
     }
-        
+
     public Artifact getJunitArtifact() {
         return this.junitArtifact;
     }
-    
+
     public String getJunitReportFilePath() {
         return this.getJunitArtifact().getFilePath();
     }
-        
+
     public Artifact getCoberturaArtifact() {
         return this.coberturaArtifact;
     }
-    
+
     public String getCoberturaReportFilePath() {
         return this.getCoberturaArtifact().getFilePath();
     }
-          
+
     public Artifact getStmResultsArtifact() {
         return this.stmResultsArtifact;
-    } 
-    
+    }
+
     public String getStmResultsFilePath() {
         return this.getStmResultsArtifact().getFilePath();
     }
-       
+
     public Artifact getModelCoverageArtifact() {
         return this.modelCoverageArtifact;
     }
-    
+
     public String getModelCoverageFilePath() {
         return this.getModelCoverageArtifact().getFilePath();
     }
-    
+
     public Artifact getPdfReportArtifact() {
         return this.pdfReportArtifact;
     }
-    
+
     public String getPdfReportFilePath() {
         return this.getPdfReportArtifact().getFilePath();
     }
+
     public SelectByTag getSelectByTag() {
-    	return this.selectByTag;
+        return this.selectByTag;
     }
 
     public String getSelectByTagAsString() {
         return this.selectByTag == null
-            ? null
-            : selectByTag.getTestTag();
+                ? null
+                : selectByTag.getTestTag();
     };
 
     public SourceFolder getSourceFolder() {
@@ -216,25 +215,25 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
 
     public List<String> getSourceFolderPaths() {
         return this.sourceFolder == null
-            ? null
-            : this.sourceFolder.getSourceFolderStringPaths();
+                ? null
+                : this.sourceFolder.getSourceFolderStringPaths();
     }
-    
+
     public SelectByFolder getSelectByFolder() {
-    	return this.selectByFolder;
+        return this.selectByFolder;
     }
 
     public List<String> getSelectByFolderPaths() {
         return this.selectByFolder == null
-            ? null
-            : this.selectByFolder.getTestFolderStringPaths();
+                ? null
+                : this.selectByFolder.getTestFolderStringPaths();
     }
 
-    private Artifact getArtifactObject(boolean isChecked, Artifact returnVal)  {
+    private Artifact getArtifactObject(boolean isChecked, Artifact returnVal) {
         // If previously checked assign valid artifact object else NullArtifact.
         return (isChecked) ? returnVal : new NullArtifact();
     }
-    
+
     // Verbosity level
 
     public String getLoggingLevel() {
@@ -259,40 +258,38 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
 
     public String getStartupOptionsAsString() {
         return this.startupOptions == null
-            ? ""
-            : this.startupOptions.getOptions();
+                ? ""
+                : this.startupOptions.getOptions();
     }
-    
+
     // To retain Backward compatibility
     protected Object readResolve() {
 
         /*
-        * Assign appropriate artifact objects if it was selected in release 2.0.0 or earlier.
-        * If using a later plugin release, check if artifact objects were previously serialized.
-        * */
-        this.pdfReportArtifact = Optional.ofNullable(this.pdfReportArtifact).orElseGet(() ->
-                this.getArtifactObject(pdfReportChkBx, new PdfArtifact("matlabTestArtifacts/testreport.pdf"))
-        );
+         * Assign appropriate artifact objects if it was selected in release 2.0.0 or
+         * earlier.
+         * If using a later plugin release, check if artifact objects were previously
+         * serialized.
+         */
+        this.pdfReportArtifact = Optional.ofNullable(this.pdfReportArtifact).orElseGet(
+                () -> this.getArtifactObject(pdfReportChkBx, new PdfArtifact("matlabTestArtifacts/testreport.pdf")));
 
-        this.tapArtifact = Optional.ofNullable(this.tapArtifact).orElseGet(() ->
-                this.getArtifactObject(tapChkBx, new TapArtifact("matlabTestArtifacts/taptestresults.tap"))
-        );
+        this.tapArtifact = Optional.ofNullable(this.tapArtifact).orElseGet(
+                () -> this.getArtifactObject(tapChkBx, new TapArtifact("matlabTestArtifacts/taptestresults.tap")));
 
-        this.junitArtifact = Optional.ofNullable(this.junitArtifact).orElseGet(() ->
-                this.getArtifactObject(junitChkBx, new JunitArtifact("matlabTestArtifacts/junittestresults.xml"))
-        );
+        this.junitArtifact = Optional.ofNullable(this.junitArtifact).orElseGet(() -> this.getArtifactObject(junitChkBx,
+                new JunitArtifact("matlabTestArtifacts/junittestresults.xml")));
 
-        this.coberturaArtifact = Optional.ofNullable(this.coberturaArtifact).orElseGet(() ->
-                this.getArtifactObject(coberturaChkBx, new CoberturaArtifact("matlabTestArtifacts/cobertura.xml"))
-        );
+        this.coberturaArtifact = Optional.ofNullable(this.coberturaArtifact).orElseGet(() -> this
+                .getArtifactObject(coberturaChkBx, new CoberturaArtifact("matlabTestArtifacts/cobertura.xml")));
 
-        this.stmResultsArtifact = Optional.ofNullable(this.stmResultsArtifact).orElseGet(() ->
-                this.getArtifactObject(stmResultsChkBx, new StmResultsArtifact("matlabTestArtifacts/simulinktestresults.mldatx"))
-        );
+        this.stmResultsArtifact = Optional.ofNullable(this.stmResultsArtifact)
+                .orElseGet(() -> this.getArtifactObject(stmResultsChkBx,
+                        new StmResultsArtifact("matlabTestArtifacts/simulinktestresults.mldatx")));
 
-        this.modelCoverageArtifact = Optional.ofNullable(this.modelCoverageArtifact).orElseGet(() ->
-                this.getArtifactObject(modelCoverageChkBx, new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.xml"))
-        );
+        this.modelCoverageArtifact = Optional.ofNullable(this.modelCoverageArtifact)
+                .orElseGet(() -> this.getArtifactObject(modelCoverageChkBx,
+                        new ModelCovArtifact("matlabTestArtifacts/coberturamodelcoverage.xml")));
 
         if (factory == null) {
             factory = new MatlabActionFactory();
@@ -300,9 +297,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
 
         return this;
     }
-    
-    
-    
+
     @Extension
     public static class RunMatlabTestsDescriptor extends BuildStepDescriptor<Builder> {
 
@@ -313,22 +308,22 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             Items.XSTREAM2.addCompatibilityAlias("com.mathworks.ci.TestFolders", TestFolders.class);
 
             Items.XSTREAM2.addCompatibilityAlias(
-                    "com.mathworks.ci.RunMatlabTestsBuilder$PdfArtifact", 
+                    "com.mathworks.ci.RunMatlabTestsBuilder$PdfArtifact",
                     RunMatlabTestsBuilder.PdfArtifact.class);
             Items.XSTREAM2.addCompatibilityAlias(
-                    "com.mathworks.ci.RunMatlabTestsBuilder$JunitArtifact", 
+                    "com.mathworks.ci.RunMatlabTestsBuilder$JunitArtifact",
                     RunMatlabTestsBuilder.JunitArtifact.class);
             Items.XSTREAM2.addCompatibilityAlias(
-                    "com.mathworks.ci.RunMatlabTestsBuilder$TapArtifact", 
+                    "com.mathworks.ci.RunMatlabTestsBuilder$TapArtifact",
                     RunMatlabTestsBuilder.TapArtifact.class);
             Items.XSTREAM2.addCompatibilityAlias(
-                    "com.mathworks.ci.RunMatlabTestsBuilder$CoberturaArtifact", 
+                    "com.mathworks.ci.RunMatlabTestsBuilder$CoberturaArtifact",
                     RunMatlabTestsBuilder.CoberturaArtifact.class);
             Items.XSTREAM2.addCompatibilityAlias(
-                    "com.mathworks.ci.RunMatlabTestsBuilder$StmResultsArtifact", 
+                    "com.mathworks.ci.RunMatlabTestsBuilder$StmResultsArtifact",
                     RunMatlabTestsBuilder.StmResultsArtifact.class);
             Items.XSTREAM2.addCompatibilityAlias(
-                    "com.mathworks.ci.RunMatlabTestsBuilder$ModelCovArtifact", 
+                    "com.mathworks.ci.RunMatlabTestsBuilder$ModelCovArtifact",
                     RunMatlabTestsBuilder.ModelCovArtifact.class);
         }
 
@@ -343,7 +338,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             save();
             return super.configure(req, formData);
         }
-        
+
         // Verbosity lists
         public ListBoxModel doFillLoggingLevelItems() {
             ListBoxModel items = new ListBoxModel();
@@ -370,11 +365,13 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         }
 
         /*
-         * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
+         * This is to identify which project type in jenkins this should be
+         * applicable.(non-Javadoc)
          * 
          * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
          * 
-         * if it returns true then this build step will be applicable for all project type.
+         * if it returns true then this build step will be applicable for all project
+         * type.
          */
         @Override
         public boolean isApplicable(
@@ -415,14 +412,19 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
             build.setResult(Result.FAILURE);
         }
     }
-    
+
     /*
-     * Classes for each optional block in jelly file.This is restriction from Stapler architecture
-     * when we use <f:optionalBlock> as it creates a object for each block in JSON. This could be
-     * simplified by using inline=true attribute of <f:optionalBlock> however it has some abrupt UI
-     * scrolling issue on click and also some esthetic issue like broken gray side bar appears.Some
+     * Classes for each optional block in jelly file.This is restriction from
+     * Stapler architecture
+     * when we use <f:optionalBlock> as it creates a object for each block in JSON.
+     * This could be
+     * simplified by using inline=true attribute of <f:optionalBlock> however it has
+     * some abrupt UI
+     * scrolling issue on click and also some esthetic issue like broken gray side
+     * bar appears.Some
      * discussion about this on Jenkins forum
-     * https://groups.google.com/forum/#!searchin/jenkinsci-dev/OptionalBlock$20action$20class%
+     * https://groups.google.com/forum/#!searchin/jenkinsci-dev/
+     * OptionalBlock$20action$20class%
      * 7Csort:date/jenkinsci-dev/AFYHSG3NUEI/UsVJIKoE4B8J
      * 
      */
@@ -557,7 +559,6 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
         }
     }
 
-
     public interface Artifact {
         public void addFilePathArgTo(Map<String, String> inputArgs);
 
@@ -565,7 +566,7 @@ public class RunMatlabTestsBuilder extends Builder implements SimpleBuildStep {
 
         public boolean getSelected();
     }
-    
+
     public static final class SelectByTag extends AbstractDescribableImpl<SelectByTag> {
         private String testTag;
         private static final String SELECT_BY_TAG = "SelectByTag";

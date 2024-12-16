@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2020-2024 The MathWorks, Inc.
- *  
  */
 
 import java.io.Serializable;
@@ -25,7 +24,7 @@ import hudson.Util;
 import com.mathworks.ci.Message;
 
 public class RunMatlabCommandStep extends Step implements Serializable {
-    
+
     private static final long serialVersionUID = 1L;
 
     private String command;
@@ -67,12 +66,10 @@ public class RunMatlabCommandStep extends Step implements Serializable {
         public String getFunctionName() {
             return Message.getValue("matlab.command.build.step.name");
         }
-        
+
         @Override
         public String getDisplayName() {
             return Message.getValue("matlab.command.step.display.name");
         }
     }
 }
-
-

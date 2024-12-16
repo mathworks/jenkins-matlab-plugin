@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -31,11 +30,16 @@ import com.mathworks.ci.parameters.TestActionParameters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunMatlabTestsActionTest {
-    @Mock TestActionParameters params;
-    @Mock MatlabCommandRunner runner;
-    @Mock PrintStream out;
-    @Mock TaskListener listener;
-    @Mock FilePath tempFolder;
+    @Mock
+    TestActionParameters params;
+    @Mock
+    MatlabCommandRunner runner;
+    @Mock
+    PrintStream out;
+    @Mock
+    TaskListener listener;
+    @Mock
+    FilePath tempFolder;
 
     private boolean setup = false;
     private RunMatlabTestsAction action;
@@ -50,7 +54,7 @@ public class RunMatlabTestsActionTest {
             when(runner.getTempFolder()).thenReturn(tempFolder);
             when(tempFolder.getRemote()).thenReturn("/gravel/path");
             when(runner.copyFileToTempFolder(anyString(), anyString()))
-                .thenReturn(tempFolder);
+                    .thenReturn(tempFolder);
         }
     }
 
@@ -75,7 +79,8 @@ public class RunMatlabTestsActionTest {
     }
 
     @Test
-    public void shouldReplaceParamsCorrectlyWhenAllNull() throws IOException, InterruptedException, MatlabExecutionException {
+    public void shouldReplaceParamsCorrectlyWhenAllNull()
+            throws IOException, InterruptedException, MatlabExecutionException {
         // Keep parameters as null
         action.run();
 
@@ -86,7 +91,8 @@ public class RunMatlabTestsActionTest {
     }
 
     @Test
-    public void shouldReplaceParamsCorrectlyWithFewNull() throws IOException, InterruptedException, MatlabExecutionException {
+    public void shouldReplaceParamsCorrectlyWithFewNull()
+            throws IOException, InterruptedException, MatlabExecutionException {
         // Set some params
         doReturn("results.xml").when(params).getTestResultsJUnit();
         doReturn("cov.xml").when(params).getCodeCoverageCobertura();
@@ -104,17 +110,17 @@ public class RunMatlabTestsActionTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(runner).runMatlabCommand(captor.capture());
         assertThat(captor.getValue(), containsString(
-                    "genscript('Test','JUnitTestResults','results.xml',"
-                    + "'CoberturaCodeCoverage','cov.xml',"
-                    + "'Strict',true,"
-                    + "'LoggingLevel','Default',"
-                    + "'OutputDetail','Concise',"
-                    + "'SourceFolder',{'src','toolbox'})"
-                    ));
+                "genscript('Test','JUnitTestResults','results.xml',"
+                        + "'CoberturaCodeCoverage','cov.xml',"
+                        + "'Strict',true,"
+                        + "'LoggingLevel','Default',"
+                        + "'OutputDetail','Concise',"
+                        + "'SourceFolder',{'src','toolbox'})"));
     }
 
     @Test
-    public void shouldReplaceParamsCorrectlyWithNoneNull() throws IOException, InterruptedException, MatlabExecutionException {
+    public void shouldReplaceParamsCorrectlyWithNoneNull()
+            throws IOException, InterruptedException, MatlabExecutionException {
         // Set all params
         doReturn("results.pdf").when(params).getTestResultsPDF();
         doReturn("results.tap").when(params).getTestResultsTAP();
@@ -139,21 +145,20 @@ public class RunMatlabTestsActionTest {
         ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
         verify(runner).runMatlabCommand(captor.capture());
         assertThat(captor.getValue(), containsString(
-                    "genscript('Test',"
-                    + "'PDFTestReport','results.pdf',"
-                    + "'TAPTestResults','results.tap',"
-                    + "'JUnitTestResults','results.xml',"
-                    + "'CoberturaCodeCoverage','cov.xml',"
-                    + "'SimulinkTestResults','results.sltest',"
-                    + "'CoberturaModelCoverage','cov.model',"
-                    + "'SelectByTag','MyTag',"
-                    + "'UseParallel',true,"
-                    + "'Strict',true,"
-                    + "'LoggingLevel','Default',"
-                    + "'OutputDetail','Concise',"
-                    + "'SourceFolder',{'src','toolbox'},"
-                    + "'SelectByFolder',{'src','toolbox'})"
-                    ));
+                "genscript('Test',"
+                        + "'PDFTestReport','results.pdf',"
+                        + "'TAPTestResults','results.tap',"
+                        + "'JUnitTestResults','results.xml',"
+                        + "'CoberturaCodeCoverage','cov.xml',"
+                        + "'SimulinkTestResults','results.sltest',"
+                        + "'CoberturaModelCoverage','cov.model',"
+                        + "'SelectByTag','MyTag',"
+                        + "'UseParallel',true,"
+                        + "'Strict',true,"
+                        + "'LoggingLevel','Default',"
+                        + "'OutputDetail','Concise',"
+                        + "'SourceFolder',{'src','toolbox'},"
+                        + "'SelectByFolder',{'src','toolbox'})"));
     }
 
     @Test
@@ -168,6 +173,7 @@ public class RunMatlabTestsActionTest {
         } catch (MatlabExecutionException e) {
             verify(out).println(e.getMessage());
             assertEquals(12, e.getExitCode());
-        };
+        }
+        ;
     }
 }

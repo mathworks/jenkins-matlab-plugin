@@ -2,7 +2,6 @@ package com.mathworks.ci.freestyle;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -47,7 +46,7 @@ public class RunMatlabCommandBuilderUnitTest {
     TaskListener listener;
 
     @Mock
-    FilePath workspace; 
+    FilePath workspace;
 
     @Before
     public void setup() throws IOException, InterruptedException {
@@ -59,12 +58,12 @@ public class RunMatlabCommandBuilderUnitTest {
         RunMatlabCommandBuilder builder = new RunMatlabCommandBuilder(factory);
 
         builder.perform(build, workspace, launcher, listener);
-        
+
         ArgumentCaptor<CommandActionParameters> captor = ArgumentCaptor.forClass(CommandActionParameters.class);
         verify(factory).createAction(captor.capture());
 
         CommandActionParameters actual = captor.getValue();
-        
+
         assertEquals("", actual.getStartupOptions());
         assertEquals(null, actual.getCommand());
         verify(action).run();
@@ -77,12 +76,12 @@ public class RunMatlabCommandBuilderUnitTest {
         builder.setStartupOptions(new StartupOptions("-nojvm -logfile mylog"));
 
         builder.perform(build, workspace, launcher, listener);
-        
+
         ArgumentCaptor<CommandActionParameters> captor = ArgumentCaptor.forClass(CommandActionParameters.class);
         verify(factory).createAction(captor.capture());
 
         CommandActionParameters actual = captor.getValue();
-        
+
         assertEquals("-nojvm -logfile mylog", actual.getStartupOptions());
         assertEquals("SHAKE", actual.getCommand());
         verify(action).run();
@@ -91,7 +90,7 @@ public class RunMatlabCommandBuilderUnitTest {
     @Test
     public void shouldMarkFailureWhenActionFails() throws IOException, InterruptedException, MatlabExecutionException {
         RunMatlabCommandBuilder builder = new RunMatlabCommandBuilder(factory);
-        
+
         doThrow(new MatlabExecutionException(12)).when(action).run();
 
         builder.perform(build, workspace, launcher, listener);
@@ -99,4 +98,3 @@ public class RunMatlabCommandBuilderUnitTest {
         verify(build).setResult(Result.FAILURE);
     }
 }
-

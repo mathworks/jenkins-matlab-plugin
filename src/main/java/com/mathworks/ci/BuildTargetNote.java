@@ -2,7 +2,6 @@ package com.mathworks.ci;
 
 /**
  * Copyright 2024 The MathWorks, Inc.
- *
  */
 
 import com.google.common.annotations.VisibleForTesting;
@@ -13,7 +12,6 @@ import hudson.console.ConsoleAnnotationDescriptor;
 import hudson.console.ConsoleAnnotator;
 import hudson.console.ConsoleNote;
 import java.util.regex.Pattern;
-
 
 public class BuildTargetNote extends ConsoleNote {
     @VisibleForTesting
@@ -26,10 +24,10 @@ public class BuildTargetNote extends ConsoleNote {
     @Override
     public ConsoleAnnotator annotate(Object context, MarkupText text, int charPos) {
         MarkupText.SubText t = text.findToken(Pattern.compile("MATLAB-Build-"));
-        String taskName = text.subText(13, text.length()-2).getText();
-        taskName = taskName.replace("]","").trim();
+        String taskName = text.subText(13, text.length() - 2).getText();
+        taskName = taskName.replace("]", "").trim();
         if (t != null)
-            t.addMarkup(0, t.length()-1, "<a id= matlab" + taskName + " name=matlab" + taskName + ">", "</a>");
+            t.addMarkup(0, t.length() - 1, "<a id= matlab" + taskName + " name=matlab" + taskName + ">", "</a>");
         return null;
     }
 

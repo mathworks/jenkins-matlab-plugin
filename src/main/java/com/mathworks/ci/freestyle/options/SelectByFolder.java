@@ -2,7 +2,6 @@ package com.mathworks.ci.freestyle.options;
 
 /**
  * Copyright 2020-2024 The MathWorks, Inc.
- *  
  */
 
 import java.util.List;
@@ -30,8 +29,7 @@ public class SelectByFolder extends AbstractDescribableImpl<SelectByFolder> {
 
     public List<String> getTestFolderStringPaths() {
         return this.testFolderPaths.stream().map(
-                p -> p.getTestFolders()
-            ).collect(Collectors.toList());
+                p -> p.getTestFolders()).collect(Collectors.toList());
     }
 
     public void addSourceToInputArgs(List<String> inputArgsList, String cellArraySourceVal) {
@@ -39,5 +37,7 @@ public class SelectByFolder extends AbstractDescribableImpl<SelectByFolder> {
         inputArgsList.add("'" + SELECT_BY_FOLDER + "'" + "," + cellArraySourceVal);
     }
 
-    @Extension public static class DescriptorImpl extends Descriptor<SelectByFolder> {}
+    @Extension
+    public static class DescriptorImpl extends Descriptor<SelectByFolder> {
+    }
 }
