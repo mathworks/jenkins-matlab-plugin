@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -41,19 +40,19 @@ public class RunMatlabTestsAction extends MatlabAction {
         String command = MatlabBuilderConstants.TEST_RUNNER_SCRIPT;
         command = command.replace("${TEMP_FOLDER}", runner.getTempFolder().getRemote());
         command = command.replace("${PARAMS}", getParameterString());
-        
+
         // Run the command
         try {
             runner.runMatlabCommand(command);
         } catch (Exception e) {
             this.params.getTaskListener()
-                .getLogger()
-                .println(e.getMessage());
-            throw(e);
+                    .getLogger()
+                    .println(e.getMessage());
+            throw (e);
         } finally {
             Run<?, ?> build = this.params.getBuild();
             super.teardownAction(build);
-        } 
+        }
     }
 
     private String singleQuotify(String in) {
@@ -72,15 +71,15 @@ public class RunMatlabTestsAction extends MatlabAction {
         String sourceFolders = null;
         if (this.params.getSourceFolder() != null) {
             sourceFolders = this.params.getSourceFolder().size() == 0
-                ? null
-                : Utilities.getCellArrayFromList(this.params.getSourceFolder());
+                    ? null
+                    : Utilities.getCellArrayFromList(this.params.getSourceFolder());
         }
 
         String selectFolders = null;
         if (this.params.getSelectByFolder() != null) {
             selectFolders = this.params.getSelectByFolder().size() == 0
-                ? null
-                : Utilities.getCellArrayFromList(this.params.getSelectByFolder());
+                    ? null
+                    : Utilities.getCellArrayFromList(this.params.getSelectByFolder());
         }
 
         // All string-based fields
@@ -99,7 +98,7 @@ public class RunMatlabTestsAction extends MatlabAction {
                 "'SourceFolder'",
                 "'SelectByFolder'"
         };
-        final String[] values = { 
+        final String[] values = {
                 this.params.getTestResultsPDF(),
                 this.params.getTestResultsTAP(),
                 this.params.getTestResultsJUnit(),
@@ -119,12 +118,12 @@ public class RunMatlabTestsAction extends MatlabAction {
             if (values[i] != null && !values[i].equals("false")) {
                 inputArgsList.add(names[i]);
                 String arg = values[i].equals("true") || values[i].startsWith("{")
-                    ? values[i]
-                    : singleQuotify(values[i]);
+                        ? values[i]
+                        : singleQuotify(values[i]);
                 inputArgsList.add(arg);
             }
         }
-        
+
         return String.join(",", inputArgsList);
     }
 }

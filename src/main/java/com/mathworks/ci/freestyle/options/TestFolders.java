@@ -2,7 +2,6 @@ package com.mathworks.ci.freestyle.options;
 
 /**
  * Copyright 2020-2024 The MathWorks, Inc.
- *  
  */
 
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -24,5 +23,7 @@ public class TestFolders extends AbstractDescribableImpl<TestFolders> {
         return this.testFolders;
     }
 
-    @Extension public static final class DescriptorImpl extends Descriptor<TestFolders> {}
+    @Extension
+    public static final class DescriptorImpl extends Descriptor<TestFolders> {
+    }
 }

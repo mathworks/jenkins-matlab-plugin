@@ -2,7 +2,6 @@ package com.mathworks.ci.freestyle;
 
 /**
  * Copyright 2022-2024 The MathWorks, Inc.
- *  
  */
 
 import java.io.IOException;
@@ -78,8 +77,8 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep {
 
     public String getStartupOptionsAsString() {
         return this.startupOptions == null
-            ? ""
-            : this.startupOptions.getOptions();
+                ? ""
+                : this.startupOptions.getOptions();
     }
 
     public BuildOptions getBuildOptions() {
@@ -88,10 +87,10 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep {
 
     public String getBuildOptionsAsString() {
         return this.buildOptions == null
-            ? null
-            : this.buildOptions.getOptions();
+                ? null
+                : this.buildOptions.getOptions();
     }
-    
+
     @Extension
     public static class RunMatlabBuildDescriptor extends BuildStepDescriptor<Builder> {
 
@@ -113,11 +112,13 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep {
         }
 
         /*
-         * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
+         * This is to identify which project type in jenkins this should be
+         * applicable.(non-Javadoc)
          * 
          * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
          * 
-         * if it returns true then this build step will be applicable for all project type.
+         * if it returns true then this build step will be applicable for all project
+         * type.
          */
         @Override
         public boolean isApplicable(
@@ -149,7 +150,7 @@ public class RunMatlabBuildBuilder extends Builder implements SimpleBuildStep {
     }
 
     // Added for backwards compatibility:
-    //   Called when object is loaded from persistent data.
+    // Called when object is loaded from persistent data.
     protected Object readResolve() {
         if (factory == null) {
             factory = new MatlabActionFactory();

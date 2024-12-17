@@ -1,11 +1,10 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2024 The MathWorks, Inc.
  *
  * Describable class for MATLAB Axis that provides a list of configured MATLAB installation for
  * generating matrix configurations.
- *
  */
 
 import hudson.Extension;
@@ -34,7 +33,7 @@ public class MatlabInstallationAxis extends Axis {
     }
 
     @Extension
-    public static class DescriptorImpl extends AxisDescriptor{
+    public static class DescriptorImpl extends AxisDescriptor {
 
         @Override
         public String getDisplayName() {
@@ -47,10 +46,11 @@ public class MatlabInstallationAxis extends Axis {
         }
 
         public boolean checkUseMatlabVersion(Object it) {
-            return MatlabItemListener.getMatlabBuildWrapperCheckForPrj(((MatrixProject) it).getFullName()) && !isMatlabInstallationEmpty();
+            return MatlabItemListener.getMatlabBuildWrapperCheckForPrj(((MatrixProject) it).getFullName())
+                    && !isMatlabInstallationEmpty();
         }
 
-        public MatlabInstallation[] getInstallations () {
+        public MatlabInstallation[] getInstallations() {
             return MatlabInstallation.getAll();
         }
 

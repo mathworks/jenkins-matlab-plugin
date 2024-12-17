@@ -1,9 +1,9 @@
 package com.mathworks.ci;
+
 /**
  * Copyright 2019-2024 The MathWorks, Inc.
  * 
  * Tester builder for RunMatlabTestsBuilder.
- * 
  */
 
 import java.io.IOException;
@@ -43,8 +43,6 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
     private String matlabExecutorPath;
     private String matlabVerName;
 
-
-
     public RunMatlabTestsBuilderTester(String matlabExecutorPath, String customTestPointArgument) {
         super();
         this.commandParameter = customTestPointArgument;
@@ -57,7 +55,6 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
     }
 
     // Getter and Setters to access local members
-
 
     @DataBoundSetter
     public void setTapChkBx(TapArtifact tapArtifact) {
@@ -139,11 +136,13 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         }
 
         /*
-         * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
+         * This is to identify which project type in jenkins this should be
+         * applicable.(non-Javadoc)
          * 
          * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
          * 
-         * if it returns true then this build step will be applicable for all project type.
+         * if it returns true then this build step will be applicable for all project
+         * type.
          */
         @Override
         public boolean isApplicable(
@@ -193,6 +192,5 @@ public class RunMatlabTestsBuilderTester extends RunMatlabTestsBuilder {
         matlabDefaultArgs.add(this.commandParameter);
         return matlabDefaultArgs;
     }
-
 
 }

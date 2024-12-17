@@ -1,8 +1,10 @@
 package com.mathworks.ci;
 
 /*
- * Copyright 2019 The MathWorks, Inc. This Class provides MATLAB release information in the form of
- * Version numbers. Class constructor requires MATLAB root as input parameter
+ * Copyright 2019-2024 The MathWorks, Inc.
+ *
+ * This Class provides MATLAB release information in the form of Version numbers. Class constructor
+ * requires MATLAB root as input parameter.
  */
 
 import java.io.InputStream;
@@ -36,9 +38,9 @@ public class MatlabReleaseInfo {
     private static final String VERSION_TAG = "version";
     private static final String DESCRIPTION_TAG = "description";
     private static final String DATE_TAG = "date";
-    
+
     private Map<String, String> versionInfoCache = new HashMap<String, String>();
-    
+
     public MatlabReleaseInfo(FilePath matlabRoot) {
         this.matlabRoot = matlabRoot;
     }
@@ -71,19 +73,20 @@ public class MatlabReleaseInfo {
             return false;
         }
     }
-    
-    @SuppressFBWarnings(value = {"REC_CATCH_EXCEPTION", "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"},
-            justification = "REC_CATCH_EXCEPTION: Irrespective of exception type, intention is to handle it in same way." +
+
+    @SuppressFBWarnings(value = { "REC_CATCH_EXCEPTION",
+            "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" }, justification = "REC_CATCH_EXCEPTION: Irrespective of exception type, intention is to handle it in same way."
+                    +
                     " Also, there is no intention to propagate any runtime exception up in the hierarchy." +
                     "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE: This is a false positive reported by spotbugs for JDK 11 for try-with-resources block.")
     private Map<String, String> getVersionInfoFromFile() throws MatlabVersionNotFoundException {
         if (MapUtils.isEmpty(versionInfoCache)) {
             try {
                 FilePath versionFile = new FilePath(this.matlabRoot, VERSION_INFO_FILE);
-                if(versionFile.exists()) {
+                if (versionFile.exists()) {
                     DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
                     String FEATURE = null;
-                    try{
+                    try {
                         FEATURE = "http://apache.org/xml/features/disallow-doctype-decl";
                         dbFactory.setFeature(FEATURE, true);
                         dbFactory.setXIncludeAware(false);
@@ -93,7 +96,7 @@ public class MatlabReleaseInfo {
                     }
                     DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
                     Document doc = dBuilder.parse(versionFile.read());
-                    
+
                     doc.getDocumentElement().normalize();
                     NodeList nList = doc.getElementsByTagName(VERSION_INFO_ROOT_TAG);
 
@@ -113,35 +116,34 @@ public class MatlabReleaseInfo {
                                     eElement.getElementsByTagName(DATE_TAG).item(0).getTextContent());
                         }
                     }
-                }
-                else if(!this.matlabRoot.exists()){
+                } else if (!this.matlabRoot.exists()) {
                     throw new NotDirectoryException("Invalid matlabroot path");
-                }else {
-					// Get the version information from Contents.m file when VersionInfo.xml is not
-					// present.
-					FilePath contentFile = new FilePath(this.matlabRoot, CONTENTS_FILE);
-					String actualVersion = null;
-					try (InputStream in = contentFile.read();
-							BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                } else {
+                    // Get the version information from Contents.m file when VersionInfo.xml is not
+                    // present.
+                    FilePath contentFile = new FilePath(this.matlabRoot, CONTENTS_FILE);
+                    String actualVersion = null;
+                    try (InputStream in = contentFile.read();
+                            BufferedReader br = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-						// Skip first line and capture the second line.
-						br.readLine();
-						String versionLine = br.readLine();
+                        // Skip first line and capture the second line.
+                        br.readLine();
+                        String versionLine = br.readLine();
 
-						Pattern p = Pattern.compile(VERSION_PATTERN);
-						Matcher m = p.matcher(versionLine);
-						if (m.find()) {
-							actualVersion = m.group();
-						}
-					}
-					// Update the versionInfoCache with actual version extracted from Contents.m
-					versionInfoCache.put(VERSION_TAG, actualVersion);
-				}
+                        Pattern p = Pattern.compile(VERSION_PATTERN);
+                        Matcher m = p.matcher(versionLine);
+                        if (m.find()) {
+                            actualVersion = m.group();
+                        }
+                    }
+                    // Update the versionInfoCache with actual version extracted from Contents.m
+                    versionInfoCache.put(VERSION_TAG, actualVersion);
+                }
             } catch (Exception e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);
-            } 
+            }
         }
         return versionInfoCache;
     }
- }
+}

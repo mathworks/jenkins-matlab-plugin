@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2020-2024 The MathWorks, Inc.
- *  
  */
 
 import java.io.IOException;
@@ -19,21 +18,22 @@ import com.mathworks.ci.parameters.TestActionParameters;
 public class MatlabRunTestsStepExecution extends SynchronousNonBlockingStepExecution<Void> {
 
     private static final long serialVersionUID = 6704588180717665100L;
-    
+
     private MatlabActionFactory factory;
     private RunMatlabTestsStep step;
 
-    public MatlabRunTestsStepExecution(MatlabActionFactory factory, StepContext context, RunMatlabTestsStep step) throws IOException, InterruptedException {
+    public MatlabRunTestsStepExecution(MatlabActionFactory factory, StepContext context, RunMatlabTestsStep step)
+            throws IOException, InterruptedException {
         super(context);
 
         this.factory = factory;
         this.step = step;
     }
 
-    public MatlabRunTestsStepExecution(StepContext context, RunMatlabTestsStep step) throws IOException, InterruptedException {
+    public MatlabRunTestsStepExecution(StepContext context, RunMatlabTestsStep step)
+            throws IOException, InterruptedException {
         this(new MatlabActionFactory(), context, step);
     }
-
 
     @Override
     public Void run() throws Exception {

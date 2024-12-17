@@ -32,7 +32,6 @@ public class RunMatlabBuildStepTest {
         this.project = j.createProject(WorkflowJob.class);
     }
 
-
     /*
      * Verify when MATLAB is not on system path.
      */
@@ -51,7 +50,7 @@ public class RunMatlabBuildStepTest {
     public void verifyMATLABstartsInWorkspace() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(
-                new CpsFlowDefinition("node('!master') { runMATLABBuild() }", true));
+                new CpsFlowDefinition("node('!built-in') { runMATLABBuild() }", true));
 
         FilePath workspace = s.getWorkspaceFor(project);
         String workspaceName = workspace.getName();
@@ -65,10 +64,10 @@ public class RunMatlabBuildStepTest {
      */
     // @Test
     // public void verifyMATLABPathSet() throws Exception {
-    //     project.setDefinition(
-    //             new CpsFlowDefinition("node { runMATLABBuild() }", true));
-    //     WorkflowRun build = project.scheduleBuild2(0).get();
-    //     j.assertLogContains("tester_started", build);
+    // project.setDefinition(
+    // new CpsFlowDefinition("node { runMATLABBuild() }", true));
+    // WorkflowRun build = project.scheduleBuild2(0).get();
+    // j.assertLogContains("tester_started", build);
     // }
 
     /*
@@ -78,7 +77,7 @@ public class RunMatlabBuildStepTest {
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(new CpsFlowDefinition(
-                "node('!master') { runMATLABBuild() }", true));
+                "node('!built-in') { runMATLABBuild() }", true));
 
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
@@ -128,7 +127,8 @@ public class RunMatlabBuildStepTest {
     @Test
     public void verifyBuildOptionsSameAsScript() throws Exception {
         project.setDefinition(
-                new CpsFlowDefinition("node { runMATLABBuild(buildOptions: '-continueOnFailure -skip compile') }", true));
+                new CpsFlowDefinition("node { runMATLABBuild(buildOptions: '-continueOnFailure -skip compile') }",
+                        true));
 
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("-continueOnFailure -skip compile", build);
@@ -150,8 +150,8 @@ public class RunMatlabBuildStepTest {
     }
 
     /*
-    * Test for verifying Run Matlab Build raises exception for non-zero exit code.
-    * */
+     * Test for verifying Run Matlab Build raises exception for non-zero exit code.
+     */
     @Test
     public void verifyExceptionForNonZeroExitCode() throws Exception {
         // exitMatlab is a mock build for run_matlab_build script to exit with 1.

@@ -1,8 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2020-2021 The MathWorks, Inc.
- *
+ * Copyright 2020-2024 The MathWorks, Inc.
  */
 
 import hudson.matrix.AxisList;
@@ -85,17 +84,18 @@ public class MatlabInstallationTest {
         newInst.add(newMatlabInstallation);
         MatlabInstallation[] setInst = new MatlabInstallation[newInst.size()];
         matlabInstDescriptor.setInstallations(newInst.toArray(setInst));
-        return  newMatlabInstallation;
+        return newMatlabInstallation;
     }
 
-    private MatlabInstallation[] getMatlabInstallation(){
+    private MatlabInstallation[] getMatlabInstallation() {
         // static method to return all installations
         return MatlabInstallation.getAll();
     }
 
     /*
-    * Test to verify global tool configuration for MATLAB by doing a configuration round trip.
-    * */
+     * Test to verify global tool configuration for MATLAB by doing a configuration
+     * round trip.
+     */
     @Test
     public void verifyRoundTripInstallation() throws Exception {
         MatlabInstallation matlabInst = setMatlabInstallation("R2019b", "C:\\FakePath\\MATLAB\\R2019b");
@@ -112,7 +112,7 @@ public class MatlabInstallationTest {
 
     /*
      * Test to verify usage of MATLAB tool installation in pipeline project.
-     * */
+     */
     @Test
     public void verifyInstallationInPipeline() throws Exception {
         URL url = MatlabInstallationTest.class.getClassLoader().getResource("versioninfo/R2018b");
@@ -120,19 +120,20 @@ public class MatlabInstallationTest {
         jenkins.configRoundtrip();
         WorkflowJob project = jenkins.createProject(WorkflowJob.class);
         project.setDefinition(new CpsFlowDefinition("node { \n"
-                        + " def matlabroot \n"
-                        + " matlabroot = tool 'R2018b' \n"
-                        + " withEnv([\"PATH+MATLAB=$matlabroot/bin\"]) { \n"
-                        + " echo env.PATH \n"
-                        + " runMATLABTests(testResultsPDF:'myresult/result.pdf')}}", true));
+                + " def matlabroot \n"
+                + " matlabroot = tool 'R2018b' \n"
+                + " withEnv([\"PATH+MATLAB=$matlabroot/bin\"]) { \n"
+                + " echo env.PATH \n"
+                + " runMATLABTests(testResultsPDF:'myresult/result.pdf')}}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("versioninfo", build);
         jenkins.assertLogContains("2018b", build);
         jenkins.assertLogContains("bin", build);
     }
+
     /*
      * Test to verify usage of MATLAB tool installation in freestyle project.
-     * */
+     */
     @Test
     public void verifyInstallationInFreeStyle() throws Exception {
         URL url = MatlabInstallationTest.class.getClassLoader().getResource("versioninfo" + FileSeperator + "R2018a");
@@ -185,7 +186,8 @@ public class MatlabInstallationTest {
     /*
      * @Integ Test
      * Paths should point to MATLAB executable
-     * Test to verify correct MATLAB installation is added to PATH environment variable
+     * Test to verify correct MATLAB installation is added to PATH environment
+     * variable
      */
 
     public void verifyInstallationPathVarInMatrixBuild() throws Exception {

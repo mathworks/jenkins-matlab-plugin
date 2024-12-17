@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2022-2024 The MathWorks, Inc.
- *  
  */
 
 import java.io.IOException;
@@ -16,19 +15,20 @@ import com.mathworks.ci.actions.RunMatlabBuildAction;
 import com.mathworks.ci.parameters.BuildActionParameters;
 
 public class MatlabBuildStepExecution extends SynchronousNonBlockingStepExecution<Void> {
-    
+
     private static final long serialVersionUID = 4771831219402275744L;
 
     private MatlabActionFactory factory;
     private RunMatlabBuildStep step;
 
-    public MatlabBuildStepExecution(MatlabActionFactory factory, StepContext ctx, RunMatlabBuildStep step) throws IOException, InterruptedException {
+    public MatlabBuildStepExecution(MatlabActionFactory factory, StepContext ctx, RunMatlabBuildStep step)
+            throws IOException, InterruptedException {
         super(ctx);
 
         this.factory = factory;
         this.step = step;
     }
-    
+
     public MatlabBuildStepExecution(StepContext ctx, RunMatlabBuildStep step) throws IOException, InterruptedException {
         this(new MatlabActionFactory(), ctx, step);
     }
