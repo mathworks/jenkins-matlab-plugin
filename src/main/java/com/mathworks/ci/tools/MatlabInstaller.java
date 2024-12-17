@@ -8,8 +8,6 @@ import com.mathworks.ci.MatlabInstallation;
 import com.mathworks.ci.Message;
 import com.mathworks.ci.utilities.GetSystemProperties;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
@@ -72,30 +70,49 @@ public class MatlabInstaller extends ToolInstaller {
     @Override
     public FilePath performInstallation(ToolInstallation tool, Node node, TaskListener log)
             throws IOException, InterruptedException {
-        FilePath destination = preferredLocation(tool, node);
+        FilePath toolRoot = preferredLocation(tool, node);
+        makeDir(toolRoot);
+
+        String extension = "";
         String[] systemProperties = getSystemProperties(node);
-        FilePath matlabRootPath;
+        FilePath matlabRoot;
         if (systemProperties[0].toLowerCase().contains("os x")) {
-            matlabRootPath = new FilePath(destination, this.getRelease() + ".app");
+            matlabRoot = new FilePath(toolRoot, this.getRelease() + ".app");
         } else {
-            matlabRootPath = new FilePath(destination, this.getRelease());
+            matlabRoot = new FilePath(toolRoot, this.getRelease());
         }
         String platform = getPlatform(systemProperties[0], systemProperties[1]);
-        getFreshCopyOfExecutables(platform, destination);
+        if (platform == "win64") {
+            extension = ".exe";
+        }
 
-        makeDir(matlabRootPath);
-        installUsingMpm(node, this.getRelease(), matlabRootPath, this.getProducts(), log);
-        return matlabRootPath;
+        // Create temp directory
+        FilePath tempDir = toolRoot.createTempDir("", "");
+
+        // Download mpm and matlab-batch to temp directory
+        FilePath mpm = fetchMpm(platform, tempDir);
+        FilePath matlabBatch = fetchMatlabBatch(platform, tempDir);
+
+        // Install with mpm
+        mpmInstall(mpm, this.getRelease(), this.getProducts(), matlabRoot, node, log);
+
+        // Copy downloaded matlab-batch to tool directory, 
+        matlabBatch.copyTo(new FilePath(toolRoot, "matlab-batch"+extension));
+
+        // Delete temp directory
+        tempDir.deleteRecursive();
+
+        return matlabRoot;
     }
 
-    private void installUsingMpm(Node node, String release, FilePath destination, String products, TaskListener log)
+    private void mpmInstall(FilePath mpmPath, String release, String products, FilePath destination, Node node, TaskListener log)
             throws IOException, InterruptedException {
-
+        makeDir(destination);
         Launcher matlabInstaller = node.createLauncher(log);
         ProcStarter installerProc = matlabInstaller.launch();
 
         ArgumentListBuilder args = new ArgumentListBuilder();
-        args.add(destination.getParent().getRemote() + getNodeSpecificMPMExecutor(node));
+        args.add(mpmPath.getRemote());
         args.add("install");
         appendReleaseToArguments(release, args, log);
         args.add("--destination=" + destination.getRemote());
@@ -152,60 +169,65 @@ public class MatlabInstaller extends ToolInstaller {
         args.add("--release=" + actualRelease);
     }
 
-    private void getFreshCopyOfExecutables(String platform, FilePath expectedPath)
+    private FilePath fetchMpm(String platform, FilePath destination)
             throws IOException, InterruptedException {
-        FilePath matlabBatchPath = new FilePath(expectedPath, "matlab-batch");
-        FilePath mpmPath = new FilePath(expectedPath, "mpm");
-
         URL mpmUrl;
-        URL matlabBatchUrl;
+        String extension = "";
 
         switch (platform) {
             case "glnxa64":
                 mpmUrl = new URL(Message.getValue("tools.matlab.mpm.installer.linux"));
-                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.linux"));
                 break;
             case "maci64":
                 mpmUrl = new URL(Message.getValue("tools.matlab.mpm.installer.maci64"));
-                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maci64"));
                 break;
             case "maca64":
                 mpmUrl = new URL(Message.getValue("tools.matlab.mpm.installer.maca64"));
-                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maca64"));
                 break;
             default:
                 throw new InstallationFailedException("Unsupported OS");
         }
 
-        // Handle the concurrency issues due to same name.
-        FilePath tempMatlabBatchPath = new FilePath(expectedPath, "temp-matlab-batch");
-        FilePath tempMpmPath = new FilePath(expectedPath, "temp-mpm");
+        // Download mpm
+        FilePath mpmPath = new FilePath(destination, "mpm" + extension);
         try {
-            tempMpmPath.copyFrom(mpmUrl.openStream());
-            tempMpmPath.chmod(0777);
-            tempMatlabBatchPath.copyFrom(matlabBatchUrl.openStream());
-            tempMatlabBatchPath.chmod(0777);
-
-            tempMpmPath.renameTo(mpmPath);
-            tempMatlabBatchPath.renameTo(matlabBatchPath);
-
+            mpmPath.copyFrom(mpmUrl.openStream());
+            mpmPath.chmod(0777);
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            // Clean up temporary files if they exist
-            tempMatlabBatchPath.delete();
-            tempMpmPath.delete();
+            throw new InstallationFailedException("Unable to setup mpm.");
         }
+
+        return mpmPath;
     }
 
-    @SuppressFBWarnings(value = {
-            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" }, justification = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
-                    + "https://github.com/spotbugs/spotbugs/issues/1843")
-    private String getNodeSpecificMPMExecutor(Node node) {
-        if (!node.toComputer().isUnix()) {
-            return "\\mpm.exe";
+    private FilePath fetchMatlabBatch(String platform, FilePath destination)
+            throws IOException, InterruptedException {
+        URL matlabBatchUrl;
+        String extension = "";
+
+        switch (platform) {
+            case "glnxa64":
+                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.linux"));
+                break;
+            case "maci64":
+                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maci64"));
+                break;
+            case "maca64":
+                matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maca64"));
+            default:
+                throw new InstallationFailedException("Unsupported OS");
         }
-        return "/mpm";
+
+        // Download matlab-batch
+        FilePath matlabBatchPath = new FilePath(destination, "matlab-batch" + extension);
+        try {
+            matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
+            matlabBatchPath.chmod(0777);
+        } catch (IOException | InterruptedException e) {
+            throw new InstallationFailedException("Unable to setup matlab-batch.");
+        }
+
+        return matlabBatchPath;
     }
 
     private void addMatlabProductsToArgs(ArgumentListBuilder args, String products)
@@ -213,7 +235,6 @@ public class MatlabInstaller extends ToolInstaller {
         args.add("--products");
         if (products.isEmpty()) {
             args.add(DEFAULT_PRODUCT);
-
         } else {
             if (!products.contains(DEFAULT_PRODUCT)) {
                 args.add(DEFAULT_PRODUCT);
@@ -241,9 +262,6 @@ public class MatlabInstaller extends ToolInstaller {
         }
     }
 
-    @SuppressFBWarnings(value = {
-            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" }, justification = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
-                    + "https://github.com/spotbugs/spotbugs/issues/1843")
     private String[] getSystemProperties(Node node) throws IOException, InterruptedException {
         String[] properties = node.getChannel()
                 .call(new GetSystemProperties("os.name", "os.arch", "os.version"));

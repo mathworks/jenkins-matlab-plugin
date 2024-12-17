@@ -6,7 +6,6 @@ package com.mathworks.ci;
  * Describable class for adding MATLAB installations in Jenkins Global Tool configuration.
  */
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
@@ -62,21 +61,14 @@ public class MatlabInstallation extends ToolInstallation
         return new MatlabInstallation(getName(), translateFor(node, log), getProperties().toList());
     }
 
-    @SuppressFBWarnings(value = {
-            "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE" }, justification = "NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE: Its false positive scenario for sport bug which is fixed in later versions "
-                    + "https://github.com/spotbugs/spotbugs/issues/1843")
     @Override
     public void buildEnvVars(EnvVars env) {
-        String pathToExecutable = getHome() + "/bin";
-        env.put("PATH+matlabroot", pathToExecutable);
-        Jenkins jenkinsInstance = Jenkins.getInstanceOrNull();
-        if (jenkinsInstance != null) {
-            if (jenkinsInstance.getChannel() != null) {
-                FilePath batchExecutablePath = new FilePath(jenkinsInstance.getChannel(), getHome());
-                if (batchExecutablePath.getParent() != null) {
-                    env.put("PATH+matlab_batch", batchExecutablePath.getParent().getRemote());
-                }
-            }
+        FilePath matlabHome = new FilePath(new File(getHome()));
+        FilePath matlabBin = new FilePath(matlabHome, "bin");
+        env.put("PATH+MATLAB_ROOT", matlabBin.getRemote());
+        FilePath matlabBatchFolder = matlabHome.getParent();
+        if (matlabBatchFolder != null) {
+            env.put("PATH+MATLAB_BATCH", matlabBatchFolder.getRemote());
         }
     }
 

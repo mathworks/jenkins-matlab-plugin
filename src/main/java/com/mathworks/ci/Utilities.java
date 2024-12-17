@@ -44,12 +44,12 @@ public class Utilities {
                 cmp.getNode(), listener, env);
 
         if (matlabRoot != null && matlabRoot.getParent().exists()) {
-            env.put("PATH+matlab_batch", matlabRoot.getParent().getRemote());
+            env.put("PATH+MATLAB_BATCH", matlabRoot.getParent().getRemote());
         }
 
         String matlabExecutablePath = getNodeSpecificHome(name,
                 cmp.getNode(), listener, env).getRemote() + ((Boolean.TRUE.equals(cmp.isUnix())) ? "/bin" : "\\bin");
-        env.put("PATH+matlabroot", matlabExecutablePath);
+        env.put("PATH+MATLAB_ROOT", matlabExecutablePath);
 
         // Specify which MATLAB was added to path.
         listener.getLogger().println(

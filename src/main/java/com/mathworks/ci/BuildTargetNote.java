@@ -5,7 +5,6 @@ package com.mathworks.ci;
  */
 
 import com.google.common.annotations.VisibleForTesting;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import hudson.Extension;
 import hudson.MarkupText;
 import hudson.console.ConsoleAnnotationDescriptor;
@@ -15,7 +14,6 @@ import java.util.regex.Pattern;
 
 public class BuildTargetNote extends ConsoleNote {
     @VisibleForTesting
-    @SuppressFBWarnings(value = "MS_SHOULD_BE_FINAL", justification = "Visible for testing")
     public static boolean ENABLED = !Boolean.getBoolean(BuildTargetNote.class.getName() + ".disabled");
 
     public BuildTargetNote() {
