@@ -9,7 +9,9 @@ package com.mathworks.ci;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.BufferedReader;
+import java.lang.InterruptedException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
@@ -25,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import hudson.FilePath;
 
 public class MatlabReleaseInfo {
@@ -133,7 +136,7 @@ public class MatlabReleaseInfo {
                     // Update the versionInfoCache with actual version extracted from Contents.m
                     versionInfoCache.put(VERSION_TAG, actualVersion);
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException | IOException | ParserConfigurationException | SAXException e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);
             }
