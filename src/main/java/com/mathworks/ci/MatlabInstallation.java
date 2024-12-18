@@ -63,7 +63,11 @@ public class MatlabInstallation extends ToolInstallation
 
     @Override
     public void buildEnvVars(EnvVars env) {
-        FilePath matlabHome = new FilePath(new File(getHome()));
+        String home = getHome();
+        if (home == null) {
+            return;
+        }
+        FilePath matlabHome = new FilePath(new File(home));
         FilePath matlabBin = new FilePath(matlabHome, "bin");
         env.put("PATH+MATLAB_ROOT", matlabBin.getRemote());
         FilePath matlabBatchFolder = matlabHome.getParent();

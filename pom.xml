@@ -56,8 +56,6 @@
 		<!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
 		<jenkins.baseline>2.387</jenkins.baseline>
 		<jenkins.version>${jenkins.baseline}.3</jenkins.version>
-		<!-- TODO fix violations -->
-		<spotbugs.threshold>High</spotbugs.threshold>
 	</properties>
 
 	<dependencyManagement>

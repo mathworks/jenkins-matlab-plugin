@@ -15,10 +15,10 @@ import hudson.Launcher.ProcStarter;
 
 import hudson.model.Node;
 import hudson.model.TaskListener;
+import hudson.remoting.VirtualChannel;
 import hudson.tools.ToolInstaller;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolInstallerDescriptor;
-
 import hudson.util.ArgumentListBuilder;
 import hudson.util.FormValidation;
 
@@ -214,6 +214,7 @@ public class MatlabInstaller extends ToolInstaller {
                 break;
             case "maca64":
                 matlabBatchUrl = new URL(Message.getValue("tools.matlab.batch.executable.maca64"));
+                break;
             default:
                 throw new InstallationFailedException("Unsupported OS");
         }
@@ -263,7 +264,11 @@ public class MatlabInstaller extends ToolInstaller {
     }
 
     private String[] getSystemProperties(Node node) throws IOException, InterruptedException {
-        String[] properties = node.getChannel()
+        VirtualChannel channel = node.getChannel();
+        if (channel == null) {
+            throw new InstallationFailedException("Unable to connect to Node");
+        }
+        String[] properties = channel
                 .call(new GetSystemProperties("os.name", "os.arch", "os.version"));
         return properties;
     }
