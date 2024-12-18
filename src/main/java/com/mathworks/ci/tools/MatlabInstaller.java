@@ -119,7 +119,7 @@ public class MatlabInstaller extends ToolInstaller {
         addMatlabProductsToArgs(args, products);
 
         ByteArrayOutputStream err = new ByteArrayOutputStream();
-        installerProc.pwd(destination).cmds(args).stdout(err);
+        installerProc.pwd(destination).cmds(args).stderr(err);
 
         int result;
         try {
