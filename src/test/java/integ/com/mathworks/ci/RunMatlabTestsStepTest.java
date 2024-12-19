@@ -128,7 +128,8 @@ public class RunMatlabTestsStepTest {
     }
 
     /*
-     * Verify runMatlabTests runs with empty parameters when nothing no artifact selected
+     * Verify runMatlabTests runs with empty parameters when nothing no artifact
+     * selected
      */
 
     @Test
