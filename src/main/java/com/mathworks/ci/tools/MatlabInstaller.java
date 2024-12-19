@@ -24,7 +24,6 @@ import hudson.util.FormValidation;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 
 import java.nio.charset.StandardCharsets;
@@ -96,8 +95,8 @@ public class MatlabInstaller extends ToolInstaller {
         // Install with mpm
         mpmInstall(mpm, this.getRelease(), this.getProducts(), matlabRoot, node, log);
 
-        // Copy downloaded matlab-batch to tool directory, 
-        matlabBatch.copyTo(new FilePath(toolRoot, "matlab-batch"+extension));
+        // Copy downloaded matlab-batch to tool directory
+        matlabBatch.copyTo(new FilePath(toolRoot, "matlab-batch" + extension));
 
         // Delete temp directory
         tempDir.deleteRecursive();
@@ -105,7 +104,8 @@ public class MatlabInstaller extends ToolInstaller {
         return matlabRoot;
     }
 
-    private void mpmInstall(FilePath mpmPath, String release, String products, FilePath destination, Node node, TaskListener log)
+    private void mpmInstall(FilePath mpmPath, String release, String products, FilePath destination, Node node,
+            TaskListener log)
             throws IOException, InterruptedException {
         makeDir(destination);
         Launcher matlabInstaller = node.createLauncher(log);

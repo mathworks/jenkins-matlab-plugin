@@ -204,14 +204,14 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         // Add matlab-batch executable in path
         FilePath batchExecutable = getNthParentFilePath(matlabExecutablePath, 3);
         if (batchExecutable != null && batchExecutable.exists()) {
-            context.env("PATH+MATLAB_BATCH", batchExecutable.getRemote());
+            context.env("PATH+matlabbatch", batchExecutable.getRemote());
         }
 
         // Add "matlabroot" without bin as env variable which will be available across
         // the build.
         context.env("matlabroot", nodeSpecificMatlab);
         // Add matlab bin to path to invoke MATLAB directly on command line.
-        context.env("PATH+MATLAB_ROOT", matlabBinDir.getRemote());
+        context.env("PATH+matlabroot", matlabBinDir.getRemote());
         ;
         listener.getLogger().println("\n" + String.format(Message.getValue("matlab.added.to.path.from"),
                 matlabBinDir.getRemote()) + "\n");

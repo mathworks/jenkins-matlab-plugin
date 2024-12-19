@@ -14,15 +14,12 @@ import hudson.Util;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
 import hudson.model.TaskListener;
-import hudson.remoting.VirtualChannel;
 import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import javax.annotation.CheckForNull;
@@ -69,10 +66,10 @@ public class MatlabInstallation extends ToolInstallation
         }
         FilePath matlabHome = new FilePath(new File(home));
         FilePath matlabBin = new FilePath(matlabHome, "bin");
-        env.put("PATH+MATLAB_ROOT", matlabBin.getRemote());
+        env.put("PATH+matlabroot", matlabBin.getRemote());
         FilePath matlabBatchFolder = matlabHome.getParent();
         if (matlabBatchFolder != null) {
-            env.put("PATH+MATLAB_BATCH", matlabBatchFolder.getRemote());
+            env.put("PATH+matlabbatch", matlabBatchFolder.getRemote());
         }
     }
 
