@@ -43,10 +43,6 @@ public class Utilities {
         FilePath matlabRoot = getNodeSpecificHome(name,
                 cmp.getNode(), listener, env);
 
-        if (matlabRoot == null) {
-            return;
-        }
-
         FilePath toolHome = matlabRoot.getParent();
         if (toolHome == null) {
             return;
