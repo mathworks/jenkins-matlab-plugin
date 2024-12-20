@@ -9,7 +9,9 @@ package com.mathworks.ci;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.BufferedReader;
+import java.lang.InterruptedException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.NotDirectoryException;
 import java.util.HashMap;
@@ -25,7 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import org.xml.sax.SAXException;
 import hudson.FilePath;
 
 public class MatlabReleaseInfo {
@@ -74,11 +76,6 @@ public class MatlabReleaseInfo {
         }
     }
 
-    @SuppressFBWarnings(value = { "REC_CATCH_EXCEPTION",
-            "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" }, justification = "REC_CATCH_EXCEPTION: Irrespective of exception type, intention is to handle it in same way."
-                    +
-                    " Also, there is no intention to propagate any runtime exception up in the hierarchy." +
-                    "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE: This is a false positive reported by spotbugs for JDK 11 for try-with-resources block.")
     private Map<String, String> getVersionInfoFromFile() throws MatlabVersionNotFoundException {
         if (MapUtils.isEmpty(versionInfoCache)) {
             try {
@@ -139,7 +136,7 @@ public class MatlabReleaseInfo {
                     // Update the versionInfoCache with actual version extracted from Contents.m
                     versionInfoCache.put(VERSION_TAG, actualVersion);
                 }
-            } catch (Exception e) {
+            } catch (InterruptedException | IOException | ParserConfigurationException | SAXException e) {
                 throw new MatlabVersionNotFoundException(
                         Message.getValue("Releaseinfo.matlab.version.not.found.error"), e);
             }
