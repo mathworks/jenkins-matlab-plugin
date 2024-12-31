@@ -1,0 +1,18 @@
+name: using mpm to install MATLAB
+on: push
+jobs:
+  my-job:
+    name: Run System tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v2
+
+      - name: Setup MATLAB
+        id: setup-matlab
+        uses: matlab-actions/setup-matlab@v2
+
+      - name: Running tests
+        run: mvn failsafe:integration-test
+        env:
+          MATLAB_ROOT: ${{ steps.setup-matlab.outputs.matlabroot }}
