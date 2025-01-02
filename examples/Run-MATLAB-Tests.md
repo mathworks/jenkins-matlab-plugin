@@ -38,11 +38,11 @@ Create a new project and configure it by following these steps:
 
 ![run_matlab_tests](https://github.com/user-attachments/assets/b6b7b811-d998-4fb9-bbf8-5de624bb5bd6)
 
-5. In the **Post-build Actions** section, add a post-build action to publish the test results in JUnit-style XML format. For each artifact, provide the path to the report.
+5. In the **Post-build Actions** section, add the **Publish JUnit test result report** post-build action to publish the test results in JUnit-style XML format. Specify the path to the test report in the **Test report XMLs** box.
 
 ![post_build_junit](https://github.com/user-attachments/assets/82b4c99a-59c3-41e4-946d-555fb9315f35)
 
-6. In the **Post-build Actions** section, add another post-build action to publish code coverage results in Cobertura XML format. For each artifact, provide the path to the report.
+6. In the **Post-build Actions** section, add the **Record code coverage results** post-build action to publish the code coverage results in Cobertura XML format. Select `Cobertura Coverage Reports` from the **Coverage Parser** list and specify the path to the coverage report in the **Report File Pattern** box.
 
 ![post_build_cobertura](https://github.com/user-attachments/assets/5af14bb9-f12e-4942-a3ad-957eec4a057b)
 
