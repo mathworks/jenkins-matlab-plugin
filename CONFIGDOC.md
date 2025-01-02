@@ -442,11 +442,11 @@ To register a MATLAB version as a Jenkins tool:
 3) Specify the name you want to assign to the MATLAB version in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. To register the MATLAB version as a tool, do not select **Install automatically**. 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register MATLAB R2024a as a Jenkins tool on your Windows local agent.
+For example, register MATLAB R2024b as a Jenkins tool on your Windows local agent.
 
-![matlab_tool](https://github.com/mathworks/jenkins-matlab-plugin/assets/48831250/8e3625a8-96a9-424a-b675-c5a13643e85b)
+![matlab_tool](https://github.com/user-attachments/assets/c0f68621-7a55-4a68-b6cf-aa6046a2c994)
 
-If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you specified on the local agent. For example, if you registered MATLAB R2024a as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
+If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you specified on the local agent. For example, if you registered MATLAB R2024b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
 
 1) Navigate to the **Node Properties** interface of the agent. You can access this interface by selecting **Manage Jenkins > Nodes**, following the link corresponding to the agent, and then selecting **Configure** on the left.
 2) Select **Tool Locations**. Then, select the tool name from the **Name** list. The list contains the names assigned to the registered MATLAB versions on the local agent.  
