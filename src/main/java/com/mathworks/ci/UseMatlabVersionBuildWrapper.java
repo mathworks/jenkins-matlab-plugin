@@ -216,19 +216,4 @@ public class UseMatlabVersionBuildWrapper extends SimpleBuildWrapper {
         return (launcher.isUnix()) ? "/bin/matlab" : "\\bin\\matlab.exe";
     }
 
-    public static FilePath getNthParentFilePath(FilePath path, int levels) {
-        if (path == null || levels < 0) {
-            return null;
-        }
-
-        FilePath currentPath = path;
-        for (int i = 0; i < levels; i++) {
-            if (currentPath == null) {
-                return null;
-            }
-            currentPath = currentPath.getParent();
-        }
-        return currentPath;
-    }
-
 }
