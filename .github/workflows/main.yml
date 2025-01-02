@@ -13,6 +13,6 @@ jobs:
         uses: matlab-actions/setup-matlab@v2
 
       - name: Running tests
-        run: mvn failsafe:integration-test
+        run: mvn test-compile failsafe:integration-test
         env:
           MATLAB_ROOT: ${{ steps.setup-matlab.outputs.matlabroot }}
