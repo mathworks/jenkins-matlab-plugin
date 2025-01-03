@@ -23,7 +23,8 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
 -  [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool)
    -  [Register Preinstalled MATLAB Version](#register-preinstalled-matlab-version)
    -  [Register Using MATLAB Package Manager](#register-using-matlab-package-manager)
-      -  [Product Licensing](#product-licensing)
+      -  [Specify Release and Products](#specify-release-and-products)
+      -  [License Installed Products](#licesne-installed-products)
    -  [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
 
@@ -469,21 +470,22 @@ To register a preinstalled version of MATLAB as a Jenkins tool:
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
 3) Specify the name you want to assign to the MATLAB version in the **Name** box. (Leave the **MATLAB root** box empty.)
 4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
-5) 
+5) Specify the release and products to install in the **Release** and **Products** boxes, respectively. For details, see [Specify Release and Products](specify-release-and-products).
 6) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2024b as a Jenkins tool on your Windows local agent.
 
 ![matlab_tool_mpm](https://github.com/user-attachments/assets/c0f68621-7a55-4a68-b6cf-aa6046a2c994)
 
+#### Specify Release and Products
 MATLAB release to install. You can specify R2021a or a later release. By default, the value of `release` is `latest`, which corresponds to the latest release of MATLAB.<ul><li>To install the latest update of a release, specify only the release name, for example, `R2023b`.</li><li>To install a specific update release, specify the release name with an update number suffix, for example, `R2023bU4`.</li><li>To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2023bU0` or `R2023bGR`.</li></ul>
 
->**Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
+> :information_source: **Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
 
 Products to install in addition to MATLAB, specified as a list of product names separated by spaces. You can specify `products` to install most MathWorks products and support packages. The command uses [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`) to install products. For a list of supported products, open the input file for your preferred release from the [`mpm-input-files`](https://github.com/mathworks-ref-arch/matlab-dockerfile/tree/main/mpm-input-files) folder on GitHub&reg;. Specify products using the format shown in the input file, excluding the `#product.` prefix. For example, to install Deep Learning Toolbox&trade; in addition to MATLAB, specify `products: Deep_Learning_Toolbox`.
 
 
-#### Product Licensing
+#### License Installed Products
 
 Product licensing for your pipeline depends on your project visibility as well as the type of products to install:
 
@@ -492,7 +494,7 @@ Product licensing for your pipeline depends on your project visibility as well a
   
 To use a MATLAB batch licensing token, first store the token in a [context](https://circleci.com/docs/contexts/) environment variable named `MLM_LICENSE_TOKEN`. Then, using the context in the `workflows` section of your pipeline, give jobs that include the `run-build`, `run-tests`, and `run-command` commands access to the environment variable. For an example, see [Use MATLAB Batch Licensing Token](#use-matlab-batch-licensing-token). 
 
->**Note:** The `install` command automatically includes the [MATLAB batch licensing executable](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md) (`matlab-batch`). To use a MATLAB batch licensing token in a pipeline that does not use this command, you must first download the executable and add it to the system path.
+> :information_source: **Note:** The `install` command automatically includes the [MATLAB batch licensing executable](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md) (`matlab-batch`). To use a MATLAB batch licensing token in a pipeline that does not use this command, you must first download the executable and add it to the system path.
 
 ### Use MATLAB as a Tool in Freestyle Project
 
