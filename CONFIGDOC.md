@@ -24,7 +24,7 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Register Preinstalled MATLAB Version](#register-preinstalled-matlab-version)
    -  [Register Using MATLAB Package Manager](#register-using-matlab-package-manager)
       -  [Specify Release and Products](#specify-release-and-products)
-      -  [License Installed Products](#licesne-installed-products)
+      -  [License Installed Products](#license-installed-products)
    -  [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
 
@@ -486,7 +486,6 @@ Products to install in addition to MATLAB, specified as a list of product names 
 
 
 #### License Installed Products
-
 Product licensing for your pipeline depends on your project visibility as well as the type of products to install:
 
 - Public project — If your pipeline does not include transformation products, such as MATLAB Coder and MATLAB Compiler, then the orb automatically licenses any products that you install. If your pipeline includes transformation products, you can request a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
