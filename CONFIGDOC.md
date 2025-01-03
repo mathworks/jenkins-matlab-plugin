@@ -470,7 +470,7 @@ To register a preinstalled version of MATLAB as a Jenkins tool:
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
 3) Specify the name you want to assign to the MATLAB version in the **Name** box. (Leave the **MATLAB root** box empty.)
 4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
-5) Specify the release and products to install in the **Release** and **Products** boxes, respectively. For details, see [Specify Release and Products](specify-release-and-products).
+5) Specify the release and products to install in the **Release** and **Products** boxes, respectively. For details, see [Specify Release and Products](#specify-release-and-products).
 6) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2024b as a Jenkins tool on your Windows local agent.
