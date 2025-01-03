@@ -441,7 +441,7 @@ Instead of specifying the path to the MATLAB root folder on a per-project basis,
 
 The plugin enables you to register MATLAB as a tool in two different ways:
 - You can register a preinstalled version of MATLAB by specifying the path to its root folder.
-- You can register MATLAB and other MathWorks products by using [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`). MATLAB Package Manager automatically installs your preferred products as part of the registration. 
+- You can register a specific version of MATLAB and other MathWorks products by using [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`). The plugin uses MATLAB Package Manager to automatically install your preferred products as part of the registration. 
 
 ### Register Preinstalled MATLAB Version
 To register a preinstalled version of MATLAB as a Jenkins tool:
