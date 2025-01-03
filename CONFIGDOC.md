@@ -439,13 +439,16 @@ When you run MATLAB code and Simulink models as part of your automated pipeline 
 
 Instead of specifying the path to the MATLAB root folder on a per-project basis, you can register a MATLAB version as a Jenkins tool, which makes it available to any project you configure in Jenkins. Once you have registered a MATLAB version as a tool, you no longer need to specify its root folder path within a project. Jenkins needs only the tool name to access the MATLAB version.
 
-### Register Preinstalled MATLAB Version
+The plugin enables you to register MATLAB as a tool in two different ways:
+- You can register a preinstalled version of MATLAB by specifying the path to its root folder.
+- You can register MATLAB and other MathWorks products by using [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`). MATLAB Package Manager automatically installs your preferred products as part of the registration. 
 
-To register a MATLAB version as a Jenkins tool:
+### Register Preinstalled MATLAB Version
+To register a preinstalled version of MATLAB as a Jenkins tool:
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**. The **Tools** page opens where you can register different tools with Jenkins.
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version and specify its installation location.
-3) Specify the name you want to assign to the MATLAB version in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. To register the MATLAB version as a tool, do not select **Install automatically**. 
+3) Specify the name you want to assign to the MATLAB version in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. (To register the MATLAB version as a tool, do not select **Install automatically**.) 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2024b as a Jenkins tool on your Windows local agent.
