@@ -12,7 +12,15 @@ jobs:
         id: setup-matlab
         uses: matlab-actions/setup-matlab@v2
 
+      - name: Setup R2022b MATLAB
+        id: setup-matlab-22b
+        uses: matlab-actions/setup-matlab@v2
+        with:
+          release: R2022b
+
       - name: Running tests
         run: mvn test-compile failsafe:integration-test
         env:
           MATLAB_ROOT: ${{ steps.setup-matlab.outputs.matlabroot }}
+          MATLAB_ROOT_22b: ${{ steps.setup-matlab-22b.outputs.matlabroot }}
+          MLM_LICENSE_TOKEN:  ${{ secrets.MLM_LICENSE_TOKEN}}
