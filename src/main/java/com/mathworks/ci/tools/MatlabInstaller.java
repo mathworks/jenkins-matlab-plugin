@@ -96,7 +96,8 @@ public class MatlabInstaller extends ToolInstaller {
         mpmInstall(mpm, this.getRelease(), this.getProducts(), matlabRoot, node, log);
 
         // Copy downloaded matlab-batch to tool directory
-        matlabBatch.copyTo(new FilePath(toolRoot, "matlab-batch" + extension));
+        FilePath matlabBin = new FilePath(matlabRoot, "bin");
+        matlabBatch.copyTo(new FilePath(matlabBin, "matlab-batch" + extension));
 
         // Delete temp directory
         tempDir.deleteRecursive();
