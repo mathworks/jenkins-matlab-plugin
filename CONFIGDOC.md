@@ -475,7 +475,7 @@ To register a specific version of MATLAB as a Jenkins tool using MATLAB Package 
 6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
 7) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register a Jenkins tool named `Latest` that includes the latest release of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox.
+For example, configure a Jenkins tool named `Latest` that includes the latest release of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox.
 
 ![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
