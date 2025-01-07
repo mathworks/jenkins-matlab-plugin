@@ -471,15 +471,16 @@ To register a specific version of MATLAB as a Jenkins tool using MATLAB Package 
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
 3) Specify the name you want to assign to the MATLAB version in the **Name** box. (Leave the **MATLAB root** box empty.)
 4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
-5) Specify the release and products to install (in addition to MATLAB) in the **Release** and **Products** boxes, respectively. For details, see [Specify Release](#specify-release) and [Add Products](#add-products).
-6) To confirm your choices, click **Save** at the bottom of the page.
+5) Specify the MATLAB release to install in the **Release** box. For details, see [Specify Release](#specify-release).
+6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
+7) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register the latest release of MATLAB as a Jenkins tool named `Latest`.
+For example, register the latest release of MATLAB as a Jenkins tool named `Latest` by automatically installing MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox&trade;.
 
 ![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
 #### Specify Release
-MATLAB release to install. You can specify R2021a or a later release. By default, the value of `release` is `latest`, which corresponds to the latest release of MATLAB.<ul><li>To install the latest update of a release, specify only the release name, for example, `R2023b`.</li><li>To install a specific update release, specify the release name with an update number suffix, for example, `R2023bU4`.</li><li>To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2023bU0` or `R2023bGR`.</li></ul>
+When registering using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool definition interface. By default, the value of `release` is `latest`, which corresponds to the latest release of MATLAB.<ul><li>To install the latest update of a release, specify only the release name, for example, `R2023b`.</li><li>To install a specific update release, specify the release name with an update number suffix, for example, `R2023bU4`.</li><li>To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2023bU0` or `R2023bGR`.</li></ul>
 
 #### Add Products
 > :information_source: **Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
