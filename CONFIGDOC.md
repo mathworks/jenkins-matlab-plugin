@@ -473,9 +473,9 @@ To register a specific version of MATLAB as a Jenkins tool using MATLAB Package 
 5) Specify the release and products to install (in addition to MATLAB) in the **Release** and **Products** boxes, respectively. For details, see [Specify Release and Products](#specify-release-and-products).
 6) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register MATLAB R2024b as a Jenkins tool on your Windows local agent.
+For example, register the latest release of MATLAB as a Jenkins tool named `Latest`.
 
-![matlab_tool_mpm](https://github.com/user-attachments/assets/c0f68621-7a55-4a68-b6cf-aa6046a2c994)
+![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
 #### Specify Release and Products
 MATLAB release to install. You can specify R2021a or a later release. By default, the value of `release` is `latest`, which corresponds to the latest release of MATLAB.<ul><li>To install the latest update of a release, specify only the release name, for example, `R2023b`.</li><li>To install a specific update release, specify the release name with an update number suffix, for example, `R2023bU4`.</li><li>To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2023bU0` or `R2023bGR`.</li></ul>
