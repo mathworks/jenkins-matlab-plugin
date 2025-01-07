@@ -475,18 +475,16 @@ To register a specific version of MATLAB as a Jenkins tool using MATLAB Package 
 6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
 7) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, register a Jenkins tool named `Latest` by automatically installing the latest release of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox.
+For example, register a Jenkins tool named `Latest` by automatically installing the latest release of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox on the build agent.
 
 ![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
 #### Specify Release
 When registering using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool definition interface:
-- To register the latest release of MATLAB, specify `latest`.
+- To register the latest release of MATLAB, specify `latest`.  Whenever you run a build using a tool based on this value, the plugin first verifies that the latest release is available on the build agent. If the build agent includes an older release, then the plugin installs the latest release without removing the older release.
 - To register the latest update of a release, specify only the release name, for example, `R2024a`.
 - To register a specific update release, specify the release name with an update number suffix, for example, `R2024aU4`.
 - To register a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2024aU0` or `R2024aGR`.
-
-If you specify `latest`, the plugin checks for the latest release whenever you run a build using the tool. If the latest release is newer than 
 
 #### Add Products
 > :information_source: **Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
