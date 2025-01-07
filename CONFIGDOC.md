@@ -481,10 +481,10 @@ For example, register a Jenkins tool named `Latest` by automatically installing 
 
 #### Specify Release
 When using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool definition interface:
-- To register the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest release of MATLAB at the time of the build. If the latest release is newer than the most recent release on the build agent, then the plugin installs the latest release without uninstalling the existing release.
-- To register the latest update of a release, specify only the release name, for example, `R2024a`.
-- To register a specific update release, specify the release name with an update number suffix, for example, `R2024aU4`.
-- To register a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2024aU0` or `R2024aGR`.
+- To install the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest release of MATLAB at the time of the build. If the latest release is newer than the most recent release on the build agent, then the plugin installs the latest release without uninstalling the existing release.
+- To install the latest update of a release, specify only the release name, for example, `R2024a`.
+- To install a specific update release, specify the release name with an update number suffix, for example, `R2024aU4`.
+- To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2024aU0` or `R2024aGR`.
 
 #### Add Products
 > :information_source: **Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
