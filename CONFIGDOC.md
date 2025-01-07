@@ -480,7 +480,7 @@ For example, register a Jenkins tool named `Latest` by automatically installing 
 ![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
 #### Specify Release
-When using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool definition interface:
+When using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool configuration interface:
 - To install the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest release of MATLAB at the time of the build. If the latest release is newer than the most recent release on the build agent, then the plugin installs the latest release without uninstalling the existing release.
 - To install the latest update of a release, specify only the release name, for example, `R2024a`.
 - To install a specific update release, specify the release name with an update number suffix, for example, `R2024aU4`.
