@@ -487,6 +487,9 @@ When using MATLAB Package Manager, you can specify `R2021a` or a later release i
 - To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2024aU0` or `R2024aGR`.
 
 #### Add Products
+When using MATLAB Package Manager, the plugin automatically installs MATLAB on your build agent. However, you can specify additional products to install by populating the **Products** box of the tool configuration interface. you can specify `R2021a` or a later release in the **Release** box of the tool configuration interface
+To register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager as the installer
+
 > :information_source: **Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
 
 Products to install in addition to MATLAB, specified as a list of product names separated by spaces. You can specify `products` to install most MathWorks products and support packages. The command uses [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`) to install products. For a list of supported products, open the input file for your preferred release from the [`mpm-input-files`](https://github.com/mathworks-ref-arch/matlab-dockerfile/tree/main/mpm-input-files) folder on GitHub&reg;. Specify products using the format shown in the input file, excluding the `#product.` prefix. For example, to install Deep Learning Toolbox&trade; in addition to MATLAB, specify `products: Deep_Learning_Toolbox`.
