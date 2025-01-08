@@ -469,7 +469,7 @@ To register a specific version of MATLAB as a Jenkins tool using MATLAB Package 
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**. The **Tools** page opens where you can configure various tools.
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
-3) Specify the name you want to assign to the MATLAB version in the **Name** box. (Leave the **MATLAB root** box empty.)
+3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box. (Leave the **MATLAB root** box empty.)
 4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
 5) Specify the MATLAB release to install in the **Release** box. For details, see [Specify Release](#specify-release).
 6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
