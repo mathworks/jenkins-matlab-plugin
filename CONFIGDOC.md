@@ -500,7 +500,7 @@ If you specify more than one product, separate the names with a space. For examp
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
 
-To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, to create a global credential, which can be used anywhere throughout Jenkins, follow these steps:
+To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, to configure a global credential, which can be used anywhere throughout Jenkins, follow these steps:
 
 1) In your Jenkins interface, select **Manage Jenkins > Credentials**.
 2) In the **Stores scoped to Jenkins** section of the **Credentials** page, click **System**.
@@ -508,7 +508,7 @@ To license products using a batch licensing token, create a [credential](https:/
 4) On the **New credentials** page, select `Secret text` from the **Kind** list, paste your batch lincensing token into the **Secret** box, and specify the credential ID and description by populating the **ID** and **Description** boxes. To save the credential, Click **Create**.
    ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
 
-For more information on how to create a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
+For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
 
 ### Use MATLAB as a Tool in Freestyle Project
 
