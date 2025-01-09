@@ -487,7 +487,7 @@ When using MATLAB Package Manager, you can specify `R2021a` or a later release i
 - To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2024aU0` or `R2024aGR`.
 
 #### Add Products
-When you use a tool configured with MATLAB Package Manager as the installer, the plugin automatically installs MATLAB on your build agent. However, you can specify additional products to install by populating the **Products** box of the tool configuration interface.
+When you use a tool configured with MATLAB Package Manager as the installer, the plugin automatically installs MATLAB for you. However, you can specify additional products to install by populating the **Products** box of the tool configuration interface.
 
 You can use the **Products** box to install most MathWorks products and support packages.  For a list of supported products, open the input file for your preferred release from the [`mpm-input-files`](https://github.com/mathworks-ref-arch/matlab-dockerfile/tree/main/mpm-input-files) folder on GitHub&reg;. Specify products using the format shown in the input file, excluding the `#product.` prefix. For example, to install Deep Learning Toolbox&trade; in addition to MATLAB, enter `Deep_Learning_Toolbox` in the **Products** box.
 
