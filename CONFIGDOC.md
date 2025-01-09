@@ -498,14 +498,13 @@ If you specify more than one product, separate the names with a space. For examp
 > :information_source: **Note:** The plugin does not install dependencies on a Linux platform. If you are using a Linux platform, verify that the required software is available before installing products using MATLAB Package Manager. For more information, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
 
 #### License Installed Products
-Product licensing for your pipeline depends on your project visibility as well as the type of products to install:
+To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
 
-- Public project — If your pipeline does not include transformation products, such as MATLAB Coder and MATLAB Compiler, then the orb automatically licenses any products that you install. If your pipeline includes transformation products, you can request a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
-- Private project — The orb does not automatically license any products for you. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
   
 To use a MATLAB batch licensing token, first store the token in a [context](https://circleci.com/docs/contexts/) environment variable named `MLM_LICENSE_TOKEN`. Then, using the context in the `workflows` section of your pipeline, give jobs that include the `run-build`, `run-tests`, and `run-command` commands access to the environment variable. For an example, see [Use MATLAB Batch Licensing Token](#use-matlab-batch-licensing-token). 
 
-> :information_source: **Note:** The `install` command automatically includes the [MATLAB batch licensing executable](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md) (`matlab-batch`). To use a MATLAB batch licensing token in a pipeline that does not use this command, you must first download the executable and add it to the system path.
+For more information, see [Using credentials](https://www.jenkins.io/doc/book/using/using-credentials/).
+
 
 ### Use MATLAB as a Tool in Freestyle Project
 
