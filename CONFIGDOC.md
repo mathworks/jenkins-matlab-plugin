@@ -500,10 +500,16 @@ If you specify more than one product, separate the names with a space. For examp
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
 
-  
-To use a MATLAB batch licensing token, first store the token in a [context](https://circleci.com/docs/contexts/) environment variable named `MLM_LICENSE_TOKEN`. Then, using the context in the `workflows` section of your pipeline, give jobs that include the `run-build`, `run-tests`, and `run-command` commands access to the environment variable. For an example, see [Use MATLAB Batch Licensing Token](#use-matlab-batch-licensing-token). 
+To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, create a global credential, which can be used anywhere throughout Jenkins, by following these steps. (For general information on how to create a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials).)
 
-For more information, see [Using credentials](https://www.jenkins.io/doc/book/using/using-credentials/).
+1) In your Jenkins interface, select **Manage Jenkins > Tools**. The **Tools** page opens where you can configure various tools.
+2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
+3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box. (Leave the **MATLAB root** box empty.)
+4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
+5) Specify the MATLAB release to install in the **Release** box. For details, see [Specify Release](#specify-release).
+6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
+7) To confirm your choices, click **Save** at the bottom of the page.
+
 
 
 ### Use MATLAB as a Tool in Freestyle Project
