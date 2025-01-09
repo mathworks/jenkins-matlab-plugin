@@ -448,7 +448,7 @@ The plugin enables you to register MATLAB as a tool in two different ways:
 ### Register Preinstalled MATLAB Version
 To register a preinstalled version of MATLAB as a Jenkins tool:
 
-1) In your Jenkins interface, select **Manage Jenkins > Tools**. The **Tools** page opens where you can configure various tools.
+1) In your Jenkins interface, select **Manage Jenkins > Tools**.
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version and specify its installation location.
 3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. (To register the MATLAB version as a tool, do not select **Install automatically**.) 
 4) To confirm your choices, click **Save** at the bottom of the page.
@@ -467,7 +467,7 @@ If your Jenkins instance includes remote agents, you can register MATLAB as a to
 ### Register Using MATLAB Package Manager
 To register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager as the installer:
 
-1) In your Jenkins interface, select **Manage Jenkins > Tools**. The **Tools** page opens where you can configure various tools.
+1) In your Jenkins interface, select **Manage Jenkins > Tools**.
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
 3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box. (Leave the **MATLAB root** box empty.)
 4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
@@ -500,17 +500,17 @@ If you specify more than one product, separate the names with a space. For examp
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
 
-To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, create a global credential, which can be used anywhere throughout Jenkins, by following these steps. (For general information on how to create a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials).)
+To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, to create a global credential, which can be used anywhere throughout Jenkins, follow these steps:
 
-1) In your Jenkins interface, select **Manage Jenkins > Tools**. The **Tools** page opens where you can configure various tools.
-2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
-3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box. (Leave the **MATLAB root** box empty.)
-4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
-5) Specify the MATLAB release to install in the **Release** box. For details, see [Specify Release](#specify-release).
-6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
-7) To confirm your choices, click **Save** at the bottom of the page.
+1) In your Jenkins interface, select **Manage Jenkins > Credentials**.
+3) In the **Stores scoped to Jenkins** section of the **Credentials** page, click **System**.
+4) On the **System** page, click **Global credentials (unrestricted)**.
+5) Click the **Add Credentials** button on the top-right corner of the **System** page.
+6) On the **New credetials** page, select `Secret text` from the **Kind** list. Then, paste the token into the **Secret** box. Optionally, specify the credential ID and description by populating the **ID** and **Description** boxes.
+   ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
+7) To save the credential, Click **Create**.
 
-
+For more information on how to create a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials).
 
 ### Use MATLAB as a Tool in Freestyle Project
 
