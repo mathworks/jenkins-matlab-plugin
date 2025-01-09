@@ -503,12 +503,11 @@ To use the products installed using MATLAB Package Manager in freestyle, multi-c
 To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, to create a global credential, which can be used anywhere throughout Jenkins, follow these steps:
 
 1) In your Jenkins interface, select **Manage Jenkins > Credentials**.
-3) In the **Stores scoped to Jenkins** section of the **Credentials** page, click **System**.
-4) On the **System** page, click **Global credentials (unrestricted)**.
-5) Click the **Add Credentials** button on the top-right corner of the **System** page.
-6) On the **New credetials** page, select `Secret text` from the **Kind** list. Then, paste the token into the **Secret** box. Optionally, specify the credential ID and description by populating the **ID** and **Description** boxes.
+2) In the **Stores scoped to Jenkins** section of the **Credentials** page, click **System**.
+3) On the **System** page, click **Global credentials (unrestricted)**. Then, click the **Add Credentials** button on the top-right corner of the page.
+4) On the **New credetials** page, select `Secret text` from the **Kind** list. Then, paste your batch lincensing token into the **Secret** box. Additionally, specify the credential ID and description by populating the **ID** and **Description** boxes.
    ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
-7) To save the credential, Click **Create**.
+5) To save the credential, Click **Create**.
 
 For more information on how to create a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials).
 
