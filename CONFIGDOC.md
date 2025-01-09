@@ -507,7 +507,6 @@ To license products using a batch licensing token, create a [credential](https:/
 3) On the **System** page, click **Global credentials (unrestricted)**. Then, click the **Add Credentials** button on the top-right corner of the page.
 4) On the **New credentials** page, select `Secret text` from the **Kind** list, paste your batch lincensing token into the **Secret** box, and specify the credential ID and description by populating the **ID** and **Description** boxes. To save the credential, Click **Create**.
    ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
-   ![store-token-as-credential](https://github.com/user-attachments/assets/41795f78-2f59-412c-aa35-6a7e9ac113d0)
 
 For more information on how to create a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
 
