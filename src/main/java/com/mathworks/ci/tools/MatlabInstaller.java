@@ -92,14 +92,16 @@ public class MatlabInstaller extends ToolInstaller {
 
         // Download mpm and matlab-batch to temp directory
         FilePath mpm = fetchMpm(platform, tempDir);
-        FilePath matlabBatch = fetchMatlabBatch(platform, tempDir);
+        FilePath tempMatlabBatch = fetchMatlabBatch(platform, tempDir);
 
         // Install with mpm
         mpmInstall(mpm, release, this.getProducts(), matlabRoot, node, log);
 
         // Copy downloaded matlab-batch to tool directory
         FilePath matlabBin = new FilePath(matlabRoot, "bin");
-        matlabBatch.copyTo(new FilePath(matlabBin, "matlab-batch" + extension));
+        FilePath matlabBatchBin = new FilePath(matlabBin, "matlab-batch" + extension);
+        tempMatlabBatch.copyTo(matlabBatchBin);
+        matlabBatchBin.chmod(0777);
 
         // Delete temp directory
         tempDir.deleteRecursive();
@@ -225,7 +227,6 @@ public class MatlabInstaller extends ToolInstaller {
         FilePath matlabBatchPath = new FilePath(destination, "matlab-batch" + extension);
         try {
             matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
-            matlabBatchPath.chmod(0777);
         } catch (IOException | InterruptedException e) {
             throw new InstallationFailedException("Unable to setup matlab-batch.");
         }
