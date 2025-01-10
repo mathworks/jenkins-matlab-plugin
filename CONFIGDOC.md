@@ -25,8 +25,8 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Register Using MATLAB Package Manager](#register-using-matlab-package-manager)
       -  [Specify Release](#specify-release)
       -  [Add Products](#add-products)
-      -  [License Installed Products](#license-installed-products)
       -  [Required Software](#required-software)
+      -  [License Installed Products](#license-installed-products)
    -  [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
 
@@ -518,7 +518,10 @@ For example, configure a Jenkins tool named `Latest` that includes the latest re
 
 ![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
-> :information_source: **Note:** Before using MATLAB Package Manager, verify that the required software is installed on your UNIX agent. For details, see [Required Sofware](#required-software).
+> :information_source: **Notes:**
+> - Before using MATLAB Package Manager, verify that the required software is installed on your UNIX agent. For details, see [Required Software](#required-software).
+> - To use the products installed using MATLAB Package Manager, you must first license those products. For more information, see [License Installed Products](#license-installed-products). 
+
 #### Specify Release
 When using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool configuration interface:
 - To install the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest release of MATLAB at the time of the build. If the latest release is newer than the most recent release on the build agent, then the plugin installs the latest release without uninstalling the existing release.
@@ -535,6 +538,9 @@ If you specify more than one product, separate the names with a space. For examp
 
 `Simulink Deep_Learning_Toolbox`
 
+#### Required Software for Automatic Installation
+see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
+
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
 
@@ -547,11 +553,6 @@ To license products using a batch licensing token, create a [credential](https:/
    ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
 
 For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
-
-
-#### Required Software
-see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
-
 
 
 ### Use MATLAB as a Tool in Freestyle Project
