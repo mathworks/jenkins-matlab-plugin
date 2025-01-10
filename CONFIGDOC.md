@@ -542,17 +542,12 @@ If you specify more than one product, separate the names with a space. For examp
 Before using MATLAB Package Manager to autmatically install MATLAB and other products, verify that the required software is installed on your Linux or macOS agent.
 
 ##### Linux
-If you are using a Linux agent, verify that the following required software is installed on your agent:
+If you are using a Linux agent, verify that the following software is installed on your agent:
 - Third-party packages required to run the `mpm` command — To view the list of `mpm` dependencies, refer to the Linux section of the [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html) page.
 - All MATLAB dependencies — To view the list of MATLAB dependencies, go to the [MATLAB Dependencies](https://github.com/mathworks-ref-arch/container-images/tree/main/matlab-deps) repository on GitHub. Then, open the `<release>/<system>/base-dependencies.txt` file for your MATLAB release and your build agent's operating system.
 
 ##### macOS
-Native Apple silicon MATLAB requires a Java runtime be installed on your macOS agent. For information about this requirement and the recommended solution, see [MATLAB on Apple Silicon Macs](https://www.mathworks.com/support/requirements/apple-silicon.html).
-
-, see .
-,
-see [MATLAB Dependencies](https://github.com/mathworks-ref-arch/container-images/tree/main/matlab-deps)
-
+If you are using a macOS agent with an Apple Silicon processor, verify that Java runtime is installed on your agent. For information about this requirement and the recommended solution, see [MATLAB on Apple Silicon Macs](https://www.mathworks.com/support/requirements/apple-silicon.html).
 
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
