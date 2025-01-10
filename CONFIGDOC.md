@@ -539,7 +539,12 @@ If you specify more than one product, separate the names with a space. For examp
 `Simulink Deep_Learning_Toolbox`
 
 #### Required Software
-see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
+
+
+, see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
+, go to the [MATLAB Dependencies](https://github.com/mathworks-ref-arch/container-images/tree/main/matlab-deps) repository on GitHub. Then, open the `<release>/<system>/base-dependencies.txt` file for your MATLAB release and your build agent's operating system.
+see [MATLAB Dependencies](https://github.com/mathworks-ref-arch/container-images/tree/main/matlab-deps)
+, see [MATLAB on Apple Silicon Macs](https://www.mathworks.com/support/requirements/apple-silicon.html).
 
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
