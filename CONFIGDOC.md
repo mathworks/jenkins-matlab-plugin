@@ -26,7 +26,7 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
       -  [Specify Release](#specify-release)
       -  [Add Products](#add-products)
       -  [License Installed Products](#license-installed-products)
-      -  [Required Sofware](#required-software)
+      -  [Required Software](#required-software)
    -  [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
 
