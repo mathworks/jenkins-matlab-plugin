@@ -553,7 +553,7 @@ For more information on how to configure a global credential, see [Adding new gl
 ![binding_credential_to_environment_variable](https://github.com/user-attachments/assets/749f5ae9-a105-4481-bf60-19c136ee1447)
 
 ### Use MATLAB as a Tool in Pipeline Project
-To invoke MATLAB as a Jenkins tool using declarative pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Tools** page. For example, run `myscript.m` using the MATLAB version that has been registered as a tool named R2024b.  
+To invoke MATLAB as a Jenkins tool using declarative pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Tools** page. For example, run `myscript.m` using a preinstalled MATLAB version that has been registered as a tool named `R2024b`.  
 
 ```groovy
 // Declarative Pipeline
