@@ -538,7 +538,7 @@ If you specify more than one product, separate the names with a space. For examp
 
 `Simulink Deep_Learning_Toolbox`
 
-#### Required Software for Automatic Installation
+#### Required Software
 see [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
 
 #### License Installed Products
