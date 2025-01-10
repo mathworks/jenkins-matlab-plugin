@@ -434,7 +434,45 @@ pipeline {
         }
     }
 }
-``` 
+```
+
+You can also invoke MATLAB as a Jenkins tool when you perform a matrix build in your pipeline project. This example uses three MATLAB versions (specified in an `axis` block using their tool names) to run a set of MATLAB commands and tests. 
+
+```groovy
+// Declarative Pipeline
+pipeline {
+    agent any
+    stages {
+        stage('BuildAndTest') {
+            matrix {
+                agent any
+                axes {
+                    axis {
+                        name 'MATLAB_VERSION'
+                        values 'R2023b', 'R2024a', 'R2024b'
+                    }
+                }
+                tools {
+                    matlab "${MATLAB_VERSION}"
+                }
+                stages {
+                    stage('Run MATLAB commands') {
+                        steps {
+                            runMATLABCommand(command: 'ver, pwd')
+                        }
+                    }
+                    stage('Run MATLAB Tests') {
+                        steps {
+                            runMATLABTests(testResultsJUnit: 'test-results/results.xml',
+                                           codeCoverageCobertura: 'code-coverage/coverage.xml')
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
 
 ## Register MATLAB as Jenkins Tool
 When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins should invoke by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
@@ -512,6 +550,8 @@ For more information on how to configure a global credential, see [Adding new gl
 
 ### Use MATLAB as a Tool in Freestyle Project
 
+![binding_credential_to_environment_variable](https://github.com/user-attachments/assets/749f5ae9-a105-4481-bf60-19c136ee1447)
+
 ### Use MATLAB as a Tool in Pipeline Project
 To invoke MATLAB as a Jenkins tool using declarative pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Tools** page. For example, run `myscript.m` using the MATLAB version that has been registered as a tool named R2024b.  
 
@@ -549,41 +589,26 @@ node {
     }
 }
 ```
-You can also invoke MATLAB as a Jenkins tool when you perform a matrix build in your pipeline project. This example uses three MATLAB versions (specified in an `axis` block using their tool names) to run a set of MATLAB commands and tests. 
+
+
 
 ```groovy
 // Declarative Pipeline
 pipeline {
-    agent any
-    stages {
-        stage('BuildAndTest') {
-            matrix {
-                agent any
-                axes {
-                    axis {
-                        name 'MATLAB_VERSION'
-                        values 'R2023b', 'R2024a', 'R2024b'
-                    }
-                }
-                tools {
-                    matlab "${MATLAB_VERSION}"
-                }
-                stages {
-                    stage('Run MATLAB commands') {
-                        steps {
-                            runMATLABCommand(command: 'ver, pwd')
-                        }
-                    }
-                    stage('Run MATLAB Tests') {
-                        steps {
-                            runMATLABTests(testResultsJUnit: 'test-results/results.xml',
-                                           codeCoverageCobertura: 'code-coverage/coverage.xml')
-                        }
-                    }
-                }
-            }
-        }
+    environment {
+        MLM_LICENSE_TOKEN = credentials('matlab-token')
     }
+    agent any
+    tools {
+        matlab 'Latest'
+    }
+    stages {
+        stage('Run MATLAB Command') {
+            steps {
+                runMATLABCommand(command: 'myscript')
+            }       
+        }                
+    } 
 }
 ```
 
