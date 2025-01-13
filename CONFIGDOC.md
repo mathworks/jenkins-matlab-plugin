@@ -500,7 +500,7 @@ To register a preinstalled version of MATLAB as a Jenkins tool:
 
 For example, register MATLAB R2024b as a Jenkins tool named `R2024b` on your Windows local agent.
 
-![matlab_tool](https://github.com/user-attachments/assets/c0f68621-7a55-4a68-b6cf-aa6046a2c994)
+![MATLAB installations section showing how to register MATLAB R2024 installed at a specific location as a tool](https://github.com/user-attachments/assets/c0f68621-7a55-4a68-b6cf-aa6046a2c994)
 
 If your Jenkins instance includes remote agents, you can register MATLAB as a tool on the remote agents using the tool name that you specified on the local agent. For example, if you registered MATLAB R2024b as a tool on your local agent, you can register the same MATLAB version installed on a remote agent as a tool on that agent. To register a MATLAB version as a Jenkins tool on a remote agent: 
 
@@ -522,7 +522,7 @@ To register a specific version of MATLAB as a Jenkins tool using MATLAB Package 
 
 For example, configure a Jenkins tool named `Latest` that includes the latest release of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox on a Linux or macOS agent.
 
-![matlab_tool_mpm](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
+![MATLAB installations section showing how to configure a tool using MATLAB Package Manager. The tool is named Latest and installs the latest release of MATLAB, MATLAB Test, and Parallel Computing Toolbox.](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
 > :information_source: **Notes:**
 > - Before using MATLAB Package Manager, verify that the required software is installed on your UNIX agent. For details, see [Required Software](#required-software).
@@ -564,7 +564,7 @@ To license products using a batch licensing token, create a [credential](https:/
 2) In the **Stores scoped to Jenkins** section of the **Credentials** page, click **System**.
 3) On the **System** page, click **Global credentials (unrestricted)**. Then, click the **Add Credentials** button on the top-right corner of the page.
 4) On the **New credentials** page, select `Secret text` from the **Kind** list, paste your batch lincensing token into the **Secret** box, and specify the credential ID and description by populating the **ID** and **Description** boxes. To save the credential, Click **Create**.
-   ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
+ ![New credentials page showing how to create a secret-text credential with matlab-token as the ID and MATLAB batch licensing token as the description. The token has been pasted into the Secret box.](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
 
 For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
 
@@ -585,7 +585,7 @@ To use the tool named `Latest` in a freestyle project, configure the **Environme
 - To bind the credential, select **Use secret text(s) or file(s)**, enter `MLM_LICENSE_TOKEN` in the **Variable** box and select the credential from the **Credentials** list.
 - To specify the MATLAB version, select **Use MATLAB version** and then select `Latest` from the list.
 
-![binding_credential_to_environment_variable](https://github.com/user-attachments/assets/749f5ae9-a105-4481-bf60-19c136ee1447)
+![Environment section showing how to bind a credential to the MLM_LICENSE_TOKEN environment variable and how to select the latest release of MATLAB for the build](https://github.com/user-attachments/assets/749f5ae9-a105-4481-bf60-19c136ee1447)
 
 For more information about freestyle and multi-configuration projects, see [Set Up Freestyle Project](#set-up-freestyle-project) and [Set Up Multi-Configuration Project](#set-up-multi-configuration-project).
 
