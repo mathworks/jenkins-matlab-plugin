@@ -607,10 +607,10 @@ node {
 
 To use a tool configured using MATLAB Package Manager in a pipeline project, you must associate the tool with a license in your `Jenkinsfile`. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable. For example, suppose that: 
 
-- A tool named `Latest` automatically installs the latest release of MATLAB on your UNIX agent.
+- A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
 - A secret-text credential with `matlab-token` as the credential ID secures access to your MATLAB batch linensing token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
 
-Using declarative pipeline syntax, define a pipeline to run `myscript.m` using the latest release of MATLAB licensed with your batch licensing token.
+Using declarative pipeline syntax, define a pipeline to run `myscript.m` using the latest release of MATLAB licensed with your batch licensing token. In this code, the `credentials` method assigns the `matlab-token` credential to the `MLM_LICENSE_TOKEN` environment variable.
 
 ```groovy
 // Declarative Pipeline
