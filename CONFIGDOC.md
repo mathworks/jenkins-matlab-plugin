@@ -573,7 +573,7 @@ For more information on how to configure a global credential, see [Adding new gl
 In freestyle and multi-configuration projects, you can use the MATLAB versions registered as Jenkins tools by selecting them in the project configuration window:
 
 - Freestyle projects — In the **Environment** section, select **Use MATLAB version** and then select your preferred version from the list that appears. For an example, see [Use MATLAB in Build](#use-matlab-in-build). 
-- Multi-configuration projects — Select **Use MATLAB version** in the **Environment** section or add the **MATLAB** axis in the **Configuration Matrix** section. For an example, see [Add MATLAB Axis](#add-matlab-axis).
+- Multi-configuration projects — In the **Configuration Matrix** section, add the **MATLAB** axis and then select your preferred versions. For an example, see [Add MATLAB Axis](#add-matlab-axis).
 
 To use a tool configured using MATLAB Package Manager in a freestyle or multi-configuration project, you must also associate the tool with a valid license in your project. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in the **Environment** section of the project configuration window. For example, suppose that: 
 
@@ -587,7 +587,7 @@ To use the tool named `Latest` in a freestyle project, configure the **Environme
 
 ![binding_credential_to_environment_variable](https://github.com/user-attachments/assets/749f5ae9-a105-4481-bf60-19c136ee1447)
 
-For more information about freestyle and multi-configuration projects, see and [Set Up Freestyle Project](#set-up-freestyle-project) and [Set Up Multi-Configuration Project](#set-up-multi-configuration-project).
+For more information about freestyle and multi-configuration projects, see [Set Up Freestyle Project](#set-up-freestyle-project) and [Set Up Multi-Configuration Project](#set-up-multi-configuration-project).
 
 ### Use MATLAB as a Tool in Pipeline Project
 To invoke MATLAB as a Jenkins tool using declarative pipeline syntax, use a `tools` block in your `Jenkinsfile`. To specify the tool in the block, use the `matlab` keyword followed by the name assigned to the tool on the **Tools** page. For example, run `myscript.m` using a preinstalled MATLAB version that has been registered as a tool named `R2024b`.  
