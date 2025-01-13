@@ -578,7 +578,7 @@ In freestyle and multi-configuration projects, you can use the MATLAB versions r
 To use a tool configured using MATLAB Package Manager in a freestyle or multi-configuration project, you must also associate the tool with a valid license in your project. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in the **Environment** section of the project configuration window. For example, suppose that: 
 
 - A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
-- A secret-text credential with `matlab-token` as the credential ID secures access to your MATLAB batch linensing token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
+- A secret-text credential with `MATLAB batch licensing token` as its description secures access to your MATLAB batch linensing token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
 
 Using declarative pipeline syntax, define a pipeline to run `myscript.m` using the latest release of MATLAB licensed with your batch licensing token. This code uses the `credentials` method in an `environment` block to assign the `matlab-token` credential to the `MLM_LICENSE_TOKEN` environment variable.
 
