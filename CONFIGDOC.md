@@ -489,7 +489,7 @@ To register a preinstalled version of MATLAB as a Jenkins tool:
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**.
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version and specify its installation location.
-3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. (To register the MATLAB version as a tool, do not select **Install automatically**.) 
+3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. (To register a preinstalled MATLAB version as a tool, do not select **Install automatically**.) 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2024b as a Jenkins tool named `R2024b` on your Windows local agent.
@@ -523,7 +523,7 @@ For example, configure a Jenkins tool named `Latest` that includes the latest re
 > - To use the products installed using MATLAB Package Manager, you must first license those products. For more information, see [License Installed Products](#license-installed-products). 
 
 #### Specify Release
-When using MATLAB Package Manager, you can specify `R2021a` or a later release in the **Release** box of the tool configuration interface:
+When using MATLAB Package Manager, specify the MATLAB release to install (R2021a or later) in the **Release** box of the tool configuration interface:
 - To install the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest release of MATLAB at the time of the build. If the latest release is newer than the most recent release on the build agent, then the plugin installs the latest release without uninstalling the existing release.
 - To install the latest update of a release, specify only the release name, for example, `R2024a`.
 - To install a specific update release, specify the release name with an update number suffix, for example, `R2024aU4`.
