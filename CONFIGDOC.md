@@ -27,7 +27,7 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
       -  [Add Products](#add-products)
       -  [Required Software](#required-software)
       -  [License Installed Products](#license-installed-products)
-   -  [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project)
+   -  [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
 
 ## Configure Plugin in Web UI
@@ -560,10 +560,10 @@ To license products using a batch licensing token, create a [credential](https:/
 4) On the **New credentials** page, select `Secret text` from the **Kind** list, paste your batch lincensing token into the **Secret** box, and specify the credential ID and description by populating the **ID** and **Description** boxes. To save the credential, Click **Create**.
    ![store-token-as-credential](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
 
-For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
+For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
 
 
-### Use MATLAB as a Tool in Freestyle Project
+### Use MATLAB as a Tool in Freestyle or Multi-Configuration Project
 To use a tool configured using MATLAB Package Manager, you must associate the tool with a valid license in your pipeline. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in your `Jenkinsfile`. For example, suppose that: 
 
 - A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
