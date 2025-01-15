@@ -510,7 +510,7 @@ If your Jenkins instance includes remote agents, you can register MATLAB as a to
 4) Click **Save** to confirm your choices.
 
 ### Register Using MATLAB Package Manager
-To register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager as the installer:
+To register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager as the installer, follow these steps. (Automatic installation is supported only on UNIX systems.)
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**.
 2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
