@@ -40,7 +40,7 @@ In this example, the list includes two preinstalled MATLAB versions registered a
 
 ![use_matlab_version_tool](https://github.com/user-attachments/assets/f5354bd2-dd27-4de2-8b5a-cf5ed33083ae)
 
-> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project).
+> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [License Installed Products](#license-installed-products).
 
 When you specify a MATLAB version in the **Environment** section, the plugin prepends its `bin` folder to the `PATH` system environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
@@ -140,7 +140,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Environmen
 
 ![environment](https://github.com/user-attachments/assets/144a6198-b17e-43b4-a15e-78f95e731336)
 
-> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project).
+> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, [License Installed Products](#license-installed-products).
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
 * If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
@@ -168,7 +168,7 @@ For more information about registering a MATLAB version as a tool, see [Register
 
 > :information_source: **Notes:**
 > - When you add the **MATLAB** axis, do not select **Use MATLAB version**. Any values you specify by **Use MATLAB version** take precedence over the values specified by the **MATLAB** axis.
-> - If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project).
+> - If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [License Installed Products](#license-installed-products).
 
 ### Add User-Defined Axis
 If you do not specify the **MATLAB** axis, add a user-defined axis in the **Configuration Matrix** section to specify the MATLAB versions in the build. Enter the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. For instance, specify two MATLAB versions to run the same set of tests.
