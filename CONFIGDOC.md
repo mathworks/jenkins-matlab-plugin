@@ -414,7 +414,6 @@ pipeline {
     stages {
         stage('BuildAndTest') {
             matrix {
-                agent any
                 environment {
                     PATH = "C:\\Program Files\\MATLAB\\${MATLAB_VERSION}\\bin;${PATH}"   // Windows agent
                 }
@@ -452,7 +451,6 @@ pipeline {
     stages {
         stage('BuildAndTest') {
             matrix {
-                agent any
                 axes {
                     axis {
                         name 'MATLAB_VERSION'
