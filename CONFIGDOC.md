@@ -40,7 +40,7 @@ In this example, the list includes two preinstalled MATLAB versions registered a
 
 ![use_matlab_version_tool](https://github.com/user-attachments/assets/f5354bd2-dd27-4de2-8b5a-cf5ed33083ae)
 
-> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [License Installed Products](#license-installed-products).
+> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
 
 When you specify a MATLAB version in the **Environment** section, the plugin prepends its `bin` folder to the `PATH` system environment variable of the build agent, which makes the version available for the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
@@ -140,7 +140,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Environmen
 
 ![environment](https://github.com/user-attachments/assets/144a6198-b17e-43b4-a15e-78f95e731336)
 
-> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, [License Installed Products](#license-installed-products).
+> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license. For more information, [License Installed Products](#license-installed-products).
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
 * If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
@@ -168,7 +168,7 @@ For more information about registering a MATLAB version as a tool, see [Register
 
 > :information_source: **Notes:**
 > - When you add the **MATLAB** axis, do not select **Use MATLAB version**. Any values you specify by **Use MATLAB version** take precedence over the values specified by the **MATLAB** axis.
-> - If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [License Installed Products](#license-installed-products).
+> - If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
 
 ### Add User-Defined Axis
 If you do not specify the **MATLAB** axis, add a user-defined axis in the **Configuration Matrix** section to specify the MATLAB versions in the build. Enter the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. For instance, specify two MATLAB versions to run the same set of tests.
@@ -573,7 +573,7 @@ In freestyle and multi-configuration projects, you can use the MATLAB versions r
 - Freestyle projects — In the **Environment** section, select **Use MATLAB version** and then select your preferred version from the list that appears. For an example, see [Use MATLAB in Build](#use-matlab-in-build). 
 - Multi-configuration projects — In the **Configuration Matrix** section, add the **MATLAB** axis and then select your preferred versions. For an example, see [Add MATLAB Axis](#add-matlab-axis).
 
-To use a tool configured using MATLAB Package Manager in a freestyle or multi-configuration project, you must also associate the tool with a valid license in your project. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in the **Environment** section of the project configuration window. For example, suppose that: 
+To use a tool configured using MATLAB Package Manager in a freestyle or multi-configuration project, you must also associate the tool with a valid license. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in the **Environment** section of the project configuration window. For example, suppose that: 
 
 - A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
 - A secret-text credential with `MATLAB batch licensing token` as its name secures access to your token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
