@@ -22,7 +22,7 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
 -  [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool)
    -  [Register Preinstalled MATLAB Version](#register-preinstalled-matlab-version)
-   -  [Register Using MATLAB Package Manager](#register-using-matlab-package-manager)
+   -  [Install Automatically Using MATLAB Package Manager](#install-automatically-using-matlab-package-manager)
       -  [Specify Release](#specify-release)
       -  [Add Products](#add-products)
       -  [Required Software](#required-software)
@@ -509,7 +509,7 @@ If your Jenkins instance includes remote agents, you can register MATLAB as a to
 3) In the **Home** box, enter the full path to the MATLAB root folder on the remote agent.
 4) Click **Save** to confirm your choices.
 
-### Register Using MATLAB Package Manager
+### Install Automatically Using MATLAB Package Manager
 To register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager as the installer, follow these steps. (Automatic installation is supported only on UNIX systems.)
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**.
