@@ -42,7 +42,7 @@ In this example, the list includes two preinstalled MATLAB versions registered a
 
 > :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license in your project. For more information, see [License Installed Products](#license-installed-products).
 
-When you specify a MATLAB version in the **Environment** section, the plugin prepends its `bin` folder to the `PATH` system environment variable of the build agent and invokes it to perform the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
+When you specify a MATLAB version in the **Environment** section, the plugin prepends its `bin` folder to the `PATH` system environment variable of the build agent, which makes the version available for the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
 You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabroot.html) function to return the full path to your preferred MATLAB root folder. The path depends on the platform, MATLAB version, and installation location. This table shows examples of the root folder path on different platforms. 
 
