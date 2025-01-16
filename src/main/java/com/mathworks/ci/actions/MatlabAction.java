@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import com.mathworks.ci.BuildArtifactAction;
@@ -25,7 +24,7 @@ public class MatlabAction {
     BuildConsoleAnnotator annotator;
     String actionID;
 
-    public String getActionID(){
+    public String getActionID() {
         return (this.actionID == null) ? "" : this.actionID;
     }
 
@@ -91,8 +90,7 @@ public class MatlabAction {
                 FilePath rootLocation = new FilePath(
                         new File(
                                 build.getRootDir().getAbsolutePath(),
-                                artifactBaseName + this.getActionID() + ".json")
-                );
+                                artifactBaseName + this.getActionID() + ".json"));
                 file.copyTo(rootLocation);
                 file.delete();
                 

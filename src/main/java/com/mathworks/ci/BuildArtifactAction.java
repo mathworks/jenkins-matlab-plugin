@@ -2,7 +2,6 @@ package com.mathworks.ci;
 
 /**
  * Copyright 2024 The MathWorks, Inc.
- *
  */
 
 import hudson.FilePath;
@@ -36,16 +35,16 @@ public class BuildArtifactAction implements Action {
         this.actionID = actionID;
 
         // Setting the counts of task when Action is created.
-        try{
+        try {
             setCounts();
         } catch (ParseException e) {
             throw new RuntimeException(e);
-        } catch (InterruptedException e){
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String getActionID(){
+    public String getActionID() {
         return (this.actionID == null) ? "" : this.actionID;
     }
 
@@ -64,13 +63,13 @@ public class BuildArtifactAction implements Action {
     @CheckForNull
     @Override
     public String getUrlName() {
-        return (this.actionID == null) ? "buildresults" : "buildresults" + this.actionID ;
+        return (this.actionID == null) ? "buildresults" : "buildresults" + this.actionID;
     }
 
     public List<BuildArtifactData> getBuildArtifact() throws ParseException, InterruptedException, IOException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
         FilePath fl;
-        if(this.actionID == null){
+        if (this.actionID == null) {
             fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
                     MatlabBuilderConstants.BUILD_ARTIFACT + ".json"));
         } else {
@@ -147,7 +146,7 @@ public class BuildArtifactAction implements Action {
     private void setCounts() throws InterruptedException, ParseException {
         List<BuildArtifactData> artifactData = new ArrayList<BuildArtifactData>();
         FilePath fl;
-        if(this.actionID == null){
+        if (this.actionID == null) {
             fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + "/" +
                     MatlabBuilderConstants.BUILD_ARTIFACT + ".json"));
         } else {
@@ -206,11 +205,11 @@ public class BuildArtifactAction implements Action {
     private void iterateAllTaskAttributes(Entry pair, BuildArtifactData data) {
         // Iterates across all task attributes and updates
         String key = pair.getKey().toString();
-        switch(key){
+        switch (key) {
             case "duration":
                 data.setTaskDuration(pair.getValue().toString());
                 break;
-            case "name" :
+            case "name":
                 data.setTaskName(pair.getValue().toString());
                 break;
             case "description":
@@ -225,7 +224,7 @@ public class BuildArtifactAction implements Action {
             case "skipReason":
                 String skipReasonKey = pair.getValue().toString();
                 String skipReason;
-                switch(skipReasonKey){
+                switch (skipReasonKey) {
                     case "UpToDate":
                         skipReason = "up-to-date";
                         break;
@@ -242,7 +241,7 @@ public class BuildArtifactAction implements Action {
                 }
                 data.setSkipReason(skipReason);
                 break;
-            default :
+            default:
                 break;
         }
     }

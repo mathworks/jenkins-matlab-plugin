@@ -39,13 +39,11 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
-
     // Getter and Setters to access local members
 
     private void setEnv(EnvVars env) {
         this.env = env;
     }
-
 
     @Extension
     public static class Desriptor extends BuildStepDescriptor<Builder> {
@@ -94,13 +92,7 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
             TaskListener listener) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
-            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
-                ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(testMatlabCommand()).stderr(outStream);
-            } else {
-                matlabLauncher = matlabLauncher.cmds(testMatlabCommand()).stdout(listener);
-            }
+            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env).cmds(testMatlabCommand()).stdout(listener);
 
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
@@ -117,4 +109,3 @@ public class RunMatlabCommandBuilderTester extends RunMatlabCommandBuilder {
         return matlabDefaultArgs;
     }
 }
-

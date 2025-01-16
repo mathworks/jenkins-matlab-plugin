@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -30,14 +29,21 @@ import com.mathworks.ci.parameters.BuildActionParameters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RunMatlabBuildActionTest {
-    @Mock BuildActionParameters params;
-    @Mock BuildConsoleAnnotator annotator;
-    @Mock MatlabCommandRunner runner;
-    @Mock TaskListener listener;
-    @Mock PrintStream out;
-    @Mock Run build;
+    @Mock
+    BuildActionParameters params;
+    @Mock
+    BuildConsoleAnnotator annotator;
+    @Mock
+    MatlabCommandRunner runner;
+    @Mock
+    TaskListener listener;
+    @Mock
+    PrintStream out;
+    @Mock
+    Run build;
 
-    @Mock FilePath tempFolder;
+    @Mock
+    FilePath tempFolder;
 
     private boolean setup = false;
     private RunMatlabBuildAction action;
@@ -74,17 +80,18 @@ public class RunMatlabBuildActionTest {
     }
 
     @Test
-    public void shouldRunCommandWithTasksAndBuildOptions() throws IOException, InterruptedException, MatlabExecutionException {
+    public void shouldRunCommandWithTasksAndBuildOptions()
+            throws IOException, InterruptedException, MatlabExecutionException {
         doReturn("dishes groceries").when(params).getTasks();
         doReturn("-continueOnFailure -skip dishes").when(params)
-            .getBuildOptions();
+                .getBuildOptions();
 
         action.run();
 
         verify(runner).runMatlabCommand(
                 "addpath('/path/less/traveled'); "
-                + "buildtool dishes groceries "
-                + "-continueOnFailure -skip dishes");
+                        + "buildtool dishes groceries "
+                        + "-continueOnFailure -skip dishes");
     }
 
     @Test
@@ -96,6 +103,7 @@ public class RunMatlabBuildActionTest {
         } catch (MatlabExecutionException e) {
             verify(out).println(e.getMessage());
             assertEquals(12, e.getExitCode());
-        };
+        }
+        ;
     }
 }

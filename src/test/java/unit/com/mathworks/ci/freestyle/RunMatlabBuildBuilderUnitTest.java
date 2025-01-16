@@ -2,7 +2,6 @@ package com.mathworks.ci.freestyle;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class RunMatlabBuildBuilderUnitTest {
     TaskListener listener;
 
     @Mock
-    FilePath workspace; 
+    FilePath workspace;
 
     @Before
     public void setup() throws IOException, InterruptedException {
@@ -60,12 +59,12 @@ public class RunMatlabBuildBuilderUnitTest {
         RunMatlabBuildBuilder builder = new RunMatlabBuildBuilder(factory);
 
         builder.perform(build, workspace, launcher, listener);
-        
+
         ArgumentCaptor<BuildActionParameters> captor = ArgumentCaptor.forClass(BuildActionParameters.class);
         verify(factory).createAction(captor.capture());
 
         BuildActionParameters actual = captor.getValue();
-        
+
         assertEquals("", actual.getStartupOptions());
         assertEquals(null, actual.getTasks());
         assertEquals(null, actual.getBuildOptions());
@@ -80,12 +79,12 @@ public class RunMatlabBuildBuilderUnitTest {
         builder.setStartupOptions(new StartupOptions("-nojvm -logfile mylog"));
 
         builder.perform(build, workspace, launcher, listener);
-        
+
         ArgumentCaptor<BuildActionParameters> captor = ArgumentCaptor.forClass(BuildActionParameters.class);
         verify(factory).createAction(captor.capture());
 
         BuildActionParameters actual = captor.getValue();
-        
+
         assertEquals("-nojvm -logfile mylog", actual.getStartupOptions());
         assertEquals("laundry sweeping", actual.getTasks());
         assertEquals("-continueOnFailure -skip laundry", actual.getBuildOptions());
@@ -95,7 +94,7 @@ public class RunMatlabBuildBuilderUnitTest {
     @Test
     public void shouldMarkFailureWhenActionFails() throws IOException, InterruptedException, MatlabExecutionException {
         RunMatlabBuildBuilder builder = new RunMatlabBuildBuilder(factory);
-        
+
         doThrow(new MatlabExecutionException(12)).when(action).run();
 
         builder.perform(build, workspace, launcher, listener);
@@ -103,4 +102,3 @@ public class RunMatlabBuildBuilderUnitTest {
         verify(build).setResult(Result.FAILURE);
     }
 }
-

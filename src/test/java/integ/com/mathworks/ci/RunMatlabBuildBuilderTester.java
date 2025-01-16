@@ -1,8 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2022 The MathWorks, Inc.
- *  
+ * Copyright 2022-2024 The MathWorks, Inc.
  */
 
 import java.io.IOException;
@@ -38,13 +37,11 @@ public class RunMatlabBuildBuilderTester extends RunMatlabBuildBuilder {
         this.matlabExecutorPath = matlabExecutorPath;
     }
 
-
     // Getter and Setters to access local members
 
     private void setEnv(EnvVars env) {
         this.env = env;
     }
-
 
     @Extension
     public static class Desriptor extends BuildStepDescriptor<Builder> {
@@ -93,13 +90,7 @@ public class RunMatlabBuildBuilderTester extends RunMatlabBuildBuilder {
             TaskListener listener) throws IOException, InterruptedException {
         ProcStarter matlabLauncher;
         try {
-            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env);
-            if (matlabRel.verLessThan(MatlabBuilderConstants.BASE_MATLAB_VERSION_BATCH_SUPPORT)) {
-                ListenerLogDecorator outStream = new ListenerLogDecorator(listener);
-                matlabLauncher = matlabLauncher.cmds(testMatlabBuild()).stderr(outStream);
-            } else {
-                matlabLauncher = matlabLauncher.cmds(testMatlabBuild()).stdout(listener);
-            }
+            matlabLauncher = launcher.launch().pwd(workspace).envs(this.env).cmds(testMatlabBuild()).stdout(listener);
 
         } catch (Exception e) {
             listener.getLogger().println(e.getMessage());
@@ -116,4 +107,3 @@ public class RunMatlabBuildBuilderTester extends RunMatlabBuildBuilder {
         return matlabDefaultArgs;
     }
 }
-

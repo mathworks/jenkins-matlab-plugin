@@ -2,7 +2,6 @@ package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -15,16 +14,17 @@ import com.mathworks.ci.parameters.CommandActionParameters;
 public class RunMatlabCommandAction extends MatlabAction {
     private CommandActionParameters params;
 
-    public RunMatlabCommandAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator, CommandActionParameters params) {
+    public RunMatlabCommandAction(MatlabCommandRunner runner, BuildConsoleAnnotator annotator,
+            CommandActionParameters params) {
         super(runner, annotator);
         this.params = params;
     }
 
     public RunMatlabCommandAction(CommandActionParameters params) throws IOException, InterruptedException {
-        this(new MatlabCommandRunner(params), 
+        this(new MatlabCommandRunner(params),
                 new BuildConsoleAnnotator(
-                    params.getTaskListener().getLogger(), 
-                    params.getBuild().getCharset()),
+                        params.getTaskListener().getLogger(),
+                        params.getBuild().getCharset()),
                 params);
     }
 
@@ -36,16 +36,16 @@ public class RunMatlabCommandAction extends MatlabAction {
         runner.redirectStdOut(annotator);
 
         // Prepare MATLAB command
-        String command = "addpath('" 
-            + runner.getTempFolder().getRemote()
-            + "'); " + this.params.getCommand();
+        String command = "addpath('"
+                + runner.getTempFolder().getRemote()
+                + "'); " + this.params.getCommand();
 
         try {
             runner.runMatlabCommand(command);
         } catch (Exception e) {
             this.params.getTaskListener().getLogger()
-                .println(e.getMessage());
-            throw(e);
+                    .println(e.getMessage());
+            throw (e);
         } finally {
             annotator.forceEol();
             super.teardownAction(params);

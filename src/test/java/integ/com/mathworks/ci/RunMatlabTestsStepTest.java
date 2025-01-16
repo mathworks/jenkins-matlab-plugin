@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2020-2024 The MathWorks, Inc.
- *  
  */
 
 import java.io.IOException;
@@ -33,7 +32,6 @@ public class RunMatlabTestsStepTest {
         this.project = j.createProject(WorkflowJob.class);
     }
 
-
     /*
      * Verify when MATLAB Path is not set
      */
@@ -45,9 +43,8 @@ public class RunMatlabTestsStepTest {
         j.assertLogContains("system path", build);
     }
 
-
     /*
-     * VErify when MATLAB PATH is set.
+     * Verify when MATLAB PATH is set.
      */
 
     @Test
@@ -78,7 +75,6 @@ public class RunMatlabTestsStepTest {
      * Verify artifact path is correct. Need to move this to integration test.
      */
 
-    
     public void verifyArtifactPath() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
@@ -94,24 +90,26 @@ public class RunMatlabTestsStepTest {
     @Test
     public void verifyStartupOptionsSameAsScript() throws Exception {
         project.setDefinition(
-                new CpsFlowDefinition("node {runMATLABTests(testResultsPDF:'myresult/result.pdf', startupOptions: '-nojvm -uniqueoption')}", true));
+                new CpsFlowDefinition(
+                        "node {runMATLABTests(testResultsPDF:'myresult/result.pdf', startupOptions: '-nojvm -uniqueoption')}",
+                        true));
 
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("-nojvm -uniqueoption", build);
     }
-    
-    /*
-    * Verify default command options for test run.
-    */
 
-   @Test
-   public void verifyCmdOptions() throws Exception {
-       project.setDefinition(new CpsFlowDefinition(
-               "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
-       WorkflowRun build = project.scheduleBuild2(0).get();
-       j.assertLogContains("setenv('MW_ORIG_WORKING_FOLDER',", build);
-       j.assertLogContains("run-matlab-command", build);
-   }
+    /*
+     * Verify default command options for test run.
+     */
+
+    @Test
+    public void verifyCmdOptions() throws Exception {
+        project.setDefinition(new CpsFlowDefinition(
+                "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+        j.assertLogContains("setenv('MW_ORIG_WORKING_FOLDER',", build);
+        j.assertLogContains("run-matlab-command", build);
+    }
 
     /*
      * Verify Artifact is not sent as parameter.
@@ -129,9 +127,10 @@ public class RunMatlabTestsStepTest {
         j.assertLogNotContains("SimulinkTestResults", build);
         j.assertLogNotContains("CoberturaModelCoverage", build);
     }
-    
+
     /*
-     * Verify runMatlabTests runs with empty parameters when nothing no artifact selected 
+     * Verify runMatlabTests runs with empty parameters when nothing no artifact
+     * selected
      */
 
     @Test
@@ -156,34 +155,37 @@ public class RunMatlabTestsStepTest {
         j.assertBuildStatus(Result.FAILURE, build);
         j.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
-    
-    /*@Integ Test
-     * Verify default command options for test Filter using selectByFolder option 
+
+    /*
+     * @Integ Test
+     * Verify default command options for test Filter using selectByFolder option
      */
 
-    public void verifyTestSelectByFolder () throws Exception {
+    public void verifyTestSelectByFolder() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(selectByFolder:['mytest1','mytest2'])}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("mytest1", build);
         j.assertLogContains("mytest2", build);
     }
-    
-    /*@Integ Test
-     * Verify default command options for test Filter using selectByTag option 
+
+    /*
+     * @Integ Test
+     * Verify default command options for test Filter using selectByTag option
      */
 
-    public void verifyTestSelectByTag () throws Exception {
+    public void verifyTestSelectByTag() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(selectByTag: 'myTestTag')}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("myTestTag", build);
     }
-    
-    /*@Integ
+
+    /*
+     * @Integ
      * Verify outputDetail set
      */
-    
+
     public void verifyOutputDetailSet() {
         Map<String, String> outputDetail = new HashMap<String, String>();
         outputDetail.put("none", "'OutputDetail', 0");
@@ -205,12 +207,12 @@ public class RunMatlabTestsStepTest {
             }
         });
     }
-    
-    /*@Integ
-     * Verify loggingLevel set 
+
+    /*
+     * @Integ
+     * Verify loggingLevel set
      */
-    
-    
+
     public void verifyLoggingLevelSet() {
         Map<String, String> outputDetail = new HashMap<String, String>();
         outputDetail.put("none", "'LoggingLevel', 0");
@@ -233,45 +235,49 @@ public class RunMatlabTestsStepTest {
             }
         });
     }
-    
-    /*@Integ
-     * Verify when useParallel Set 
+
+    /*
+     * @Integ
+     * Verify when useParallel Set
      */
-    
-    public void verifyUseParallelSet () throws Exception {
+
+    public void verifyUseParallelSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(useParallel: true)}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("runInParallel", build);
     }
-    
-    /*@Integ
-     * Verify when useParallel Not Set 
+
+    /*
+     * @Integ
+     * Verify when useParallel Not Set
      */
-    
-    public void verifyUseParallelNotSet () throws Exception {
+
+    public void verifyUseParallelNotSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(useParallel: false)}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogNotContains("runInParallel", build);
     }
-   
-    /*@Integ
-     * Verify when strict Set 
+
+    /*
+     * @Integ
+     * Verify when strict Set
      */
-    
-    public void verifyStrictSet () throws Exception {
+
+    public void verifyStrictSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(strict: true)}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();
         j.assertLogContains("FailOnWarningsPlugin", build);
     }
-    
-    /*@Integ
-     * Verify when strict is not Set 
+
+    /*
+     * @Integ
+     * Verify when strict is not Set
      */
-    
-    public void verifyStrictNotSet () throws Exception {
+
+    public void verifyStrictNotSet() throws Exception {
         project.setDefinition(new CpsFlowDefinition(
                 "node {runMATLABTests(strict: false)}", true));
         WorkflowRun build = project.scheduleBuild2(0).get();

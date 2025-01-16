@@ -1,15 +1,15 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2024 The MathWorks, Inc.
  *
  * Describable class for adding MATLAB installations in Jenkins Global Tool configuration.
- *
  */
 
 import hudson.CopyOnWrite;
 import hudson.EnvVars;
 import hudson.Extension;
+import hudson.FilePath;
 import hudson.Util;
 import hudson.model.EnvironmentSpecific;
 import hudson.model.Node;
@@ -18,6 +18,7 @@ import hudson.slaves.NodeSpecific;
 import hudson.tools.ToolDescriptor;
 import hudson.tools.ToolInstallation;
 import hudson.tools.ToolProperty;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -30,7 +31,8 @@ import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
-public class MatlabInstallation extends ToolInstallation implements EnvironmentSpecific<MatlabInstallation>, NodeSpecific<MatlabInstallation> {
+public class MatlabInstallation extends ToolInstallation
+        implements EnvironmentSpecific<MatlabInstallation>, NodeSpecific<MatlabInstallation> {
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
@@ -39,14 +41,15 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
     }
 
     /*
-    * Constructor for Custom object
-    * */
+     * Constructor for Custom object
+     */
 
-    public MatlabInstallation(String name){
+    public MatlabInstallation(String name) {
         super(name, null, null);
     }
 
-    @Override public MatlabInstallation forEnvironment(EnvVars envVars) {
+    @Override
+    public MatlabInstallation forEnvironment(EnvVars envVars) {
         return new MatlabInstallation(getName(), envVars.expand(getHome()), getProperties().toList());
     }
 
@@ -57,11 +60,20 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
 
     @Override
     public void buildEnvVars(EnvVars env) {
-        String pathToExecutable = getHome() + "/bin";
-        env.put("PATH+matlabroot", pathToExecutable);
+        String home = getHome();
+        if (home == null) {
+            return;
+        }
+        FilePath matlabHome = new FilePath(new File(home));
+        FilePath matlabBin = new FilePath(matlabHome, "bin");
+        env.put("PATH+matlabroot", matlabBin.getRemote());
+        FilePath matlabBatchFolder = matlabHome.getParent();
+        if (matlabBatchFolder != null) {
+            env.put("PATH+matlabbatch", matlabBatchFolder.getRemote());
+        }
     }
 
-    public static MatlabInstallation[] getAll () {
+    public static MatlabInstallation[] getAll() {
         return Jenkins.get().getDescriptorByType(DescriptorImpl.class).getInstallations();
     }
 
@@ -78,7 +90,8 @@ public class MatlabInstallation extends ToolInstallation implements EnvironmentS
         return null;
     }
 
-    @Extension @Symbol("matlab")
+    @Extension
+    @Symbol("matlab")
     public static class DescriptorImpl extends ToolDescriptor<MatlabInstallation> {
         @CopyOnWrite
         private volatile MatlabInstallation[] installations = new MatlabInstallation[0];

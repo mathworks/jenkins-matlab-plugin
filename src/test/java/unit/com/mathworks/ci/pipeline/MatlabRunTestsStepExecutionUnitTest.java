@@ -2,7 +2,6 @@ package com.mathworks.ci.pipeline;
 
 /**
  * Copyright 2024, The MathWorks Inc.
- *
  */
 
 import java.io.IOException;
@@ -27,10 +26,13 @@ import com.mathworks.ci.parameters.TestActionParameters;
 
 @RunWith(MockitoJUnitRunner.class)
 public class MatlabRunTestsStepExecutionUnitTest {
-    @Mock StepContext context;
-    @Mock MatlabActionFactory factory;
-    @Mock RunMatlabTestsAction action;
-    
+    @Mock
+    StepContext context;
+    @Mock
+    MatlabActionFactory factory;
+    @Mock
+    RunMatlabTestsAction action;
+
     @Before
     public void setup() throws IOException, InterruptedException {
         when(factory.createAction(any(TestActionParameters.class))).thenReturn(action);
@@ -66,7 +68,8 @@ public class MatlabRunTestsStepExecutionUnitTest {
     }
 
     @Test
-    public void shouldHandleMaximalCase() throws Exception, IOException, InterruptedException, MatlabExecutionException {
+    public void shouldHandleMaximalCase()
+            throws Exception, IOException, InterruptedException, MatlabExecutionException {
         RunMatlabTestsStep step = new RunMatlabTestsStep();
         step.setStartupOptions("-nojvm -logfile file");
         step.setTestResultsPDF("res.pdf");
@@ -89,7 +92,7 @@ public class MatlabRunTestsStepExecutionUnitTest {
         step.setSelectByFolder(folders);
 
         MatlabRunTestsStepExecution ex = new MatlabRunTestsStepExecution(factory, context, step);
-        
+
         ex.run();
 
         ArgumentCaptor<TestActionParameters> captor = ArgumentCaptor.forClass(TestActionParameters.class);
@@ -115,7 +118,8 @@ public class MatlabRunTestsStepExecutionUnitTest {
     }
 
     @Test
-    public void shouldHandleActionThrowing() throws Exception, IOException, InterruptedException, MatlabExecutionException {
+    public void shouldHandleActionThrowing()
+            throws Exception, IOException, InterruptedException, MatlabExecutionException {
         MatlabRunTestsStepExecution ex = new MatlabRunTestsStepExecution(factory, context, new RunMatlabTestsStep());
 
         doThrow(new MatlabExecutionException(12)).when(action).run();

@@ -4,7 +4,6 @@ package com.mathworks.ci.freestyle;
  * Copyright 2019-2024 The MathWorks, Inc.
  * 
  * Script builder used to run custom MATLAB commands or scripts.
- * 
  */
 
 import hudson.util.FormValidation;
@@ -78,16 +77,17 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
 
     public String getStartupOptionsAsString() {
         return this.startupOptions == null
-            ? ""
-            : this.startupOptions.getOptions();
+                ? ""
+                : this.startupOptions.getOptions();
     }
-    
+
     @Extension
     public static class RunMatlabCommandDescriptor extends BuildStepDescriptor<Builder> {
 
         @Initializer(before = InitMilestone.PLUGINS_STARTED)
         public static void addAliases() {
-            Items.XSTREAM2.addCompatibilityAlias("com.mathworks.ci.RunMatlabCommandBuilder", RunMatlabCommandBuilder.class);
+            Items.XSTREAM2.addCompatibilityAlias("com.mathworks.ci.RunMatlabCommandBuilder",
+                    RunMatlabCommandBuilder.class);
         }
 
         // Overridden Method used to show the text under build dropdown
@@ -103,11 +103,13 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         }
 
         /*
-         * This is to identify which project type in jenkins this should be applicable.(non-Javadoc)
+         * This is to identify which project type in jenkins this should be
+         * applicable.(non-Javadoc)
          * 
          * @see hudson.tasks.BuildStepDescriptor#isApplicable(java.lang.Class)
          * 
-         * if it returns true then this build step will be applicable for all project type.
+         * if it returns true then this build step will be applicable for all project
+         * type.
          */
         @Override
         public boolean isApplicable(
@@ -134,8 +136,8 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
         final EnvVars env = build.getEnvironment(listener);
 
         CommandActionParameters params = new CommandActionParameters(
-                build, workspace, env, 
-                launcher, listener, 
+                build, workspace, env,
+                launcher, listener,
                 getStartupOptionsAsString(),
                 getMatlabCommand());
         RunMatlabCommandAction action = factory.createAction(params);
@@ -148,7 +150,7 @@ public class RunMatlabCommandBuilder extends Builder implements SimpleBuildStep 
     }
 
     // Added for backwards compatibility:
-    //   Called when object is loaded from persistent data.
+    // Called when object is loaded from persistent data.
     protected Object readResolve() {
         if (factory == null) {
             factory = new MatlabActionFactory();

@@ -2,7 +2,6 @@ package com.mathworks.ci;
 
 /**
  * Copyright 2024 The MathWorks, Inc.
- *
  */
 
 import hudson.FilePath;
@@ -33,12 +32,11 @@ public class BuildArtifactActionTest {
 
     private static String VERSION_INFO_XML_FILE = "VersionInfo.xml";
 
-    public BuildArtifactActionTest(){
+    public BuildArtifactActionTest() {
     }
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
-
 
     @Before
     public void testSetup() throws IOException {
@@ -68,207 +66,220 @@ public class BuildArtifactActionTest {
     }
 
     /**
-     *  Verify if total BuildArtifacts returned from artifact file.
-     *5
+     * Verify if total BuildArtifacts returned from artifact file.
+     * 5
      */
 
     @Test
-    public void verifyBuildArtifactsReturned() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyBuildArtifactsReturned()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         int expectedSize = ba.size();
-        Assert.assertEquals("Incorrect build artifact",3,expectedSize);
+        Assert.assertEquals("Incorrect build artifact", 3, expectedSize);
     }
 
     /**
-     *  Verify if total Failed count returned from artifact file.
+     * Verify if total Failed count returned from artifact file.
      *
      */
 
     @Test
-    public void verifyFailedCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyFailedCount()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
         boolean expectedStatus = ba.get(0).getTaskFailed();
-        Assert.assertEquals("The task succeeded",false,expectedStatus);
+        Assert.assertEquals("The task succeeded", false, expectedStatus);
     }
 
     /**
-     *  Verify if total skipped count returned from artifact file.
+     * Verify if total skipped count returned from artifact file.
      *
      */
 
     @Test
-    public void verifySkipCount() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifySkipCount()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
+        Assert.assertEquals("The task is not skipped", true, ba.get(0).getTaskSkipped());
     }
 
     /**
-     *  Verify if skip reason is returned from artifact file.
+     * Verify if skip reason is returned from artifact file.
      *
      */
 
     @Test
-    public void verifySkipReasonIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifySkipReasonIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task is not skipped",true,ba.get(0).getTaskSkipped());
-        Assert.assertEquals("The skip reason for skipped task is inaccurate","user requested",ba.get(0).getSkipReason());
+        Assert.assertEquals("The task is not skipped", true, ba.get(0).getTaskSkipped());
+        Assert.assertEquals("The skip reason for skipped task is inaccurate", "user requested",
+                ba.get(0).getSkipReason());
     }
 
     /**
-     *  Verify if duration returned from artifact file.
+     * Verify if duration returned from artifact file.
      *
      */
 
     @Test
-    public void verifyDurationIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyDurationIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task duration is not matching","00:02:53",ba.get(0).getTaskDuration());
+        Assert.assertEquals("The task duration is not matching", "00:02:53", ba.get(0).getTaskDuration());
     }
 
     /**
-     *  Verify if Task description returned from artifact file.
+     * Verify if Task description returned from artifact file.
      *
      */
 
     @Test
-    public void verifyTaskDescriptionIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyTaskDescriptionIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task description is not matching","Test show",ba.get(0).getTaskDescription());
+        Assert.assertEquals("The task description is not matching", "Test show", ba.get(0).getTaskDescription());
     }
 
     /**
-     *  Verify if Task name returned from artifact file.
+     * Verify if Task name returned from artifact file.
      *
      */
 
     @Test
-    public void verifyTaskNameIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyTaskNameIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
+        final String targetFile = "buildArtifact" + actionID + ".json";
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
         FilePath artifactRoot = new FilePath(build.getRootDir());
-        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json", targetFile, artifactRoot);
         List<BuildArtifactData> ba = ac.getBuildArtifact();
-        Assert.assertEquals("The task name is not matching","show",ba.get(0).getTaskName());
+        Assert.assertEquals("The task name is not matching", "show", ba.get(0).getTaskName());
     }
 
     /**
-     *  Verify if total count returned from artifact file.
+     * Verify if total count returned from artifact file.
      *
      */
 
     @Test
-    public void verifyTotalTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyTotalTaskCountIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
-        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json",targetFile,artifactRoot);
+        final String targetFile = "buildArtifact" + actionID + ".json";
+        copyFileInWorkspace("buildArtifacts/t2/buildArtifact.json", targetFile, artifactRoot);
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
-        Assert.assertEquals("Total task count is not correct",1,ac.getTotalCount());
+        Assert.assertEquals("Total task count is not correct", 1, ac.getTotalCount());
     }
 
     /**
-     *  Verify if total count returned from artifact file.
+     * Verify if total count returned from artifact file.
      *
      */
 
     @Test
-    public void verifyTotalTaskCountIsAccurate2() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyTotalTaskCountIsAccurate2()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
-        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
+        final String targetFile = "buildArtifact" + actionID + ".json";
+        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json", targetFile, artifactRoot);
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
-        Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
+        Assert.assertEquals("Total task count is not correct", 3, ac.getTotalCount());
     }
 
     /**
-     *  Verify if total failed count returned from artifact file.
+     * Verify if total failed count returned from artifact file.
      *
      */
 
     @Test
-    public void verifyTotalFailedTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyTotalFailedTaskCountIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
-        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
+        final String targetFile = "buildArtifact" + actionID + ".json";
+        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json", targetFile, artifactRoot);
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
-        Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
-        Assert.assertEquals("Total task failed count is not correct",1,ac.getFailCount());
+        Assert.assertEquals("Total task count is not correct", 3, ac.getTotalCount());
+        Assert.assertEquals("Total task failed count is not correct", 1, ac.getFailCount());
     }
-    
+
     /**
-     *  Verify if total skipped count returned from artifact file.
+     * Verify if total skipped count returned from artifact file.
      *
      */
 
     @Test
-    public void verifyTotalSkipTaskCountIsAccurate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyTotalSkipTaskCountIsAccurate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
-        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
+        final String targetFile = "buildArtifact" + actionID + ".json";
+        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json", targetFile, artifactRoot);
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
-        Assert.assertEquals("Total task count is not correct",3,ac.getTotalCount());
-        Assert.assertEquals("Total task skip count is not correct",1,ac.getSkipCount());
+        Assert.assertEquals("Total task count is not correct", 3, ac.getTotalCount());
+        Assert.assertEquals("Total task skip count is not correct", 1, ac.getSkipCount());
     }
 
     /**
-     *  Verify if ActionID is set correctly.
+     * Verify if ActionID is set correctly.
      *
      */
 
     @Test
-    public void verifyActionIDisAppropriate() throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
+    public void verifyActionIDisAppropriate()
+            throws ExecutionException, InterruptedException, URISyntaxException, IOException, ParseException {
         FreeStyleBuild build = getFreestyleBuild();
         FilePath artifactRoot = new FilePath(build.getRootDir());
         final String actionID = "abc123";
-        final String targetFile = "buildArtifact"+ actionID + ".json";
-        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json",targetFile,artifactRoot);
+        final String targetFile = "buildArtifact" + actionID + ".json";
+        copyFileInWorkspace("buildArtifacts/t1/buildArtifact.json", targetFile, artifactRoot);
         BuildArtifactAction ac = new BuildArtifactAction(build, actionID);
-        Assert.assertEquals("Incorrect ActionID",actionID,ac.getActionID());
+        Assert.assertEquals("Incorrect ActionID", actionID, ac.getActionID());
     }
 
     private void copyFileInWorkspace(String sourceFile, String targetFile, FilePath targetWorkspace)
@@ -282,7 +293,8 @@ public class BuildArtifactActionTest {
     }
 
     private FreeStyleBuild getFreestyleBuild() throws ExecutionException, InterruptedException, URISyntaxException {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), getMatlabroot("R2017a")));
         project.getBuildWrappersList().add(this.buildWrapper);
         scriptBuilder.setTasks("");
         project.getBuildersList().add(this.scriptBuilder);

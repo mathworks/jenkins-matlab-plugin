@@ -1,10 +1,9 @@
 package com.mathworks.ci.freestyle.options;
 
 /**
- * Copyright 2020 The MathWorks, Inc.
+ * Copyright 2020-2024 The MathWorks, Inc.
  *
  * Describable class for Source Folder Option in RunMATLABTest Build step.
- *
  */
 
 import hudson.Extension;
@@ -31,16 +30,17 @@ public class SourceFolder extends AbstractDescribableImpl<SourceFolder> {
 
     public List<String> getSourceFolderStringPaths() {
         return this.sourceFolderPaths.stream().map(
-                (SourceFolderPaths p) -> p.getSrcFolderPath()
-            )
-            .collect(Collectors.toList());
+                (SourceFolderPaths p) -> p.getSrcFolderPath())
+                .collect(Collectors.toList());
     }
 
-    public  void addSourceToInputArgs(List<String> inputArgsList, String cellArraySourceVal) {
+    public void addSourceToInputArgs(List<String> inputArgsList, String cellArraySourceVal) {
         // Concatenate all source folders to MATLAB cell array string.
         inputArgsList.add("'" + SOURCE_FOLDER + "'" + "," + cellArraySourceVal);
     }
 
-    @Extension public static class DescriptorImpl extends Descriptor<SourceFolder> {}
+    @Extension
+    public static class DescriptorImpl extends Descriptor<SourceFolder> {
+    }
 
 }
