@@ -625,7 +625,7 @@ node {
 }
 ```
 
-To use a tool configured using MATLAB Package Manager, you must associate the tool with a valid license in your pipeline. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in your `Jenkinsfile`. For example, suppose that: 
+To use a tool configured using MATLAB Package Manager, you must associate the tool with a valid license. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in your `Jenkinsfile`. For example, suppose that: 
 
 - A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
 - A secret-text credential with `matlab-token` as the credential ID secures access to your token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
