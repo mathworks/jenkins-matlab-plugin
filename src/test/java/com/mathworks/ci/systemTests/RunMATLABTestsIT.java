@@ -72,9 +72,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyRunMATLABTestsWithAllInputs() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setLoggingLevel("None");
@@ -105,9 +105,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyMultipleSourceFolders() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setLoggingLevel("None");
@@ -130,9 +130,9 @@ public class RunMATLABTestsIT {
 
     @Test
     public void verifyMultipleTestFolders() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 //        testingBuilder.setLoggingLevel("None");
@@ -164,13 +164,13 @@ public class RunMATLABTestsIT {
         String matlabRoot22b = System.getenv("MATLAB_ROOT_22b");
         Assume.assumeTrue("Not running tests as MATLAB_ROOT_22b environment variable is not defined", matlabRoot22b != null && !matlabRoot22b.isEmpty());
 
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
 
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         MatlabInstallationAxis MATLABAxis = new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_22b"));
         matrixProject.setAxes(new AxisList(MATLABAxis));
-        matrixProject.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        matrixProject.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
@@ -216,7 +216,7 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyTestsAreFiltered() throws Exception{
         String script = "node {\n" +
-                MatlabRootSetup.getEnvironmentScriptedPipeline() + "\n" +
+                Utilities.getEnvironmentScriptedPipeline() + "\n" +
                 addTestData()+"\n" +
                 "runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply', 'test/TestSquare'],  selectByTag: 'TestTag')\n" +
                 "}";
@@ -234,7 +234,7 @@ public class RunMATLABTestsIT {
     public void verifyTestsAreFilteredDSL() throws Exception{
         String script = "pipeline {\n" +
                 "agent any" + "\n" +
-                MatlabRootSetup.getEnvironmentDSL() + "\n" +
+                Utilities.getEnvironmentDSL() + "\n" +
                 "stages{" + "\n" +
                 "stage('Run MATLAB Command') {\n" +
                 "steps\n" +
@@ -258,7 +258,7 @@ public class RunMATLABTestsIT {
     }
 
     private String addTestData() throws MalformedURLException {
-        URL zipFile = MatlabRootSetup.getRunMATLABTestsData();
+        URL zipFile = Utilities.getRunMATLABTestsData();
         String path = "  unzip '" + zipFile.getPath() + "'" + "\n";
         return path;
     }

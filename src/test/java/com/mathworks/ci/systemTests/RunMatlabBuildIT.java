@@ -12,7 +12,6 @@ import org.htmlunit.html.HtmlAnchor;
 import org.htmlunit.html.HtmlElement;
 import org.htmlunit.html.HtmlPage;
 import org.junit.*;
-import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.xml.sax.SAXException;
@@ -57,9 +56,9 @@ public class RunMatlabBuildIT {
 
     @Test
     public void verifyBuildFailureWhenMatlabBuildFails() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabBuildBuilder tester =
                 new RunMatlabBuildBuilder();
         tester.setTasks("invalid_task");
@@ -73,9 +72,9 @@ public class RunMatlabBuildIT {
      */
     @Test
     public void verifyBuildPassesWhenMatlabBuildPasses() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabBuildBuilder tester =
                 new RunMatlabBuildBuilder();
         tester.setTasks("check");
@@ -87,9 +86,9 @@ public class RunMatlabBuildIT {
 
     @Test
     public void verifyRunningMultipleTasks() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabBuildBuilder tester =
                 new RunMatlabBuildBuilder();
         tester.setTasks("check dummy");
@@ -102,9 +101,9 @@ public class RunMatlabBuildIT {
 
     @Test
     public void verifySpecifyingBuildOptions() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabBuildBuilder tester =
                 new RunMatlabBuildBuilder();
         tester.setTasks("check test dummy");
@@ -120,9 +119,9 @@ public class RunMatlabBuildIT {
 
     @Test
     public void verifyBuildSummaryInBuildStatusPage() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabBuildBuilder tester =
                 new RunMatlabBuildBuilder();
         tester.setTasks("check test dummy");
@@ -142,9 +141,9 @@ public class RunMatlabBuildIT {
 
     @Test
     public void verifyHyperlinkFromSummaryAndSidePanelAreSame() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabBuildBuilder tester =
                 new RunMatlabBuildBuilder();
         tester.setTasks("check test dummy");

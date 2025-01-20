@@ -1,11 +1,7 @@
 package com.mathworks.ci.systemTests;
 
-import com.mathworks.ci.MatlabBuildWrapperContent;
-import com.mathworks.ci.Message;
-import com.mathworks.ci.UseMatlabVersionBuildWrapper;
+import com.mathworks.ci.*;
 import com.mathworks.ci.freestyle.RunMatlabTestsBuilder;
-import com.mathworks.ci.freestyle.options.SourceFolder;
-import com.mathworks.ci.freestyle.options.SourceFolderPaths;
 import hudson.matrix.*;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
@@ -15,11 +11,10 @@ import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
 import org.junit.rules.Timeout;
-import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RunMATLABTestsCustomizeRunIT {
@@ -59,7 +54,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyLoggingLevelSetToNone() throws Exception {
 
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         project.getBuildersList().add(this.testBuilder);
@@ -73,7 +68,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyLoggingLevelSetToTerse() throws Exception {
 
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("Terse");
         project.getBuildersList().add(this.testBuilder);
@@ -87,7 +82,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyLoggingLevelSetToConcise() throws Exception {
 
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("Concise");
         project.getBuildersList().add(this.testBuilder);
@@ -101,7 +96,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyLoggingLevelSetToDetailed() throws Exception {
 
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("Detailed");
         project.getBuildersList().add(this.testBuilder);
@@ -119,7 +114,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyOutputDetailSetToNone() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
@@ -133,7 +128,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyOutputDetailSetToTerse() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
@@ -147,7 +142,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyOutputDetailSetToConcise() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
@@ -161,7 +156,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyOutputDetailSetToDetailed() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
 
@@ -175,7 +170,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyStrictSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setStrict(true);
@@ -188,7 +183,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyStrictNotSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setStrict(false);
@@ -201,7 +196,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyRunParallelSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setUseParallel(true);
@@ -213,7 +208,7 @@ public class RunMATLABTestsCustomizeRunIT {
     @Test
     public void verifyRunParallelNotSet() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(
-                Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+                Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         testBuilder.setLoggingLevel("None");
         testBuilder.setUseParallel(false);
@@ -226,7 +221,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyRunInParallel() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL()  + "\n" +
+                Utilities.getEnvironmentDSL()  + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -245,7 +240,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyStrictSetPipeline() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL()  + "\n" +
+                Utilities.getEnvironmentDSL()  + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -264,7 +259,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyLoggingLevelSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL()  + "\n" +
+                Utilities.getEnvironmentDSL()  + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -283,7 +278,7 @@ public class RunMATLABTestsCustomizeRunIT {
     public void verifyOutoutDetailSet() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL()  + "\n" +
+                Utilities.getEnvironmentDSL()  + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -303,12 +298,16 @@ public class RunMATLABTestsCustomizeRunIT {
      */
     @Test
     public void verifyMatrixBuildPasses() throws Exception {
+        String matlabRoot = System.getenv("MATLAB_ROOT");
+        String matlabRoot22b = System.getenv("MATLAB_ROOT_22b");
+        Assume.assumeTrue("Not running tests as MATLAB_ROOT_22b environment variable is not defined", matlabRoot22b != null && !matlabRoot22b.isEmpty());
+
+        Utilities.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
+
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
-        Axis axes = new Axis("VERSION", TestData.getPropValues("matlab.version"), TestData.getPropValues("matlab.matrix.version"));
-        matrixProject.setAxes(new AxisList(axes));
-        String matlabRoot = MatlabRootSetup.getMatlabRoot();
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(TestData.getPropValues("matlab.custom.location"), matlabRoot.replace(TestData.getPropValues("matlab.version"), "$VERSION")));
-        matrixProject.getBuildWrappersList().add(this.buildWrapper);
+        MatlabInstallationAxis MATLABAxis = new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_22b"));
+        matrixProject.setAxes(new AxisList(MATLABAxis));
 
         testBuilder.setOutputDetail("None");
         testBuilder.setLoggingLevel("None");
@@ -324,11 +323,13 @@ public class RunMATLABTestsCustomizeRunIT {
             jenkins.assertLogContains("OutputDetail', 0", run);
             jenkins.assertLogContains("FailOnWarningsPlugin", run);
             jenkins.assertLogContains("runInParallel", run);
+            jenkins.assertBuildStatus(Result.SUCCESS, run);
         }
 
 
-        jenkins.assertLogContains(TestData.getPropValues("matlab.version")+" completed", build);
-        jenkins.assertLogContains(TestData.getPropValues("matlab.matrix.version")+" completed", build);
+        jenkins.assertLogContains("MATLAB_PATH_1 completed", build);
+        jenkins.assertLogContains("MATLAB_PATH_22b completed", build);
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
 

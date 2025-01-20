@@ -54,8 +54,8 @@ public class StartupOptionsIT {
         project = jenkins.createFreeStyleProject();
         pipelineProject = jenkins.createProject(WorkflowJob.class);
         buildWrapper = new UseMatlabVersionBuildWrapper();
-        this.envDSL = MatlabRootSetup.getEnvironmentDSL();
-        this.envScripted = MatlabRootSetup.getEnvironmentScriptedPipeline();
+        this.envDSL = Utilities.getEnvironmentDSL();
+        this.envScripted = Utilities.getEnvironmentScriptedPipeline();
     }
 
     @After
@@ -72,7 +72,7 @@ public class StartupOptionsIT {
 
     @Test
     public void verifyStartupOptionsInFreeStyleProject() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         //Command Step
         RunMatlabCommandBuilder commandStep =
@@ -83,7 +83,7 @@ public class StartupOptionsIT {
         project.getBuildersList().add(commandStep);
 
         //Run tests step
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabTestsBuilder runTestsStep = new RunMatlabTestsBuilder();
         //Adding src folder
         List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();
@@ -120,7 +120,7 @@ public class StartupOptionsIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "              unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "              unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
                 "              runMATLABCommand(command: 'pwd,version', startupOptions: '-logfile outputCommand.log -nojvm')\n" +
                 "              runMATLABTests(sourceFolder: ['src'], testResultsJUnit: 'test-results/results.xml'," +
                 "              codeCoverageCobertura: 'code-coverage/coverage.xml', startupOptions: '-logfile outputTests.log -nojvm')\n" +
@@ -143,7 +143,7 @@ public class StartupOptionsIT {
     public void verifyStartupOptionsInScriptedPipeline() throws Exception {
         String script = "node {\n" +
                             envScripted + "\n" +
-                            "              unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                            "              unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
                             "              runMATLABCommand(command: 'pwd,version', startupOptions: '-logfile outputCommand.log -nojvm')\n" +
                             "              runMATLABTests(sourceFolder: ['src'], testResultsJUnit: 'test-results/results.xml'," +
                             "              codeCoverageCobertura: 'code-coverage/coverage.xml', startupOptions: '-logfile outputTests.log -nojvm')\n" +
@@ -165,8 +165,8 @@ public class StartupOptionsIT {
         String matlabRoot22b = System.getenv("MATLAB_ROOT_22b");
         Assume.assumeTrue("Not running tests as MATLAB_ROOT_22b environment variable is not defined", matlabRoot22b != null && !matlabRoot22b.isEmpty());
 
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
 
         MatrixProject project = jenkins.createProject(MatrixProject.class);
         MatlabInstallationAxis MATLABAxis = new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_22b"));
@@ -181,7 +181,7 @@ public class StartupOptionsIT {
         project.getBuildersList().add(commandStep);
 
         //Run tests step
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
         RunMatlabTestsBuilder runTestsStep = new RunMatlabTestsBuilder();
         //Adding src folder
         List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();

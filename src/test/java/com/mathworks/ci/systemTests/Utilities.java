@@ -11,21 +11,15 @@ import java.util.Arrays;
 
 import static org.jvnet.hudson.test.JenkinsRule.NO_PROPERTIES;
 
-public class MatlabRootSetup {
-    static String installedPath = "", binPath = "", MATLAB_ROOT="";
+public class Utilities {
     public static MatlabInstallation.DescriptorImpl matlabInstDescriptor;
-
-    public MatlabRootSetup(){
-        getBinPath();
-    }
 
     /*
      * This method returns the environment path needed to be set for DSL pipeline scripts
      */
     public static String getEnvironmentDSL() {
-        getBinPath();
         String environment = "environment { \n" +
-                "PATH = " + "\""+  binPath + "${PATH}"+ "\"" + "\n" +
+                "PATH = " + "\""+  getBinPath() + "${PATH}"+ "\"" + "\n" +
                 "}";
         return environment;
     }
@@ -34,9 +28,7 @@ public class MatlabRootSetup {
      * This method returns the environment path needed to be set for Scripted pipeline
      */
     public static String getEnvironmentScriptedPipeline() {
-        getBinPath();
-        String environment = "";
-        environment = "env.PATH =" + '"' + binPath + "${env.PATH}" + '"';
+        String environment = "env.PATH =" + '"' + getBinPath() + "${env.PATH}" + '"';
         return environment;
     }
 
@@ -44,39 +36,26 @@ public class MatlabRootSetup {
      * This method returns the MATLAB Root needed for Free Style or Multi Config projects
      */
     public static String getMatlabRoot() {
-        getBinPath();
-        MATLAB_ROOT = installedPath;
-
-        System.out.println(MATLAB_ROOT);
-        return MATLAB_ROOT;
+        return System.getenv("MATLAB_ROOT");
     }
 
     /*
      * This method returns the bin path needed for scripted pipelines based on the testing platform -- Windows or Linux
      * or Mac
      */
-    public static void getBinPath() {
-        installedPath = System.getenv("MATLAB_ROOT");
-        if (installedPath == null || installedPath.isEmpty()) {
-            installedPath = System.getProperty("MATLAB_ROOT");
-            if (installedPath == null || installedPath.isEmpty()) {
-                throw new IllegalStateException("MATLAB_ROOT is not set as an environment variable or system property.");
-            }
-        }
+    public static String getBinPath() {
+        String installedPath = System.getenv("MATLAB_ROOT");
+        String binPath = installedPath + "/bin:";
 
         if (System.getProperty("os.name").startsWith("Win")) {
             binPath = installedPath.replace("\\", "\\\\")+ "\\\\bin;";
-        } else {
-            binPath = installedPath + "/bin:";
         }
-
-        // You may want to store or return binPath as needed
-//        System.out.println("Binary Path: " + binPath);
+        return binPath;
     }
 
-    public static MatlabInstallation setMatlabInstallation(String name, String home, JenkinsRule jenkins) {
+    public static void setMatlabInstallation(String name, String home, JenkinsRule jenkins) {
         if(matlabInstDescriptor == null){
-            MatlabRootSetup.matlabInstDescriptor = jenkins.getInstance().getDescriptorByType(MatlabInstallation.DescriptorImpl.class);
+            Utilities.matlabInstDescriptor = jenkins.getInstance().getDescriptorByType(MatlabInstallation.DescriptorImpl.class);
         }
         MatlabInstallation[] prevInst = getMatlabInstallation();
         ArrayList<MatlabInstallation> newInst = new ArrayList<>(Arrays.asList(prevInst));
@@ -84,7 +63,6 @@ public class MatlabRootSetup {
         newInst.add(newMatlabInstallation);
         MatlabInstallation[] setInst = new MatlabInstallation[newInst.size()];
         matlabInstDescriptor.setInstallations(newInst.toArray(setInst));
-        return  newMatlabInstallation;
     }
 
     public static MatlabInstallation[] getMatlabInstallation(){
@@ -94,13 +72,6 @@ public class MatlabRootSetup {
 
     public static URL getRunMATLABTestsData() throws MalformedURLException {
         File file = new File(System.getProperty("user.dir") + File.separator +"src" + File.separator + "test" + File.separator + "resources" + File.separator + "TestData" + File.separator + "FilterTestData.zip");
-        URL zipfile = file.toURI().toURL();
-        return zipfile;
-    }
-
-    public static URL getTestOnWarningData() throws MalformedURLException {
-        File file = new File(System.getProperty("user.dir") + File.separator +"src" + File.separator + "test" + File.separator + "resources" + File.separator + "TestData" + File.separator + "TestWithWarning.zip");
-        URL zipfile = file.toURI().toURL();
-        return zipfile;
+        return file.toURI().toURL();
     }
 }

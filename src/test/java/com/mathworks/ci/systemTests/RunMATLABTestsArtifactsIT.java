@@ -4,6 +4,7 @@ import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;
 import com.mathworks.ci.MatlabBuildWrapperContent;
 import com.mathworks.ci.Message;
+import com.mathworks.ci.TestMessage;
 import com.mathworks.ci.UseMatlabVersionBuildWrapper;
 import com.mathworks.ci.freestyle.RunMatlabTestsBuilder;
 import com.mathworks.ci.freestyle.options.SourceFolder;
@@ -74,7 +75,7 @@ public class RunMATLABTestsArtifactsIT {
 
     @Test
     public void verifyJUnitFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
 
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
@@ -85,12 +86,12 @@ public class RunMATLABTestsArtifactsIT {
         Thread.sleep(2000);
 
         HtmlTextInput junitFilePathInput=(HtmlTextInput) page.getElementByName("_.junitReportFilePath");
-        Assert.assertEquals(TestData.getPropValues("junit.file.path"),junitFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestMessage.getValue("junit.file.path"),junitFilePathInput.getValueAttribute());
     }
 
     @Test
     public void verifyTAPTestFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -100,13 +101,13 @@ public class RunMATLABTestsArtifactsIT {
         Thread.sleep(2000);
 
         HtmlTextInput tapFilePathInput=(HtmlTextInput) page.getElementByName("_.tapReportFilePath");
-        Assert.assertEquals(TestData.getPropValues("taptestresult.file.path"),tapFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestMessage.getValue("taptestresult.file.path"),tapFilePathInput.getValueAttribute());
 
     }
 
     @Test
     public void verifyPDFReportFilePathInput() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -116,12 +117,12 @@ public class RunMATLABTestsArtifactsIT {
         Thread.sleep(2000);
 
         HtmlTextInput PDFFilePathInput=(HtmlTextInput) page.getElementByName("_.pdfReportFilePath");
-        Assert.assertEquals(TestData.getPropValues("pdftestreport.file.path"),PDFFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestMessage.getValue("pdftestreport.file.path"),PDFFilePathInput.getValueAttribute());
     }
 
     @Test
     public void verifyCoberturaFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -131,13 +132,13 @@ public class RunMATLABTestsArtifactsIT {
         Thread.sleep(2000);
 
         HtmlTextInput coberturaCodeCoverageFileInput=(HtmlTextInput) page.getElementByName("_.coberturaReportFilePath");
-        Assert.assertEquals(TestData.getPropValues("cobertura.file.path"),coberturaCodeCoverageFileInput.getValueAttribute());
+        Assert.assertEquals(TestMessage.getValue("cobertura.file.path"),coberturaCodeCoverageFileInput.getValueAttribute());
     }
 
 
     @Test
     public void verifyModelCoverageFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -147,13 +148,13 @@ public class RunMATLABTestsArtifactsIT {
         Thread.sleep(2000);
 
         HtmlTextInput coberturaModelCoverageFileInput=(HtmlTextInput) page.getElementByName("_.modelCoverageFilePath");
-        Assert.assertEquals(TestData.getPropValues("modelcoverage.file.path"),coberturaModelCoverageFileInput.getValueAttribute());
+        Assert.assertEquals(TestMessage.getValue("modelcoverage.file.path"),coberturaModelCoverageFileInput.getValueAttribute());
     }
 
 
     @Test
     public void verifySTMResultsFilePathInput() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.getBuildersList().add(this.testBuilder);
 
@@ -163,15 +164,15 @@ public class RunMATLABTestsArtifactsIT {
         Thread.sleep(2000);
 
         HtmlTextInput STMRFilePathInput=(HtmlTextInput) page.getElementByName("_.stmResultsFilePath");
-        Assert.assertEquals(TestData.getPropValues("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
+        Assert.assertEquals(TestMessage.getValue("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
     }
 
     @Test
     public void verifyCustomFilePathInputForArtifacts() throws Exception{
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -204,12 +205,12 @@ public class RunMATLABTestsArtifactsIT {
     public void verifyCustomeFilenamesForArtifactsPipeline() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL() + "\n" +
+                Utilities.getEnvironmentDSL() + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "                unzip '" + MatlabRootSetup.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "                unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
                 "              runMATLABTests(sourceFolder:['src'], testResultsTAP: 'test-results/results.tap',\n" +
                 "                             testResultsJUnit: 'test-results/results.xml',\n" +
                 "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
@@ -225,10 +226,10 @@ public class RunMATLABTestsArtifactsIT {
 
     @Test
     public void verifyCOverageReportDoesNotIncludeOtherSourceFolder() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
-        project.setScm(new ExtractResourceSCM(MatlabRootSetup.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));

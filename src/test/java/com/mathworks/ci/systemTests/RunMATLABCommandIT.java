@@ -37,7 +37,7 @@ public class RunMATLABCommandIT {
         UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
         RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
 
-        buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(buildWrapper);
 
         scriptBuilder.setMatlabCommand("disp 'apple'");
@@ -46,6 +46,7 @@ public class RunMATLABCommandIT {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("apple", build);
+        jenkins.assertLogContains(Utilities.getMatlabRoot(), build);
     }
 
     /*
@@ -58,7 +59,7 @@ public class RunMATLABCommandIT {
         UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
         RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
 
-        buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), MatlabRootSetup.getMatlabRoot()));
+        buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(buildWrapper);
 
         scriptBuilder.setMatlabCommand("apple");
@@ -78,8 +79,8 @@ public class RunMATLABCommandIT {
         String matlabRoot22b = System.getenv("MATLAB_ROOT_22b");
         Assume.assumeTrue("Not running tests as MATLAB_ROOT_22b environment variable is not defined", matlabRoot22b != null && !matlabRoot22b.isEmpty());
 
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
-        MatlabRootSetup.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_1", matlabRoot, jenkins);
+        Utilities.setMatlabInstallation("MATLAB_PATH_22b", matlabRoot22b, jenkins);
 
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         MatlabInstallationAxis MATLABAxis = new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_22b"));
@@ -109,7 +110,7 @@ public class RunMATLABCommandIT {
     public void verifyBuildPassesWhenMatlabCommandPassesPipeline() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL() + "\n" +
+                Utilities.getEnvironmentDSL() + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
@@ -131,7 +132,7 @@ public class RunMATLABCommandIT {
     public void verifyBuildFailsWhenMatlabCommandFails() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
-                MatlabRootSetup.getEnvironmentDSL() + "\n" +
+                Utilities.getEnvironmentDSL() + "\n" +
                 "    stages{\n" +
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
