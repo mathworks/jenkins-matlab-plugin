@@ -2,6 +2,7 @@ package com.mathworks.ci.systemTests;
 
 import com.mathworks.ci.*;
 import com.mathworks.ci.freestyle.RunMatlabCommandBuilder;
+import hudson.EnvVars;
 import hudson.matrix.AxisList;
 import hudson.matrix.Combination;
 import hudson.matrix.MatrixProject;
@@ -10,12 +11,20 @@ import hudson.matrix.MatrixBuild;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.slaves.DumbSlave;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
+import hudson.tasks.Builder;
+import org.htmlunit.WebAssert;
+import org.htmlunit.html.HtmlPage;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 public class RunMATLABCommandIT {
     @Rule
@@ -26,6 +35,23 @@ public class RunMATLABCommandIT {
         // Check if the MATLAB_ROOT environment variable is defined
         String matlabRoot = System.getenv("MATLAB_ROOT");
         Assume.assumeTrue("Not running tests as MATLAB_ROOT environment variable is not defined", matlabRoot != null && !matlabRoot.isEmpty());
+    }
+
+    @Test
+    public void verifyBuildStepWithRunMatlab() throws Exception {
+        boolean found = false;
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
+        scriptBuilder.setMatlabCommand("");
+        project.getBuildersList().add(scriptBuilder);
+        List<Builder> bl = project.getBuildersList();
+        for (Builder b : bl) {
+            if (b.getDescriptor().getDisplayName().equalsIgnoreCase(
+                    TestMessage.getValue("Builder.matlab.script.builder.display.name"))) {
+                found = true;
+            }
+        }
+        Assert.assertTrue("Build step does not contain Run MATLAB Command option", found);
     }
 
     /*
@@ -47,6 +73,7 @@ public class RunMATLABCommandIT {
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("apple", build);
         jenkins.assertLogContains(Utilities.getMatlabRoot(), build);
+        jenkins.assertLogContains("run-matlab-command", build);
     }
 
     /*
@@ -67,6 +94,7 @@ public class RunMATLABCommandIT {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("apple", build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
+        jenkins.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
 
     /*
@@ -101,7 +129,7 @@ public class RunMATLABCommandIT {
         c = new Combination(new AxisList(new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_22b"))), "MATLAB_PATH_22b");
         run = build.getRun(c);
         jenkins.assertLogContains("disp('apple')", run);
-        jenkins.assertLogContains(matlabRoot22b,run);
+        jenkins.assertLogContains(matlabRoot22b, run);
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
@@ -122,7 +150,7 @@ public class RunMATLABCommandIT {
                 "}";
 
         WorkflowJob project = jenkins.createProject(WorkflowJob.class);
-        project.setDefinition(new CpsFlowDefinition(script,true));
+        project.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun build = project.scheduleBuild2(0).get();
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
@@ -144,10 +172,68 @@ public class RunMATLABCommandIT {
                 "}";
 
         WorkflowJob project = jenkins.createProject(WorkflowJob.class);
-        project.setDefinition(new CpsFlowDefinition(script,true));
+        project.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun build = project.scheduleBuild2(0).get();
 
-        jenkins.assertLogContains("apple",build);
+        jenkins.assertLogContains("apple", build);
         jenkins.assertBuildStatus(Result.FAILURE, build);
+    }
+
+    @Test
+    public void verifyPipelineOnSlave() throws Exception {
+        DumbSlave s = jenkins.createOnlineSlave();
+        String script = "node('!built-in') { runMATLABCommand(command: 'pwd')}";
+
+        WorkflowJob project = jenkins.createProject(WorkflowJob.class);
+        project.setDefinition(new CpsFlowDefinition(script, true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+
+        jenkins.assertLogNotContains("Running on Jenkins", build);
+    }
+
+    @Test
+    public void verifyMATLABscratchFileNotGenerated() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
+        RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
+
+        buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(buildWrapper);
+        scriptBuilder.setMatlabCommand("pwd");
+        project.getBuildersList().add(scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
+        Assert.assertFalse(matlabRunner.exists());
+    }
+
+    @Test
+    public void verifyCommandSupportsEnvVar() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
+        RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
+
+        EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
+        EnvVars var = prop.getEnvVars();
+        var.put("PWDCMD", "pwd");
+        jenkins.jenkins.getGlobalNodeProperties().add(prop);
+        buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(buildWrapper);
+        scriptBuilder.setMatlabCommand("$PWDCMD");
+        project.getBuildersList().add(scriptBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("pwd", build);
+    }
+
+    @Test
+    public void verifyErrorMessageOnEmptyCommand() throws Exception {
+        FreeStyleProject project = jenkins.createFreeStyleProject();
+        RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
+
+        project.getBuildersList().add(scriptBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+
+        WebAssert.assertTextPresent(page, "Specify at least one script, function, or statement to execute.");
     }
 }

@@ -6,6 +6,9 @@ import hudson.matrix.*;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import org.htmlunit.WebAssert;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlSelect;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -16,6 +19,8 @@ import org.jvnet.hudson.test.JenkinsRule;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class RunMATLABTestsCustomizeRunIT {
     private FreeStyleProject project;
@@ -215,6 +220,69 @@ public class RunMATLABTestsCustomizeRunIT {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogNotContains("runInParallel", build);
+    }
+
+    /*
+     * Test to verify Use Parallel check box present.
+     */
+    @Test
+    public void verifyUseParallelPresent() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.useParallel\"]");
+    }
+
+    /*
+     * Test to verify Strict check box present.
+     */
+
+    @Test
+    public void verifyStrictPresent() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.strict\"]");
+    }
+
+    /*
+     * Test to verify Logging Level is present.
+     */
+
+    @Test
+    public void verifyLoggingLevelPresent() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertElementPresentByXPath(page, "//select[@name=\"_.loggingLevel\"]");
+    }
+
+    /*
+     * Test to verify Output Detail is present.
+     */
+
+    @Test
+    public void verifyOutputDetailPresent() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        WebAssert.assertElementPresentByXPath(page, "//select[@name=\"_.outputDetail\"]");
+    }
+
+    @Test
+    public void verifyLoggingLevelSetToDefault() throws Exception {
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlSelect loggingLevel = page.getElementByName("_.loggingLevel");
+        assertEquals("default", loggingLevel.getAttribute("value"));
     }
 
     @Test

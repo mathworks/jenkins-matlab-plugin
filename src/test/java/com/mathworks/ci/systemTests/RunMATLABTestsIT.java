@@ -10,7 +10,13 @@ import hudson.matrix.*;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
+import hudson.slaves.DumbSlave;
 import hudson.tasks.Builder;
+import org.htmlunit.WebAssert;
+import org.htmlunit.html.HtmlCheckBoxInput;
+import org.htmlunit.html.HtmlInput;
+import org.htmlunit.html.HtmlPage;
+import org.htmlunit.html.HtmlSelect;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
@@ -18,10 +24,14 @@ import org.junit.*;
 import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class RunMATLABTestsIT {
     private FreeStyleProject project;
@@ -101,6 +111,76 @@ public class RunMATLABTestsIT {
         // Based on the test folder and tag, 'testSquare' test should be run
         jenkins.assertLogContains("testSquare", build);
         jenkins.assertLogContains("HasTag('TestTag')", build);
+    }
+
+    @Test
+    public void verifySourceFolderDefaultState() throws Exception {
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput sourceFolder = page.getElementByName("_.sourceFolder");
+        sourceFolder.click();
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.srcFolderPath\"]");
+        HtmlInput srcFolderPath = page.getElementByName("_.srcFolderPath");
+        assertEquals("", srcFolderPath.getTextContent());
+    }
+
+    @Test
+    public void verifySelectByFolderDefaultState() throws Exception {
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByFolder");
+        sourceFolder.click();
+        Thread.sleep(2000);
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testFolders\"]");
+        HtmlInput srcFolderPath = page.getElementByName("_.testFolders");
+        assertEquals("", srcFolderPath.getTextContent());
+    }
+
+    @Test
+    public void verifySelectByTagDefaultState() throws Exception {
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlCheckBoxInput sourceFolder = page.getElementByName("_.selectByTag");
+        sourceFolder.click();
+        Thread.sleep(2000);
+        WebAssert.assertElementPresentByXPath(page, "//input[@name=\"_.testTag\"]");
+        HtmlInput srcFolderPath = page.getElementByName("_.testTag");
+        assertEquals("", srcFolderPath.getTextContent());
+    }
+
+    @Test
+    public void verifyEmptyParameters() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        jenkins.assertLogContains("run-matlab-command", build);
+        jenkins.assertLogNotContains("'OutputDetail'", build);
+        jenkins.assertLogNotContains("'PDFTestReport'", build);
+        jenkins.assertLogNotContains("'Strict'", build);
+        jenkins.assertLogNotContains("'SourceFolder'", build);
+    }
+    @Test
+    public void verifyMATLABscratchFileGenerated() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(testBuilder);
+        FreeStyleBuild build = project.scheduleBuild2(0).get();
+        File matlabRunner = new File(build.getWorkspace() + File.separator + "runnerScript.m");
+        Assert.assertFalse(matlabRunner.exists());
+    }
+
+    @Test
+    public void verifyOutputDetailSetToDefault() throws Exception {
+        this.buildWrapper.setMatlabBuildWrapperContent(
+                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+        project.getBuildWrappersList().add(this.buildWrapper);
+        project.getBuildersList().add(this.testBuilder);
+        HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
+        HtmlSelect outputDetail = page.getElementByName("_.outputDetail");
+        assertEquals("default", outputDetail.getAttribute("value"));
     }
 
     @Test
@@ -255,6 +335,36 @@ public class RunMATLABTestsIT {
         WorkflowJob project = jenkins.createProject(WorkflowJob.class);
         project.setDefinition(new CpsFlowDefinition(script,true));
         return project.scheduleBuild2(0).get();
+    }
+
+    @Test
+    public void verifyOnslave() throws Exception {
+        DumbSlave s = jenkins.createOnlineSlave();
+        String script = "node('!built-in') {runMATLABTests(testResultsPDF:'myresult/result.pdf')}";
+        WorkflowRun build = getPipelineBuild(script);
+
+        jenkins.assertLogNotContains("Running on Jenkins", build);
+    }
+
+    @Test
+    public void verifyCmdOptions() throws Exception {
+        String script = "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}";
+        WorkflowRun build = getPipelineBuild(script);
+
+        jenkins.assertLogContains("setenv('MW_ORIG_WORKING_FOLDER',", build);
+        jenkins.assertLogContains("run-matlab-command", build);
+    }
+
+    @Test
+    public void verifyExceptionForNonZeroExitCode() throws Exception {
+        String script = "node {\n" +
+                Utilities.getEnvironmentScriptedPipeline() + "\n" +
+                addTestData()+"\n" +
+                "runMATLABTests()\n" +
+                "}";
+        WorkflowRun build = getPipelineBuild(script);
+        jenkins.assertBuildStatus(Result.FAILURE, build);
+        jenkins.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
 
     private String addTestData() throws MalformedURLException {
