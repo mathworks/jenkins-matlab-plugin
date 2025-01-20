@@ -2,11 +2,20 @@ name: using mpm to install MATLAB
 on: push
 jobs:
   my-job:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
     name: Run System tests
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v2
+
+      - name: Setup Java 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'temurin'
 
       - name: Setup MATLAB
         id: setup-matlab
