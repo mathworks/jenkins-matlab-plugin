@@ -97,7 +97,7 @@ public class GlobalToolIT {
 
         jenkins.assertBuildStatus(Result.FAILURE, build);
         jenkins.assertLogContains("Verify global tool configuration for the specified node.", build);
-        jenkins.assertLogContains("matlab/incorrect/path", build);
+        jenkins.assertLogContains("MATLAB_PATH", build);
     }
 
     @Test
