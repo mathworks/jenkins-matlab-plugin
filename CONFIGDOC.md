@@ -22,10 +22,10 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
 -  [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool)
    -  [Register Preinstalled MATLAB Version](#register-preinstalled-matlab-version)
-   -  [Install Automatically Using MATLAB Package Manager](#install-automatically-using-matlab-package-manager)
+   -  [Automatically Install MATLAB Using MATLAB Package Manager](#automatically-install-matlab-using-matlab-package-manager)
       -  [Specify Release](#specify-release)
       -  [Add Products](#add-products)
-      -  [Required Software](#required-software)
+      -  [Install Required Software](#install-required-software)
       -  [License Installed Products](#license-installed-products)
    -  [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project)
    -  [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project)
@@ -36,13 +36,13 @@ You can use the web UI provided by Jenkins to configure the plugin in freestyle 
 ### Use MATLAB in Build
 Once you install the plugin, the **Use MATLAB version** option appears in the **Environment** section of the project configuration window. Select **Use MATLAB version** to specify the MATLAB version you want to use in the build. You can select one of the MATLAB versions that have been registered as Jenkins tools, or you can select `Custom` if you want to specify a different version. For more information about registering a MATLAB version as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
 
-In this example, the list includes two preinstalled MATLAB versions registered as tools as well as the option for specifying a custom installation. If you select `Custom`, a **MATLAB root** box appears in the UI. You must enter the full path to your preferred MATLAB root folder in this box.
+In this example, the list includes two preinstalled MATLAB versions registered as tools, as well as the option for specifying a custom installation. If you select `Custom`, a **MATLAB root** box appears in the UI. You must enter the full path to your preferred MATLAB root folder in this box.
 
 ![use_matlab_version_tool](https://github.com/user-attachments/assets/f5354bd2-dd27-4de2-8b5a-cf5ed33083ae)
 
-> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
+> :information_source: **Note:** If you are using a tool that was installed using MATLAB Package Manager, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
 
-When you specify a MATLAB version in the **Environment** section, the plugin prepends its `bin` folder to the `PATH` system environment variable of the build agent, which makes the version available for the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
+When you specify a MATLAB version in the **Environment** section, the plugin prepends the MATLAB `bin` folder to the `PATH` system environment variable of the build agent, which makes the version available for the build. If the build agent already has your preferred MATLAB version on the path, then you are not required to select **Use MATLAB version**. In this case, the plugin uses the topmost MATLAB version on the system path. The build fails if the operating system cannot find MATLAB on the path.
 
 You can use the [`matlabroot`](https://www.mathworks.com/help/matlab/ref/matlabroot.html) function to return the full path to your preferred MATLAB root folder. The path depends on the platform, MATLAB version, and installation location. This table shows examples of the root folder path on different platforms. 
 
@@ -140,7 +140,7 @@ To specify the MATLAB version, select **Use MATLAB version** in the **Environmen
 
 ![environment](https://github.com/user-attachments/assets/144a6198-b17e-43b4-a15e-78f95e731336)
 
-> :information_source: **Note:** If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license. For more information, [License Installed Products](#license-installed-products).
+> :information_source: **Note:** If you are using a tool that was installed using MATLAB Package Manager, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
 
 To run MATLAB code and Simulink models, specify the appropriate build steps in the **Build Steps** section:
 * If you add the [**Run MATLAB Build**](#run-matlab-build) step, specify your MATLAB build tasks and options.
@@ -167,8 +167,8 @@ If your Jenkins instance includes MATLAB versions registered as tools, then **MA
 For more information about registering a MATLAB version as a tool, see [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool).
 
 > :information_source: **Notes:**
-> - When you add the **MATLAB** axis, do not select **Use MATLAB version**. Any values you specify by **Use MATLAB version** take precedence over the values specified by the **MATLAB** axis.
-> - If you are using a tool configured using MATLAB Package Manager as the installer, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
+> - When you add the **MATLAB** axis, do not select **Use MATLAB version**. Any values you specify with **Use MATLAB version** take precedence over the values specified by the **MATLAB** axis.
+> - If you are using a tool that was installed using MATLAB Package Manager, you must associate the tool with a valid license. For more information, see [License Installed Products](#license-installed-products).
 
 ### Add User-Defined Axis
 If you do not specify the **MATLAB** axis, add a user-defined axis in the **Configuration Matrix** section to specify the MATLAB versions in the build. Enter the name of the axis in the **Name** box and its values in the **Values** box. Separate the values with a space. For instance, specify two MATLAB versions to run the same set of tests.
@@ -466,7 +466,7 @@ pipeline {
                             runMATLABCommand(command: 'ver, pwd')
                         }
                     }
-                    stage('Run MATLAB Tests') {
+                    stage('Run MATLAB tests') {
                         steps {
                             runMATLABTests(testResultsJUnit: 'test-results/results.xml',
                                            codeCoverageCobertura: 'code-coverage/coverage.xml')
@@ -480,20 +480,20 @@ pipeline {
 ```
 
 ## Register MATLAB as Jenkins Tool
-When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins should invoke by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
+When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins invokes by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
 
 Instead of specifying the path to the MATLAB root folder on a per-project basis, you can register a MATLAB version as a Jenkins tool, which makes it available to any project you configure in Jenkins. Once you have registered a MATLAB version as a tool, you no longer need to specify its root folder path within a project. Jenkins needs only the tool name to access the MATLAB version.
 
 The plugin enables you to register MATLAB as a tool in two different ways:
 - You can register a preinstalled version of MATLAB by specifying the path to its root folder.
-- You can register a specific version of MATLAB (R2021a or later) using [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`) as the installer. The plugin uses MATLAB Package Manager to automatically install your preferred products. (Automatic installation is supported only on UNIX&reg; systems.)
+- You can register a specific version of MATLAB (R2021a or later) using [MATLAB Package Manager](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/MPM.md) (`mpm`). The plugin uses MATLAB Package Manager to automatically install your preferred products. (Automatic installation is supported only on UNIX&reg; systems.)
 
 ### Register Preinstalled MATLAB Version
 To register a preinstalled version of MATLAB as a Jenkins tool:
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**.
-2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version and specify its installation location.
-3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box, and enter the full path to its root folder in the **MATLAB root** box. (To register a preinstalled MATLAB version as a tool, do not select **Install automatically**.) 
+2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you register your preferred MATLAB version.
+3) In the **Name** box, specify the tool name you want to assign to the MATLAB version. In the **MATLAB root** box, enter the full path to its root folder. (To register a preinstalled MATLAB version as a tool, do not select **Install automatically**.) 
 4) To confirm your choices, click **Save** at the bottom of the page.
 
 For example, register MATLAB R2024b as a Jenkins tool named `R2024b` on your Windows local agent.
@@ -507,64 +507,64 @@ If your Jenkins instance includes remote agents, you can register MATLAB as a to
 3) In the **Home** box, enter the full path to the MATLAB root folder on the remote agent.
 4) Click **Save** to confirm your choices.
 
-### Install Automatically Using MATLAB Package Manager
-To register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager as the installer, follow these steps. (Automatic installation is supported only on UNIX systems.)
+### Automatically Install MATLAB Using MATLAB Package Manager
+To install and register a specific version of MATLAB as a Jenkins tool using MATLAB Package Manager, follow these steps. (Automatic installation is supported only on UNIX systems.)
 
 1) In your Jenkins interface, select **Manage Jenkins > Tools**.
-2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you assign a name to your preferred MATLAB version.
-3) Specify the name you want to assign to the MATLAB version (tool name) in the **Name** box. (To use MATLAB Package Manager, you must leave the **MATLAB root** box empty.)
+2) In the **MATLAB installations** section of the **Tools** page, click **Add MATLAB**. The section expands and lets you register your preferred MATLAB version.
+3) In the **Name** box, specify the tool name you want to assign to the MATLAB version. (To use MATLAB Package Manager, you must leave the **MATLAB root** box empty.)
 4) Select **Install automatically** and then select `Install Using MATLAB Package Manager` from the **Add Installer** list.
-5) Specify the MATLAB release to install in the **Release** box. For details, see [Specify Release](#specify-release).
-6) Specify the products to install in addition to MATLAB in the **Products** box. For details, see [Add Products](#add-products).
+5) In the **Release** box, specify the MATLAB version to install. For details, see [Specify Release](#specify-release).
+6) In the **Products** box, specify the products to install in addition to MATLAB. For details, see [Add Products](#add-products).
 7) To confirm your choices, click **Save** at the bottom of the page.
 
-For example, configure a Jenkins tool named `Latest` that includes the latest release of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox on a Linux or macOS agent.
+For example, configure a Jenkins tool named `Latest` that includes the latest version of MATLAB, MATLAB Test&trade;, and Parallel Computing Toolbox on a Linux or macOS agent.
 
 ![MATLAB installations section showing how to configure a tool using MATLAB Package Manager. The tool is named Latest and installs the latest release of MATLAB, MATLAB Test, and Parallel Computing Toolbox.](https://github.com/user-attachments/assets/96fb6932-14a7-47ce-8f7f-180c7c385209)
 
 > :information_source: **Notes:**
-> - Before using MATLAB Package Manager, verify that the required software is installed on your UNIX agent. For details, see [Required Software](#required-software).
+> - Before using MATLAB Package Manager, verify that the required software is installed on your UNIX agent. For details, see [Install Required Software](#install-required-software).
 > - To use the products installed using MATLAB Package Manager, you must first license those products. For more information, see [License Installed Products](#license-installed-products). 
 
 #### Specify Release
-When using MATLAB Package Manager, specify the MATLAB release to install (R2021a or later) in the **Release** box of the tool configuration interface:
-- To install the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest release of MATLAB at the time of the build. If the latest release is newer than the most recent release on the build agent, then the plugin installs the latest release without uninstalling the existing release.
+When using MATLAB Package Manager, specify the MATLAB version to install (R2021a or later) in the **Release** box of the tool configuration interface:
+- To install the latest release of MATLAB, specify `latest`. When you run a build using a tool configured with this value, the plugin automatically uses the latest version of MATLAB at the time of the build. If the latest release is newer than the most recent version on the build agent, then the plugin installs the latest release without uninstalling the existing version.
 - To install the latest update of a release, specify only the release name, for example, `R2024a`.
 - To install a specific update release, specify the release name with an update number suffix, for example, `R2024aU4`.
 - To install a release without updates, specify the release name with an update 0 or general release suffix, for example, `R2024aU0` or `R2024aGR`.
 
 #### Add Products
-When you use a tool configured with MATLAB Package Manager as the installer, the plugin automatically installs MATLAB for you. However, you can specify additional products to install by populating the **Products** box of the tool configuration interface.
+When you configure a specific version of MATLAB as a tool to be installed using MATLAB Package Manager, the plugin automatically installs MATLAB for you. However, you can specify additional products to install by populating the **Products** box of the tool configuration interface.
 
 You can use the **Products** box to install most MathWorks products and support packages.  For a list of supported products, open the input file for your preferred release from the [`mpm-input-files`](https://github.com/mathworks-ref-arch/matlab-dockerfile/tree/main/mpm-input-files) folder on GitHub&reg;. Specify products using the format shown in the input file, excluding the `#product.` prefix. For example, to install Deep Learning Toolbox&trade; in addition to MATLAB, enter `Deep_Learning_Toolbox` in the **Products** box.
 
-If you specify more than one product, separate the names with a space. For example, to install MATLAB, Simulink, and Deep Learning Toolbox&trade;, specify the contents of the **Products** box like this:
+If you specify more than one product, separate the names with a space. For example, to install MATLAB, Simulink, and Deep Learning Toolbox, specify the value of the **Products** box like this:
 
 `Simulink Deep_Learning_Toolbox`
 
-#### Required Software
-Before using MATLAB Package Manager to autmatically install MATLAB and other products, verify that the required software is installed on your Linux or macOS agent.
+#### Install Required Software
+Before using MATLAB Package Manager to automatically install MATLAB and other products, verify that the required software is installed on your Linux or macOS agent.
 
 ##### Linux
 If you are using a Linux agent, verify that the following software is installed on your agent:
-- Third-party packages required to run the `mpm` command — To view the list of `mpm` dependencies, refer to the Linux section of the [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html) page.
-- All MATLAB dependencies — To view the list of MATLAB dependencies, go to the [MATLAB Dependencies](https://github.com/mathworks-ref-arch/container-images/tree/main/matlab-deps) repository on GitHub. Then, open the `<release>/<system>/base-dependencies.txt` file for your MATLAB release and your build agent's operating system.
+- Third-party packages required to run the `mpm` command — To view the list of `mpm` dependencies, refer to the Linux section of [Get MATLAB Package Manager](https://www.mathworks.com/help/install/ug/get-mpm-os-command-line.html).
+- All MATLAB dependencies — To view the list of MATLAB dependencies, go to the [MATLAB Dependencies](https://github.com/mathworks-ref-arch/container-images/tree/main/matlab-deps) repository on GitHub. Then, open the `<release>/<system>/base-dependencies.txt` file for your MATLAB version and your build agent's operating system.
 
 ##### macOS
-If you are using a macOS agent with an Apple Silicon processor, verify that Java&reg; Runtime Environment (JRE&trade;) is installed on your agent. For information about this requirement and to get a compatible JRE version, see [MATLAB on Apple Silicon Macs](https://www.mathworks.com/support/requirements/apple-silicon.html).
+If you are using a macOS agent with an Apple silicon processor, verify that Java&reg; Runtime Environment (JRE&trade;) is installed on your agent. For information about this requirement and to get a compatible JRE version, see [MATLAB on Apple Silicon Macs](https://www.mathworks.com/support/requirements/apple-silicon.html).
 
 #### License Installed Products
 To use the products installed using MATLAB Package Manager in freestyle, multi-configuration, and pipeline projects, you must first license those products. This section describes how to license the products using a [MATLAB batch licensing token](https://github.com/mathworks-ref-arch/matlab-dockerfile/blob/main/alternates/non-interactive/MATLAB-BATCH.md#matlab-batch-licensing-token) in Jenkins. Batch licensing tokens are strings that enable MATLAB to start in noninteractive environments. You can request a token by submitting the [MATLAB Batch Licensing Pilot](https://www.mathworks.com/support/batch-tokens.html) form.
 
-To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, to configure a global credential, which can be used anywhere throughout Jenkins, follow these steps:
+To license products using a batch licensing token, create a [credential](https://www.jenkins.io/doc/book/using/using-credentials/) from the token and then use the credential in your project. For example, to configure a global credential, which you can use anywhere throughout Jenkins, follow these steps:
 
 1) In your Jenkins interface, select **Manage Jenkins > Credentials**.
 2) In the **Stores scoped to Jenkins** section of the **Credentials** page, click **System**.
-3) On the **System** page, click **Global credentials (unrestricted)**. Then, click the **Add Credentials** button on the top-right corner of the page.
-4) On the **New credentials** page, select `Secret text` from the **Kind** list, paste your batch lincensing token into the **Secret** box, and specify the credential ID and description by populating the **ID** and **Description** boxes. To save the credential, Click **Create**.
+3) On the **System** page, click **Global credentials (unrestricted)**. Then, click the **Add Credentials** button at the top-right corner of the page.
+4) On the **New credentials** page, select `Secret text` from the **Kind** list, paste your batch licensing token into the **Secret** box, and specify the credential ID and description by populating the **ID** and **Description** boxes. To save the credential, click **Create**.
  ![New credentials page showing how to create a secret-text credential with matlab-token as the ID and MATLAB batch licensing token as the description. The token has been pasted into the Secret box.](https://github.com/user-attachments/assets/d1b36565-718b-4ce5-9fd2-7e90c3ce006a)
 
-For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#configuring-credentials). For how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
+For more information on how to configure a global credential, see [Adding new global credentials](https://www.jenkins.io/doc/book/using/using-credentials/#adding-new-global-credentials). For information on how to use the credential in projects, see [Use MATLAB as a Tool in Freestyle or Multi-Configuration Project](#use-matlab-as-a-tool-in-freestyle-or-multi-configuration-project) and [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
 
 
 ### Use MATLAB as a Tool in Freestyle or Multi-Configuration Project
@@ -576,11 +576,11 @@ In freestyle and multi-configuration projects, you can use the MATLAB versions r
 To use a tool configured using MATLAB Package Manager in a freestyle or multi-configuration project, you must also associate the tool with a valid license. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in the **Environment** section of the project configuration window. For example, suppose that: 
 
 - A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
-- A secret-text credential with `MATLAB batch licensing token` as its name secures access to your token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
+- A secret-text credential with `MATLAB batch licensing token` as its name secures access to your token. (For information on how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
 
 To use the tool named `Latest` in a freestyle project, configure the **Environment** section by binding the credential to the  `MLM_LICENSE_TOKEN` environment variable and specifying the MATLAB version to use for the build:
 
-- To bind the credential, select **Use secret text(s) or file(s)**, enter `MLM_LICENSE_TOKEN` in the **Variable** box and select the credential from the **Credentials** list.
+- To bind the credential, select **Use secret text(s) or file(s)**, enter `MLM_LICENSE_TOKEN` in the **Variable** box, and select the credential from the **Credentials** list.
 - To specify the MATLAB version, select **Use MATLAB version** and then select `Latest` from the list.
 
 ![Environment section showing how to bind a credential to the MLM_LICENSE_TOKEN environment variable and how to select the latest release of MATLAB for the build](https://github.com/user-attachments/assets/749f5ae9-a105-4481-bf60-19c136ee1447)
@@ -625,10 +625,10 @@ node {
 }
 ```
 
-To use a tool configured using MATLAB Package Manager, you must associate the tool with a valid license. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in your `Jenkinsfile`. For example, suppose that: 
+To use a tool configured using MATLAB Package Manager in a pipeline project, you must associate the tool with a valid license. If you have a MATLAB batch licensing token, you can address this requirement by setting the `MLM_LICENSE_TOKEN` environment variable in your `Jenkinsfile`. For example, suppose that: 
 
 - A tool named `Latest` automatically installs the latest release of MATLAB on your agent.
-- A secret-text credential with `matlab-token` as the credential ID secures access to your token. (For how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
+- A secret-text credential with `matlab-token` as the credential ID secures access to your token. (For information on how to create a credential from a batch licensing token, see [License Installed Products](#license-installed-products).) 
 
 Using declarative pipeline syntax, define a pipeline to run `myscript.m` using the latest release of MATLAB licensed with your batch licensing token. This code uses the `credentials` method in an `environment` block to assign the `matlab-token` credential to the `MLM_LICENSE_TOKEN` environment variable.
 
