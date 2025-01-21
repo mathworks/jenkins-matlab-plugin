@@ -424,12 +424,12 @@ pipeline {
                     }
                 }
                 stages {
-                    stage('Run MATLAB commands') {
+                    stage('Run MATLAB Commands') {
                         steps {
                             runMATLABCommand(command: 'ver, pwd')
                         }
                     }
-                    stage('Run MATLAB tests') {
+                    stage('Run MATLAB Tests') {
                         steps {
                             runMATLABTests(testResultsJUnit: 'test-results/results.xml',
                                            codeCoverageCobertura: 'code-coverage/coverage.xml')
@@ -461,12 +461,12 @@ pipeline {
                     matlab "${MATLAB_VERSION}"
                 }
                 stages {
-                    stage('Run MATLAB commands') {
+                    stage('Run MATLAB Commands') {
                         steps {
                             runMATLABCommand(command: 'ver, pwd')
                         }
                     }
-                    stage('Run MATLAB tests') {
+                    stage('Run MATLAB Tests') {
                         steps {
                             runMATLABTests(testResultsJUnit: 'test-results/results.xml',
                                            codeCoverageCobertura: 'code-coverage/coverage.xml')
