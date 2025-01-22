@@ -170,6 +170,10 @@ public class MatlabInstaller extends ToolInstaller {
             }
         }
 
+        if (name.startsWith("r")) {
+            name = name.replaceFirst("r", "R");
+        }
+
         return new MatlabRelease(name, isPrerelease);
     }
 
