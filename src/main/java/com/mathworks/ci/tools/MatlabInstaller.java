@@ -1,7 +1,7 @@
 package com.mathworks.ci.tools;
 
 /**
- * Copyright 2024, The MathWorks, Inc.
+ * Copyright 2024-2025, The MathWorks, Inc.
  */
 
 import com.mathworks.ci.MatlabInstallation;
@@ -49,7 +49,7 @@ public class MatlabInstaller extends ToolInstaller {
     }
 
     public String getRelease() {
-        return this.release.trim();
+        return this.release;
     }
 
     @DataBoundSetter
@@ -75,10 +75,12 @@ public class MatlabInstaller extends ToolInstaller {
         String extension = "";
         String[] systemProperties = getSystemProperties(node);
         FilePath matlabRoot;
+        MatlabRelease release = parseRelease(this.getRelease());
+
         if (systemProperties[0].toLowerCase().contains("os x")) {
-            matlabRoot = new FilePath(toolRoot, this.getRelease() + ".app");
+            matlabRoot = new FilePath(toolRoot, release.name + ".app");
         } else {
-            matlabRoot = new FilePath(toolRoot, this.getRelease());
+            matlabRoot = new FilePath(toolRoot, release.name);
         }
         String platform = getPlatform(systemProperties[0], systemProperties[1]);
         if (platform == "win64") {
@@ -90,13 +92,16 @@ public class MatlabInstaller extends ToolInstaller {
 
         // Download mpm and matlab-batch to temp directory
         FilePath mpm = fetchMpm(platform, tempDir);
-        FilePath matlabBatch = fetchMatlabBatch(platform, tempDir);
+        FilePath tempMatlabBatch = fetchMatlabBatch(platform, tempDir);
 
         // Install with mpm
-        mpmInstall(mpm, this.getRelease(), this.getProducts(), matlabRoot, node, log);
+        mpmInstall(mpm, release, this.getProducts(), matlabRoot, node, log);
 
         // Copy downloaded matlab-batch to tool directory
-        matlabBatch.copyTo(new FilePath(toolRoot, "matlab-batch" + extension));
+        FilePath matlabBin = new FilePath(matlabRoot, "bin");
+        FilePath matlabBatchBin = new FilePath(matlabBin, "matlab-batch" + extension);
+        tempMatlabBatch.copyTo(matlabBatchBin);
+        matlabBatchBin.chmod(0777);
 
         // Delete temp directory
         tempDir.deleteRecursive();
@@ -104,7 +109,7 @@ public class MatlabInstaller extends ToolInstaller {
         return matlabRoot;
     }
 
-    private void mpmInstall(FilePath mpmPath, String release, String products, FilePath destination, Node node,
+    private void mpmInstall(FilePath mpmPath, MatlabRelease release, String products, FilePath destination, Node node,
             TaskListener log)
             throws IOException, InterruptedException {
         makeDir(destination);
@@ -114,7 +119,10 @@ public class MatlabInstaller extends ToolInstaller {
         ArgumentListBuilder args = new ArgumentListBuilder();
         args.add(mpmPath.getRemote());
         args.add("install");
-        appendReleaseToArguments(release, args, log);
+        args.add("--release=" + release.name);
+        if (release.isPrerelease) {
+            args.add("--release-status=Prerelease");
+        }
         args.add("--destination=" + destination.getRemote());
         addMatlabProductsToArgs(args, products);
 
@@ -144,29 +152,29 @@ public class MatlabInstaller extends ToolInstaller {
         }
     }
 
-    private void appendReleaseToArguments(String release, ArgumentListBuilder args, TaskListener log) {
-        String trimmedRelease = release.trim();
-        String actualRelease = trimmedRelease;
+    private MatlabRelease parseRelease(String release) throws InstallationFailedException {
+        String name = release.trim();
+        boolean isPrerelease = false;
 
-        if (trimmedRelease.equalsIgnoreCase("latest") || trimmedRelease.equalsIgnoreCase(
-                "latest-including-prerelease")) {
-            String releaseInfoUrl = Message.getValue("matlab.release.info.url") + trimmedRelease;
-            String releaseVersion = null;
+        if (name.equalsIgnoreCase("latest") || name.equalsIgnoreCase("latest-including-prerelease")) {
+            String releaseInfoUrl = Message.getValue("matlab.release.info.url") + name;
             try {
-                releaseVersion = IOUtils.toString(new URL(releaseInfoUrl),
-                        StandardCharsets.UTF_8).trim();
+                name = IOUtils.toString(new URL(releaseInfoUrl), StandardCharsets.UTF_8).trim();
             } catch (IOException e) {
-                log.getLogger().println("Failed to fetch release version: " + e.getMessage());
+                throw new InstallationFailedException("Failed to fetch release version: " + e.getMessage());
             }
 
-            if (releaseVersion != null && releaseVersion.contains("prerelease")) {
-                actualRelease = releaseVersion.replace("prerelease", "");
-                args.add("--release-status=Prerelease");
-            } else {
-                actualRelease = releaseVersion;
+            if (name.contains("prerelease")) {
+                name = name.replace("prerelease", "");
+                isPrerelease = true;
             }
         }
-        args.add("--release=" + actualRelease);
+
+        if (name.startsWith("r")) {
+            name = name.replaceFirst("r", "R");
+        }
+
+        return new MatlabRelease(name, isPrerelease);
     }
 
     private FilePath fetchMpm(String platform, FilePath destination)
@@ -223,7 +231,6 @@ public class MatlabInstaller extends ToolInstaller {
         FilePath matlabBatchPath = new FilePath(destination, "matlab-batch" + extension);
         try {
             matlabBatchPath.copyFrom(matlabBatchUrl.openStream());
-            matlabBatchPath.chmod(0777);
         } catch (IOException | InterruptedException e) {
             throw new InstallationFailedException("Unable to setup matlab-batch.");
         }

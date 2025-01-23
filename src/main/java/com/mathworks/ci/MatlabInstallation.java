@@ -64,13 +64,7 @@ public class MatlabInstallation extends ToolInstallation
         if (home == null) {
             return;
         }
-        FilePath matlabHome = new FilePath(new File(home));
-        FilePath matlabBin = new FilePath(matlabHome, "bin");
-        env.put("PATH+matlabroot", matlabBin.getRemote());
-        FilePath matlabBatchFolder = matlabHome.getParent();
-        if (matlabBatchFolder != null) {
-            env.put("PATH+matlabbatch", matlabBatchFolder.getRemote());
-        }
+        env.put("PATH+matlabroot", home + "/bin");
     }
 
     public static MatlabInstallation[] getAll() {
