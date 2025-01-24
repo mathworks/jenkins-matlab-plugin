@@ -43,6 +43,9 @@ public class MatlabCommandRunner {
 
         // Create MATLAB folder
         FilePath tmpRoot = WorkspaceList.tempDir(workspace);
+        if (tmpRoot == null) {
+            throw new IOException("Unable to create temporary directory in workspace.");
+        }
         tmpRoot.mkdirs();
 
         // Create temp folder

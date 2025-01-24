@@ -40,20 +40,14 @@ public class Utilities {
             return;
         }
 
-        FilePath matlabRoot = getNodeSpecificHome(name,
-                cmp.getNode(), listener, env);
+        FilePath matlabRoot = getNodeSpecificHome(name, cmp.getNode(), listener, env);
 
-        if (matlabRoot != null && matlabRoot.getParent().exists()) {
-            env.put("PATH+matlab_batch", matlabRoot.getParent().getRemote());
-        }
-
-        String matlabExecutablePath = getNodeSpecificHome(name,
-                cmp.getNode(), listener, env).getRemote() + ((Boolean.TRUE.equals(cmp.isUnix())) ? "/bin" : "\\bin");
-        env.put("PATH+matlabroot", matlabExecutablePath);
+        FilePath matlabBin = new FilePath(matlabRoot, "bin");
+        env.put("PATH+matlabroot", matlabBin.getRemote());
 
         // Specify which MATLAB was added to path.
         listener.getLogger().println(
-                "\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabExecutablePath) + "\n");
+                "\n" + String.format(Message.getValue("matlab.added.to.path.from"), matlabBin.getRemote()) + "\n");
     }
 
     public static FilePath getNodeSpecificHome(String instName, Node node, TaskListener listener, EnvVars env)
