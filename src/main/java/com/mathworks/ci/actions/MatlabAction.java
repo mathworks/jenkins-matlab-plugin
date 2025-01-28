@@ -101,12 +101,7 @@ public class MatlabAction {
                     case MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT:
                             build.addAction(new TestResultsViewAction(build, workspace, this.getActionID()));
                         break;
-                }
-
-                if(artifactBaseName.equals(MatlabBuilderConstants.BUILD_ARTIFACT)) {
-                    build.addAction(new BuildArtifactAction(build, this.getActionID()));
-                } else if(artifactBaseName.equals(MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT)) {
-                    build.addAction(new TestResultsViewAction(build, workspace, this.getActionID()));
+                    default:
                 }
             }
         } catch (Exception e) {
