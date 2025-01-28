@@ -1,7 +1,7 @@
 package com.mathworks.ci.actions;
 
 /**
- * Copyright 2024, The MathWorks Inc.
+ * Copyright 2024-25, The MathWorks Inc.
  */
 
 import com.mathworks.ci.BuildArtifactAction;
@@ -94,6 +94,15 @@ public class MatlabAction {
                 file.copyTo(rootLocation);
                 file.delete();
                 
+                switch (artifactBaseName) {
+                    case MatlabBuilderConstants.BUILD_ARTIFACT:
+                        build.addAction(new BuildArtifactAction(build, this.getActionID()));
+                        break;
+                    case MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT:
+                            build.addAction(new TestResultsViewAction(build, workspace, this.getActionID()));
+                        break;
+                }
+
                 if(artifactBaseName.equals(MatlabBuilderConstants.BUILD_ARTIFACT)) {
                     build.addAction(new BuildArtifactAction(build, this.getActionID()));
                 } else if(artifactBaseName.equals(MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT)) {

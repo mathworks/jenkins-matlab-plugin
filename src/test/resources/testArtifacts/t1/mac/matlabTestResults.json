@@ -15,6 +15,45 @@
     },
     {
       "TestResult": {
+        "Duration": 0.1,
+        "Details": {
+          "SimulinkTestManagerResults": []
+        },
+        "Name": "TestExamples1/testNonLeapYear2",
+        "Passed": true,
+        "Failed": false,
+        "Incomplete": false
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.1,
+        "Details": {
+          "SimulinkTestManagerResults": []
+        },
+        "Name": "TestExamples1/testNonLeapYear3",
+        "Passed": true,
+        "Failed": false,
+        "Incomplete": false
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.1,
+        "Details": {
+          "SimulinkTestManagerResults": []
+        },
+        "Name": "TestExamples1/testNonLeapYear4",
+        "Passed": true,
+        "Failed": false,
+        "Incomplete": false
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
         "Duration": 0.4,
         "Details": {
           "SimulinkTestManagerResults": [],
@@ -39,6 +78,96 @@
         "Name": "TestExamples1/testLeapYear",
         "Passed": false,
         "Failed": true,
+        "Incomplete": true
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.4,
+        "Details": {
+          "SimulinkTestManagerResults": [],
+          "DiagnosticRecord": {
+            "TestDiagnosticResults": [],
+            "FrameworkDiagnosticResults": {
+              "Artifacts": [],
+              "DiagnosticText": "SampleDiagnosticsText1"
+            },
+            "AdditionalDiagnosticResults": [],
+            "Stack": {
+              "file": "/Users/username/workspace/visualization/tests/TestExamples1.m",
+              "name": "TestExamples1.testLeapYear2",
+              "line": 35
+            },
+            "Event": "SampleDiagnosticsEvent1",
+            "EventScope": "TestMethod",
+            "EventLocation": "TestExamples1/testLeapYear2",
+            "Report": "SampleDiagnosticsReport1"
+          }
+        },
+        "Name": "TestExamples1/testLeapYear2",
+        "Passed": false,
+        "Failed": true,
+        "Incomplete": true
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.4,
+        "Details": {
+          "SimulinkTestManagerResults": [],
+          "DiagnosticRecord": {
+            "TestDiagnosticResults": [],
+            "FrameworkDiagnosticResults": {
+              "Artifacts": [],
+              "DiagnosticText": "SampleDiagnosticsText1"
+            },
+            "AdditionalDiagnosticResults": [],
+            "Stack": {
+              "file": "/Users/username/workspace/visualization/tests/TestExamples1.m",
+              "name": "TestExamples1.testLeapYear3",
+              "line": 35
+            },
+            "Event": "SampleDiagnosticsEvent1",
+            "EventScope": "TestMethod",
+            "EventLocation": "TestExamples1/testLeapYear3",
+            "Report": "SampleDiagnosticsReport1"
+          }
+        },
+        "Name": "TestExamples1/testLeapYear3",
+        "Passed": false,
+        "Failed": true,
+        "Incomplete": true
+      },
+      "BaseFolder": "/Users/username/workspace/visualization/tests"
+    },
+    {
+      "TestResult": {
+        "Duration": 0.1,
+        "Details": {
+          "SimulinkTestManagerResults": [],
+          "DiagnosticRecord": {
+            "TestDiagnosticResults": [],
+            "FrameworkDiagnosticResults": {
+              "Artifacts": [],
+              "DiagnosticText": "SampleDiagnosticsText2"
+            },
+            "AdditionalDiagnosticResults": [],
+            "Stack": {
+              "file": "/Users/username/workspace/visualization/tests/TestExamples1.m",
+              "name": "TestExamples1.testValidDateFormat",
+              "line": 35
+            },
+            "Event": "SampleDiagnosticsEvent2",
+            "EventScope": "TestMethod",
+            "EventLocation": "TestExamples1/testValidDateFormat",
+            "Report": "SampleDiagnosticsReport2"
+          }
+        },
+        "Name": "TestExamples1/testValidDateFormat",
+        "Passed": false,
+        "Failed": false,
         "Incomplete": true
       },
       "BaseFolder": "/Users/username/workspace/visualization/tests"

@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2024, The MathWorks Inc.
+ * Copyright 2025, The MathWorks Inc.
  *
  */
 
@@ -40,6 +40,13 @@ public class TestResultsViewAction implements RunAction2 {
     private int incompleteCount;
     private int notRunCount;
 
+    public enum TestStatus {
+        PASSED,
+        FAILED,
+        INCOMPLETE,
+        NOT_RUN
+    }
+
     public TestResultsViewAction(Run<?, ?> build, FilePath workspace, String actionID) throws InterruptedException, IOException {
         this.build = build;
         this.workspace = workspace;
@@ -63,7 +70,7 @@ public class TestResultsViewAction implements RunAction2 {
 
     public List<List<MatlabTestFile>> getTestResults() throws ParseException, InterruptedException, IOException {
         List<List<MatlabTestFile>> testResults = new ArrayList<>();
-        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath() + File.separator + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.actionID + ".json"));
+        FilePath fl = new FilePath(new File(build.getRootDir().getAbsolutePath(), MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + this.actionID + ".json"));
         try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(Paths.get(fl.toURI())), StandardCharsets.UTF_8)) {
             this.totalCount = 0;
             this.passedCount = 0;
@@ -96,8 +103,7 @@ public class TestResultsViewAction implements RunAction2 {
 
                 testResults.add(testSessionResults);
             }
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new IOException(e.getLocalizedMessage());
         }
 
@@ -116,8 +122,7 @@ public class TestResultsViewAction implements RunAction2 {
         // Check if test's file was known or not
         MatlabTestFile matlabTestFile = map.get(baseFolder + File.separator + matlabTestFileName);
         if(matlabTestFile == null) {
-            matlabTestFile = new MatlabTestFile();
-            matlabTestFile.setName(matlabTestFileName);
+            matlabTestFile = new MatlabTestFile(matlabTestFileName);
 
             map.put(baseFolder + File.separator + matlabTestFileName, matlabTestFile);
             testSessionResults.add(matlabTestFile);
@@ -130,17 +135,22 @@ public class TestResultsViewAction implements RunAction2 {
 
         matlabTestFile.setPath(this.workspace.getName() + File.separator + relPath.toString());
 
-        MatlabTestCase matlabTestCase = new MatlabTestCase();
-        matlabTestCase.setName(matlabTestCaseName);
-        matlabTestCase.setPassed((boolean) matlabTestCaseResult.get("Passed"));
-        matlabTestCase.setFailed((boolean) matlabTestCaseResult.get("Failed"));
-        matlabTestCase.setIncomplete((boolean) matlabTestCaseResult.get("Incomplete"));
+        MatlabTestCase matlabTestCase = new MatlabTestCase(matlabTestCaseName);
         if (matlabTestCaseResult.get("Duration") instanceof Long) {
             matlabTestCase.setDuration(((Long) matlabTestCaseResult.get("Duration")).doubleValue());
         } else if (matlabTestCaseResult.get("Duration") instanceof Double) {
             matlabTestCase.setDuration(((Double) matlabTestCaseResult.get("Duration")));
         }
-        matlabTestCase.updateStatus();
+
+        if ((boolean) matlabTestCaseResult.get("Failed")){
+            matlabTestCase.setStatus(TestStatus.FAILED);
+        }
+        else if ((boolean) matlabTestCaseResult.get("Incomplete")) {
+            matlabTestCase.setStatus(TestStatus.INCOMPLETE);
+        }
+        else if((boolean) matlabTestCaseResult.get("Passed")) {
+            matlabTestCase.setStatus(TestStatus.PASSED);
+        }
 
         Object diagnostics = ((JSONObject)matlabTestCaseResult.get("Details")).get("DiagnosticRecord");
         if(diagnostics instanceof JSONObject) {
@@ -161,24 +171,22 @@ public class TestResultsViewAction implements RunAction2 {
             }
         }
 
-        matlabTestFile.incrementDuration(matlabTestCase.getDuration());
-        matlabTestFile.updateStatus(matlabTestCase);
-        matlabTestFile.getMatlabTestCases().add(matlabTestCase);
+        matlabTestFile.addTestCase(matlabTestCase);
         updateCount(matlabTestCase);
     }
 
     private void updateCount(MatlabTestCase matlabTestCase) {
         this.totalCount += 1;
-        if (matlabTestCase.getStatus().equals(MatlabBuilderConstants.NOT_RUN)) {
+        if (matlabTestCase.getStatus().equals(TestStatus.NOT_RUN)) {
             this.notRunCount += 1;
         }
-        else if (matlabTestCase.getPassed()) {
+        else if (matlabTestCase.getStatus().equals(TestStatus.PASSED)) {
             this.passedCount += 1;
         }
-        else if (matlabTestCase.getFailed()) {
+        else if (matlabTestCase.getStatus().equals(TestStatus.FAILED)) {
             this.failedCount += 1;
         }
-        else if (matlabTestCase.getIncomplete()) {
+        else if (matlabTestCase.getStatus().equals(TestStatus.INCOMPLETE)) {
             this.incompleteCount += 1;
         }
     }

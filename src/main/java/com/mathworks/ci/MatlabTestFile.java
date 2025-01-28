@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2024, The MathWorks Inc.
+ * Copyright 2025, The MathWorks Inc.
  *
  * Class to store MATLAB test file information
  * 
@@ -12,19 +12,21 @@ import java.util.ArrayList;
 
 import org.apache.commons.lang.RandomStringUtils;
 
+import com.mathworks.ci.TestResultsViewAction.TestStatus;
+
 public class MatlabTestFile {
     private String path;
     private String name;
     private Double duration;
-    private String status;
+    private TestStatus status;
     private List<MatlabTestCase> matlabTestCases;
     private String id;
 
-    public MatlabTestFile() {
+    public MatlabTestFile(String name) {
+        this.name = name;
         this.path = "";
-        this.name = "";
         this.duration = 0.0;
-        this.status = MatlabBuilderConstants.NOT_RUN;
+        this.status = TestStatus.NOT_RUN;
         this.matlabTestCases = new ArrayList<MatlabTestCase>();
         this.id = RandomStringUtils.randomAlphanumeric(8);
     }
@@ -34,19 +36,25 @@ public class MatlabTestFile {
     }
 
     public void updateStatus(MatlabTestCase matlabTestCase) {
-        if (!this.status.equals(MatlabBuilderConstants.FAILED)) {
-            if (matlabTestCase.getFailed()){
-                this.status = MatlabBuilderConstants.FAILED;
+        if (!this.status.equals(TestStatus.FAILED)) {
+            if (matlabTestCase.getStatus().equals(TestStatus.FAILED)){
+                this.status = TestStatus.FAILED;
             }
-            else if (!this.status.equals(MatlabBuilderConstants.INCOMPLETE)){
-                if (matlabTestCase.getIncomplete()){
-                    this.status = MatlabBuilderConstants.INCOMPLETE;
+            else if (!this.status.equals(TestStatus.INCOMPLETE)){
+                if (matlabTestCase.getStatus().equals(TestStatus.INCOMPLETE)){
+                    this.status = TestStatus.INCOMPLETE;
                 }
-                else if (matlabTestCase.getPassed()){
-                    this.status = MatlabBuilderConstants.PASSED;
+                else if (matlabTestCase.getStatus().equals(TestStatus.PASSED)){
+                    this.status = TestStatus.PASSED;
                 }
             }
         }
+    }
+
+    public void addTestCase(MatlabTestCase matlabTestCase){
+        this.incrementDuration(matlabTestCase.getDuration());
+        this.updateStatus(matlabTestCase);
+        this.getMatlabTestCases().add(matlabTestCase);
     }
 
     public String getPath() {
@@ -73,11 +81,11 @@ public class MatlabTestFile {
         this.duration = duration;
     }
 
-    public String getStatus() {
+    public TestStatus getStatus() {
         return this.status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(TestStatus status) {
         this.status = status;
     }
 

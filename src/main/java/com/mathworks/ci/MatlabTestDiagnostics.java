@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2024, The MathWorks Inc.
+ * Copyright 2025, The MathWorks Inc.
  *
  * Class to store MATLAB test diagnostics information
  * 

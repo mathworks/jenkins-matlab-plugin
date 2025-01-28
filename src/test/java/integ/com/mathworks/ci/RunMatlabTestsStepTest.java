@@ -64,7 +64,6 @@ public class RunMatlabTestsStepTest {
         DumbSlave s = j.createOnlineSlave();
         project.setDefinition(new CpsFlowDefinition(
                 "node('!built-in') {runMATLABTests(testResultsPDF:'myresult/result.pdf')}", true));
-
         s.getWorkspaceFor(project);
         WorkflowRun build = project.scheduleBuild2(0).get();
 

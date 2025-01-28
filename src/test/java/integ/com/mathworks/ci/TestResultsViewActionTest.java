@@ -1,7 +1,7 @@
 package com.mathworks.ci;
 
 /**
- * Copyright 2024 The MathWorks, Inc.
+ * Copyright 2025 The MathWorks, Inc.
  *
  */
 
@@ -22,7 +22,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
+import com.mathworks.ci.MatlabBuildWrapperContent;
 import com.mathworks.ci.MatlabBuilderConstants;
+import com.mathworks.ci.MatlabTestDiagnostics;
+import com.mathworks.ci.MatlabTestFile;
+import com.mathworks.ci.TestResultsViewAction.*;
+import com.mathworks.ci.UseMatlabVersionBuildWrapper;
 import com.mathworks.ci.freestyle.RunMatlabBuildBuilder;
 
 import hudson.FilePath;
@@ -90,7 +95,7 @@ public class TestResultsViewActionTest {
         int actualTestFiles2 = ta.get(1).size();
         Assert.assertEquals("Incorrect test files",1,actualTestFiles2);
         int actualTestResults1 = ta.get(0).get(0).getMatlabTestCases().size();
-        Assert.assertEquals("Incorrect test results",3,actualTestResults1);
+        Assert.assertEquals("Incorrect test results",9,actualTestResults1);
         int actualTestResults2 = ta.get(1).get(0).getMatlabTestCases().size();
         Assert.assertEquals("Incorrect test results",1,actualTestResults2);
     }
@@ -110,7 +115,7 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getTotalCount();
-        Assert.assertEquals("Incorrect total tests count",4,actualCount);
+        Assert.assertEquals("Incorrect total tests count",10,actualCount);
     }
 
     /**
@@ -128,7 +133,7 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getPassedCount();
-        Assert.assertEquals("Incorrect passed tests count",1,actualCount);
+        Assert.assertEquals("Incorrect passed tests count",4,actualCount);
     }
 
     /**
@@ -146,7 +151,7 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getFailedCount();
-        Assert.assertEquals("Incorrect failed tests count",1,actualCount);
+        Assert.assertEquals("Incorrect failed tests count",3,actualCount);
     }
 
     /**
@@ -164,7 +169,7 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         int actualCount = ac.getIncompleteCount();
-        Assert.assertEquals("Incorrect incomplete tests count",1,actualCount);
+        Assert.assertEquals("Incorrect incomplete tests count",2,actualCount);
     }
 
     /**
@@ -264,7 +269,7 @@ public class TestResultsViewActionTest {
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<MatlabTestFile>> ta = ac.getTestResults();
         Double actualDuration1 = ta.get(0).get(0).getDuration();
-        Assert.assertEquals("Incorrect test file duration",(Double) 0.5,actualDuration1);
+        Assert.assertEquals("Incorrect test file duration",(Double) 1.7,actualDuration1);
         Double actualDuration2 = ta.get(1).get(0).getDuration();
         Assert.assertEquals("Incorrect test file duration",(Double) 0.1,actualDuration2);
     }
@@ -284,10 +289,10 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<MatlabTestFile>> ta = ac.getTestResults();
-        String actualStatus1 = ta.get(0).get(0).getStatus();
-        Assert.assertEquals("Incorrect test file status",MatlabBuilderConstants.FAILED,actualStatus1);
-        String actualStatus2 = ta.get(1).get(0).getStatus();
-        Assert.assertEquals("Incorrect test file status",MatlabBuilderConstants.INCOMPLETE,actualStatus2);
+        TestStatus actualStatus1 = ta.get(0).get(0).getStatus();
+        Assert.assertEquals("Incorrect test file status",TestStatus.FAILED,actualStatus1);
+        TestStatus actualStatus2 = ta.get(1).get(0).getStatus();
+        Assert.assertEquals("Incorrect test file status",TestStatus.INCOMPLETE,actualStatus2);
     }
 
     /**
@@ -307,10 +312,12 @@ public class TestResultsViewActionTest {
         List<List<MatlabTestFile>> ta = ac.getTestResults();
         String actualName1_1 = ta.get(0).get(0).getMatlabTestCases().get(0).getName();
         Assert.assertEquals("Incorrect test case name","testNonLeapYear",actualName1_1);
-        String actualName1_2 = ta.get(0).get(0).getMatlabTestCases().get(1).getName();
-        Assert.assertEquals("Incorrect test case name","testLeapYear",actualName1_2);
-        String actualName1_3 = ta.get(0).get(0).getMatlabTestCases().get(2).getName();
-        Assert.assertEquals("Incorrect test case name","testInvalidDateFormat",actualName1_3);
+        String actualName1_5 = ta.get(0).get(0).getMatlabTestCases().get(4).getName();
+        Assert.assertEquals("Incorrect test case name","testLeapYear",actualName1_5);
+        String actualName1_8 = ta.get(0).get(0).getMatlabTestCases().get(7).getName();
+        Assert.assertEquals("Incorrect test case name","testInvalidDateFormat",actualName1_8);
+        String actualName1_9 = ta.get(0).get(0).getMatlabTestCases().get(8).getName();
+        Assert.assertEquals("Incorrect test case name","testInvalidDateFormat",actualName1_9);
         String actualName2 = ta.get(1).get(0).getMatlabTestCases().get(0).getName();
         Assert.assertEquals("Incorrect test case name","testNonLeapYear",actualName2);
     }
@@ -330,14 +337,14 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<MatlabTestFile>> ta = ac.getTestResults();
-        String actualStatus1_1 = ta.get(0).get(0).getMatlabTestCases().get(0).getStatus();
-        Assert.assertEquals("Incorrect test case status",MatlabBuilderConstants.PASSED,actualStatus1_1);
-        String actualStatus1_2 = ta.get(0).get(0).getMatlabTestCases().get(1).getStatus();
-        Assert.assertEquals("Incorrect test case status",MatlabBuilderConstants.FAILED,actualStatus1_2);
-        String actualStatus1_3 = ta.get(0).get(0).getMatlabTestCases().get(2).getStatus();
-        Assert.assertEquals("Incorrect test case status",MatlabBuilderConstants.NOT_RUN,actualStatus1_3);
-        String actualStatus2 = ta.get(1).get(0).getMatlabTestCases().get(0).getStatus();
-        Assert.assertEquals("Incorrect test case status",MatlabBuilderConstants.INCOMPLETE,actualStatus2);
+        TestStatus actualStatus1_1 = ta.get(0).get(0).getMatlabTestCases().get(0).getStatus();
+        Assert.assertEquals("Incorrect test case status",TestStatus.PASSED,actualStatus1_1);
+        TestStatus actualStatus1_5 = ta.get(0).get(0).getMatlabTestCases().get(4).getStatus();
+        Assert.assertEquals("Incorrect test case status",TestStatus.FAILED,actualStatus1_5);
+        TestStatus actualStatus1_9 = ta.get(0).get(0).getMatlabTestCases().get(8).getStatus();
+        Assert.assertEquals("Incorrect test case status",TestStatus.NOT_RUN,actualStatus1_9);
+        TestStatus actualStatus2 = ta.get(1).get(0).getMatlabTestCases().get(0).getStatus();
+        Assert.assertEquals("Incorrect test case status",TestStatus.INCOMPLETE,actualStatus2);
     }
 
     /**
@@ -357,10 +364,10 @@ public class TestResultsViewActionTest {
         List<List<MatlabTestFile>> ta = ac.getTestResults();
         Double actualDuration1_1 = ta.get(0).get(0).getMatlabTestCases().get(0).getDuration();
         Assert.assertEquals("Incorrect test case duration",(Double) 0.1,actualDuration1_1);
-        Double actualDuration1_2 = ta.get(0).get(0).getMatlabTestCases().get(1).getDuration();
-        Assert.assertEquals("Incorrect test case duration",(Double) 0.4,actualDuration1_2);
-        Double actualDuration1_3 = ta.get(0).get(0).getMatlabTestCases().get(2).getDuration();
-        Assert.assertEquals("Incorrect test case duration",(Double) 0.0,actualDuration1_3);
+        Double actualDuration1_5 = ta.get(0).get(0).getMatlabTestCases().get(1).getDuration();
+        Assert.assertEquals("Incorrect test case duration",(Double) 0.4,actualDuration1_5);
+        Double actualDuration1_9 = ta.get(0).get(0).getMatlabTestCases().get(2).getDuration();
+        Assert.assertEquals("Incorrect test case duration",(Double) 0.0,actualDuration1_9);
         Double actualDuration2 = ta.get(1).get(0).getMatlabTestCases().get(0).getDuration();
         Assert.assertEquals("Incorrect test case duration",(Double) 0.1,actualDuration2);
     }
@@ -381,7 +388,7 @@ public class TestResultsViewActionTest {
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<MatlabTestFile>> ta = ac.getTestResults();
         
-        MatlabTestDiagnostics diagnostics1 = ta.get(0).get(0).getMatlabTestCases().get(1).getDiagnostics().get(0);
+        MatlabTestDiagnostics diagnostics1 = ta.get(0).get(0).getMatlabTestCases().get(4).getDiagnostics().get(0);
         String actualDiagnosticsEvent1 = diagnostics1.getEvent();
         Assert.assertEquals("Incorrect test diagnostics event","SampleDiagnosticsEvent1",actualDiagnosticsEvent1);
         String actualDiagnosticsReport1 = diagnostics1.getReport();
