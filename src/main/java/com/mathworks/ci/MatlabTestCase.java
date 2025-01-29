@@ -8,6 +8,7 @@ package com.mathworks.ci;
  */
 
 import java.util.List;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -18,14 +19,14 @@ public class MatlabTestCase {
     private String name;
     private List<MatlabTestDiagnostics> diagnostics;
     private TestStatus status;
-    private Double duration;
+    private BigDecimal duration;
     private String id;
 
     public MatlabTestCase(String name) {
         this.name = name;
         this.diagnostics = new ArrayList<MatlabTestDiagnostics>();
         this.status = TestStatus.NOT_RUN;
-        this.duration = 0.0;
+        this.duration = new BigDecimal("0.0");
         this.id = RandomStringUtils.randomAlphanumeric(8);
     }
 
@@ -53,11 +54,11 @@ public class MatlabTestCase {
         this.status = status;
     }
 
-    public Double getDuration() {
+    public BigDecimal getDuration() {
         return this.duration;
     }
 
-    public void setDuration(Double duration) {
+    public void setDuration(BigDecimal duration) {
         this.duration = duration;
     }
 

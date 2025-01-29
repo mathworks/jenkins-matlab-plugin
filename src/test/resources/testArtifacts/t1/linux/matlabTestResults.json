@@ -174,7 +174,7 @@
     },
     {
       "TestResult": {
-        "Duration": 0.0,
+        "Duration": 0,
         "Details": {
           "SimulinkTestManagerResults": []
         },

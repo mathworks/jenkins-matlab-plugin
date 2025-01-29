@@ -53,11 +53,13 @@
 		<tag>HEAD</tag>
 	</scm>
 
-	<properties>
-		<!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-		<jenkins.baseline>2.387</jenkins.baseline>
-		<jenkins.version>${jenkins.baseline}.3</jenkins.version>
-	</properties>
+    <properties>
+        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+        <jenkins.baseline>2.387</jenkins.baseline>
+        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
+    </properties>
 
 	<dependencyManagement>
 		<dependencies>

@@ -8,6 +8,7 @@ package com.mathworks.ci;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -136,11 +137,11 @@ public class TestResultsViewAction implements RunAction2 {
         matlabTestFile.setPath(this.workspace.getName() + File.separator + relPath.toString());
 
         MatlabTestCase matlabTestCase = new MatlabTestCase(matlabTestCaseName);
-        if (matlabTestCaseResult.get("Duration") instanceof Long) {
-            matlabTestCase.setDuration(((Long) matlabTestCaseResult.get("Duration")).doubleValue());
-        } else if (matlabTestCaseResult.get("Duration") instanceof Double) {
-            matlabTestCase.setDuration(((Double) matlabTestCaseResult.get("Duration")));
-        }
+        // if (matlabTestCaseResult.get("Duration") instanceof Long) {
+            matlabTestCase.setDuration(new BigDecimal(matlabTestCaseResult.get("Duration").toString()));
+        // } else if (matlabTestCaseResult.get("Duration") instanceof Double) {
+        //     matlabTestCase.setDuration(((Double) matlabTestCaseResult.get("Duration")));
+        // }
 
         if ((boolean) matlabTestCaseResult.get("Failed")){
             matlabTestCase.setStatus(TestStatus.FAILED);

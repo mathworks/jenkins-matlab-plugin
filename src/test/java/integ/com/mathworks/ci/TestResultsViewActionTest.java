@@ -8,6 +8,7 @@ package com.mathworks.ci;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.mathworks.ci.MatlabBuildWrapperContent;
 import com.mathworks.ci.MatlabBuilderConstants;
 import com.mathworks.ci.MatlabTestDiagnostics;
 import com.mathworks.ci.MatlabTestFile;
+import com.mathworks.ci.TestResultsViewAction;
 import com.mathworks.ci.TestResultsViewAction.*;
 import com.mathworks.ci.UseMatlabVersionBuildWrapper;
 import com.mathworks.ci.freestyle.RunMatlabBuildBuilder;
@@ -268,10 +270,10 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<MatlabTestFile>> ta = ac.getTestResults();
-        Double actualDuration1 = ta.get(0).get(0).getDuration();
-        Assert.assertEquals("Incorrect test file duration",(Double) 1.7,actualDuration1);
-        Double actualDuration2 = ta.get(1).get(0).getDuration();
-        Assert.assertEquals("Incorrect test file duration",(Double) 0.1,actualDuration2);
+        BigDecimal actualDuration1 = ta.get(0).get(0).getDuration();
+        Assert.assertEquals("Incorrect test file duration",new BigDecimal("1.7"),actualDuration1);
+        BigDecimal actualDuration2 = ta.get(1).get(0).getDuration();
+        Assert.assertEquals("Incorrect test file duration",new BigDecimal("0.1"),actualDuration2);
     }
 
     /**
@@ -315,7 +317,7 @@ public class TestResultsViewActionTest {
         String actualName1_5 = ta.get(0).get(0).getMatlabTestCases().get(4).getName();
         Assert.assertEquals("Incorrect test case name","testLeapYear",actualName1_5);
         String actualName1_8 = ta.get(0).get(0).getMatlabTestCases().get(7).getName();
-        Assert.assertEquals("Incorrect test case name","testInvalidDateFormat",actualName1_8);
+        Assert.assertEquals("Incorrect test case name","testValidDateFormat",actualName1_8);
         String actualName1_9 = ta.get(0).get(0).getMatlabTestCases().get(8).getName();
         Assert.assertEquals("Incorrect test case name","testInvalidDateFormat",actualName1_9);
         String actualName2 = ta.get(1).get(0).getMatlabTestCases().get(0).getName();
@@ -362,14 +364,14 @@ public class TestResultsViewActionTest {
         copyFileInWorkspace("testArtifacts/t1/windows/" + MatlabBuilderConstants.TEST_RESULTS_VIEW_ARTIFACT + ".json",targetFile,artifactRoot);
         TestResultsViewAction ac = new TestResultsViewAction(build, workspace, actionID);
         List<List<MatlabTestFile>> ta = ac.getTestResults();
-        Double actualDuration1_1 = ta.get(0).get(0).getMatlabTestCases().get(0).getDuration();
-        Assert.assertEquals("Incorrect test case duration",(Double) 0.1,actualDuration1_1);
-        Double actualDuration1_5 = ta.get(0).get(0).getMatlabTestCases().get(1).getDuration();
-        Assert.assertEquals("Incorrect test case duration",(Double) 0.4,actualDuration1_5);
-        Double actualDuration1_9 = ta.get(0).get(0).getMatlabTestCases().get(2).getDuration();
-        Assert.assertEquals("Incorrect test case duration",(Double) 0.0,actualDuration1_9);
-        Double actualDuration2 = ta.get(1).get(0).getMatlabTestCases().get(0).getDuration();
-        Assert.assertEquals("Incorrect test case duration",(Double) 0.1,actualDuration2);
+        BigDecimal actualDuration1_1 = ta.get(0).get(0).getMatlabTestCases().get(0).getDuration();
+        Assert.assertEquals("Incorrect test case duration",new BigDecimal("0.1"),actualDuration1_1);
+        BigDecimal actualDuration1_5 = ta.get(0).get(0).getMatlabTestCases().get(4).getDuration();
+        Assert.assertEquals("Incorrect test case duration",new BigDecimal("0.4"),actualDuration1_5);
+        BigDecimal actualDuration1_9 = ta.get(0).get(0).getMatlabTestCases().get(8).getDuration();
+        Assert.assertEquals("Incorrect test case duration",new BigDecimal("0"),actualDuration1_9);
+        BigDecimal actualDuration2 = ta.get(1).get(0).getMatlabTestCases().get(0).getDuration();
+        Assert.assertEquals("Incorrect test case duration",new BigDecimal("0.1"),actualDuration2);
     }
 
     /**

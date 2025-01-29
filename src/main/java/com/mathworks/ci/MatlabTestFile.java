@@ -8,6 +8,7 @@ package com.mathworks.ci;
  */
 
 import java.util.List;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import org.apache.commons.lang.RandomStringUtils;
@@ -17,7 +18,7 @@ import com.mathworks.ci.TestResultsViewAction.TestStatus;
 public class MatlabTestFile {
     private String path;
     private String name;
-    private Double duration;
+    private BigDecimal duration;
     private TestStatus status;
     private List<MatlabTestCase> matlabTestCases;
     private String id;
@@ -25,17 +26,17 @@ public class MatlabTestFile {
     public MatlabTestFile(String name) {
         this.name = name;
         this.path = "";
-        this.duration = 0.0;
+        this.duration = new BigDecimal("0.0");
         this.status = TestStatus.NOT_RUN;
         this.matlabTestCases = new ArrayList<MatlabTestCase>();
         this.id = RandomStringUtils.randomAlphanumeric(8);
     }
 
-    public void incrementDuration(Double matlabTestCaseDuration) {
-        this.duration += matlabTestCaseDuration;
+    private void incrementDuration(BigDecimal matlabTestCaseDuration) {
+        this.duration = this.duration.add(matlabTestCaseDuration);
     }
 
-    public void updateStatus(MatlabTestCase matlabTestCase) {
+    private void updateStatus(MatlabTestCase matlabTestCase) {
         if (!this.status.equals(TestStatus.FAILED)) {
             if (matlabTestCase.getStatus().equals(TestStatus.FAILED)){
                 this.status = TestStatus.FAILED;
@@ -73,11 +74,11 @@ public class MatlabTestFile {
         this.name = name;
     }
 
-    public Double getDuration() {
+    public BigDecimal getDuration() {
         return this.duration;
     }
 
-    public void setDuration(Double duration) {
+    public void setDuration(BigDecimal duration) {
         this.duration = duration;
     }
 
