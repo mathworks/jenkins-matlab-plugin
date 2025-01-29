@@ -137,11 +137,7 @@ public class TestResultsViewAction implements RunAction2 {
         matlabTestFile.setPath(this.workspace.getName() + File.separator + relPath.toString());
 
         MatlabTestCase matlabTestCase = new MatlabTestCase(matlabTestCaseName);
-        // if (matlabTestCaseResult.get("Duration") instanceof Long) {
             matlabTestCase.setDuration(new BigDecimal(matlabTestCaseResult.get("Duration").toString()));
-        // } else if (matlabTestCaseResult.get("Duration") instanceof Double) {
-        //     matlabTestCase.setDuration(((Double) matlabTestCaseResult.get("Duration")));
-        // }
 
         if ((boolean) matlabTestCaseResult.get("Failed")){
             matlabTestCase.setStatus(TestStatus.FAILED);
