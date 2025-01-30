@@ -9,14 +9,11 @@ import hudson.matrix.MatrixRun;
 import hudson.model.FreeStyleBuild;
 import hudson.model.FreeStyleProject;
 import hudson.model.Result;
-import hudson.slaves.DumbSlave;
-import org.htmlunit.WebAssert;
 import org.htmlunit.html.*;
 import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
-import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
@@ -24,16 +21,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static junit.framework.TestCase.assertTrue;
+import static org.apache.commons.lang3.StringUtils.*;
+import static org.junit.Assert.assertEquals;
 
 public class GlobalToolIT {
     private FreeStyleProject project;
     private RunMatlabCommandBuilder scriptBuilder;
     private UseMatlabVersionBuildWrapper buildWrapper;
-
-    @Rule
-    public Timeout timeout = Timeout.seconds(0);
-
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
 
@@ -65,8 +59,8 @@ public class GlobalToolIT {
         Utilities.setMatlabInstallation("MATLAB_PATH", Utilities.getMatlabRoot(), jenkins);
 
         // Selecting MATLAB that is defined as Global tool
-        MatlabInstallation _inst = MatlabInstallation.getInstallation("MATLAB_PATH");
-        MatlabBuildWrapperContent content = new MatlabBuildWrapperContent(_inst.getName(), null);
+        MatlabInstallation inst = MatlabInstallation.getInstallation("MATLAB_PATH");
+        MatlabBuildWrapperContent content = new MatlabBuildWrapperContent(inst.getName(), null);
         buildWrapper.setMatlabBuildWrapperContent(content);
         project.getBuildWrappersList().add(buildWrapper);
         scriptBuilder.setMatlabCommand("disp('apple')");
@@ -74,9 +68,10 @@ public class GlobalToolIT {
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
 
-        jenkins.assertLogContains(_inst.getHome(), build);
+        jenkins.assertLogContains(inst.getHome(), build);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("apple", build);
+        assertEquals(countMatches(jenkins.getLog(build), "apple"), 2);
     }
 
     @Test
@@ -85,8 +80,8 @@ public class GlobalToolIT {
         Utilities.setMatlabInstallation("MATLAB_PATH", "matlab/incorrect/path", jenkins);
 
         // Selecting MATLAB that is defined as Global tool
-        MatlabInstallation _inst = MatlabInstallation.getInstallation("MATLAB_PATH");
-        MatlabBuildWrapperContent content = new MatlabBuildWrapperContent(_inst.getName(), null);
+        MatlabInstallation inst = MatlabInstallation.getInstallation("MATLAB_PATH");
+        MatlabBuildWrapperContent content = new MatlabBuildWrapperContent(inst.getName(), null);
         buildWrapper.setMatlabBuildWrapperContent(content);
         project.getBuildWrappersList().add(buildWrapper);
 
@@ -96,6 +91,7 @@ public class GlobalToolIT {
         FreeStyleBuild build = project.scheduleBuild2(0).get();
 
         jenkins.assertBuildStatus(Result.FAILURE, build);
+        // Note: This message might change in future based on Jenkins changes
         jenkins.assertLogContains("Verify global tool configuration for the specified node.", build);
         jenkins.assertLogContains("MATLAB_PATH", build);
     }
@@ -112,22 +108,13 @@ public class GlobalToolIT {
 
         // Getting the Web page for UI testing
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
-        HtmlCheckBoxInput matlabver=configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
-        matlabver.setChecked(true);
+        HtmlCheckBoxInput matlabVer = configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
+        matlabVer.setChecked(true);
         Thread.sleep(2000);
-        List<HtmlSelect> matlabver_1=configurePage.getByXPath("//select[contains(@class, \"dropdownList\")]");
-        // One of the drop downlists should have three options
-        boolean allOptionsAvailable = false;
-        for (HtmlSelect e : matlabver_1){
-            if(e.getOptionSize() == 3){
-                if(e.getOption(0).getValueAttribute().equals("MATLAB_PATH_1") &&
-                   e.getOption(1).getValueAttribute().equals("MATLAB_PATH_2") &&
-                   e.getOption(2).getValueAttribute().equals("Custom...")) {
-                    allOptionsAvailable = true;
-                }
-            }
-        }
-        assertTrue(allOptionsAvailable);
+        HtmlSelect matlabOptions = (HtmlSelect) configurePage.getByXPath("//select[contains(@class, \"dropdownList\")]").get(1);
+        assertEquals(matlabOptions.getOption(0).getValueAttribute(),"MATLAB_PATH_1");
+        assertEquals(matlabOptions.getOption(1).getValueAttribute(),"MATLAB_PATH_2");
+        assertEquals(matlabOptions.getOption(2).getValueAttribute(),"Custom...");
     }
 
     @Test
@@ -158,7 +145,6 @@ public class GlobalToolIT {
         Utilities.setMatlabInstallation("MATLAB_PATH_1", Utilities.getMatlabRoot(), jenkins);
         String script = "pipeline {\n" +
                 "   agent any\n" +
-                Utilities.getEnvironmentDSL() + "\n" +
                 "   tools {\n" +
                 "       matlab 'MATLAB_PATH_1'\n" +
                 "   }\n" +
@@ -166,13 +152,14 @@ public class GlobalToolIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "               runMATLABCommand 'version'\n" +
+                "               runMATLABCommand 'matlabroot'\n" +
                 "            }       \n" +
                 "        }                \n" +
                 "    } \n" +
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
+        assertEquals(countMatches(jenkins.getLog(build), Utilities.getMatlabRoot()), 1);
     }
     @Test
     public void verifyGlobalToolScriptedPipeline() throws Exception {
@@ -186,16 +173,13 @@ public class GlobalToolIT {
                 "        }else{\n" +
                 "            env.PATH = \"${matlabver}\\\\bin;${env.PATH}\"   // Windows agent\n" +
                 "        }     \n" +
-                "        runMATLABCommand 'version'\n" +
+                "        runMATLABCommand 'matlabroot'\n" +
                 "    }\n" +
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+        assertEquals(countMatches(jenkins.getLog(build), Utilities.getMatlabRoot()), 1);
     }
-
-    /*
-     * Test to verify if Matrix build passes .
-     */
 
     private WorkflowRun getPipelineBuild(String script) throws Exception{
         WorkflowJob project = jenkins.createProject(WorkflowJob.class);

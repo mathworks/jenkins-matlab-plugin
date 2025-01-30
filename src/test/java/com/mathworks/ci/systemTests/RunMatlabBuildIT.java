@@ -23,8 +23,6 @@ import org.junit.*;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 import org.xml.sax.SAXException;
-
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,19 +31,10 @@ import static junit.framework.Assert.assertTrue;
 public class RunMatlabBuildIT {
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
-    private RunMatlabBuildBuilder scriptBuilder;
-
+    private RunMatlabBuildBuilder runBuilder;
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
-
-    @Before
-    public void testSetup() throws IOException {
-
-        this.project = jenkins.createFreeStyleProject();
-        this.scriptBuilder = new RunMatlabBuildBuilder();
-        this.buildWrapper = new UseMatlabVersionBuildWrapper();
-    }
 
     @BeforeClass
     public static void checkMatlabRoot() {
@@ -54,16 +43,24 @@ public class RunMatlabBuildIT {
         Assume.assumeTrue("Not running tests as MATLAB_ROOT environment variable is not defined", matlabRoot != null && !matlabRoot.isEmpty());
     }
 
+    @Before
+    public void testSetup() throws IOException {
+        this.project = jenkins.createFreeStyleProject();
+        this.runBuilder = new RunMatlabBuildBuilder();
+        this.buildWrapper = new UseMatlabVersionBuildWrapper();
+    }
+
     @After
     public void testTearDown() {
         this.project = null;
-        this.scriptBuilder = null;
+        this.runBuilder = null;
+        this.buildWrapper = null;
     }
 
     @Test
     public void verifyBuildStepWithRunMatlab() throws Exception {
         boolean found = false;
-        project.getBuildersList().add(scriptBuilder);
+        project.getBuildersList().add(runBuilder);
         List<Builder> bl = project.getBuildersList();
         for (Builder b : bl) {
             if (b.getDescriptor().getDisplayName().equalsIgnoreCase(
@@ -83,11 +80,12 @@ public class RunMatlabBuildIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        tester.setTasks("invalid_task");
-        project.getBuildersList().add(tester);
+
+        this.runBuilder.setTasks("invalid_task");
+
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+
         jenkins.assertBuildStatus(Result.FAILURE, build);
         jenkins.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
@@ -100,23 +98,24 @@ public class RunMatlabBuildIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        tester.setTasks("check");
-        project.getBuildersList().add(tester);
+
+        this.runBuilder.setTasks("check");
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("buildtool check", build);
     }
+
     @Test
-    public void verifyDefaultTaskForNiTaskInput() throws Exception {
+    public void verifyDefaultTaskForNoTaskInput() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        project.getBuildersList().add(tester);
+
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+
         // Default test task fails
         jenkins.assertBuildStatus(Result.FAILURE, build);
         // Test task runs the test
@@ -128,11 +127,11 @@ public class RunMatlabBuildIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        tester.setTasks("check dummy");
-        project.getBuildersList().add(tester);
+
+        this.runBuilder.setTasks("check dummy");
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+
         jenkins.assertBuildStatus(Result.SUCCESS, build);
         jenkins.assertLogContains("buildtool check dummy", build);
         jenkins.assertLogContains("In dummy task", build);
@@ -143,12 +142,12 @@ public class RunMatlabBuildIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        tester.setTasks("check test dummy");
-        tester.setBuildOptions(new BuildOptions("-continueOnFailure -skip check"));
-        project.getBuildersList().add(tester);
+
+        this.runBuilder.setTasks("check test dummy");
+        this.runBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip check"));
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+
         // 'test' task fails
         jenkins.assertBuildStatus(Result.FAILURE, build);
         jenkins.assertLogContains("buildtool check test dummy", build);
@@ -169,31 +168,22 @@ public class RunMatlabBuildIT {
     }
 
     @Test
-    public void verifyMATLABscratchFileNotGenerated() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(
-                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("");
-        project.getBuildersList().add(this.scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertFalse(matlabRunner.exists());
-    }
-
-    @Test
     public void verifyBuildSupportsEnvVar() throws Exception {
         EnvironmentVariablesNodeProperty prop = new EnvironmentVariablesNodeProperty();
         EnvVars var = prop.getEnvVars();
         var.put("TASKS", "compile");
         var.put("BUILD_OPTIONS", "-continueOnFailure -skip test");
         jenkins.jenkins.getGlobalNodeProperties().add(prop);
+
         this.buildWrapper.setMatlabBuildWrapperContent(
                 new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
+
         project.getBuildWrappersList().add(this.buildWrapper);
-        scriptBuilder.setTasks("$TASKS");
-        scriptBuilder.setBuildOptions(new BuildOptions("$BUILD_OPTIONS"));
-        project.getBuildersList().add(scriptBuilder);
+        runBuilder.setTasks("$TASKS");
+        runBuilder.setBuildOptions(new BuildOptions("$BUILD_OPTIONS"));
+        project.getBuildersList().add(runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
+
         jenkins.assertLogContains("compile", build);
         jenkins.assertLogContains("-continueOnFailure -skip test", build);
     }
@@ -204,11 +194,10 @@ public class RunMatlabBuildIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        tester.setTasks("check test dummy");
-        tester.setBuildOptions(new BuildOptions("-continueOnFailure -skip dummy"));
-        project.getBuildersList().add(tester);
+
+        this.runBuilder.setTasks("check test dummy");
+        this.runBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip dummy"));
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
 
         // Verify MATLAB Build Result summary
@@ -226,11 +215,10 @@ public class RunMatlabBuildIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
-        RunMatlabBuildBuilder tester =
-                new RunMatlabBuildBuilder();
-        tester.setTasks("check test dummy");
-        tester.setBuildOptions(new BuildOptions("-continueOnFailure -skip dummy"));
-        project.getBuildersList().add(tester);
+
+        this.runBuilder.setTasks("check test dummy");
+        this.runBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip dummy"));
+        project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
 
         // Verify the hyperlink from the summary page and Tab are the same
@@ -263,6 +251,4 @@ public class RunMatlabBuildIT {
         return summaryElement.getTextContent();
 
     }
-
-
 }

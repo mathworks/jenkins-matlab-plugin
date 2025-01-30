@@ -132,11 +132,13 @@
 			<groupId>com.jcabi</groupId>
 			<artifactId>jcabi-xml</artifactId>
 			<version>0.23.1</version>
+			<scope>test</scope>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.jenkinsci.plugins/pipeline-model-definition -->
 		<dependency>
 			<groupId>org.jenkinsci.plugins</groupId>
 			<artifactId>pipeline-model-definition</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<!-- Need unzip to add the files in pipeline workspace -->
 		<!-- https://mvnrepository.com/artifact/org.jenkins-ci.plugins/pipeline-utility-steps -->
@@ -152,6 +154,7 @@
 			<groupId>org.jenkins-ci.plugins</groupId>
 			<artifactId>cobertura</artifactId>
 			<version>1.16</version>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

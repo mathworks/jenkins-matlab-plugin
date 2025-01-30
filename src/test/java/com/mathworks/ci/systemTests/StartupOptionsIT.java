@@ -97,7 +97,7 @@ public class StartupOptionsIT {
         runTestsStep.setStartupOptions(new StartupOptions("-logfile outputTests.log"));
         project.getBuildersList().add(runTestsStep);
 
-        //Rub Build step
+        // Run Build step
         RunMatlabBuildBuilder buildStep = new RunMatlabBuildBuilder();
         buildStep.setTasks("check");
         buildStep.setStartupOptions(new StartupOptions("-logfile outputBuild.log"));

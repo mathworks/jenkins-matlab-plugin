@@ -26,6 +26,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.apache.commons.lang3.StringUtils.countMatches;
+import static org.junit.Assert.assertEquals;
+
 public class RunMATLABCommandIT {
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -71,15 +74,14 @@ public class RunMATLABCommandIT {
 
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertBuildStatus(Result.SUCCESS, build);
-        jenkins.assertLogContains("apple", build);
         jenkins.assertLogContains(Utilities.getMatlabRoot(), build);
         jenkins.assertLogContains("run-matlab-command", build);
+        assertEquals(countMatches(jenkins.getLog(build), "apple"), 2);
     }
 
     /*
      * Test to verify if Build FAILS when matlab command fails
      */
-
     @Test
     public void verifyBuildFailureWhenMatlabCommandFails() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
@@ -92,7 +94,7 @@ public class RunMATLABCommandIT {
         scriptBuilder.setMatlabCommand("apple");
         project.getBuildersList().add(scriptBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
-        jenkins.assertLogContains("apple", build);
+        assertEquals(countMatches(jenkins.getLog(build), "apple"), 3);
         jenkins.assertBuildStatus(Result.FAILURE, build);
         jenkins.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
@@ -122,20 +124,20 @@ public class RunMATLABCommandIT {
 
         Combination c = new Combination(new AxisList(new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1"))), "MATLAB_PATH_1");
         MatrixRun run = build.getRun(c);
-        jenkins.assertLogContains("disp('apple')", run);
+        assertEquals(countMatches(jenkins.getLog(run), "apple"), 2);
         jenkins.assertLogContains(matlabRoot, run);
         jenkins.assertLogNotContains(matlabRoot22b, run);
 
         c = new Combination(new AxisList(new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_22b"))), "MATLAB_PATH_22b");
         run = build.getRun(c);
-        jenkins.assertLogContains("disp('apple')", run);
+        assertEquals(countMatches(jenkins.getLog(run), "apple"), 2);
         jenkins.assertLogContains(matlabRoot22b, run);
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
     }
 
     @Test
-    public void verifyBuildPassesWhenMatlabCommandPassesPipeline() throws Exception {
+    public void verifyBuildPassesWhenMatlabCommandPassesInPipeline() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
                 Utilities.getEnvironmentDSL() + "\n" +
@@ -143,7 +145,7 @@ public class RunMATLABCommandIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "              runMATLABCommand 'version' \n" +
+                "              runMATLABCommand 'matlabroot' \n" +
                 "            }\n" +
                 "        }\n" +
                 "    }\n" +
@@ -154,10 +156,11 @@ public class RunMATLABCommandIT {
         WorkflowRun build = project.scheduleBuild2(0).get();
 
         jenkins.assertBuildStatus(Result.SUCCESS, build);
+        assertEquals(countMatches(jenkins.getLog(build), Utilities.getMatlabRoot()), 1);
     }
 
     @Test
-    public void verifyBuildFailsWhenMatlabCommandFails() throws Exception {
+    public void verifyBuildFailsWhenMatlabCommandFailsInPipeline() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
                 Utilities.getEnvironmentDSL() + "\n" +
@@ -175,20 +178,25 @@ public class RunMATLABCommandIT {
         project.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun build = project.scheduleBuild2(0).get();
 
-        jenkins.assertLogContains("apple", build);
+        assertEquals(countMatches(jenkins.getLog(build), "apple"), 3);
         jenkins.assertBuildStatus(Result.FAILURE, build);
     }
 
     @Test
     public void verifyPipelineOnSlave() throws Exception {
         DumbSlave s = jenkins.createOnlineSlave();
-        String script = "node('!built-in') { runMATLABCommand(command: 'pwd')}";
+        String script = "node ('!built-in'){\n" +
+                Utilities.getEnvironmentScriptedPipeline() + "\n" +
+                "        runMATLABCommand 'matlabroot'\n" +
+                "}";
 
         WorkflowJob project = jenkins.createProject(WorkflowJob.class);
         project.setDefinition(new CpsFlowDefinition(script, true));
         WorkflowRun build = project.scheduleBuild2(0).get();
 
         jenkins.assertLogNotContains("Running on Jenkins", build);
+        jenkins.assertBuildStatus(Result.SUCCESS, build);
+        assertEquals(countMatches(jenkins.getLog(build), Utilities.getMatlabRoot()), 1);
     }
 
     @Test

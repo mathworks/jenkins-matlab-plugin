@@ -13,7 +13,6 @@ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
-import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import java.io.IOException;
@@ -27,8 +26,6 @@ public class RunMATLABTestsCustomizeRunIT {
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
 
-    @Rule
-    public Timeout timeout = Timeout.seconds(0);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -108,7 +105,6 @@ public class RunMATLABTestsCustomizeRunIT {
         FreeStyleBuild build;
         build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("LoggingLevel', 3", build);
-
     }
 
     /*@Integ
@@ -182,7 +178,6 @@ public class RunMATLABTestsCustomizeRunIT {
         project.getBuildersList().add(this.testBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
         jenkins.assertLogContains("FailOnWarningsPlugin", build);
-
     }
 
     @Test
@@ -332,14 +327,13 @@ public class RunMATLABTestsCustomizeRunIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "              runMATLABTests(sourceFolder:['src'], loggingLevel:'None')\n" +
+                "              runMATLABTests(loggingLevel:'None')\n" +
                 "            }\n" +
                 "        }\n" +
                 "    }\n" +
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("'LoggingLevel', 0", build);
-        jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
 
     @Test

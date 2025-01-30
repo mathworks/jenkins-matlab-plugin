@@ -98,30 +98,6 @@ public class UseMATLABVersionIT {
         jenkins.assertLogContains("MatlabNotFoundError", build);
     }
 
-// ToDo: Figure out how to run these tests where MATLAB needs to be unaccesible locally and in CI/CD
-
-//    @Test
-//     public void verifyEmptyRootError() throws Exception {
-//         String script = "pipeline {\n" +
-//                         "  agent any\n" +
-//                         "    stages{\n" +
-//                         "        stage('Run MATLAB Command') {\n" +
-//                         "            steps\n" +
-//                         "            {\n" +
-//                         "              runMATLABCommand 'version' \n" +
-//                         "            }\n" +
-//                         "        }\n" +
-//                         "    }\n" +
-//                         "}";
-//        WorkflowJob project = jenkins.createProject(WorkflowJob.class);
-//        project.setDefinition(new CpsFlowDefinition(script, true));
-//        WorkflowRun build = project.scheduleBuild2(0).get();
-//
-//         jenkins.assertLogContains("MATLAB_ROOT",build);
-//         jenkins.assertBuildStatus(Result.FAILURE,build);
-//     }
-
-     // if matlab_root is defined but invalid path is given what happens and does it need matlab_root ot not
      @Test
      public void verifyDefaultMatlabNotPicked() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(

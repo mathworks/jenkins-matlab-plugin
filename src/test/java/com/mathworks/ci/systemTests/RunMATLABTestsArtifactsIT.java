@@ -20,7 +20,6 @@ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
-import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -37,9 +36,6 @@ public class RunMATLABTestsArtifactsIT {
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
-
-    @Rule
-    public Timeout timeout = Timeout.seconds(0);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -85,7 +81,7 @@ public class RunMATLABTestsArtifactsIT {
         junitChkbx.setChecked(true);
         Thread.sleep(2000);
 
-        HtmlTextInput junitFilePathInput=(HtmlTextInput) page.getElementByName("_.junitReportFilePath");
+        HtmlTextInput junitFilePathInput = (HtmlTextInput) page.getElementByName("_.junitReportFilePath");
         Assert.assertEquals(TestMessage.getValue("junit.file.path"),junitFilePathInput.getValueAttribute());
     }
 
@@ -100,7 +96,7 @@ public class RunMATLABTestsArtifactsIT {
         tapChkbx.setChecked(true);
         Thread.sleep(2000);
 
-        HtmlTextInput tapFilePathInput=(HtmlTextInput) page.getElementByName("_.tapReportFilePath");
+        HtmlTextInput tapFilePathInput = (HtmlTextInput) page.getElementByName("_.tapReportFilePath");
         Assert.assertEquals(TestMessage.getValue("taptestresult.file.path"),tapFilePathInput.getValueAttribute());
 
     }
@@ -202,7 +198,7 @@ public class RunMATLABTestsArtifactsIT {
     }
 
     @Test
-    public void verifyCustomeFilenamesForArtifactsPipeline() throws Exception {
+    public void verifyCustomFilenamesForArtifactsPipeline() throws Exception {
         String script = "pipeline {\n" +
                 "  agent any\n" +
                 Utilities.getEnvironmentDSL() + "\n" +
@@ -212,6 +208,7 @@ public class RunMATLABTestsArtifactsIT {
                 "            {\n" +
                 "                unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
                 "              runMATLABTests(sourceFolder:['src'], testResultsTAP: 'test-results/results.tap',\n" +
+                "                             testResultsPDF: 'test-results/results.pdf'\n" +
                 "                             testResultsJUnit: 'test-results/results.xml',\n" +
                 "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
                 "                             codeCoverageCobertura: 'code-coverage/coverage.xml',\n" +
@@ -222,6 +219,13 @@ public class RunMATLABTestsArtifactsIT {
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
+        jenkins.assertLogContains("test-results/results.mldatx", build);
+        jenkins.assertLogContains("model-coverage/coverage.xml", build);
+
+        assertTrue(new FilePath(jenkins.getInstance().getWorkspaceFor(project), "test-results/results.pdf").exists());
+        assertTrue(new FilePath(jenkins.getInstance().getWorkspaceFor(project), "test-results/results.tap").exists());
+        assertTrue(new FilePath(jenkins.getInstance().getWorkspaceFor(project), "test-results/results.xml").exists());
+        assertTrue(new FilePath(jenkins.getInstance().getWorkspaceFor(project), "code-coverage/coverage.xml").exists());
     }
 
     @Test

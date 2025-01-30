@@ -21,7 +21,6 @@ import org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition;
 import org.jenkinsci.plugins.workflow.job.WorkflowJob;
 import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
-import org.junit.rules.Timeout;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
@@ -37,9 +36,6 @@ public class RunMATLABTestsIT {
     private FreeStyleProject project;
     private UseMatlabVersionBuildWrapper buildWrapper;
     private RunMatlabTestsBuilder testBuilder;
-
-    @Rule
-    public Timeout timeout = Timeout.seconds(0);
 
     @Rule
     public JenkinsRule jenkins = new JenkinsRule();
@@ -100,7 +96,7 @@ public class RunMATLABTestsIT {
         testFolders.add(new TestFolders("test/TestSquare"));
         testingBuilder.setSelectByFolder(new SelectByFolder(testFolders));
 
-        //Adding test tag
+        // Adding test tag
         testingBuilder.setSelectByTag(new RunMatlabTestsBuilder.SelectByTag("TestTag"));
         project.getBuildersList().add(testingBuilder);
 
@@ -162,7 +158,7 @@ public class RunMATLABTestsIT {
         jenkins.assertLogNotContains("'SourceFolder'", build);
     }
     @Test
-    public void verifyMATLABscratchFileGenerated() throws Exception {
+    public void verifyMATLABscratchFileNotGenerated() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(
                 new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
@@ -215,8 +211,6 @@ public class RunMATLABTestsIT {
         project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
-//        testingBuilder.setLoggingLevel("None");
-//        testingBuilder.setOutputDetail("None");
 
         // Adding list of source folder
         List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();
@@ -313,10 +307,10 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyTestsAreFilteredDSL() throws Exception{
         String script = "pipeline {\n" +
-                "agent any" + "\n" +
-                Utilities.getEnvironmentDSL() + "\n" +
-                "stages{" + "\n" +
-                "stage('Run MATLAB Command') {\n" +
+                            "agent any" + "\n" +
+                            Utilities.getEnvironmentDSL() + "\n" +
+                            "stages{" + "\n" +
+                                "stage('Run MATLAB Command') {\n" +
                 "steps\n" +
                 "{"+
                 addTestData()+"\n" +
@@ -331,20 +325,10 @@ public class RunMATLABTestsIT {
         jenkins.assertLogNotContains("Running squareTest", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
-    private WorkflowRun getPipelineBuild(String script) throws Exception{
-        WorkflowJob project = jenkins.createProject(WorkflowJob.class);
-        project.setDefinition(new CpsFlowDefinition(script,true));
-        return project.scheduleBuild2(0).get();
-    }
 
-    @Test
-    public void verifyOnslave() throws Exception {
-        DumbSlave s = jenkins.createOnlineSlave();
-        String script = "node('!built-in') {runMATLABTests(testResultsPDF:'myresult/result.pdf')}";
-        WorkflowRun build = getPipelineBuild(script);
 
-        jenkins.assertLogNotContains("Running on Jenkins", build);
-    }
+
+
 
     @Test
     public void verifyCmdOptions() throws Exception {
@@ -367,9 +351,24 @@ public class RunMATLABTestsIT {
         jenkins.assertLogContains(String.format(Message.getValue("matlab.execution.exception.prefix"), 1), build);
     }
 
+    @Test
+    public void verifyOnslave() throws Exception {
+        DumbSlave s = jenkins.createOnlineSlave();
+        String script = "node('!built-in') {runMATLABTests(testResultsPDF:'myresult/result.pdf')}";
+        WorkflowRun build = getPipelineBuild(script);
+
+        jenkins.assertLogNotContains("Running on Jenkins", build);
+    }
+
     private String addTestData() throws MalformedURLException {
         URL zipFile = Utilities.getRunMATLABTestsData();
         String path = "  unzip '" + zipFile.getPath() + "'" + "\n";
         return path;
+    }
+
+    private WorkflowRun getPipelineBuild(String script) throws Exception{
+        WorkflowJob project = jenkins.createProject(WorkflowJob.class);
+        project.setDefinition(new CpsFlowDefinition(script,true));
+        return project.scheduleBuild2(0).get();
     }
 }
