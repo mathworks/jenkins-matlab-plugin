@@ -297,17 +297,17 @@ public class RunMATLABTestsIT {
     @Test
     public void verifyTestsAreFilteredDSL() throws Exception{
         String script = "pipeline {\n" +
-                            "agent any" + "\n" +
-                            Utilities.getEnvironmentDSL() + "\n" +
-                            "stages{" + "\n" +
-                                "stage('Run MATLAB Command') {\n" +
-                "steps\n" +
-                "{"+
-                addTestData()+"\n" +
-                "runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply', 'test/TestSquare'], selectByTag: 'TestTag')\n" +
-                "}" + "\n" +
-                "}" + "\n" +
-                "}" + "\n" +
+                "  agent any\n" +
+                Utilities.getEnvironmentDSL() + "\n" +
+                "    stages{\n" +
+                "        stage('Run MATLAB Command') {\n" +
+                "            steps\n" +
+                "            {\n" +
+                "              unzip '/C:/Users/vkayithi/jenkins/mpm_dev_main/jenkins-matlab-plugin/src/test/resources/TestData/FilterTestData.zip' \n" +
+                "              runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply', 'test/TestSquare'], selectByTag: 'TestTag')"+
+                "            }\n" +
+                "        }\n" +
+                "    }\n" +
                 "}";
         WorkflowRun build = getPipelineBuild(script);
         jenkins.assertLogContains("Running testMultiply",build);
