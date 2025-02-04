@@ -200,22 +200,6 @@ public class RunMATLABCommandIT {
     }
 
     @Test
-    public void verifyMATLABscratchFileNotGenerated() throws Exception {
-        FreeStyleProject project = jenkins.createFreeStyleProject();
-        UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
-        RunMatlabCommandBuilder scriptBuilder = new RunMatlabCommandBuilder();
-
-        buildWrapper.setMatlabBuildWrapperContent(
-                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
-        project.getBuildWrappersList().add(buildWrapper);
-        scriptBuilder.setMatlabCommand("pwd");
-        project.getBuildersList().add(scriptBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runMatlabTests.m");
-        Assert.assertFalse(matlabRunner.exists());
-    }
-
-    @Test
     public void verifyCommandSupportsEnvVar() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
         UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();

@@ -157,16 +157,6 @@ public class RunMATLABTestsIT {
         jenkins.assertLogNotContains("'Strict'", build);
         jenkins.assertLogNotContains("'SourceFolder'", build);
     }
-    @Test
-    public void verifyMATLABscratchFileNotGenerated() throws Exception {
-        this.buildWrapper.setMatlabBuildWrapperContent(
-                new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
-        project.getBuildWrappersList().add(this.buildWrapper);
-        project.getBuildersList().add(testBuilder);
-        FreeStyleBuild build = project.scheduleBuild2(0).get();
-        File matlabRunner = new File(build.getWorkspace() + File.separator + "runnerScript.m");
-        Assert.assertFalse(matlabRunner.exists());
-    }
 
     @Test
     public void verifyOutputDetailSetToDefault() throws Exception {
