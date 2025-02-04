@@ -79,7 +79,6 @@ public class RunMATLABTestsArtifactsIT {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput junitChkbx = page.getElementByName("junitArtifact");
         junitChkbx.setChecked(true);
-        Thread.sleep(2000);
 
         HtmlTextInput junitFilePathInput = (HtmlTextInput) page.getElementByName("_.junitReportFilePath");
         Assert.assertEquals(TestMessage.getValue("junit.file.path"),junitFilePathInput.getValueAttribute());
@@ -94,7 +93,6 @@ public class RunMATLABTestsArtifactsIT {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput tapChkbx = page.getElementByName("tapArtifact");
         tapChkbx.setChecked(true);
-        Thread.sleep(2000);
 
         HtmlTextInput tapFilePathInput = (HtmlTextInput) page.getElementByName("_.tapReportFilePath");
         Assert.assertEquals(TestMessage.getValue("taptestresult.file.path"),tapFilePathInput.getValueAttribute());
@@ -110,7 +108,6 @@ public class RunMATLABTestsArtifactsIT {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput pdfChkbx = page.getElementByName("pdfReportArtifact");
         pdfChkbx.setChecked(true);
-        Thread.sleep(2000);
 
         HtmlTextInput PDFFilePathInput=(HtmlTextInput) page.getElementByName("_.pdfReportFilePath");
         Assert.assertEquals(TestMessage.getValue("pdftestreport.file.path"),PDFFilePathInput.getValueAttribute());
@@ -125,7 +122,6 @@ public class RunMATLABTestsArtifactsIT {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput coberturaChkBx = page.getElementByName("coberturaArtifact");
         coberturaChkBx.setChecked(true);
-        Thread.sleep(2000);
 
         HtmlTextInput coberturaCodeCoverageFileInput=(HtmlTextInput) page.getElementByName("_.coberturaReportFilePath");
         Assert.assertEquals(TestMessage.getValue("cobertura.file.path"),coberturaCodeCoverageFileInput.getValueAttribute());
@@ -141,7 +137,6 @@ public class RunMATLABTestsArtifactsIT {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput modelCoverageChkBx = page.getElementByName("modelCoverageArtifact");
         modelCoverageChkBx.setChecked(true);
-        Thread.sleep(2000);
 
         HtmlTextInput coberturaModelCoverageFileInput=(HtmlTextInput) page.getElementByName("_.modelCoverageFilePath");
         Assert.assertEquals(TestMessage.getValue("modelcoverage.file.path"),coberturaModelCoverageFileInput.getValueAttribute());
@@ -157,7 +152,6 @@ public class RunMATLABTestsArtifactsIT {
         HtmlPage page = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput stmResultsChkBx = page.getElementByName("stmResultsArtifact");
         stmResultsChkBx.setChecked(true);
-        Thread.sleep(2000);
 
         HtmlTextInput STMRFilePathInput=(HtmlTextInput) page.getElementByName("_.stmResultsFilePath");
         Assert.assertEquals(TestMessage.getValue("stmresults.file.path"),STMRFilePathInput.getValueAttribute());
@@ -208,7 +202,7 @@ public class RunMATLABTestsArtifactsIT {
                 "            {\n" +
                 "                unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
                 "              runMATLABTests(sourceFolder:['src'], testResultsTAP: 'test-results/results.tap',\n" +
-                "                             testResultsPDF: 'test-results/results.pdf'\n" +
+                "                             testResultsPDF: 'test-results/results.pdf',\n" +
                 "                             testResultsJUnit: 'test-results/results.xml',\n" +
                 "                             testResultsSimulinkTest: 'test-results/results.mldatx',\n" +
                 "                             codeCoverageCobertura: 'code-coverage/coverage.xml',\n" +

@@ -110,7 +110,7 @@ public class GlobalToolIT {
         HtmlPage configurePage = jenkins.createWebClient().goTo("job/test0/configure");
         HtmlCheckBoxInput matlabVer = configurePage.getElementByName("com-mathworks-ci-UseMatlabVersionBuildWrapper");
         matlabVer.setChecked(true);
-        Thread.sleep(2000);
+
         HtmlSelect matlabOptions = (HtmlSelect) configurePage.getByXPath("//select[contains(@class, \"dropdownList\")]").get(1);
         assertEquals(matlabOptions.getOption(0).getValueAttribute(),"MATLAB_PATH_1");
         assertEquals(matlabOptions.getOption(1).getValueAttribute(),"MATLAB_PATH_2");
