@@ -6,7 +6,7 @@ classdef TestResultsViewPlugin < matlab.unittest.plugins.TestRunnerPlugin
             % Checkout MATLAB Test license
             license('checkout', 'matlab_test');
 
-            testDetails = {};
+            testDetails = struct([]);
             for idx = 1:numel(pluginData.TestResult)
                 testDetails(idx).TestResult = pluginData.TestResult(idx);
                 testDetails(idx).BaseFolder = pluginData.TestSuite(idx).BaseFolder;
@@ -21,10 +21,14 @@ classdef TestResultsViewPlugin < matlab.unittest.plugins.TestRunnerPlugin
             end
             testResults{end+1} = testDetails;
             JsonTestResults = jsonencode(testResults, "PrettyPrint", true);
-            
-            fID = fopen(testArtifactFile, "w");
-            fprintf(fID, '%s', JsonTestResults);
-            fclose(fID);
+
+            [fID, msg] = fopen(testArtifactFile, "w");
+            if fID == -1
+                warning("ciplugins:jenkins:TestResultsViewPlugin:UnableToOpenFile","Could not open a file for Jenkins tests result table due to: %s", msg);
+            else
+                closeFile = onCleanup(@()fclose(fID));
+                fprintf(fID, '%s', JsonTestResults);
+            end
 
             % Invoke the superclass method
             reportFinalizedSuite@matlab.unittest.plugins.TestRunnerPlugin(plugin, pluginData);

@@ -1,41 +1,39 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:st="jelly:stapler" xmlns:c="/charts">
     <l:layout title="MATLAB Test Results">
-        <l:side-panel>
-            <st:include page="sidepanel.jelly" it="${it.build}" optional="true" />
-        </l:side-panel>
-
-        <l:app-bar title="MATLAB Test Results">
-            <t:help href="https://github.com/jenkinsci/matlab-plugin/blob/master/CONFIGDOC.md" tooltip="Plugin Configuration Guide" />
-        </l:app-bar>
+        <st:include page="sidepanel.jelly" it="${it.build}" optional="true" />
         
         <l:main-panel>
+            <l:app-bar title="MATLAB Test Results">
+                <t:help href="https://github.com/jenkinsci/matlab-plugin/blob/master/CONFIGDOC.md" tooltip="Plugin Configuration Guide" />
+            </l:app-bar>
+
             <button id="TOTAL" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Total tests">
-                <p>${it.totalCount}<br></br><br></br>Total Tests</p>
+                <p>${it.totalCount}<br /><br />Total Tests</p>
             </button>
 
             <button id="PASSED" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Passed tests">
                 <p>${it.passedCount}<br>
                     <l:icon class="symbol-checkmark-circle-outline plugin-ionicons-api icon-lg jenkins-!-success-color"/>
-                </br><br></br>Passed</p>
+                </br><br />Passed</p>
             </button>
 
             <button id="FAILED" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Failed tests">
                 <p>${it.failedCount}<br>
                     <l:icon class="symbol-close-circle-outline plugin-ionicons-api icon-lg jenkins-!-error-color"/>
-                </br><br></br>Failed</p>
+                </br><br />Failed</p>
             </button>
 
             <button id="INCOMPLETE" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Incomplete tests">
                 <p>${it.incompleteCount}<br>
                     <l:icon class="symbol-alert-circle-outline plugin-ionicons-api icon-lg jenkins-!-warning-color"/>
-                </br><br></br>Incomplete</p>
+                </br><br />Incomplete</p>
             </button>
 
             <button id="NOT_RUN" onclick="showTests(id)" class="jenkins-button jenkins-!-margin-4 jenkins-!-padding-0" style="display: inline; width:8em;" tooltip="Tests that have not run">
                 <p>${it.notRunCount}<br>
                     <l:icon class="symbol-remove-circle-outline plugin-ionicons-api icon-lg"/>
-                </br><br></br>Not Run</p>
+                </br><br />Not Run</p>
             </button>
 
             <j:forEach var="testSession" items="${it.testResults}" varStatus="status">
@@ -124,7 +122,7 @@
                                                                     <l:icon class="symbol-remove plugin-ionicons-api icon-sm" tooltip="Hide diagnostics" />
                                                                 </a>
                                                                 <div id="stack-${matlabTestCase.name}-${diagnostic.id}" style="display: none; white-space: pre-line;">
-                                                                    <br></br><pre>${diagnostic.report}</pre>
+                                                                    <br /><pre>${diagnostic.report}</pre>
                                                                 </div>
                                                             </div>
                                                         </j:forEach>

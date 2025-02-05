@@ -77,7 +77,7 @@ public class TestResultsViewAction implements RunAction2 {
             this.passedCount = 0;
             this.failedCount = 0;
             this.incompleteCount = 0;
-            this.notRunCount = totalCount;
+            this.notRunCount = 0;
 
             JSONArray testArtifact = (JSONArray) new JSONParser().parse(reader);
             Iterator<JSONArray> testArtifactIterator = testArtifact.iterator();
@@ -130,11 +130,11 @@ public class TestResultsViewAction implements RunAction2 {
         }
 
         // Calculate the relative path
-        Path path1 = Paths.get(baseFolder.toURI());
-        Path path2 = Paths.get(this.workspace.toURI());
-        Path relPath = path2.relativize(path1);
+        Path baseFolderPath = Paths.get(baseFolder.toURI());
+        Path workspacePath = Paths.get(this.workspace.toURI());
+        Path relativePath = workspacePath.relativize(baseFolderPath);
 
-        matlabTestFile.setPath(this.workspace.getName() + File.separator + relPath.toString());
+        matlabTestFile.setPath(this.workspace.getName() + File.separator + relativePath.toString());
 
         MatlabTestCase matlabTestCase = new MatlabTestCase(matlabTestCaseName);
             matlabTestCase.setDuration(new BigDecimal(matlabTestCaseResult.get("Duration").toString()));

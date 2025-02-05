@@ -1,24 +1,26 @@
 <?jelly escape-by-default='true'?>
 <j:jelly xmlns:j="jelly:core" xmlns:d="jelly:define" xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form" xmlns:i="jelly:fmt">
-  <t:summary icon="document.png">
-    <p><a href="${it.urlName}">MATLAB Test Results</a></p>
-    <p>
-        <b>
-            Tests run: ${it.totalCount}
-        </b>
-    </p>
-    <br></br>
-    <br>
-        <b>Passed: <font class="jenkins-!-success-color">${it.passedCount}</font></b>
-    </br>
-    <br>
-        <b>Failed: <font class="jenkins-!-error-color">${it.failedCount}</font></b>
-    </br>
-    <br>
-        <b>Incomplete: <font class="jenkins-!-warning-color">${it.incompleteCount}</font></b>
-    </br>
-    <br>
-        <b>Not Run: ${it.notRunCount}</b>
-    </br>
-  </t:summary>
+    <t:summary icon="document.png">
+        <div id="${it.urlName}">
+            <p><a href="${it.urlName}">MATLAB Test Results</a></p>
+            <p>
+                <b>
+                    Tests run: ${it.totalCount}
+                </b>
+            </p>
+            <br />
+            <br>
+                <b>Passed: <font class="jenkins-!-success-color">${it.passedCount}</font></b>
+            </br>
+            <br>
+                <b>Failed: <font class="jenkins-!-error-color">${it.failedCount}</font></b>
+            </br>
+            <br>
+                <b>Incomplete: <font class="jenkins-!-warning-color">${it.incompleteCount}</font></b>
+            </br>
+            <br>
+                <b>Not Run: ${it.notRunCount}</b>
+            </br>
+        </div>
+    </t:summary>
 </j:jelly>
