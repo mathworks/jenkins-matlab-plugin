@@ -23,7 +23,7 @@ jobs:
         uses: matlab-actions/setup-matlab@v2
 
       - name: Running tests
-        run: mvn verify
+        run: mvn --batch-mode verify
         env:
           MATLAB_ROOT: ${{ steps.setup-matlab.outputs.matlabroot }}
           MLM_LICENSE_TOKEN:  ${{ secrets.MLM_LICENSE_TOKEN}}
