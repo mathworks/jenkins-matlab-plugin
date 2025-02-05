@@ -211,7 +211,11 @@ public class RunMATLABTestsArtifactsIT {
                 "        }\n" +
                 "    }\n" +
                 "}";
-        WorkflowRun build = getPipelineBuild(script);
+
+        WorkflowJob project = jenkins.createProject(WorkflowJob.class);
+        project.setDefinition(new CpsFlowDefinition(script,true));
+        WorkflowRun build = project.scheduleBuild2(0).get();
+
         jenkins.assertBuildStatus(Result.SUCCESS,build);
         jenkins.assertLogContains("test-results/results.mldatx", build);
         jenkins.assertLogContains("model-coverage/coverage.xml", build);
@@ -223,7 +227,7 @@ public class RunMATLABTestsArtifactsIT {
     }
 
     @Test
-    public void verifyCOverageReportDoesNotIncludeOtherSourceFolder() throws Exception {
+    public void verifyCoverageReportDoesNotIncludeOtherSourceFolder() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
