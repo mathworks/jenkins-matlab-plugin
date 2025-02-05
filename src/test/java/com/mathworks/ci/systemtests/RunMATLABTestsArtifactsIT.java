@@ -1,4 +1,4 @@
-package com.mathworks.ci.systemTests;
+package com.mathworks.ci.systemtests;
 
 import com.jcabi.xml.XML;
 import com.jcabi.xml.XMLDocument;

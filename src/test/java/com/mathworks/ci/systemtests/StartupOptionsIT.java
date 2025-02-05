@@ -1,4 +1,4 @@
-package com.mathworks.ci.systemTests;
+package com.mathworks.ci.systemtests;
 
 import com.mathworks.ci.MatlabBuildWrapperContent;
 import com.mathworks.ci.MatlabInstallationAxis;

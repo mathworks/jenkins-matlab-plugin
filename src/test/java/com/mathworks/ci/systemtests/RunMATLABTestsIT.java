@@ -1,4 +1,4 @@
-package com.mathworks.ci.systemTests;
+package com.mathworks.ci.systemtests;
 
 import com.mathworks.ci.*;
 import com.mathworks.ci.freestyle.RunMatlabTestsBuilder;
@@ -24,7 +24,6 @@ import org.junit.*;
 import org.jvnet.hudson.test.ExtractResourceSCM;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -316,7 +315,7 @@ public class RunMATLABTestsIT {
         jenkins.assertLogNotContains("Running squareTest", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
-    
+
     @Test
     public void verifyCmdOptions() throws Exception {
         String script = "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}";

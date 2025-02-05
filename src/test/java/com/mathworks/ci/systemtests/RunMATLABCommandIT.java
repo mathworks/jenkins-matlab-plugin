@@ -1,4 +1,4 @@
-package com.mathworks.ci.systemTests;
+package com.mathworks.ci.systemtests;
 
 import com.mathworks.ci.*;
 import com.mathworks.ci.freestyle.RunMatlabCommandBuilder;
@@ -22,7 +22,6 @@ import org.jenkinsci.plugins.workflow.job.WorkflowRun;
 import org.junit.*;
 import org.jvnet.hudson.test.JenkinsRule;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
