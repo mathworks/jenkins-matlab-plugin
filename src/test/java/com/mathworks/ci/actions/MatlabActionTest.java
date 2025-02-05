@@ -1,4 +1,4 @@
-package unit.com.mathworks.ci.actions;
+package com.mathworks.ci.actions;
 
 /**
  * Copyright 2024, The MathWorks Inc.
