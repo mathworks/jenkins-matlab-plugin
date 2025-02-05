@@ -266,6 +266,14 @@
 							</excludes>
 						</configuration>
 					</execution>
+					<!-- Add 'verify' goal. This way GA job also fails if there are any integration test failures-->
+					<execution>
+						<id>failsafe-verify</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>verify</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
