@@ -246,11 +246,4 @@ public class RunMATLABTestsArtifactsIT {
         jenkins.assertLogContains("testSquare", build);
         jenkins.assertBuildStatus(Result.FAILURE,build);
     }
-
-    private WorkflowRun getPipelineBuild(String script) throws Exception{
-        WorkflowJob project = jenkins.createProject(WorkflowJob.class);
-        project.setDefinition(new CpsFlowDefinition(script,true));
-        return project.scheduleBuild2(0).get();
-    }
-
 }
