@@ -304,7 +304,7 @@ public class RunMATLABTestsIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "              unzip '/C:/Users/vkayithi/jenkins/mpm_dev_main/jenkins-matlab-plugin/src/test/resources/TestData/FilterTestData.zip' \n" +
+                               addTestData() + "\n" +
                 "              runMATLABTests(sourceFolder:['src'], selectByFolder: ['test/TestMultiply', 'test/TestSquare'], selectByTag: 'TestTag')"+
                 "            }\n" +
                 "        }\n" +
@@ -316,11 +316,7 @@ public class RunMATLABTestsIT {
         jenkins.assertLogNotContains("Running squareTest", build);
         jenkins.assertBuildStatus(Result.SUCCESS,build);
     }
-
-
-
-
-
+    
     @Test
     public void verifyCmdOptions() throws Exception {
         String script = "node {runMATLABTests(testResultsPDF:'myresult/result.pdf')}";
