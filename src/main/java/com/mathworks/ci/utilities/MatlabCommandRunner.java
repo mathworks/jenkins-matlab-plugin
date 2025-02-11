@@ -1,7 +1,7 @@
 package com.mathworks.ci.utilities;
 
 /**
- * Copyright 2024, The MathWorks Inc.
+ * Copyright 2024-25, The MathWorks Inc.
  */
 
 import java.io.IOException;
@@ -35,21 +35,27 @@ public class MatlabCommandRunner {
         this.additionalEnvVars = new HashMap<String, String>();
 
         FilePath workspace = params.getWorkspace();
-
+        if (workspace == null) {
+            throw new IllegalArgumentException("Workspace cannot be null");
+        }
+    
         // Handle case where workspace doesn't exist
         if (!workspace.exists()) {
             workspace.mkdirs();
         }
-
+    
         // Create MATLAB folder
         FilePath tmpRoot = WorkspaceList.tempDir(workspace);
         if (tmpRoot == null) {
             throw new IOException("Unable to create temporary directory in workspace.");
         }
         tmpRoot.mkdirs();
-
+    
         // Create temp folder
         this.tempFolder = tmpRoot.createTempDir("matlab", null);
+        if (this.tempFolder == null) {
+            throw new IOException("Failed to create a temporary MATLAB directory");
+        }
     }
 
     /**

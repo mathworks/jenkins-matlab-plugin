@@ -1,7 +1,7 @@
 package com.mathworks.ci.actions;
 
 /**
- * Copyright 2024, The MathWorks Inc.
+ * Copyright 2024-25, The MathWorks Inc.
  */
 
 import java.io.IOException;
@@ -10,8 +10,6 @@ import com.mathworks.ci.BuildConsoleAnnotator;
 import com.mathworks.ci.MatlabExecutionException;
 import com.mathworks.ci.parameters.BuildActionParameters;
 import com.mathworks.ci.utilities.MatlabCommandRunner;
-
-import hudson.model.Run;
 
 public class RunMatlabBuildAction extends MatlabAction {
     private BuildActionParameters params;
@@ -60,9 +58,7 @@ public class RunMatlabBuildAction extends MatlabAction {
             throw (e);
         } finally {
             annotator.forceEol();
-
-            Run<?, ?> build = this.params.getBuild();
-            super.teardownAction(build);
+            super.teardownAction(params);
         }
     }
 }

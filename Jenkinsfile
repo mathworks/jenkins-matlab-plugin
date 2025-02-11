@@ -1,1 +1,1 @@
-buildPlugin()
+buildPlugin(jdkVersions: [11])
