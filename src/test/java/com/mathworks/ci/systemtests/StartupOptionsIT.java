@@ -37,9 +37,6 @@ public class StartupOptionsIT {
     volatile FreeStyleBuild build;
 
     @Rule
-    public Timeout timeout = Timeout.seconds(0);
-
-    @Rule
     public JenkinsRule jenkins = new JenkinsRule();
 
     @BeforeClass
