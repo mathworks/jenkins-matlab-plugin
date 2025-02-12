@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>matlab</artifactId>
-	<version>${revision}${changelist}</version>
+	<version>${changelist}</version>
 	<packaging>hpi</packaging>
 
 	<name>MATLAB Plugin</name>
@@ -53,8 +53,7 @@
 	</scm>
 
 	<properties>
-		<revision>2.16.1</revision>
-		<changelist>-SNAPSHOT</changelist>
+		<changelist>999999-SNAPSHOT</changelist>
 		<gitHubRepo>jenkinsci/matlab-plugin</gitHubRepo>
 		<!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
 		<jenkins.baseline>2.387</jenkins.baseline>
