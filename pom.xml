@@ -9,7 +9,7 @@
 	</parent>
 
 	<artifactId>matlab</artifactId>
-	<version> 2.16.1-SNAPSHOT</version>
+	<version>${changelist}</version>
 	<packaging>hpi</packaging>
 
 	<name>MATLAB Plugin</name>
@@ -45,19 +45,19 @@
 	</pluginRepositories>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/jenkinsci/matlab-plugin.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/jenkinsci/matlab-plugin.git</developerConnection>
-		<url>https://github.com/jenkinsci/matlab-plugin</url>
-		<tag>HEAD</tag>
+		<connection>scm:git:ssh://github.com/${gitHubRepo}.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/${gitHubRepo}.git</developerConnection>
+		<url>https://github.com/${gitHubRepo}</url>
+		<tag>${scmTag}</tag>
 	</scm>
 
-    <properties>
-        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-        <jenkins.baseline>2.387</jenkins.baseline>
-        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
-    </properties>
+	<properties>
+		<changelist>999999-SNAPSHOT</changelist>
+		<gitHubRepo>jenkinsci/matlab-plugin</gitHubRepo>
+		<!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+		<jenkins.baseline>2.387</jenkins.baseline>
+		<jenkins.version>${jenkins.baseline}.3</jenkins.version>
+	</properties>
 
 	<dependencyManagement>
 		<dependencies>
