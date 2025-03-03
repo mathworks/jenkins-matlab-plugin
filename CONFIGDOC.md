@@ -112,12 +112,14 @@ To generate test and coverage artifacts, select options in the **Generate Test A
 
 ![run_matlab_tests_artifacts](https://github.com/user-attachments/assets/d38bb240-5a24-4313-9585-8692c82525f5)
 
-The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
- 
 Artifacts that the plugin generates are subject to these restrictions: 
 * Producing a PDF test report on macOS platforms is supported in MATLAB R2020b and later.
 * Exporting Simulink Test&trade; Manager results requires a Simulink Test license and is supported in MATLAB R2019a and later.
 * Collecting model coverage results requires a Simulink Coverage&trade; license and is supported in MATLAB R2018b and later.
+
+The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
+
+You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [Access Visualized Test Results](#access-visualized-test-results).
 
 #### Run MATLAB Command
 The **Run MATLAB Command** build step lets you run MATLAB scripts, functions, and statements. You can use this build step to customize your test run or execute any MATLAB commands.
@@ -365,6 +367,8 @@ node {
                    sourceFolder: ['source']) 
 }
 ``` 
+
+You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [Access Visualized Test Results](#access-visualized-test-results).
 
 ### Use the `runMATLABCommand` Step
 Use the `runMATLABCommand` step in your pipeline to run MATLAB scripts, functions, and statements. You can use this step to customize your test run or execute any MATLAB commands. The step requires an input and also accepts an optional input.
