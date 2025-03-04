@@ -496,11 +496,19 @@ Starting in R2024a, if you run a MATLAB build using the **Run MATLAB Build** or 
 Starting in R2024b, if you have a MATLAB Test&trade; license, you can view your MATLAB and Simulink test results in your Jenkins interface by taking any of these actions:
 - Run tests using the **Run MATLAB Tests** or `runMATLABTests` step.
 - Run tests with a [`matlab.buildtool.tasks.TestTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.testtask-class.html) instance using the **Run MATLAB Build** or `runMATLABBuild` step. 
-- Run tests with a default test runner using the **Run MATLAB Command** or `runMATLABCommand` step.
+- Run tests with a default test runner using the **Run MATLAB Command** or `runMATLABCommand` step. A default test runner is equivalent to the runner that the testing framework configures by default when you call the [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) function.
 
-After your tests run, the Jenkins build summary page displays the total number of tests that run as well as the number of passed, failed, and incomplete tests. You can click the **MATLAB Test Results** link on the page to access the table of test results. The table provides information about each test that ran.
+After your tests run, the Jenkins build summary page displays the number of tests that ran as well as the number of passed, failed, and incomplete tests. You can click the **MATLAB Test Results** link on the page to access the table of test results. The table provides information about each test that ran.
 
-![Table of MATLAB test results including six passing tests from three test files. The tests within the first test file are visiable after clicking the expand button. Each test row includes a test name, its diagnostics, and duration.](https://github.com/user-attachments/assets/28224b5e-8558-4bd5-aef4-b8c8d61c22cb)
+Each row of the table represents the test file.
+All tests for a single file are shown under that file.
+The files with same name and different parent directories are shown separately and you can hover over the file name to see its path.
+The table in table format allows easy management of test cases for a test file
+You see the logs in-place for a failed/incomplete. If there are more than failures within a test case, say multiple verification failures, each verification failure will have its own dropdown and log box.
+Each of the passed, failed, etc. buttons act as filters to respective type of tests
+
+
+![Table of MATLAB test results including six passing tests from three test files. The tests within the first test file are visiable after clicking the expand button. The row corresponding to each test includes the test procedure name, its diagnostics, and duration.](https://github.com/user-attachments/assets/28224b5e-8558-4bd5-aef4-b8c8d61c22cb)
 
 ## Register MATLAB as Jenkins Tool
 When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins invokes by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
