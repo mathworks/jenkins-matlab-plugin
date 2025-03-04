@@ -20,9 +20,9 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Use the `runMATLABTests` Step](#use-the-runmatlabtests-step)
    -  [Use the `runMATLABCommand` Step](#use-the-runmatlabcommand-step) 
    -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
--  [Access Visualized MATLAB Build and Test Results](#access-visualized-matlab-build-and-test-results)
-   -  [Access Visualized Build Results](#access-visualized-build-results)
-   -  [Access Visualized Test Results](#access-visualized-test-results)  
+-  [View MATLAB Build and Test Results](#view-matlab-build-and-test-results)
+   -  [View Build Results](#view-build-results)
+   -  [View Test Results](#view-test-results)  
 -  [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool)
    -  [Register Preinstalled MATLAB Version](#register-preinstalled-matlab-version)
    -  [Automatically Install MATLAB Using MATLAB Package Manager](#automatically-install-matlab-using-matlab-package-manager)
@@ -81,7 +81,7 @@ You can specify build options for your MATLAB build by first selecting **Build o
 
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
-You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [Access Visualized Build Results](#access-visualized-build-results).
+You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View Build Results](#view-build-results).
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -119,7 +119,7 @@ Artifacts that the plugin generates are subject to these restrictions:
 
 The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
 
-You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [Access Visualized Test Results](#access-visualized-test-results).
+You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [View Test Results](#view-test-results).
 
 #### Run MATLAB Command
 The **Run MATLAB Command** build step lets you run MATLAB scripts, functions, and statements. You can use this build step to customize your test run or execute any MATLAB commands.
@@ -286,7 +286,7 @@ node {
 }
 ``` 
 
-You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [Access Visualized Build Results](#access-visualized-build-results).
+You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View Build Results](#view-build-results).
 
 ### Use the `runMATLABTests` Step
 Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -368,7 +368,7 @@ node {
 }
 ``` 
 
-You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [Access Visualized Test Results](#access-visualized-test-results).
+You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [View Test Results](#view-test-results).
 
 ### Use the `runMATLABCommand` Step
 Use the `runMATLABCommand` step in your pipeline to run MATLAB scripts, functions, and statements. You can use this step to customize your test run or execute any MATLAB commands. The step requires an input and also accepts an optional input.
@@ -484,19 +484,19 @@ pipeline {
 }
 ```
 
-## Access Visualized MATLAB Build and Test Results
+## View MATLAB Build and Test Results
 You can access the results of running a MATLAB build and the results of running MATLAB and Simulink tests directly from your Jenkins interface. 
 
-### Access Visualized Build Results
+### View Build Results
 Starting in R2024a, if you run a MATLAB build using the **Run MATLAB Build** or `runMATLABBuild` step, you can view the MATLAB build results in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. You can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Click a task name in the table to go to the relevant build log information on the **Console Output** page.
 
 ![Table of MATLAB build results including three tasks. Each table row includes a clickable task name, its status, description, and duration.](https://github.com/user-attachments/assets/97fd7dc5-b00f-45bc-97a8-990ce26123d4)
 
-### Access Visualized Test Results
+### View Test Results
 Starting in R2024b, if you have a MATLAB Test&trade; license, you can view your MATLAB and Simulink test results in your Jenkins interface by taking any of these actions:
 - Run tests using the **Run MATLAB Tests** or `runMATLABTests` step.
-- Run tests using a [`matlab.buildtool.tasks.TestTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.testtask-class.html) instance through the **Run MATLAB Build** or `runMATLABBuild` step. 
-- Run tests using a default test runner through the **Run MATLAB Command** or `runMATLABCommand` step.
+- Run tests with a [`matlab.buildtool.tasks.TestTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.testtask-class.html) instance using the **Run MATLAB Build** or `runMATLABBuild` step. 
+- Run tests with a default test runner using the **Run MATLAB Command** or `runMATLABCommand` step.
 
 ## Register MATLAB as Jenkins Tool
 When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins invokes by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
