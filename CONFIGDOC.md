@@ -498,6 +498,10 @@ Starting in R2024b, if you have a MATLAB Test&trade; license, you can view your 
 - Run tests with a [`matlab.buildtool.tasks.TestTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.testtask-class.html) instance using the **Run MATLAB Build** or `runMATLABBuild` step. 
 - Run tests with a default test runner using the **Run MATLAB Command** or `runMATLABCommand` step.
 
+After your tests run, the Jenkins build summary page displays the total number of tests that run as well as the number of passed, failed, and incomplete tests. You can click the **MATLAB Test Results** link on the page to access the table of test results. The table provides information about each test that ran.
+
+![Table of MATLAB test results including six passing tests from three test files. The tests within the first test file are visiable after clicking the expand button. Each test row includes a test name, its diagnostics, and duration.](https://github.com/user-attachments/assets/28224b5e-8558-4bd5-aef4-b8c8d61c22cb)
+
 ## Register MATLAB as Jenkins Tool
 When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins invokes by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
 
