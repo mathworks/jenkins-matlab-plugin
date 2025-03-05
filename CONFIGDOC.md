@@ -81,7 +81,7 @@ You can specify build options for your MATLAB build by first selecting **Build o
 
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
-You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View Build Results](#view-build-results).
+You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View MATLAB Build and Test Results](#view-matlab-build-and-test-results).
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -118,8 +118,6 @@ Artifacts that the plugin generates are subject to these restrictions:
 * Collecting model coverage results requires a Simulink Coverage&trade; license and is supported in MATLAB R2018b and later.
 
 The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
-
-You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [View Test Results](#view-test-results).
 
 #### Run MATLAB Command
 The **Run MATLAB Command** build step lets you run MATLAB scripts, functions, and statements. You can use this build step to customize your test run or execute any MATLAB commands.
@@ -286,7 +284,7 @@ node {
 }
 ``` 
 
-You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View Build Results](#view-build-results).
+You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View MATLAB Build and Test Results](#view-matlab-build-and-test-results).
 
 ### Use the `runMATLABTests` Step
 Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -367,8 +365,6 @@ node {
                    sourceFolder: ['source']) 
 }
 ``` 
-
-You can access the results of running MATLAB and Simulink tests directly from your Jenkins interface. For more information, see [View Test Results](#view-test-results).
 
 ### Use the `runMATLABCommand` Step
 Use the `runMATLABCommand` step in your pipeline to run MATLAB scripts, functions, and statements. You can use this step to customize your test run or execute any MATLAB commands. The step requires an input and also accepts an optional input.
@@ -494,7 +490,6 @@ Starting in R2024a, if you run a MATLAB build using the **Run MATLAB Build** or 
 
 ### View Test Results
 Starting in R2024b, if you have a MATLAB Test&trade; license, you can view your MATLAB and Simulink test results in your Jenkins interface by taking any of these actions:
-- Run tests using the **Run MATLAB Tests** or `runMATLABTests` step.
 - Run tests with a [`matlab.buildtool.tasks.TestTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.testtask-class.html) instance using the **Run MATLAB Build** or `runMATLABBuild` step. 
 - Run tests with a default test runner using the **Run MATLAB Command** or `runMATLABCommand` step. A default test runner is equivalent to the runner that the testing framework configures by default when you call the [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) function.
 
