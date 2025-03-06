@@ -20,6 +20,9 @@ When you define an automated pipeline of tasks in Jenkins&trade;, whether in the
    -  [Use the `runMATLABTests` Step](#use-the-runmatlabtests-step)
    -  [Use the `runMATLABCommand` Step](#use-the-runmatlabcommand-step) 
    -  [Use MATLAB in Matrix Build](#use-matlab-in-matrix-build)
+-  [View MATLAB Build and Test Results](#view-matlab-build-and-test-results)
+   -  [View Build Results](#view-build-results)
+   -  [View Test Results](#view-test-results)  
 -  [Register MATLAB as Jenkins Tool](#register-matlab-as-jenkins-tool)
    -  [Register Preinstalled MATLAB Version](#register-preinstalled-matlab-version)
    -  [Automatically Install MATLAB Using MATLAB Package Manager](#automatically-install-matlab-using-matlab-package-manager)
@@ -78,9 +81,7 @@ You can specify build options for your MATLAB build by first selecting **Build o
 
 MATLAB exits with exit code 0 if the specified tasks run without error. Otherwise, MATLAB terminates with a nonzero exit code, which causes the step to fail.
 
-Starting in R2024a, you can view the results of running a MATLAB build in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. You can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Click a task name in the table to go to the relevant build log information on the **Console Output** page.
-
-![Table of MATLAB build results including three tasks. Each table row includes a clickable task name, its status, description, and duration.](https://github.com/user-attachments/assets/97fd7dc5-b00f-45bc-97a8-990ce26123d4)
+You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View MATLAB Build and Test Results](#view-matlab-build-and-test-results).
 
 #### Run MATLAB Tests
 The **Run MATLAB Tests** build step lets you run MATLAB and Simulink tests and generate artifacts, such as test results in JUnit-style XML format and code coverage results in Cobertura XML format. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your build does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -111,12 +112,12 @@ To generate test and coverage artifacts, select options in the **Generate Test A
 
 ![run_matlab_tests_artifacts](https://github.com/user-attachments/assets/d38bb240-5a24-4313-9585-8692c82525f5)
 
-The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
- 
 Artifacts that the plugin generates are subject to these restrictions: 
 * Producing a PDF test report on macOS platforms is supported in MATLAB R2020b and later.
 * Exporting Simulink Test&trade; Manager results requires a Simulink Test license and is supported in MATLAB R2019a and later.
 * Collecting model coverage results requires a Simulink Coverage&trade; license and is supported in MATLAB R2018b and later.
+
+The **Run MATLAB Tests** build step produces a MATLAB script file and uses it to run the tests and generate the artifacts. The plugin writes the contents of this file to the build log. You can review the build log on the **Console Output** page to understand the testing workflow.
 
 #### Run MATLAB Command
 The **Run MATLAB Command** build step lets you run MATLAB scripts, functions, and statements. You can use this build step to customize your test run or execute any MATLAB commands.
@@ -283,7 +284,7 @@ node {
 }
 ``` 
 
-Starting in R2024a, you can view the results of running a MATLAB build in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. You can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Click a task name in the table to go to the relevant build log information on the **Console Output** page.
+You can access the results of running a MATLAB build directly from your Jenkins interface. For more information, see [View MATLAB Build and Test Results](#view-matlab-build-and-test-results).
 
 ### Use the `runMATLABTests` Step
 Use the `runMATLABTests` step in your pipeline to run MATLAB and Simulink tests and generate test and coverage artifacts. By default, the plugin includes any test files in your [MATLAB project](https://www.mathworks.com/help/matlab/projects.html) that have a `Test` label. If your pipeline does not use a MATLAB project, or if it uses a MATLAB release before R2019a, then the plugin includes all tests in the root of your repository and in any of its subfolders.
@@ -442,7 +443,7 @@ pipeline {
 }
 ```
 
-You can also invoke MATLAB as a Jenkins tool when you perform a matrix build in your pipeline project. This example uses three MATLAB versions (specified in an `axis` block using their tool names) to run a set of MATLAB commands and tests.  For more information about using tools in pipeline projects, see [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
+You can also invoke MATLAB as a Jenkins tool when you perform a matrix build in your pipeline project. This example uses three MATLAB versions (specified in an `axis` block using their tool names) to run a set of MATLAB commands and tests. For more information about using tools in pipeline projects, see [Use MATLAB as a Tool in Pipeline Project](#use-matlab-as-a-tool-in-pipeline-project).
 
 ```groovy
 // Declarative Pipeline
@@ -478,6 +479,29 @@ pipeline {
     }
 }
 ```
+
+## View MATLAB Build and Test Results
+You can access the results of running a MATLAB build and the results of running MATLAB and Simulink tests directly from your Jenkins interface. 
+
+### View Build Results
+Starting in R2024a, if you run a MATLAB build using the **Run MATLAB Build** or `runMATLABBuild` step, you can view the MATLAB build results in your Jenkins interface. After your build runs, the Jenkins build summary page displays the number of tasks that ran, failed, and were skipped. You can click the **MATLAB Build Results** link on the page to access the table of task results. The table provides information about each task that was part of the MATLAB build. Click a task name in the table to go to the relevant build log information on the **Console Output** page.
+
+![Table of MATLAB build results including three tasks. Each table row includes a clickable task name, its status, description, and duration.](https://github.com/user-attachments/assets/97fd7dc5-b00f-45bc-97a8-990ce26123d4)
+
+### View Test Results
+Starting in R2024b, if you have a MATLAB Test&trade; license, you can view your MATLAB and Simulink test results in your Jenkins interface by taking any of these actions:
+- Run tests with a [`matlab.buildtool.tasks.TestTask`](https://www.mathworks.com/help/matlab/ref/matlab.buildtool.tasks.testtask-class.html) instance using the **Run MATLAB Build** or `runMATLABBuild` step. 
+- Run tests with a default test runner using the **Run MATLAB Command** or `runMATLABCommand` step. A default test runner is equivalent to the runner that the testing framework configures by default when you call the [`runtests`](https://www.mathworks.com/help/matlab/ref/runtests.html) function.
+
+After your build runs, the Jenkins build summary page displays the number of tests in the test suite, as well as the number of tests that passed, failed, were incomplete (due to assumption failure), and did not run (due to fatal assertion failure). You can click the **MATLAB Test Results** link on the page to access the table of test results. The status buttons above the table provide a summary of the test results. By default, the table includes a row for each file that defines a test in the test suite. Each table row displays the status of a test file, its name, and the time it took to run. You can point to a filename in the table to identify its path within your project.
+
+![Table of MATLAB test results including one test file. The row in the table displays an Incomplete status, filename, expander, and duration.](https://github.com/user-attachments/assets/1764d0f2-d4d9-4b93-bc82-0158a011c1fc)
+
+You can interact with the table of test results. To view the results of tests within each test file, click the expander to the right of the filename. The test results appear in a table under the filename. The row corresponding to each test includes the test status (Passed, Failed, Incomplete, or Not Run), test procedure name, test diagnostics, and duration. 
+
+![Table of MATLAB test results including three passed tests and one incomplete test from a single test files. The tests within the test file appear after clicking the expander to the right of the filename. The row corresponding to each test includes the test status, test procedure name, diagnostics, and duration.](https://github.com/user-attachments/assets/a275caa7-a297-4510-a151-b7f2dee9e3c9)
+
+You can use the status filters above the **MATLAB Test Results** table to customize your view. For example, to focus on any incomplete tests, select the Incomplete status filter.
 
 ## Register MATLAB as Jenkins Tool
 When you run MATLAB code and Simulink models as part of your automated pipeline of tasks, Jenkins invokes MATLAB as an external program. When you configure your project, you can explicitly specify the MATLAB version that Jenkins invokes by providing the path to the preferred MATLAB root folder. For example, you can use an `environment` block in your `Jenkinsfile` to specify a MATLAB root folder for your pipeline project.
