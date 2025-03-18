@@ -79,7 +79,7 @@ public class RunMatlabBuildIT {
     public void verifyBuildFailureWhenMatlabBuildFails() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         this.runBuilder.setTasks("invalid_task");
 
@@ -97,7 +97,7 @@ public class RunMatlabBuildIT {
     public void verifyBuildPassesWhenMatlabBuildPasses() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         this.runBuilder.setTasks("check");
         project.getBuildersList().add(this.runBuilder);
@@ -111,7 +111,7 @@ public class RunMatlabBuildIT {
     public void verifyDefaultTaskForNoTaskInput() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         project.getBuildersList().add(this.runBuilder);
         FreeStyleBuild build = project.scheduleBuild2(0).get();
@@ -126,7 +126,7 @@ public class RunMatlabBuildIT {
     public void verifyRunningMultipleTasks() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         this.runBuilder.setTasks("check dummy");
         project.getBuildersList().add(this.runBuilder);
@@ -141,7 +141,7 @@ public class RunMatlabBuildIT {
     public void verifySpecifyingBuildOptions() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         this.runBuilder.setTasks("check test dummy");
         this.runBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip check"));
@@ -193,7 +193,7 @@ public class RunMatlabBuildIT {
     public void verifyBuildSummaryInBuildStatusPage() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         this.runBuilder.setTasks("check test dummy");
         this.runBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip dummy"));
@@ -214,7 +214,7 @@ public class RunMatlabBuildIT {
     public void verifyHyperlinkFromSummaryAndSidePanelAreSame() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         this.runBuilder.setTasks("check test dummy");
         this.runBuilder.setBuildOptions(new BuildOptions("-continueOnFailure -skip dummy"));

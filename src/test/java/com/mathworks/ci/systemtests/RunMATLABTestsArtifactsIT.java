@@ -162,7 +162,7 @@ public class RunMATLABTestsArtifactsIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
@@ -200,7 +200,7 @@ public class RunMATLABTestsArtifactsIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "                unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "                unzip '" + Utilities.getURLForTestData().getPath() + "'" + "\n" +
                 "              runMATLABTests(sourceFolder:['src'], testResultsTAP: 'test-results/results.tap',\n" +
                 "                             testResultsPDF: 'test-results/results.pdf',\n" +
                 "                             testResultsJUnit: 'test-results/results.xml',\n" +
@@ -231,7 +231,7 @@ public class RunMATLABTestsArtifactsIT {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
 
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setCoberturaArtifact(new RunMatlabTestsBuilder.CoberturaArtifact("TestArtifacts/coberturaresult.xml"));

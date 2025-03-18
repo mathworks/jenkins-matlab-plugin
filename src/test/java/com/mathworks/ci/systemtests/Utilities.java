@@ -70,7 +70,7 @@ public class Utilities {
         return MatlabInstallation.getAll();
     }
 
-    public static URL getRunMATLABTestsData() throws MalformedURLException {
+    public static URL getURLForTestData() throws MalformedURLException {
         File file = new File(System.getProperty("user.dir") + File.separator +"src" + File.separator + "test" + File.separator + "resources" + File.separator + "TestData" + File.separator + "FilterTestData.zip");
         return file.toURI().toURL();
     }

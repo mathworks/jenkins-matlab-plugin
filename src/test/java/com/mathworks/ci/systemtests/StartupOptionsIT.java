@@ -80,7 +80,7 @@ public class StartupOptionsIT {
         project.getBuildersList().add(commandStep);
 
         //Run tests step
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
         RunMatlabTestsBuilder runTestsStep = new RunMatlabTestsBuilder();
         //Adding src folder
         List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();
@@ -117,7 +117,7 @@ public class StartupOptionsIT {
                 "        stage('Run MATLAB Command') {\n" +
                 "            steps\n" +
                 "            {\n" +
-                "              unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                "              unzip '" + Utilities.getURLForTestData().getPath() + "'" + "\n" +
                 "              runMATLABCommand(command: 'pwd,version', startupOptions: '-logfile outputCommand.log -nojvm')\n" +
                 "              runMATLABTests(sourceFolder: ['src'], testResultsJUnit: 'test-results/results.xml'," +
                 "              codeCoverageCobertura: 'code-coverage/coverage.xml', startupOptions: '-logfile outputTests.log -nojvm')\n" +
@@ -140,7 +140,7 @@ public class StartupOptionsIT {
     public void verifyStartupOptionsInScriptedPipeline() throws Exception {
         String script = "node {\n" +
                             envScripted + "\n" +
-                            "              unzip '" + Utilities.getRunMATLABTestsData().getPath() + "'" + "\n" +
+                            "              unzip '" + Utilities.getURLForTestData().getPath() + "'" + "\n" +
                             "              runMATLABCommand(command: 'pwd,version', startupOptions: '-logfile outputCommand.log -nojvm')\n" +
                             "              runMATLABTests(sourceFolder: ['src'], testResultsJUnit: 'test-results/results.xml'," +
                             "              codeCoverageCobertura: 'code-coverage/coverage.xml', startupOptions: '-logfile outputTests.log -nojvm')\n" +
@@ -178,7 +178,7 @@ public class StartupOptionsIT {
         project.getBuildersList().add(commandStep);
 
         //Run tests step
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
         RunMatlabTestsBuilder runTestsStep = new RunMatlabTestsBuilder();
         //Adding src folder
         List<SourceFolderPaths> list=new ArrayList<SourceFolderPaths>();

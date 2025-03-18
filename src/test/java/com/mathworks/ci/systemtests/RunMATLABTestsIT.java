@@ -79,7 +79,7 @@ public class RunMATLABTestsIT {
     public void verifyRunMATLABTestsWithAllInputs() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setLoggingLevel("None");
@@ -173,7 +173,7 @@ public class RunMATLABTestsIT {
     public void verifyMultipleSourceFolders() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
         testingBuilder.setLoggingLevel("None");
@@ -198,7 +198,7 @@ public class RunMATLABTestsIT {
     public void verifyMultipleTestFolders() throws Exception {
         this.buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
         project.getBuildWrappersList().add(this.buildWrapper);
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
@@ -234,7 +234,7 @@ public class RunMATLABTestsIT {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         MatlabInstallationAxis MATLABAxis = new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_22b"));
         matrixProject.setAxes(new AxisList(MATLABAxis));
-        matrixProject.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        matrixProject.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         RunMatlabTestsBuilder testingBuilder = new RunMatlabTestsBuilder();
 
@@ -347,7 +347,7 @@ public class RunMATLABTestsIT {
     }
 
     private String addTestData() throws MalformedURLException {
-        URL zipFile = Utilities.getRunMATLABTestsData();
+        URL zipFile = Utilities.getURLForTestData();
         String path = "  unzip '" + zipFile.getPath() + "'" + "\n";
         return path;
     }

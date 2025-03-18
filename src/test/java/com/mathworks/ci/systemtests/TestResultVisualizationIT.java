@@ -54,7 +54,7 @@ public class TestResultVisualizationIT {
     @Test
     public void verifyTestResultsSummary() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
         buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
@@ -86,7 +86,7 @@ public class TestResultVisualizationIT {
     @Test
     public void verifyHyperlinkInSummary() throws Exception {
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
         buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
@@ -109,7 +109,7 @@ public class TestResultVisualizationIT {
     @Test
     public void verifyContentInTestResultsTable() throws Exception{
         FreeStyleProject project = jenkins.createFreeStyleProject();
-        project.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        project.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         UseMatlabVersionBuildWrapper buildWrapper = new UseMatlabVersionBuildWrapper();
         buildWrapper.setMatlabBuildWrapperContent(new MatlabBuildWrapperContent(Message.getValue("matlab.custom.location"), Utilities.getMatlabRoot()));
@@ -176,7 +176,7 @@ public class TestResultVisualizationIT {
         MatrixProject matrixProject = jenkins.createProject(MatrixProject.class);
         MatlabInstallationAxis MATLABAxis = new MatlabInstallationAxis(Arrays.asList("MATLAB_PATH_1", "MATLAB_PATH_22b"));
         matrixProject.setAxes(new AxisList(MATLABAxis));
-        matrixProject.setScm(new ExtractResourceSCM(Utilities.getRunMATLABTestsData()));
+        matrixProject.setScm(new ExtractResourceSCM(Utilities.getURLForTestData()));
 
         // Run tests through Run Build step
         RunMatlabBuildBuilder buildtoolBuilder = new RunMatlabBuildBuilder();
@@ -326,7 +326,7 @@ public class TestResultVisualizationIT {
     }
 
     private String addTestData() throws MalformedURLException {
-        URL zipFile = Utilities.getRunMATLABTestsData();
+        URL zipFile = Utilities.getURLForTestData();
         String path = "  unzip '" + zipFile.getPath() + "'" + "\n";
         return path;
     }
