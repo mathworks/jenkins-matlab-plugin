@@ -1,3 +1,8 @@
+# Archived Repository Notice
+
+> **⚠️ Announcement:**  
+> This repository has been archived and is no longer maintained. To access the latest plugin features or to report any issues, please visit the [jenkinsci/matlab-plugin](https://github.com/jenkinsci/matlab-plugin) repository.
+
 # Continuous Integration with MATLAB on Jenkins
 This plugin enables you to build and test your MATLAB&reg; project as part of your Jenkins&trade; build. For example, you can automatically identify any code issues in your project, run tests and generate test and coverage artifacts, and package your files into a toolbox.
 
